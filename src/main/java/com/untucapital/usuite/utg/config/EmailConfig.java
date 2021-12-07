@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
@@ -15,8 +16,16 @@ import java.util.Properties;
 public class EmailConfig {
 
     @Bean
-    public JavaMailSender getJavaMailSender()
-    {
+    public SimpleMailMessage emailTemplate() {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("recipient@email.com");
+        message.setFrom("credit.application@untu-capital.com");
+        message.setSubject("Untu Credit Application - Account Verification");
+        message.setText("FATAL - Application crash. Save your job !!");
+        return message;
+    }
+
+    public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(25);
