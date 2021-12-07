@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.exception;
 
 import com.untucapital.usuite.utg.controller.payload.UsuiteApiErrorResp;
-import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
