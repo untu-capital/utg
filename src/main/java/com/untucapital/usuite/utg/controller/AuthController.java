@@ -68,4 +68,13 @@ public class AuthController {
         } else
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Failed to confirm user account"));
     }
+
+    @GetMapping("/check_email")
+    public ResponseEntity<UsuiteApiResp> checkEmail(@RequestParam("email") String email) {
+
+        if (userService.checkUserEmail(email)) {
+            return ResponseEntity.ok(new UsuiteApiResp("User email exists"));
+        } else
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("Email provided does not exist"));
+    }
 }

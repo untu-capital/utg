@@ -259,4 +259,10 @@ public class UserService extends AbstractService<User> {
         confirmationTokenRepository.save(confirmationToken);
         return true;
     }
+
+    public boolean checkUserEmail(String email) {
+        log.debug("Check User Email Request email: {}", email);
+
+        return userRepository.existsByContactDetail_EmailAddress(email);
+    }
 }
