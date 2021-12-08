@@ -98,6 +98,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/users/**")
                 .permitAll()
+                .antMatchers("/credit_application/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
