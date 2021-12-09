@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.exception;
 
 import com.untucapital.usuite.utg.controller.payload.UsuiteApiErrorResp;
+import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -78,5 +79,13 @@ public class ApiExceptionHandler {
         log.error("Unauthorized Exception occurred - {}", ue.getMessage(), ue);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new UsuiteApiErrorResp(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), ue.getMessage()));
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = SecurityException.class)
+    public ResponseEntity<UsuiteApiErrorResp> handleSecurityException(SecurityException ee) {
+        log.error("Security Exception occurred - {}", ee.getMessage(), ee);
+        UsuiteApiErrorResp apiErrorResp = new UsuiteApiErrorResp(HttpStatus.UNPROCESSABLE_ENTITY.value(), HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ee.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiErrorResp);
     }
 }
