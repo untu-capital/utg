@@ -4,6 +4,8 @@ import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.service.CreditCheckService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,17 +13,19 @@ import java.util.List;
 @Service
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+    private final CreditCheckService creditCheckService;
 
-    public ClientLoanApplicationImpl(ClientRepository clientRepository) {
-        super();
+    @Autowired
+    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService) {
         this.clientRepository = clientRepository;
+        this.creditCheckService = creditCheckService;
     }
 
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
-        clientLoan.setStatus("Pending");
-        return clientRepository.save(clientLoan);
+        ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
+        return clientRepository.save(creditCheckedLoan);
     }
 
     @Override
