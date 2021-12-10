@@ -1,23 +1,30 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
 public class Search {
 
+    @JsonProperty(value = "search_purpose")
     private String searchPurpose;
 
+    @JsonProperty(value = "date_searched")
     private String dateSearched;
 
     private String status;
 
     private Integer score;
 
+    @JsonProperty(value = "subscriber_name")
     private String subscriberName;
 
+    @JsonProperty(value = "branch_name")
     private String branchName;
 
+    @JsonProperty(value = "subscriber_short_name")
     private String subscriberShortName;
 
     public String getSearchPurpose() {

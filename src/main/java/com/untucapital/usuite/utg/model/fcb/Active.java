@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
@@ -12,6 +14,7 @@ public class Active {
 
     private String amount;
 
+    @JsonProperty(value = "event_type")
     private String eventType;
 
     private String currency;

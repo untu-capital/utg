@@ -1,21 +1,27 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
 public class Directorship {
 
+    @JsonProperty(value = "company_name")
     private String companyName;
 
+    @JsonProperty(value = "trade_name")
     private String tradeName;
 
+    @JsonProperty(value = "registration_number")
     private String registrationNumber;
 
     private String dof;
 
     private String status;
 
+    @JsonProperty(value = "date_searched")
     private String dateSearched;
 
     public String getCompanyName() {

@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,11 @@ import java.util.List;
 
 public class Response {
 
+    private Integer code;
+
+    private String individual;
+
+    @JsonProperty(value = "Report")
     private List<Report> report;
 
     private List<Address> addresses;
@@ -22,8 +29,27 @@ public class Response {
 
     private List<Object> exposures;
 
+    @JsonProperty(value = "additional_info")
+    private List<Object> additionalInfo;
+
     public List<Report> getReport() {
         return report;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public void setCode(Integer code) {
+        this.code = code;
+    }
+
+    public String getIndividual() {
+        return individual;
+    }
+
+    public void setIndividual(String individual) {
+        this.individual = individual;
     }
 
     public void setReport(List<Report> report) {
@@ -76,5 +102,13 @@ public class Response {
 
     public void setExposures(List<Object> exposures) {
         this.exposures = exposures;
+    }
+
+    public List<Object> getAdditionalInfo() {
+        return additionalInfo;
+    }
+
+    public void setAdditionalInfo(List<Object> additionalInfo) {
+        this.additionalInfo = additionalInfo;
     }
 }

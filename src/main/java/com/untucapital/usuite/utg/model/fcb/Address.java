@@ -1,13 +1,17 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
 public class Address {
 
+    @JsonProperty(value = "street_no")
     private String streetNo;
 
+    @JsonProperty(value = "street_name")
     private String streetName;
 
     private String suburb;
@@ -16,12 +20,15 @@ public class Address {
 
     private String city;
 
+    @JsonProperty(value = "date_searched")
     private String dateSearched;
 
     private String country;
 
+    @JsonProperty(value = "property_status")
     private String propertyStatus;
 
+    @JsonProperty(value = "property_density")
     private String propertyDensity;
 
     public String getStreetNo() {
