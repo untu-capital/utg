@@ -4,11 +4,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "loan_application")
-public class ClientLoan {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+@Table(name = "loan_application", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id_number", "phonenumber"})
+})
+public class ClientLoan extends AbstractEntity {
 
     @NotNull
     @Column(name = "firstname", nullable = false)

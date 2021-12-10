@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     private ClientRepository clientRepository;
@@ -44,7 +43,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public ClientLoan updateClientLoan(ClientLoan clientLoan, long id) {
+    public ClientLoan updateClientLoan(ClientLoan clientLoan, String id) {
         //check weather loan with id exist or not
         ClientLoan existingClientLoan = clientRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("ClientLoan", "Id", id));
@@ -72,7 +71,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public void deleteClientLoan(long id) {
+    public void deleteClientLoan(String id) {
         //check whether a client loan exist in the database;
         clientRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ClientLoan", "Id", id));
         clientRepository.deleteById(id);
