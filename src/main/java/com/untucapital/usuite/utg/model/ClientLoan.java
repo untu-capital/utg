@@ -40,8 +40,8 @@ public class ClientLoan extends AbstractEntity {
     @Column(name = "tob", nullable = false)
     private String tob;
 
-    @Column(name = "loan", nullable = false)
-    private String loan;
+    @Column(name = "loan_amount", nullable = false)
+    private String loanAmount;
 
     @Column(name = "street_no", nullable = false)
     private String street_no;

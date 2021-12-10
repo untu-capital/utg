@@ -30,7 +30,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public ClientLoan getClientLoanApplicationById(long id) {
+    public ClientLoan getClientLoanApplicationById(String id) {
 //        Optional <ClientLoan> clientLoan = clientRepository.findById(id);
 //        if(clientLoan.isPresent()){
 //            return clientLoan.get();
@@ -61,7 +61,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         existingClientLoan.setStreet_name(clientLoan.getStreet_name());
         existingClientLoan.setSurbub(clientLoan.getSurbub());
         existingClientLoan.setCity(clientLoan.getCity());
-        existingClientLoan.setLoan(clientLoan.getLoan());
+        existingClientLoan.setLoanAmount(clientLoan.getLoanAmount());
         existingClientLoan.setTenure(clientLoan.getTenure());
         existingClientLoan.setStatus(clientLoan.getStatus());
 
