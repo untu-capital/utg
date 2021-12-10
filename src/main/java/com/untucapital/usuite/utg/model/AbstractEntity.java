@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,7 +17,6 @@ import java.util.UUID;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-@JsonIgnoreProperties(value = {"createdAt", "updatedAt", "deletedAt"}, allowGetters = true)
 public class AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
