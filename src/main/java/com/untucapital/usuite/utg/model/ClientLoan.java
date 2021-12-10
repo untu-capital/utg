@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "loan_application", uniqueConstraints = {
@@ -29,7 +30,7 @@ public class ClientLoan extends AbstractEntity {
     private String gender;
 
     @Column(name = "dob", nullable = false)
-    private String dob;
+    private LocalDate dob;
 
     @Column(name = "phonenumber", nullable = false)
     private String phonenumber;
@@ -61,13 +62,14 @@ public class ClientLoan extends AbstractEntity {
     @Column(name = "status")
     private String status;
 
-    public long getId() {
-        return id;
-    }
+    private Integer fcbScore;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    private String fcbStatus;
+
+    @ManyToOne()
+    @NotNull
+    @JoinColumn(name = "industry_id", nullable = false)
+    private Industry industry;
 
     public String getFirstname() {
         return firstname;
@@ -117,11 +119,11 @@ public class ClientLoan extends AbstractEntity {
         this.gender = gender;
     }
 
-    public String getDob() {
+    public LocalDate getDob() {
         return dob;
     }
 
-    public void setDob(String dob) {
+    public void setDob(LocalDate dob) {
         this.dob = dob;
     }
 
@@ -149,12 +151,12 @@ public class ClientLoan extends AbstractEntity {
         this.tob = tob;
     }
 
-    public String getLoan() {
-        return loan;
+    public String getLoanAmount() {
+        return loanAmount;
     }
 
-    public void setLoan(String loan) {
-        this.loan = loan;
+    public void setLoanAmount(String loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
     public String getStreet_no() {
@@ -203,5 +205,29 @@ public class ClientLoan extends AbstractEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getFcbScore() {
+        return fcbScore;
+    }
+
+    public void setFcbScore(Integer fcbScore) {
+        this.fcbScore = fcbScore;
+    }
+
+    public String getFcbStatus() {
+        return fcbStatus;
+    }
+
+    public void setFcbStatus(String fcbStatus) {
+        this.fcbStatus = fcbStatus;
+    }
+
+    public Industry getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(Industry industry) {
+        this.industry = industry;
     }
 }
