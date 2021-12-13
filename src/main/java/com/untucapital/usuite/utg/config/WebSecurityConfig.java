@@ -100,8 +100,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_application/**")
                 .permitAll()
+                .antMatchers("/industries/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
+
 
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }

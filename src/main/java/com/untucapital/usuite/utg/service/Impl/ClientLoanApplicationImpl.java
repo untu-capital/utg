@@ -4,13 +4,17 @@ import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.utils.FormatterUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
+
+    private static final Logger log = LoggerFactory.getLogger(ClientLoanApplicationImpl.class);
 
     private ClientRepository clientRepository;
 
@@ -22,6 +26,8 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
         clientLoan.setStatus("Pending");
+
+        log.info("Saving new Client: {}", FormatterUtil.toJson(clientLoan));
         return clientRepository.save(clientLoan);
     }
 
@@ -57,7 +63,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         existingClientLoan.setGender(clientLoan.getGender());
         existingClientLoan.setPhonenumber(clientLoan.getPhonenumber());
         existingClientLoan.setPob(clientLoan.getPob());
-        existingClientLoan.setTob(clientLoan.getTob());
+        existingClientLoan.setIndustryCode(clientLoan.getIndustryCode());
         existingClientLoan.setStreet_no(clientLoan.getStreet_no());
         existingClientLoan.setStreet_name(clientLoan.getStreet_name());
         existingClientLoan.setSurbub(clientLoan.getSurbub());

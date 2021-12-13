@@ -14,7 +14,7 @@ public class ClientLoan {
     @Column(name = "firstname", nullable = false)
     private String firstname;
 
-    @Column(name = "middlename", nullable = false)
+    @Column(name = "middlename")
     private String middlename;
 
     @Column(name = "lastname", nullable = false)
@@ -38,8 +38,8 @@ public class ClientLoan {
     @Column(name = "pob", nullable = false)
     private String pob;
 
-    @Column(name = "tob", nullable = false)
-    private String tob;
+    @Column(name = "industry_code", nullable = false)
+    private String industryCode;
 
     @Column(name = "loan", nullable = false)
     private String loan;
@@ -142,12 +142,12 @@ public class ClientLoan {
         this.pob = pob;
     }
 
-    public String getTob() {
-        return tob;
+    public String getIndustryCode() {
+        return industryCode;
     }
 
-    public void setTob(String tob) {
-        this.tob = tob;
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
     }
 
     public String getLoan() {
