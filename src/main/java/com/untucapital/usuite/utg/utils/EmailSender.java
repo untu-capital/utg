@@ -17,6 +17,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 
 /**
@@ -184,5 +185,10 @@ public class EmailSender {
         SimpleMailMessage mailMessage = new SimpleMailMessage(preConfiguredMessage);
         mailMessage.setText(message);
         mailSender.send(mailMessage);
+    }
+
+    public static String getSiteURL(HttpServletRequest request) {
+        String siteURL = request.getRequestURL().toString();
+        return siteURL.replace(request.getServletPath(), "");
     }
 }
