@@ -36,6 +36,10 @@ public class User extends AbstractEntity {
 
     private String password;
 
+    @Column(name = "reset_token")
+    private String resetPasswordToken;
+
+
     @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
     @NotNull
     @JoinColumn(name = "contact_detail_id", nullable = false)
@@ -85,6 +89,14 @@ public class User extends AbstractEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
     }
 
     public ContactDetail getContactDetail() {

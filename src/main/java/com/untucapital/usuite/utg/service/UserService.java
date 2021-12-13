@@ -291,4 +291,27 @@ public class UserService extends AbstractService<User> {
 
         return userRepository.existsByContactDetail_EmailAddress(email);
     }
+
+    public void updateResetPasswordToken(String token, String email) throws ResourceNotFoundException {
+        User user = userRepository.findByContactDetail_EmailAddress(email);
+        if (user != null) {
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("Could not find any %s with the email: ", "user" ,email);
+        }
+    }
+
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    public void updatePassword(User user, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+    }
 }
