@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -66,10 +67,9 @@ public class ClientLoan extends AbstractEntity {
 
     private String fcbStatus;
 
-    @ManyToOne()
-    @NotNull
-    @JoinColumn(name = "industry_id", nullable = false)
-    private Industry industry;
+    @NotBlank
+    @Column(name = "industry_code", nullable = false)
+    private String industryCode;
 
     public String getFirstname() {
         return firstname;
@@ -223,11 +223,11 @@ public class ClientLoan extends AbstractEntity {
         this.fcbStatus = fcbStatus;
     }
 
-    public Industry getIndustry() {
-        return industry;
+    public String getIndustryCode() {
+        return industryCode;
     }
 
-    public void setIndustry(Industry industry) {
-        this.industry = industry;
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
     }
 }

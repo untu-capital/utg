@@ -95,7 +95,7 @@ public class FCBIntegrationService {
         headers.set("mobile", clientLoan.getPhonenumber());
         headers.set("telephone", "");
         headers.set("employer", "");
-        headers.set("employer_industry", clientLoan.getIndustry().getCode());
+        headers.set("employer_industry", clientLoan.getIndustryCode());
         headers.set("salary_band", Salary._0_TO_150.code);
         headers.set("loan_purpose", LoanPurpose.BUSINESS_IMPROVEMENT_LOAN.code);
         headers.set("loan_amount", clientLoan.getLoanAmount());
