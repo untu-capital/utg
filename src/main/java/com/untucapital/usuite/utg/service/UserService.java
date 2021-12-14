@@ -78,6 +78,8 @@ public class UserService extends AbstractService<User> {
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
         log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
 
+        validateUserStatus(loginReq.getUsername());
+
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
 
@@ -91,6 +93,30 @@ public class UserService extends AbstractService<User> {
             );
         }
         return loginRespOptional;
+    }
+
+    private void validateUserStatus(String username) throws SecurityException {
+
+        String failedValidationMsg = "Login failed : Invalid Username or Password!";
+
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            log.error("User with username: {}, does not exist.", username);
+            throw new SecurityException(failedValidationMsg);
+        }
+
+        User user = optionalUser.get();
+        if (!user.isActive()) {
+            log.error("User with username: {}, is currently not active.", username);
+            throw new SecurityException(failedValidationMsg);
+        }
+
+        if (!user.isVerified()) {
+            log.error("User with username: {}, is not verified.", username);
+            throw new SecurityException(failedValidationMsg);
+        }
+
+        log.debug("User Status validation complete for User: {}", user.getId());
     }
 
     public Optional<String> registerUser(SignUpRequest signUpRequest) {
@@ -129,7 +155,7 @@ public class UserService extends AbstractService<User> {
                 .orElseThrow(() -> new UntuSuiteException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
 
-        log.info("Registering new user - {}", FormatterUtil.toJson(signUpRequest));
+        log.info("Registering new user - {}", FormatterUtil.toJson(user));
 
         User createdUser = userRepository.save(user);
 
@@ -142,8 +168,8 @@ public class UserService extends AbstractService<User> {
         confirmToken.setUser(createdUser);
         confirmationTokenRepository.save(confirmToken);
 
-        String emailText = buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
-        // emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
+        String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
+         emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
         // emailSender.sendMail(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
 
         return Optional.of(createdUser.getId());
@@ -206,7 +232,7 @@ public class UserService extends AbstractService<User> {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + firstName + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering on Untu Capital Credit Application. Please click on the below link to activate your account: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost:8080/auth/account-confirm?username=" + username + "&code=" + token + "\">Confirm Account</a> </p></blockquote>\n Link will expire in 30 minutes. <p>Cheers</p>\n<p>Untu Credit Application Team</p>" +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost:7878/api/utg/auth/confirm_account?username=" + username + "&code=" + token + "\">Confirm Account</a> </p></blockquote>\n Link will expire in 30 minutes. <p>Cheers</p>\n<p>Untu Credit Application Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -258,5 +284,34 @@ public class UserService extends AbstractService<User> {
         confirmationToken.setDateConfirmed(LocalDateTime.now());
         confirmationTokenRepository.save(confirmationToken);
         return true;
+    }
+
+    public boolean checkUserEmail(String email) {
+        log.debug("Check User Email Request email: {}", email);
+
+        return userRepository.existsByContactDetail_EmailAddress(email);
+    }
+
+    public void updateResetPasswordToken(String token, String email) throws ResourceNotFoundException {
+        User user = userRepository.findByContactDetail_EmailAddress(email);
+        if (user != null) {
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("Could not find any %s with the email: ", "user" ,email);
+        }
+    }
+
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    public void updatePassword(User user, String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
     }
 }

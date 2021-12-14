@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.repository;
 
+import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,4 +23,10 @@ public interface UserRepository extends JpaRepository<User, String> {
     boolean existsByContactDetailMobileNumber(long mobileNumber);
 
     boolean existsByContactDetail_EmailAddress(String emailAddress);
+
+    User findByContactDetail_EmailAddress(String email);
+
+    //ContactDetail findByEmail(String email);
+
+    User findByResetPasswordToken(String token);
 }

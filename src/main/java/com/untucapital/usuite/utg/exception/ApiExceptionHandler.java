@@ -80,4 +80,12 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new UsuiteApiErrorResp(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase(), ue.getMessage()));
     }
+
+    @ResponseBody
+    @ExceptionHandler(value = SecurityException.class)
+    public ResponseEntity<UsuiteApiErrorResp> handleSecurityException(SecurityException ee) {
+        log.error("Security Exception occurred - {}", ee.getMessage(), ee);
+        UsuiteApiErrorResp apiErrorResp = new UsuiteApiErrorResp(HttpStatus.UNPROCESSABLE_ENTITY.value(), HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ee.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiErrorResp);
+    }
 }

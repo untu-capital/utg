@@ -8,11 +8,13 @@
 		<version>2.6.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.untu-capital.usuite</groupId>
 	<artifactId>utg</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Untu Transaction Gateway</name>
 	<description>Spring Boot project for Untu Transaction Gateway</description>
+
 	<properties>
 		<java.version>11</java.version>
 	</properties>

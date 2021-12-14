@@ -55,7 +55,7 @@ public abstract class AbstractController<T extends AbstractEntity> {
 
     // Update a Resource
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody T resourceDetails, @PathVariable String id) {
+    public ResponseEntity<?> update(@Valid @RequestBody T resourceDetails, @PathVariable("id") String id) {
         T updatedResource = getService().update(resourceDetails, id);
         return ResponseEntity.ok(updatedResource);
     }
