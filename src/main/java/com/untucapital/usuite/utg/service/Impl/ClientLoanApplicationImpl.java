@@ -24,6 +24,9 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
+        // 1. Check if user nationality is Zimbabwean
+        // 2. Check if age is legal > 18
+        // 3.
         ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
         return clientRepository.save(creditCheckedLoan);
     }
