@@ -15,7 +15,7 @@ public class ClientLoan extends AbstractEntity {
     @Column(name = "firstname", nullable = false)
     private String firstname;
 
-    @Column(name = "middlename", nullable = false)
+    @Column(name = "middlename")
     private String middlename;
 
     @Column(name = "lastname", nullable = false)
@@ -39,11 +39,11 @@ public class ClientLoan extends AbstractEntity {
     @Column(name = "pob", nullable = false)
     private String pob;
 
-    @Column(name = "tob", nullable = false)
-    private String tob;
+    @Column(name = "industry_code", nullable = false)
+    private String industryCode;
 
-    @Column(name = "loan_amount", nullable = false)
-    private String loanAmount;
+    @Column(name = "loan", nullable = false)
+    private String loan;
 
     @Column(name = "street_no", nullable = false)
     private String street_no;
@@ -66,10 +66,6 @@ public class ClientLoan extends AbstractEntity {
     private Integer fcbScore;
 
     private String fcbStatus;
-
-    @NotBlank
-    @Column(name = "industry_code", nullable = false)
-    private String industryCode;
 
     public String getFirstname() {
         return firstname;
@@ -143,20 +139,20 @@ public class ClientLoan extends AbstractEntity {
         this.pob = pob;
     }
 
-    public String getTob() {
-        return tob;
+    public String getIndustryCode() {
+        return industryCode;
     }
 
-    public void setTob(String tob) {
-        this.tob = tob;
+    public void setIndustryCode(String industryCode) {
+        this.industryCode = industryCode;
     }
 
-    public String getLoanAmount() {
-        return loanAmount;
+    public String getLoan() {
+        return loan;
     }
 
-    public void setLoanAmount(String loanAmount) {
-        this.loanAmount = loanAmount;
+    public void setLoan(String loan) {
+        this.loan = loan;
     }
 
     public String getStreet_no() {
@@ -221,13 +217,5 @@ public class ClientLoan extends AbstractEntity {
 
     public void setFcbStatus(String fcbStatus) {
         this.fcbStatus = fcbStatus;
-    }
-
-    public String getIndustryCode() {
-        return industryCode;
-    }
-
-    public void setIndustryCode(String industryCode) {
-        this.industryCode = industryCode;
     }
 }

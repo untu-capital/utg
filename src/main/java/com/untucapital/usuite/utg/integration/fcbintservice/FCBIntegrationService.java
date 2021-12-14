@@ -98,7 +98,7 @@ public class FCBIntegrationService {
         headers.set("employer_industry", clientLoan.getIndustryCode());
         headers.set("salary_band", Salary._0_TO_150.code);
         headers.set("loan_purpose", LoanPurpose.BUSINESS_IMPROVEMENT_LOAN.code);
-        headers.set("loan_amount", clientLoan.getLoanAmount());
+        headers.set("loan_amount", clientLoan.getLoan());
         headers.set("occupation_class", OccupationClass.N_A.code);
         headers.set("property_density", PropertyDensity.MEDIUM.code);
         headers.set("property_status", PropertyOwnership.PARENTS.code);

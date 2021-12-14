@@ -2,13 +2,12 @@ package com.untucapital.usuite.utg.model;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-/**
- * @author Chirinda Nyasha Dell - 10/12/2021
- */
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "industries")
+@Table(name = "industries", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name", "code"})
+})
 public class Industry extends AbstractEntity {
 
     private String name;

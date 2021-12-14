@@ -63,12 +63,12 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         existingClientLoan.setGender(clientLoan.getGender());
         existingClientLoan.setPhonenumber(clientLoan.getPhonenumber());
         existingClientLoan.setPob(clientLoan.getPob());
-        existingClientLoan.setTob(clientLoan.getTob());
+        existingClientLoan.setIndustryCode(clientLoan.getIndustryCode());
         existingClientLoan.setStreet_no(clientLoan.getStreet_no());
         existingClientLoan.setStreet_name(clientLoan.getStreet_name());
         existingClientLoan.setSurbub(clientLoan.getSurbub());
         existingClientLoan.setCity(clientLoan.getCity());
-        existingClientLoan.setLoanAmount(clientLoan.getLoanAmount());
+        existingClientLoan.setLoan(clientLoan.getLoan());
         existingClientLoan.setTenure(clientLoan.getTenure());
         existingClientLoan.setStatus(clientLoan.getStatus());
 
