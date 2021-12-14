@@ -19,5 +19,10 @@
       "name": "initial-delay.ms",
       "type": "java.lang.String",
       "description": "The time-to-wait before executing the first poll (milliseconds)."
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "The list of client urls that are allowed to send requests to the server."
     }
   ] }
