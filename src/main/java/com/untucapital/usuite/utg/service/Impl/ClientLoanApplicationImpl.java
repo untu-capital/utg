@@ -62,8 +62,9 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         //check weather loan with id exist or not
         ClientLoan existingClientLoan = clientRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("ClientLoan", "Id", id));
-        existingClientLoan.setFirstname(clientLoan.getFirstname());
-        existingClientLoan.setLastname(clientLoan.getLastname());
+        clientLoan.setId(existingClientLoan.getId());
+        /*existingClientLoan.setFirstName(clientLoan.getFirstName());
+        existingClientLoan.setLastName(clientLoan.getLastName());
         existingClientLoan.setMiddlename(clientLoan.getMiddlename());
         existingClientLoan.setId_number(clientLoan.getId_number());
         existingClientLoan.setMarital(clientLoan.getMarital());
@@ -79,9 +80,9 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         existingClientLoan.setLoan(clientLoan.getLoan());
         existingClientLoan.setTenure(clientLoan.getTenure());
         existingClientLoan.setStatus(clientLoan.getStatus());
-
+*/
         //save existing client to DB
-        clientRepository.save(existingClientLoan);
+        clientRepository.save(clientLoan);
         return clientLoan;
     }
 

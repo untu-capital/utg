@@ -34,9 +34,9 @@ public class CreditCheckService {
     }
 
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
-        log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstname() + clientLoan.getLastname(), clientLoan.getId_number());
+        log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
 
-        clientLoan.setStatus("PENDING");
+        clientLoan.setLoanStatus("PENDING");
 
         final Response creditResponse = fcbIntegrationService.performSearch(clientLoan)
                 .orElseThrow(() -> new UntuSuiteException("Credit check failed for the Loan Application"));
@@ -48,9 +48,9 @@ public class CreditCheckService {
         clientLoan.setFcbScore(creditScore);
 
         if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
-            clientLoan.setStatus("ACCEPTED");
+            clientLoan.setLoanStatus("ACCEPTED");
         } else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
-            clientLoan.setStatus("REJECTED");
+            clientLoan.setLoanStatus("REJECTED");
         }
         return clientLoan;
     }
@@ -64,7 +64,7 @@ public class CreditCheckService {
 
         List<ClientLoan> pendingClientCreditChecks = clientLoans
                 .stream()
-                .filter(cl -> "INCONCLUSIVE".equals(cl.getFcbStatus()) && "PENDING".equals(cl.getStatus()))
+                .filter(cl -> "INCONCLUSIVE".equals(cl.getFcbStatus()) && "PENDING".equals(cl.getLoanStatus()))
                 .collect(Collectors.toList());
 
         pendingClientCreditChecks.forEach(this::fetchFCBCreditStatus);

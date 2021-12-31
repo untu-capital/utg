@@ -1,110 +1,111 @@
 package com.untucapital.usuite.utg.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "loan_application", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"id_number", "phonenumber"})
-})
+@Table(name = "client_loans")
 public class ClientLoan extends AbstractEntity {
 
     @NotNull
-    @Column(name = "firstname", nullable = false)
-    private String firstname;
+    @Column(nullable = false)
+    private String firstName;
 
-    @Column(name = "middlename")
-    private String middlename;
+    private String middleName;
 
-    @Column(name = "lastname", nullable = false)
-    private String lastname;
+    @Column(nullable = false)
+    private String lastName;
 
-    @Column(name = "id_number", nullable = false)
-    private String id_number;
+    @Column(nullable = false)
+    private String idNumber;
 
-    @Column(name = "marital", nullable = false)
-    private String marital;
+    @Column(nullable = false)
+    private String maritalStatus;
 
-    @Column(name = "gender", nullable = false)
+    @Column(nullable = false)
     private String gender;
 
-    @Column(name = "dob", nullable = false)
-    private LocalDate dob;
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
 
-    @Column(name = "phonenumber", nullable = false)
-    private String phonenumber;
+    @Column(nullable = false)
+    private String phoneNumber;
 
-    @Column(name = "pob", nullable = false)
-    private String pob;
+    @Column(nullable = false)
+    private String placeOfBusiness;
 
-    @Column(name = "industry_code", nullable = false)
+    @Column(nullable = false)
     private String industryCode;
 
-    @Column(name = "loan", nullable = false)
-    private String loan;
+    @Column(nullable = false)
+    private String loanAmount;
 
-    @Column(name = "street_no", nullable = false)
-    private String street_no;
+    @Column(nullable = false)
+    private String streetNo;
 
-    @Column(name = "street_name", nullable = false)
-    private String street_name;
+    private String streetName;
 
-    @Column(name = "surbub", nullable = false)
-    private String surbub;
+    private String suburb;
 
-    @Column(name = "city", nullable = false)
+    @Column(nullable = false)
     private String city;
 
-    @Column(name = "tenure", nullable = false)
+    @Column(nullable = false)
     private String tenure;
 
-    @Column(name = "status")
-    private String status;
+    @NotNull
+    @JoinColumn(nullable = false)
+    private String userId;
+
+    @Column(nullable = false)
+    private String loanStatus;
 
     private Integer fcbScore;
 
     private String fcbStatus;
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getMiddlename() {
-        return middlename;
+    public String getMiddleName() {
+        return middleName;
     }
 
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public String getId_number() {
-        return id_number;
+    public String getIdNumber() {
+        return idNumber;
     }
 
-    public void setId_number(String id_number) {
-        this.id_number = id_number;
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
     }
 
-    public String getMarital() {
-        return marital;
+    public String getMaritalStatus() {
+        return maritalStatus;
     }
 
-    public void setMarital(String marital) {
-        this.marital = marital;
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public String getGender() {
@@ -115,28 +116,28 @@ public class ClientLoan extends AbstractEntity {
         this.gender = gender;
     }
 
-    public LocalDate getDob() {
-        return dob;
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getPob() {
-        return pob;
+    public String getPlaceOfBusiness() {
+        return placeOfBusiness;
     }
 
-    public void setPob(String pob) {
-        this.pob = pob;
+    public void setPlaceOfBusiness(String placeOfBusiness) {
+        this.placeOfBusiness = placeOfBusiness;
     }
 
     public String getIndustryCode() {
@@ -147,36 +148,36 @@ public class ClientLoan extends AbstractEntity {
         this.industryCode = industryCode;
     }
 
-    public String getLoan() {
-        return loan;
+    public String getLoanAmount() {
+        return loanAmount;
     }
 
-    public void setLoan(String loan) {
-        this.loan = loan;
+    public void setLoanAmount(String loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
-    public String getStreet_no() {
-        return street_no;
+    public String getStreetNo() {
+        return streetNo;
     }
 
-    public void setStreet_no(String street_no) {
-        this.street_no = street_no;
+    public void setStreetNo(String streetNo) {
+        this.streetNo = streetNo;
     }
 
-    public String getStreet_name() {
-        return street_name;
+    public String getStreetName() {
+        return streetName;
     }
 
-    public void setStreet_name(String street_name) {
-        this.street_name = street_name;
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
     }
 
-    public String getSurbub() {
-        return surbub;
+    public String getSuburb() {
+        return suburb;
     }
 
-    public void setSurbub(String surbub) {
-        this.surbub = surbub;
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
     }
 
     public String getCity() {
@@ -195,12 +196,20 @@ public class ClientLoan extends AbstractEntity {
         this.tenure = tenure;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getLoanStatus() {
+        return loanStatus;
+    }
+
+    public void setLoanStatus(String loanStatus) {
+        this.loanStatus = loanStatus;
     }
 
     public Integer getFcbScore() {

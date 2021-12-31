@@ -39,7 +39,6 @@ public class User extends AbstractEntity {
     @Column(name = "reset_token")
     private String resetPasswordToken;
 
-
     @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
     @NotNull
     @JoinColumn(name = "contact_detail_id", nullable = false)
