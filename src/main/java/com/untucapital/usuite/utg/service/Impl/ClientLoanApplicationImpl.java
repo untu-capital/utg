@@ -5,6 +5,7 @@ import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.CreditCheckService;
+import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.FormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,11 +21,13 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     private final ClientRepository clientRepository;
     private final CreditCheckService creditCheckService;
+    private final UserService userService;
 
     @Autowired
-    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService) {
+    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService) {
         this.clientRepository = clientRepository;
         this.creditCheckService = creditCheckService;
+        this.userService = userService;
     }
 
     @Override
@@ -54,7 +57,14 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 //        }
         return clientRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("ClientLoan", "Id", id));
+    }
 
+    @Override
+    public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
+        userService.find(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", userId));
+
+        return clientRepository.findByUserId(userId);
     }
 
     @Override

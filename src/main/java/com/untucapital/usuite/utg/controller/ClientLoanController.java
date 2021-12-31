@@ -37,21 +37,25 @@ public class ClientLoanController {
     }
 
     //build get clientLoan by ID REST API
-    //http://localhost:8080/api/loan_application/1
     @GetMapping("{id}")
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
+
+        List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
+        return ResponseEntity.ok(userClientLoans);
+    }
+
     //build update clientLoan REST API
-    //http://localhost:8080/api/loan_appliation/1
     @PutMapping("{id}")
     public ResponseEntity<ClientLoan> updateClient(@PathVariable("id") String id, @RequestBody ClientLoan clientLoan) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.updateClientLoan(clientLoan, id), HttpStatus.OK);
     }
 
     //build delete client loan application REST api
-    //http://localhost:8080/api/loan_appliation/1
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClientLoan(@PathVariable("id") String id) {
         //delete client loan from DB
