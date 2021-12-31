@@ -5,6 +5,9 @@ import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.CreditCheckService;
+import com.untucapital.usuite.utg.utils.FormatterUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +15,8 @@ import java.util.List;
 
 @Service
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
+
+    private static final Logger log = LoggerFactory.getLogger(ClientLoanApplication.class);
 
     private final ClientRepository clientRepository;
     private final CreditCheckService creditCheckService;
@@ -24,10 +29,13 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
+        log.info("Loan Application Request - {}", FormatterUtil.toJson(clientLoan));
         // 1. Check if user nationality is Zimbabwean
         // 2. Check if age is legal > 18
         // 3.
         ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
+
+        log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
         return clientRepository.save(creditCheckedLoan);
     }
 
