@@ -1,9 +1,8 @@
 package com.untucapital.usuite.utg.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import com.untucapital.usuite.utg.model.fcb.Response;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -67,6 +66,11 @@ public class ClientLoan extends AbstractEntity {
     private Integer fcbScore;
 
     private String fcbStatus;
+
+    @OneToOne
+    @NotNull
+    @JoinColumn(name = "fcb_response_id", nullable = false)
+    private Response fcbResponse;
 
     public String getFirstName() {
         return firstName;
@@ -226,5 +230,13 @@ public class ClientLoan extends AbstractEntity {
 
     public void setFcbStatus(String fcbStatus) {
         this.fcbStatus = fcbStatus;
+    }
+
+    public Response getFcbResponse() {
+        return fcbResponse;
+    }
+
+    public void setFcbResponse(Response fcbResponse) {
+        this.fcbResponse = fcbResponse;
     }
 }
