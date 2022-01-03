@@ -88,4 +88,6 @@ public class ApiExceptionHandler {
         UsuiteApiErrorResp apiErrorResp = new UsuiteApiErrorResp(HttpStatus.UNPROCESSABLE_ENTITY.value(), HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase(), ee.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(apiErrorResp);
     }
+
+
 }
