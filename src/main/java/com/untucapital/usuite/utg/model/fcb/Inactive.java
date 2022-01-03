@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -10,7 +11,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table("fcb_inactive_searches")
+@Table(name = "fcb_inactive_searches")
 public class Inactive extends AbstractEntity {
 
     private String counterparty;
