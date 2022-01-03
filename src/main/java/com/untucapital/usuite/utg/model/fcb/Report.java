@@ -2,13 +2,16 @@ package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Report {
-
-    private String id;
+@Entity
+@Table("fcb_reports")
+public class Report extends AbstractEntity {
 
     @JsonProperty(value = "Subscriber")
     private String subscriber;
@@ -57,14 +60,6 @@ public class Report {
 
     @JsonProperty(value = "Nationality")
     private String nationality;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getSubscriber() {
         return subscriber;

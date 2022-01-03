@@ -2,11 +2,16 @@ package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Address {
+@Entity
+@Table("fcb_addresses")
+public class Address extends AbstractEntity {
 
     @JsonProperty(value = "street_no")
     private String streetNo;
@@ -16,7 +21,7 @@ public class Address {
 
     private String suburb;
 
-    private Object building;
+    private String building;
 
     private String city;
 
@@ -55,11 +60,11 @@ public class Address {
         this.suburb = suburb;
     }
 
-    public Object getBuilding() {
+    public String getBuilding() {
         return building;
     }
 
-    public void setBuilding(Object building) {
+    public void setBuilding(String building) {
         this.building = building;
     }
 

@@ -2,11 +2,16 @@ package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Directorship {
+@Entity
+@Table("fcb_directorships")
+public class Directorship extends AbstractEntity {
 
     @JsonProperty(value = "company_name")
     private String companyName;
