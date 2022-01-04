@@ -1,36 +1,52 @@
 package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.untucapital.usuite.utg.model.AbstractEntity;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
+
+import static javax.persistence.CascadeType.*;
 
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Response {
+@Entity
+@Table(name = "fcb_response")
+public class Response extends AbstractEntity {
 
     private Integer code;
 
     private String individual;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     @JsonProperty(value = "Report")
     private List<Report> report;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     private List<Address> addresses;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     private List<Search> searches;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     private List<Directorship> directorships;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     private List<Active> active;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     private List<Inactive> inactive;
 
-    private List<Object> exposures;
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
+    private List<Exposure> exposures;
 
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     @JsonProperty(value = "additional_info")
-    private List<Object> additionalInfo;
+    private List<AdditionalInfo> additionalInfo;
 
     public List<Report> getReport() {
         return report;
@@ -96,19 +112,19 @@ public class Response {
         this.inactive = inactive;
     }
 
-    public List<Object> getExposures() {
+    public List<Exposure> getExposures() {
         return exposures;
     }
 
-    public void setExposures(List<Object> exposures) {
+    public void setExposures(List<Exposure> exposures) {
         this.exposures = exposures;
     }
 
-    public List<Object> getAdditionalInfo() {
+    public List<AdditionalInfo> getAdditionalInfo() {
         return additionalInfo;
     }
 
-    public void setAdditionalInfo(List<Object> additionalInfo) {
+    public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
         this.additionalInfo = additionalInfo;
     }
 }

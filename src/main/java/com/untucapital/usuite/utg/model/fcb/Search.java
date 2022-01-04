@@ -1,12 +1,18 @@
 package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.untucapital.usuite.utg.model.AbstractEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Search {
+@Entity
+@Table(name = "fcb_searches")
+public class Search extends AbstractEntity {
 
     @JsonProperty(value = "search_purpose")
     private String searchPurpose;

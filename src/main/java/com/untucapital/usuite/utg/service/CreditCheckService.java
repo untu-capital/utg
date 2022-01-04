@@ -5,6 +5,7 @@ import com.untucapital.usuite.utg.integration.fcbintservice.FCBIntegrationServic
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.fcb.Response;
 import com.untucapital.usuite.utg.repository.ClientRepository;
+import com.untucapital.usuite.utg.repository.FCBResponseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class CreditCheckService {
 
     private final FCBIntegrationService fcbIntegrationService;
     private final ClientRepository clientRepository;
+    private final FCBResponseRepository fcbResponseRepository;
 
     @Autowired
-    public CreditCheckService(FCBIntegrationService fcbIntegrationService, ClientRepository clientRepository) {
+    public CreditCheckService(FCBIntegrationService fcbIntegrationService, ClientRepository clientRepository, FCBResponseRepository fcbResponseRepository) {
         this.fcbIntegrationService = fcbIntegrationService;
         this.clientRepository = clientRepository;
+        this.fcbResponseRepository = fcbResponseRepository;
     }
 
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
@@ -41,9 +44,12 @@ public class CreditCheckService {
         final Response creditResponse = fcbIntegrationService.performSearch(clientLoan)
                 .orElseThrow(() -> new UntuSuiteException("Credit check failed for the Loan Application"));
 
+        Response savedResponse = fcbResponseRepository.save(creditResponse);
+
         String creditStatus = creditResponse.getReport().get(0).getStatus();
         Integer creditScore = creditResponse.getReport().get(0).getScore();
 
+        clientLoan.setFcbResponse(savedResponse);
         clientLoan.setFcbStatus(creditStatus);
         clientLoan.setFcbScore(creditScore);
 

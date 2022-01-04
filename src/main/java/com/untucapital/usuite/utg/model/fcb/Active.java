@@ -1,16 +1,22 @@
 package com.untucapital.usuite.utg.model.fcb;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.untucapital.usuite.utg.model.AbstractEntity;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * @author Chirinda Nyasha Dell - 7/12/2021
  */
 
-public class Active {
+@Entity
+@Table(name = "fcb_active_searches")
+public class Active extends AbstractEntity {
 
-    private Object counterparty;
+    private String counterparty;
 
-    private Object branch;
+    private String branch;
 
     private String amount;
 
@@ -19,21 +25,21 @@ public class Active {
 
     private String currency;
 
-    private Object comment;
+    private String comment;
 
-    public Object getCounterparty() {
+    public String getCounterparty() {
         return counterparty;
     }
 
-    public void setCounterparty(Object counterparty) {
+    public void setCounterparty(String counterparty) {
         this.counterparty = counterparty;
     }
 
-    public Object getBranch() {
+    public String getBranch() {
         return branch;
     }
 
-    public void setBranch(Object branch) {
+    public void setBranch(String branch) {
         this.branch = branch;
     }
 
@@ -61,11 +67,11 @@ public class Active {
         this.currency = currency;
     }
 
-    public Object getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public void setComment(Object comment) {
+    public void setComment(String comment) {
         this.comment = comment;
     }
 }
