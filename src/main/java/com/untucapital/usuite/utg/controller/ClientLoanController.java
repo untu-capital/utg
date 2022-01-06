@@ -49,11 +49,11 @@ public class ClientLoanController {
         return ResponseEntity.ok(userClientLoans);
     }
 
-    //build update clientLoan REST API
-    @PutMapping("{id}")
-    public ResponseEntity<ClientLoan> updateClient(@PathVariable("id") String id, @RequestBody ClientLoan clientLoan) {
-        return new ResponseEntity<ClientLoan>(clientLoanApplication.updateClientLoan(clientLoan, id), HttpStatus.OK);
-    }
+//    //build update clientLoan REST API
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<ClientLoan> updateClient(@PathVariable("id") String id, @RequestBody ClientLoan clientLoan) {
+//        return new ResponseEntity<ClientLoan>(clientLoanApplication.updateClientLoan(clientLoan, id), HttpStatus.OK);
+//    }
 
     //build delete client loan application REST api
     @DeleteMapping("{id}")
@@ -63,6 +63,24 @@ public class ClientLoanController {
         return new ResponseEntity<String>("Application successfully deleted.", HttpStatus.OK);
 
     }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updateLoanStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanStatus.setLoanStatus(clientLoan.getLoanStatus());
+        updatedLoanStatus.setComment(clientLoan.getComment());
+        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
+    }
+
+//    @PutMapping("/update/{id}")
+//    public String updateUser(@PathVariable long id, @RequestBody User user){
+//        User updatedUser = userRepo.findById(id).get();
+//        updatedUser.setFirstName(user.getFirstName());
+//        userRepo.save(updatedUser);
+//        return "Updated...";
+//    }
+
 }
 
 
