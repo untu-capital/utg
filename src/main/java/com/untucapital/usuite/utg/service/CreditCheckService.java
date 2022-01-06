@@ -39,7 +39,7 @@ public class CreditCheckService {
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
         log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
 
-        clientLoan.setLoanStatus("PENDING");
+       // clientLoan.setLoanStatus("PENDING");
 
         final Response creditResponse = fcbIntegrationService.performSearch(clientLoan)
                 .orElseThrow(() -> new UntuSuiteException("Credit check failed for the Loan Application"));
@@ -53,11 +53,11 @@ public class CreditCheckService {
         clientLoan.setFcbStatus(creditStatus);
         clientLoan.setFcbScore(creditScore);
 
-        if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
-            clientLoan.setLoanStatus("ACCEPTED");
-        } else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
-            clientLoan.setLoanStatus("REJECTED");
-        }
+//        if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
+//            clientLoan.setLoanStatus("ACCEPTED");
+//        } else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
+//            clientLoan.setLoanStatus("REJECTED");
+//        }
         return clientLoan;
     }
 
