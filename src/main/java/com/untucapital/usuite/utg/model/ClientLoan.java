@@ -67,6 +67,8 @@ public class ClientLoan extends AbstractEntity {
 
     private String fcbStatus;
 
+    private String comment;
+
     @OneToOne
     @NotNull
     @JoinColumn(name = "fcb_response_id", nullable = false)
@@ -238,5 +240,13 @@ public class ClientLoan extends AbstractEntity {
 
     public void setFcbResponse(Response fcbResponse) {
         this.fcbResponse = fcbResponse;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
