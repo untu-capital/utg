@@ -94,29 +94,8 @@ public class AuthController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     @Autowired
     private JavaMailSender mailSender;
-
-//    @GetMapping("/forgot_password")
-//    public String showForgotPasswordForm() {
-//        return "forgot_password_form";
-//    }
 
     @PostMapping("/forgot_password")
     public ResponseEntity<UsuiteApiResp> processForgotPassword(HttpServletRequest request, Model model) {
