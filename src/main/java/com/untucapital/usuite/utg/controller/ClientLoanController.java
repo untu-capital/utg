@@ -50,13 +50,13 @@ public class ClientLoanController {
     }
 
     //build update clientLoan REST API
-    @PutMapping("{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ClientLoan> updateClient(@PathVariable("id") String id, @RequestBody ClientLoan clientLoan) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.updateClientLoan(clientLoan, id), HttpStatus.OK);
     }
 
     //build delete client loan application REST api
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteClientLoan(@PathVariable("id") String id) {
         //delete client loan from DB
         clientLoanApplication.deleteClientLoan(id);

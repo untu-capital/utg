@@ -53,11 +53,11 @@ public class CreditCheckService {
         clientLoan.setFcbStatus(creditStatus);
         clientLoan.setFcbScore(creditScore);
 
-        if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
-            clientLoan.setLoanStatus("ACCEPTED");
-        } else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
-            clientLoan.setLoanStatus("REJECTED");
-        }
+        //if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
+          //  clientLoan.setLoanStatus("ACCEPTED");
+        //} else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
+            //clientLoan.setLoanStatus("REJECTED");
+       // }
         return clientLoan;
     }
 

@@ -102,6 +102,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/industries/**")
                 .permitAll()
+                .antMatchers("/uploadFile/**")
+                .permitAll()
+                .antMatchers("/uploadMultipleFiles/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

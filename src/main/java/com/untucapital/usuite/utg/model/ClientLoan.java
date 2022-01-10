@@ -49,6 +49,7 @@ public class ClientLoan extends AbstractEntity {
     private String streetName;
 
     private String suburb;
+
     private String photoUpload;
 
     @Column(nullable = false)
@@ -111,7 +112,7 @@ public class ClientLoan extends AbstractEntity {
     public String getPhotoUpload() {
         return photoUpload;
     }
-
+    public void setPhotoUpload(String photoUpload) { this.photoUpload = photoUpload;}
     public void setMaritalStatus(String maritalStatus) {
         this.maritalStatus = maritalStatus;
     }
@@ -183,12 +184,10 @@ public class ClientLoan extends AbstractEntity {
     public String getSuburb() {
         return suburb;
     }
-    public void setPhotoUpload(String photoUpload) {
-        this.suburb = photoUpload;
-    }
     public void setSuburb(String suburb) {
         this.suburb = suburb;
     }
+
 
     public String getCity() {
         return city;
@@ -200,10 +199,6 @@ public class ClientLoan extends AbstractEntity {
 
     public String getTenure() {
         return tenure;
-    }
-
-    public void setTenure(String tenure) {
-        this.tenure = tenure;
     }
 
     public String getUserId() {
