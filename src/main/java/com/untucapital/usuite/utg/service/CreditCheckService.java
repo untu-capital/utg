@@ -39,7 +39,7 @@ public class CreditCheckService {
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
         log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
 
-        clientLoan.setLoanStatus("PENDING");
+        //clientLoan.setLoanStatus("PENDING");
 
         final Response creditResponse = fcbIntegrationService.performSearch(clientLoan)
                 .orElseThrow(() -> new UntuSuiteException("Credit check failed for the Loan Application"));
