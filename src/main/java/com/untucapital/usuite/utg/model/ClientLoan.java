@@ -71,6 +71,10 @@ public class ClientLoan extends AbstractEntity {
 
     private String comment;
 
+    private String assignTo;
+
+    private String additionalRemarks;
+
     @OneToOne
     @NotNull
     @JoinColumn(name = "fcb_response_id", nullable = false)
@@ -249,5 +253,25 @@ public class ClientLoan extends AbstractEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public void setTenure(String tenure) {
+        this.tenure = tenure;
+    }
+
+    public String getAssignTo() {
+        return assignTo;
+    }
+
+    public void setAssignTo(String assignTo) {
+        this.assignTo = assignTo;
+    }
+
+    public String getAdditionalRemarks() {
+        return additionalRemarks;
+    }
+
+    public void setAdditionalRemarks(String additionalRemarks) {
+        this.additionalRemarks = additionalRemarks;
     }
 }

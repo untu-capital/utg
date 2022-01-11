@@ -12,6 +12,8 @@ public interface ClientLoanApplication {
 
     ClientLoan getClientLoanApplicationById(String id);
 
+//    List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus);
+
     List<ClientLoan> getClientLoanApplicationsByUserId(String userId);
 
     ClientLoan updateClientLoan(ClientLoan clientLoan, String id);

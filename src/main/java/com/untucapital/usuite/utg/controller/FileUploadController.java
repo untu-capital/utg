@@ -29,6 +29,7 @@ public class FileUploadController {
                 .path(fileName.getFileName())
                 .path(fileName.getFileDescription())
                 .path(fileName.getUserId())
+//                .path(fileName.getLoanId())
                 .toUriString();
 
         return new Response(fileName.getFileName(), fileDownloadUri, file.getContentType(), fileName.getFileDescription(), fileName.getUserId() ,file.getSize());

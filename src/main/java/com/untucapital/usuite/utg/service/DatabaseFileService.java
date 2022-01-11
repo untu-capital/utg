@@ -17,18 +17,12 @@ public class DatabaseFileService {
     @Autowired
     private DatabaseFileRepository dbFileRepository;
 
-//    public void desc(String description){
-//        DatabaseFile d = new DatabaseFile();
-//        d.setFileDescription(description);
-//
-//        dbFileRepository.save(d);
-//    }
-
     public DatabaseFile storeFile(MultipartFile file, String description, String userId) {
 
         DatabaseFile d = new DatabaseFile();
         d.setFileDescription(description);
         d.setUserId(userId);
+//        d.setLoanId(loanId);
         //dbFileRepository.save(d);
 
         // Normalize file name
