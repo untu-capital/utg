@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.DatabaseFile;
 
 import java.util.List;
 
@@ -11,8 +12,6 @@ public interface ClientLoanApplication {
     List<ClientLoan> getAllClientLoanApplication();
 
     ClientLoan getClientLoanApplicationById(String id);
-
-//    List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus);
 
     List<ClientLoan> getClientLoanApplicationsByUserId(String userId);
 
