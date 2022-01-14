@@ -104,4 +104,12 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     }
 
+    @Override
+    public List<ClientLoan> getClientLoanApplicationStatusByloanStatus(String loanStatusID) {
+        userService.find(loanStatusID).orElseThrow(() ->
+                new ResourceNotFoundException("User", "Id", loanStatusID));
+
+        return clientRepository.findByUserId(loanStatusID);
+    }
+
 }

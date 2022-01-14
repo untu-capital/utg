@@ -41,10 +41,14 @@ public class ClientLoanController {
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
+    @GetMapping("/loanStatus/{loanStatus}")
+    public ResponseEntity<String> getClientLoanApplicationStatusByloanStatus(@PathVariable("loanStatus") String loanStatusID) {
+        List <ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationStatusByloanStatus(loanStatusID);
+        return ResponseEntity.ok(loanStatusID);
+    }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
-
         List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
         return ResponseEntity.ok(userClientLoans);
     }

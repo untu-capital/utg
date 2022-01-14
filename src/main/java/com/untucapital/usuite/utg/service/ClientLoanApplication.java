@@ -17,4 +17,6 @@ public interface ClientLoanApplication {
     ClientLoan updateClientLoan(ClientLoan clientLoan, String id);
 
     void deleteClientLoan(String id);
+
+    List<ClientLoan> getClientLoanApplicationStatusByloanStatus(String loanStatusID);
 }
