@@ -24,6 +24,10 @@ public class DatabaseFile extends AbstractEntity{
 	@JoinColumn(nullable = false)
 	private String userId;
 
+//	@NotNull
+//	@JoinColumn(nullable = false)
+//	private String loanId;
+
 	@Lob
 	private byte[] data;
 
@@ -36,6 +40,7 @@ public class DatabaseFile extends AbstractEntity{
 		this.fileType = fileType;
 		this.fileDescription = fileDescription;
 		this.userId = userId;
+		//this.loanId = loanId;
 		this.data = data;
 	}
 
@@ -85,4 +90,12 @@ public class DatabaseFile extends AbstractEntity{
 	public void setFileDescription(String fileDescription) {
 		this.fileDescription = fileDescription;
 	}
+
+//	public String getLoanId() {
+//		return loanId;
+//	}
+//
+//	public void setLoanId(String loanId) {
+//		this.loanId = loanId;
+//	}
 }

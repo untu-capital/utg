@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.DatabaseFile;
 
 import java.util.List;
 
