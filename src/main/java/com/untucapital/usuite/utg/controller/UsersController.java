@@ -1,9 +1,14 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
 import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.Role;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.enums.RoleType;
+import com.untucapital.usuite.utg.repository.ClientRepository;
+import com.untucapital.usuite.utg.repository.RoleRepository;
+import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
-import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +30,15 @@ import java.util.List;
 @RequestMapping(path = "users")
 public class UsersController extends AbstractController<User> {
 
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
     private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
     private final UserService userService;
-
 
     @Autowired
     public UsersController(UserService userService) {
@@ -40,10 +50,16 @@ public class UsersController extends AbstractController<User> {
         return userService;
     }
 
+//    @Override
+//    protected UserService<> getUsersByRole() {
+//        return userService;
+//    }
 
-    @GetMapping("/role")
-    public ResponseEntity<String> getUserByRole(@PathVariable("roles") String roles) {
-        List<User> userRoles = userService.getUserByRole(roles);
-        return ResponseEntity.ok(roles);
+    // Get list of all users with role of Loan Officer
+    @GetMapping("/role/{roleName}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable("roleName") String roleName) {
+        return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
+
     }
+
 }

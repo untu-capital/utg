@@ -23,25 +23,25 @@ public class FileUploadController {
     private DatabaseFileService fileStorageService;
 
     @PostMapping("/uploadFile")
-    public Response uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description, @RequestParam("userId") String userId) {
-    	DatabaseFile fileName = fileStorageService.storeFile(file, description, userId);
+    public Response uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description, @RequestParam("userId") String userId, @RequestParam("loanId") String loanId) {
+    	DatabaseFile fileName = fileStorageService.storeFile(file, description, userId, loanId);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
                 .path(fileName.getFileName())
                 .path(fileName.getFileDescription())
                 .path(fileName.getUserId())
-//                .path(fileName.getLoanId())
+                .path(fileName.getLoanId())
                 .toUriString();
 
-        return new Response(fileName.getFileName(), fileDownloadUri, file.getContentType(), fileName.getFileDescription(), fileName.getUserId() ,file.getSize());
+        return new Response(fileName.getFileName(), fileDownloadUri, file.getContentType(), fileName.getFileDescription(), fileName.getUserId(), fileName.getLoanId() ,file.getSize());
     }
 
     @PostMapping("/uploadMultipleFiles")
-    public List<Response> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("description") String description, @RequestParam("userId") String userId) {
+    public List<Response> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files, @RequestParam("description") String description, @RequestParam("userId") String userId, @RequestParam("loanId") String loanId) {
         return Arrays.asList(files)
                 .stream()
-                .map(file -> uploadFile(file, description, userId))
+                .map(file -> uploadFile(file, description, userId, loanId))
                 .collect(Collectors.toList());
     }
 }

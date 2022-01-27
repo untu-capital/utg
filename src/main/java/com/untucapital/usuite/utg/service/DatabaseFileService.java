@@ -20,12 +20,12 @@ public class DatabaseFileService {
     @Autowired
     private DatabaseFileRepository dbFileRepository;
 
-    public DatabaseFile storeFile(MultipartFile file, String description, String userId) {
+    public DatabaseFile storeFile(MultipartFile file, String fileDescription, String userId, String loanId) {
 
         DatabaseFile d = new DatabaseFile();
-        d.setFileDescription(description);
+        d.setFileDescription(fileDescription);
         d.setUserId(userId);
-//        d.setLoanId(loanId);
+        d.setLoanId(loanId);
         //dbFileRepository.save(d);
 
         // Normalize file name
@@ -37,7 +37,7 @@ public class DatabaseFileService {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
-            DatabaseFile dbFile = new DatabaseFile(fileName,file.getContentType(),description, userId,file.getBytes());
+            DatabaseFile dbFile = new DatabaseFile(fileName,file.getContentType(),fileDescription, userId, loanId,file.getBytes());
 
             return dbFileRepository.save(dbFile);
         } catch (IOException ex) {

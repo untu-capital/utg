@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import org.slf4j.Logger;
@@ -63,6 +64,11 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatus(loanStatus), HttpStatus.OK);
     }
 
+
+//    @GetMapping("/assignLoanOfficer")
+//    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByAssignedOfficer(@RequestParam String loanStatus, @RequestParam String userId) {
+//        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByAssignedOfficer(loanStatus, userId), HttpStatus.OK);
+//    }
 
     //build delete client loan application REST api
     @DeleteMapping("{id}")

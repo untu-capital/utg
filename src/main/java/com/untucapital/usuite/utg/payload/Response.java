@@ -7,14 +7,16 @@ public class Response {
     private String fileType;
     private String fileDescription;
     private String userId;
+    private String loanId;
     private long size;
 
-    public Response(String fileName, String fileDownloadUri, String fileType, String fileDescription, String userId, long size) {
+    public Response(String fileName, String fileDownloadUri, String fileType, String fileDescription, String userId, String loanId, long size) {
         this.fileName = fileName;
         this.fileDownloadUri = fileDownloadUri;
         this.fileType = fileType;
         this.fileDescription = fileDescription;
         this.userId = userId;
+        this.loanId = loanId;
         this.size = size;
     }
 
@@ -64,5 +66,13 @@ public class Response {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getLoanId() {
+        return loanId;
+    }
+
+    public void setLoanId(String loanId) {
+        this.loanId = loanId;
     }
 }

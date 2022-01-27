@@ -36,6 +36,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.untucapital.usuite.utg.model.enums.RoleType.ROLE_LO;
 
 /**
  * @author Chirinda Nyasha Dell 22/11/2021
@@ -76,11 +79,6 @@ public class UserService extends AbstractService<User> {
         return userRepository;
     }
 
-    @Override
-    public List<User> getUserByRole(String name) {
-        return getUserByRole(name);
-    }
-
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
         log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
 
@@ -100,6 +98,8 @@ public class UserService extends AbstractService<User> {
         }
         return loginRespOptional;
     }
+
+
 
     private void validateUserStatus(String username) throws SecurityException {
 
@@ -320,5 +320,19 @@ public class UserService extends AbstractService<User> {
         user.setResetPasswordToken(null);
         userRepository.save(user);
     }
-    
+
+//    public User findUserById(){
+//        List<User> users = userRepository.findAll();
+//        users.stream().filter(user -> user.getRoles().contains(ROLE_LO));
+//    }
+
+    public List<User> getUsersByRole(String roleName) {
+        List<User> users = userRepository.findAll();
+        List<User> usersByRole = users.stream()
+                .filter(user ->
+                        user.getRoles().stream()
+                                .anyMatch(userRole -> roleName.equals(userRole.getDescription())))
+                .collect(Collectors.toList());
+        return usersByRole;
+    }
 }
