@@ -34,6 +34,7 @@ import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -73,6 +74,11 @@ public class UserService extends AbstractService<User> {
     @Override
     protected JpaRepository<User, String> getRepository() {
         return userRepository;
+    }
+
+    @Override
+    public List<User> getUserByRole(String name) {
+        return getUserByRole(name);
     }
 
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
@@ -314,4 +320,5 @@ public class UserService extends AbstractService<User> {
         user.setResetPasswordToken(null);
         userRepository.save(user);
     }
+    
 }

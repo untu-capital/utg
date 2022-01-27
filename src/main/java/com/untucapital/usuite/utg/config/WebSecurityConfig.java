@@ -110,6 +110,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/downloadFiles/**")
                 .permitAll()
+                .antMatchers("/business/**")
+                .permitAll()
+                .antMatchers("/cities/**")
+                .permitAll()
+                .antMatchers("/role/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

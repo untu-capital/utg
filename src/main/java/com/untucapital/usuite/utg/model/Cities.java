@@ -5,10 +5,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "industries", uniqueConstraints = {
+@Table(name = "cities", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"name", "code"})
 })
-public class Industry extends AbstractEntity {
+public class Cities extends AbstractEntity {
 
     private String name;
 

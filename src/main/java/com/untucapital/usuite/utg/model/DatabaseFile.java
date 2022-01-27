@@ -25,7 +25,7 @@ public class DatabaseFile extends AbstractEntity{
 	private String userId;
 
 //	@NotNull
-//	@JoinColumn(nullable = false)
+//	@JoinColumn(nullable = true)
 //	private String loanId;
 
 	@Lob

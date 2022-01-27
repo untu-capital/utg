@@ -12,7 +12,8 @@ import java.util.List;
 public interface DatabaseFileRepository extends JpaRepository<DatabaseFile, String> {
 
     List<DatabaseFile> findByUserId(String userId);
+    DatabaseFile getFileById(String fileID);
 
-//    DatabaseFile findByFileId(String fileId);
+
 
 }

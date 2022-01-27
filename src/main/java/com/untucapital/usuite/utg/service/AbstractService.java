@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
+import com.untucapital.usuite.utg.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -46,4 +47,6 @@ public abstract class AbstractService<T> {
 
         return getRepository().save(t);
     }
+
+    public abstract List<User> getUserByRole(String name);
 }

@@ -50,4 +50,7 @@ public class DatabaseFileService {
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + fileId));
     }
 
+    public DatabaseFile getFileById(String fileID) {
+        return dbFileRepository.getFileById(fileID);
+    }
 }

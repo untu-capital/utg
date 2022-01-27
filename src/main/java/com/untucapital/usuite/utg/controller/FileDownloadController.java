@@ -28,6 +28,12 @@ public class FileDownloadController {
     @Autowired
     DatabaseFileRepository databaseFileRepository;
 
+    private DatabaseFileService databaseFileService;
+
+    public FileDownloadController(DatabaseFileService databaseFileService) {
+        this.databaseFileService = databaseFileService;
+    }
+
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
@@ -44,7 +50,12 @@ public class FileDownloadController {
         return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserId(userId), HttpStatus.OK);
     }
 
-//    @GetMapping("/downloadFiless")
+    @GetMapping("/filess")
+    public ResponseEntity<DatabaseFile> DatabaseFile(@PathVariable("id") String fileID) {
+        return new ResponseEntity<DatabaseFile>(databaseFileRepository.getFileById(fileID), HttpStatus.OK);
+    }
+
+//    @GetMapping("/downloadFiles")
 //    public ResponseEntity<DatabaseFileService> getUploadFilesByFileId(@RequestParam String fileId) {
 //        return new ResponseEntity<DatabaseFileService>(fileStorageService.getFile(fileId),HttpStatus.OK);
 //    }

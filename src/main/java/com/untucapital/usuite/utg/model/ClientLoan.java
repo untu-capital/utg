@@ -46,6 +46,13 @@ public class ClientLoan extends AbstractEntity {
     @Column(nullable = false)
     private String streetNo;
 
+    @Column(nullable = false)
+    private String businessName;
+
+    @Column(nullable = false)
+    private String businessStartDate;
+
+
     private String streetName;
 
     private String suburb;
@@ -273,5 +280,21 @@ public class ClientLoan extends AbstractEntity {
 
     public void setAdditionalRemarks(String additionalRemarks) {
         this.additionalRemarks = additionalRemarks;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+     public String getBusinessStartDate() {
+        return businessStartDate;
+    }
+
+    public void setBusinessStartDate(String businessStartDate) {
+        this.businessStartDate = businessStartDate;
     }
 }
