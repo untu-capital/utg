@@ -1,13 +1,26 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
+import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.Role;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.enums.RoleType;
+import com.untucapital.usuite.utg.repository.ClientRepository;
+import com.untucapital.usuite.utg.repository.RoleRepository;
+import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author Chirinda Nyasha Dell 22/11/2021
@@ -16,6 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(path = "users")
 public class UsersController extends AbstractController<User> {
+
+    @Autowired
+    RoleRepository roleRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     private static final Logger log = LoggerFactory.getLogger(UsersController.class);
 
@@ -29,6 +48,18 @@ public class UsersController extends AbstractController<User> {
     @Override
     protected AbstractService<User> getService() {
         return userService;
+    }
+
+//    @Override
+//    protected UserService<> getUsersByRole() {
+//        return userService;
+//    }
+
+    // Get list of all users with role of Loan Officer
+    @GetMapping("/role/{roleName}")
+    public ResponseEntity<List<User>> getUsersByRole(@PathVariable("roleName") String roleName) {
+        return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
+
     }
 
 }
