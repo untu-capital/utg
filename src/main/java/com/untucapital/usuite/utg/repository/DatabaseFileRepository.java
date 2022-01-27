@@ -13,6 +13,8 @@ public interface DatabaseFileRepository extends JpaRepository<DatabaseFile, Stri
 
     List<DatabaseFile> findByUserId(String userId);
 
-//    DatabaseFile findByFileId(String fileId);
+    List<DatabaseFile> findByUserIdAndFileDescription (String fileDescription, String userId);
+
+//    DatabaseFile findByFileId(String id);
 
 }
