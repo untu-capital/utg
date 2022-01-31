@@ -67,19 +67,6 @@ public class UsersController extends AbstractController<User> {
         return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
-
-    //build get clientLoan by ID REST API
-    @GetMapping("/test/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
-        return new ResponseEntity<User>(userRepository.getUserById(userId), HttpStatus.OK);
-    }
-
-    @PutMapping("/updateUserRole/{id}")
-    public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user){
-        User updatedUserRole = userRepository.getUserById(id);
-        updatedUserRole.setRoles(user.getRoles());
-        userRepository.save(updatedUserRole);
-        return new ResponseEntity<String>("User role successfully updated.", HttpStatus.OK);
-    }
+    
 
 }
