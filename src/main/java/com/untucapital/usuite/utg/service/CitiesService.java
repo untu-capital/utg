@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.Cities;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.CitiesRepository;
@@ -23,7 +24,9 @@ public class CitiesService extends AbstractService<Cities> {
     public CitiesService(CitiesRepository citiesRepository) {
         this.citiesRepository = citiesRepository;
     }
-
+        public void saveCities(Cities cities) {
+        citiesRepository.save(cities);
+    }
     @Override
     protected JpaRepository<Cities, String> getRepository() {
         return citiesRepository;
