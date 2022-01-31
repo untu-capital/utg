@@ -79,6 +79,11 @@ public class UserService extends AbstractService<User> {
         return userRepository;
     }
 
+    @Override
+    public List<User> getUserByRole(String name) {
+        return null;
+    }
+
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
         log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
 
@@ -334,5 +339,8 @@ public class UserService extends AbstractService<User> {
                                 .anyMatch(userRole -> roleName.equals(userRole.getDescription())))
                 .collect(Collectors.toList());
         return usersByRole;
+    }
+
+    public void saveUser(UserPrincipal updatedUserRole) {
     }
 }

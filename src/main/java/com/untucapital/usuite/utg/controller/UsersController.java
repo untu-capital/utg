@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -61,5 +58,18 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
 
     }
+    @GetMapping ("getUser/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
+
+   return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
+    }
+    @PutMapping("/updateUserRole/{id}")
+        public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user){
+        User updatedUserRole = userRepository.getUserById(id);
+        updatedUserRole.setRoles(user.getRoles());
+        userRepository.save(updatedUserRole);
+        return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+    }
+
 
 }
