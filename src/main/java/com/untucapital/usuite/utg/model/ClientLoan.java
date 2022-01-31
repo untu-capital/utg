@@ -23,6 +23,9 @@ public class ClientLoan extends AbstractEntity {
     private String idNumber;
 
     @Column(nullable = false)
+    private String branchName;
+
+    @Column(nullable = false)
     private String maritalStatus;
 
     @Column(nullable = false)
@@ -292,6 +295,14 @@ public class ClientLoan extends AbstractEntity {
 
      public String getBusinessStartDate() {
         return businessStartDate;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public void setBusinessStartDate(String businessStartDate) {
