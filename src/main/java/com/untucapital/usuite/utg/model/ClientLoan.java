@@ -65,6 +65,9 @@ public class ClientLoan extends AbstractEntity {
     @Column(nullable = false)
     private String loanStatus;
 
+    @Column(nullable = false)
+    private String loanStatusAssigner;
+
     private Integer fcbScore;
 
     private String fcbStatus;
@@ -72,6 +75,8 @@ public class ClientLoan extends AbstractEntity {
     private String comment;
 
     private String assignTo;
+
+    private String assignedBy;
 
     private String additionalRemarks;
 
@@ -257,6 +262,22 @@ public class ClientLoan extends AbstractEntity {
 
     public void setTenure(String tenure) {
         this.tenure = tenure;
+    }
+
+    public String getLoanStatusAssigner() {
+        return loanStatusAssigner;
+    }
+
+    public void setLoanStatusAssigner(String loanStatusAssigner) {
+        this.loanStatusAssigner = loanStatusAssigner;
+    }
+
+    public String getAssignedBy() {
+        return assignedBy;
+    }
+
+    public void setAssignedBy(String assignedBy) {
+        this.assignedBy = assignedBy;
     }
 
     public String getAssignTo() {
