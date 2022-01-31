@@ -9,6 +9,7 @@ import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
+import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +48,6 @@ public class UsersController extends AbstractController<User> {
         return userService;
     }
 
-//    @Override
-//    protected UserService<> getUsersByRole() {
-//        return userService;
-//    }
-
     // Get list of all users with role of Loan Officer
     @GetMapping("/role/{roleName}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable("roleName") String roleName) {
@@ -71,5 +67,19 @@ public class UsersController extends AbstractController<User> {
         return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
+
+    //build get clientLoan by ID REST API
+    @GetMapping("/test/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
+        return new ResponseEntity<User>(userRepository.getUserById(userId), HttpStatus.OK);
+    }
+
+    @PutMapping("/updateUserRole/{id}")
+    public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user){
+        User updatedUserRole = userRepository.getUserById(id);
+        updatedUserRole.setRoles(user.getRoles());
+        userRepository.save(updatedUserRole);
+        return new ResponseEntity<String>("User role successfully updated.", HttpStatus.OK);
+    }
 
 }

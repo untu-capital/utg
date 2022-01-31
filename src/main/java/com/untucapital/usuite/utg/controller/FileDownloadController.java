@@ -49,15 +49,15 @@ public class FileDownloadController {
                 .body(new ByteArrayResource(databaseFile.getData()));
     }
 
-    @GetMapping("/downloadFiles")
-    public ResponseEntity<List<DatabaseFile>> getUploadFilesByUserId(@RequestParam String userId) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserId(userId), HttpStatus.OK);
+    @GetMapping("/downloadFiles/{userId}/{fileDescription}")
+    public ResponseEntity<List<DatabaseFile>> getUploadFilesByUserId(@PathVariable("userId") String userId, @PathVariable("fileDescription") String fileDescription) {
+        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndFileDescriptionNotContains(userId, fileDescription), HttpStatus.OK);
     }
 
     // Excel appraisal.. select using userid and description = appraisal
-    @GetMapping("/appraisal")
-    public ResponseEntity<List<DatabaseFile>> getUploadFilesByAppraisal(@RequestParam String userId, @RequestParam String fileDescription) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndFileDescription(userId, fileDescription), HttpStatus.OK);
+    @GetMapping("/appraisal/{userId}/{loanId}/{fileDescription}")
+    public ResponseEntity<List<DatabaseFile>> getUploadFilesByAppraisal(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("fileDescription") String fileDescription) {
+        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndLoanIdAndFileDescription(userId, loanId, fileDescription), HttpStatus.OK);
     }
 
 }

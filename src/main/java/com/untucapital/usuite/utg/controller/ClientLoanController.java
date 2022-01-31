@@ -64,19 +64,12 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatus(loanStatus), HttpStatus.OK);
     }
 
-
-//    @GetMapping("/assignLoanOfficer")
-//    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByAssignedOfficer(@RequestParam String loanStatus, @RequestParam String userId) {
-//        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByAssignedOfficer(loanStatus, userId), HttpStatus.OK);
-//    }
-
     //build delete client loan application REST api
     @DeleteMapping("{id}")
     public ResponseEntity<String> deleteClientLoan(@PathVariable("id") String id) {
         //delete client loan from DB
         clientLoanApplication.deleteClientLoan(id);
         return new ResponseEntity<String>("Application successfully deleted.", HttpStatus.OK);
-
     }
 
     @PutMapping("/update/{id}")
@@ -84,6 +77,7 @@ public class ClientLoanController {
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setLoanStatus(clientLoan.getLoanStatus());
         updatedLoanStatus.setComment(clientLoan.getComment());
+        updatedLoanStatus.setLoanStatusAssigner(clientLoan.getLoanStatusAssigner());
         clientLoanApplication.saveClientLoan(updatedLoanStatus);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
