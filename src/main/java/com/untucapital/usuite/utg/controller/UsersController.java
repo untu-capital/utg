@@ -67,6 +67,6 @@ public class UsersController extends AbstractController<User> {
         return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
-    
+
 
 }
