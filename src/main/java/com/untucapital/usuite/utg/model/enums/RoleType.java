@@ -10,4 +10,5 @@ public enum RoleType {
     ROLE_LO,
     ROLE_BOCO,
     ROLE_BM,
+    ROLE_ADMIN,
 }
