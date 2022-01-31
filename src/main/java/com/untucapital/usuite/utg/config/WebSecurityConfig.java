@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -96,7 +97,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/users/**")
+                .antMatchers("/users/**")
                 .permitAll()
                 .antMatchers("/credit_application/**")
                 .permitAll()
@@ -114,7 +115,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/cities/**")
                 .permitAll()
+                .antMatchers("/branches/**")
+                .permitAll()
                 .antMatchers("/role/**")
+                .permitAll()
+                .antMatchers("/roles/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated();
