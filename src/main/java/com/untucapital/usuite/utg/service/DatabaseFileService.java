@@ -2,12 +2,14 @@ package com.untucapital.usuite.utg.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.untucapital.usuite.utg.exception.FileNotFoundException;
 import com.untucapital.usuite.utg.exception.FileStorageException;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.DatabaseFile;
+import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.DatabaseFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,6 @@ public class DatabaseFileService {
         return dbFileRepository.findById(fileId)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + fileId));
     }
+
 
 }

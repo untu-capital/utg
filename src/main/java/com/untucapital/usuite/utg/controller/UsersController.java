@@ -9,16 +9,14 @@ import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
+import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -50,16 +48,25 @@ public class UsersController extends AbstractController<User> {
         return userService;
     }
 
-//    @Override
-//    protected UserService<> getUsersByRole() {
-//        return userService;
-//    }
-
     // Get list of all users with role of Loan Officer
     @GetMapping("/role/{roleName}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable("roleName") String roleName) {
         return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
 
+    }
+
+    //build get clientLoan by ID REST API
+    @GetMapping("/test/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
+        return new ResponseEntity<User>(userRepository.getUserById(userId), HttpStatus.OK);
+    }
+
+    @PutMapping("/updateUserRole/{id}")
+    public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user){
+        User updatedUserRole = userRepository.getUserById(id);
+        updatedUserRole.setRoles(user.getRoles());
+        userRepository.save(updatedUserRole);
+        return new ResponseEntity<String>("User role successfully updated.", HttpStatus.OK);
     }
 
 }

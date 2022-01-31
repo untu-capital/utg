@@ -96,7 +96,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/users/**")
+                .antMatchers( "/users/**")
                 .permitAll()
                 .antMatchers("/credit_application/**")
                 .permitAll()
@@ -110,6 +110,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/downloadFiles/**")
                 .permitAll()
+//                .antMatchers("/updateUserRole/**")
+//                .permitAll()
                 .anyRequest()
                 .authenticated();
 

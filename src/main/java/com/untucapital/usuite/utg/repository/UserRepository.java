@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.repository;
 
-import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -26,7 +25,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByContactDetail_EmailAddress(String email);
 
-    //ContactDetail findByEmail(String email);
+    Optional<User> findById(String userId);
 
     User findByResetPasswordToken(String token);
+
+    User getUserById(String userId);
 }
