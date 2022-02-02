@@ -75,7 +75,7 @@ public class ClientLoan extends AbstractEntity {
     @Column(nullable = false)
     private String loanStatus;
 
-    @Column(nullable = false)
+    @Column
     private String loanStatusAssigner;
 
     private Integer fcbScore;
@@ -89,6 +89,8 @@ public class ClientLoan extends AbstractEntity {
     private String assignedBy;
 
     private String additionalRemarks;
+
+    private String loanFileId;
 
     @OneToOne
     @NotNull
@@ -328,5 +330,13 @@ public class ClientLoan extends AbstractEntity {
 
     public void setBusinessStartDate(String businessStartDate) {
         this.businessStartDate = businessStartDate;
+    }
+
+    public String getLoanFileId() {
+        return loanFileId;
+    }
+
+    public void setLoanFileId(String loanFileId) {
+        this.loanFileId = loanFileId;
     }
 }

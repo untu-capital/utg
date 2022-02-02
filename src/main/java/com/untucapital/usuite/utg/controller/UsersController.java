@@ -56,8 +56,7 @@ public class UsersController extends AbstractController<User> {
     }
     @GetMapping ("getUser/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
-
-   return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
+        return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
     }
     @PutMapping("/updateUserRole/{id}")
         public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user){
