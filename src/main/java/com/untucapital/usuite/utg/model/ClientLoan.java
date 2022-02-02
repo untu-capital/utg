@@ -332,11 +332,11 @@ public class ClientLoan extends AbstractEntity {
         this.businessStartDate = businessStartDate;
     }
 
-    public String getLoanAndFileId() {
+    public String getLoanFileId() {
         return loanFileId;
     }
 
-    public void setLoanAndFileId(String loanAndFileId) {
-        this.loanFileId = loanAndFileId;
+    public void setLoanFileId(String loanFileId) {
+        this.loanFileId = loanFileId;
     }
 }

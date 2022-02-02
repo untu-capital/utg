@@ -59,6 +59,7 @@ public class ClientLoanController {
         return ResponseEntity.ok(userClientLoans);
     }
 
+    // show all all loans with checked status
     @GetMapping("/loanStatus")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@RequestParam String loanStatus) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatus(loanStatus), HttpStatus.OK);
@@ -86,11 +87,22 @@ public class ClientLoanController {
     public ResponseEntity<String> updateAssignTo(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updatedAssignTo = clientLoanApplication.getClientLoanApplicationById(id);
         updatedAssignTo.setAssignTo(clientLoan.getAssignTo());
+        updatedAssignTo.setAssignedBy(clientLoan.getAssignedBy());
         updatedAssignTo.setAdditionalRemarks(clientLoan.getAdditionalRemarks());
         clientLoanApplication.saveClientLoan(updatedAssignTo);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
+    @GetMapping("/loanFileId/{loanFileId}")
+    public ResponseEntity<ClientLoan> getClientLoanId(@PathVariable("loanFileId") String loanFileId) {
+        return new ResponseEntity<ClientLoan>(clientRepository.findByLoanFileId(loanFileId), HttpStatus.OK);
+    }
+
+    // Show loans assigned to a specific loan officer
+    @GetMapping("/{loanStatus}/{assignTo}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignTo(loanStatus, assignTo), HttpStatus.OK);
+    }
 }
 
 
