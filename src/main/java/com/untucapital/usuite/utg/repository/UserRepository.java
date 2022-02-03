@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -29,6 +30,9 @@ public interface UserRepository extends JpaRepository<User, String> {
     //ContactDetail findByEmail(String email);
 
     User findByResetPasswordToken(String token);
+
     User getUserById (String userId);
+
+    List<User> findUsersByBranch(String branchName);
 
 }

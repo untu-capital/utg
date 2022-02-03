@@ -2,14 +2,18 @@ package com.untucapital.usuite.utg.service.Impl;
 
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.CreditCheckService;
 import com.untucapital.usuite.utg.service.UserService;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import com.untucapital.usuite.utg.utils.FormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,13 +25,18 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     private final ClientRepository clientRepository;
     private final CreditCheckService creditCheckService;
+    private ClientLoanApplication clientLoanApplication;
     private final UserService userService;
+    private final EmailSender emailSender;
+
 
     @Autowired
-    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService) {
+    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService, EmailSender emailSender) {
         this.clientRepository = clientRepository;
         this.creditCheckService = creditCheckService;
         this.userService = userService;
+        this.emailSender = emailSender;
+        this.clientLoanApplication = clientLoanApplication;
     }
 
     @Override
@@ -41,6 +50,20 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
         return clientRepository.save(creditCheckedLoan);
     }
+
+    @Override
+    public ClientLoan sendLoanSuccess(String recipientName, String recipientEmail) {
+        return null;
+    }
+
+//    @Override
+//    public ClientLoan sendLoanSuccess(ClientLoan clientLoan) {
+//        String emailText = emailSender.sendLoanSuccessMsg(clientLoan.getFirstName()+" "+clientLoan.getLastName(), "New loan Application", "");
+//        emailSender.send("randakelvin@gmail.com", "Untu Credit Application New loan Application", emailText);
+//
+//        log.info(String.valueOf(clientLoan));
+//        return new <ClientLoan>(clientLoanApplication.sendLoanSuccess(clientLoan), HttpStatus.OK);
+//    }
 
     @Override
     public List<ClientLoan> getAllClientLoanApplication() {
@@ -80,21 +103,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                 () -> new ResourceNotFoundException("ClientLoan", "Id", id));
         clientLoan.setId(existingClientLoan.getId());
         /*existingClientLoan.setFirstName(clientLoan.getFirstName());
-        existingClientLoan.setLastName(clientLoan.getLastName());
-        existingClientLoan.setMiddlename(clientLoan.getMiddlename());
-        existingClientLoan.setId_number(clientLoan.getId_number());
-        existingClientLoan.setMarital(clientLoan.getMarital());
-        existingClientLoan.setDob(clientLoan.getDob());
-        existingClientLoan.setGender(clientLoan.getGender());
-        existingClientLoan.setPhonenumber(clientLoan.getPhonenumber());
-        existingClientLoan.setPob(clientLoan.getPob());
-        existingClientLoan.setIndustryCode(clientLoan.getIndustryCode());
-        existingClientLoan.setStreet_no(clientLoan.getStreet_no());
-        existingClientLoan.setStreet_name(clientLoan.getStreet_name());
-        existingClientLoan.setSurbub(clientLoan.getSurbub());
-        existingClientLoan.setCity(clientLoan.getCity());
-        existingClientLoan.setLoan(clientLoan.getLoan());
-        existingClientLoan.setTenure(clientLoan.getTenure());
+
         existingClientLoan.setStatus(clientLoan.getStatus());
 */
         //save existing client to DB
@@ -116,6 +125,14 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                 new ResourceNotFoundException("User", "Id", loanStatusID));
 
         return clientRepository.findByUserId(loanStatusID);
+    }
+
+    @Override
+    public List<ClientLoan> getClientLoanApplicationByBranchName(String branchName) {
+        userService.find(branchName).orElseThrow(() ->
+                new ResourceNotFoundException("Loan Applications", "BranchName", branchName));
+
+        return clientRepository.findClientLoansByBranchName(branchName);
     }
 
 }

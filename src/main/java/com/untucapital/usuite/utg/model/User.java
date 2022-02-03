@@ -53,6 +53,8 @@ public class User extends AbstractEntity {
     @Column(nullable = false)
     private boolean verified;
 
+    private String branch;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -131,5 +133,11 @@ public class User extends AbstractEntity {
         this.roles = roles;
     }
 
+    public String getBranch() {
+        return branch;
+    }
 
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
 }
