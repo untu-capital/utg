@@ -1,14 +1,15 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
-import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,10 +24,15 @@ public class ClientLoanController {
     private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
 
     private ClientLoanApplication clientLoanApplication;
+    private final EmailSender emailSender;
 
-    public ClientLoanController(ClientLoanApplication clientLoanApplication) {
+    public ClientLoanController(ClientLoanApplication clientLoanApplication, EmailSender emailSender) {
         this.clientLoanApplication = clientLoanApplication;
+        this.emailSender = emailSender;
     }
+
+
+
 
     //build save loan REST API
     @PostMapping
@@ -60,9 +66,9 @@ public class ClientLoanController {
     }
 
     // show all all loans with checked status
-    @GetMapping("/loanStatus")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@RequestParam String loanStatus) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatus(loanStatus), HttpStatus.OK);
+    @GetMapping("/loanStatus/{loanStatus}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
     }
 
     //build delete client loan application REST api
@@ -99,9 +105,48 @@ public class ClientLoanController {
     }
 
     // Show loans assigned to a specific loan officer
-    @GetMapping("/{loanStatus}/{assignTo}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignTo(loanStatus, assignTo), HttpStatus.OK);
+    @GetMapping("/{loanStatus}/{assignTo}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignToAndBranchName(loanStatus, assignTo, branchName), HttpStatus.OK);
+    }
+
+    // email to Bocos
+    @PostMapping("newClientloanEmail/{recipientName}/{recipientEmail}")
+    public ResponseEntity<ClientLoan> sendLoanSuccess(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail) {
+        String emailText = emailSender.sendLoanSuccessMsg(recipientName, "New loan Application", "");
+        emailSender.send(recipientEmail, "New loan Application", emailText);
+//        log.info(String.valueOf(clientLoan));
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
+    }
+
+    //email to Bms
+    @PostMapping("bocoCheckLoanStatus/{recipientName}/{recipientEmail}")
+    public ResponseEntity<ClientLoan> sendBocoCheck(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail) {
+        String emailText = emailSender.sendBocoCheckMsg(recipientName, "New loan Application", "");
+        emailSender.send(recipientEmail, "Checked Loan Application", emailText);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
+    }
+
+    //email to Los
+    @PostMapping("bmAssignLoanOfficer/{recipientName}/{recipientEmail}")
+    public ResponseEntity<ClientLoan> sendBmAssignLo(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail) {
+        String emailText = emailSender.sendBmAssignLoMsg(recipientName, "New loan Application", "");
+        emailSender.send(recipientEmail, "Assigned Loan Application", emailText);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
+    }
+
+    //email to Clients
+    @PostMapping("sendClientConfirmation/{recipientName}/{recipientEmail}")
+    public ResponseEntity<ClientLoan> sendClientConfirmation(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail) {
+        String emailText = emailSender.sendClientConfirmationMsg(recipientName, "New loan Application", "");
+        emailSender.send(recipientEmail, "Assigned Loan Application", emailText);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
+    }
+
+    //get applications by BranchName
+    @GetMapping("/byBranch/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchName(@PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBranchName(branchName), HttpStatus.OK);
     }
 }
 
