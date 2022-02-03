@@ -326,11 +326,6 @@ public class UserService extends AbstractService<User> {
         userRepository.save(user);
     }
 
-//    public User findUserById(){
-//        List<User> users = userRepository.findAll();
-//        users.stream().filter(user -> user.getRoles().contains(ROLE_LO));
-//    }
-
     public List<User> getUsersByRole(String roleName) {
         List<User> users = userRepository.findAll();
         List<User> usersByRole = users.stream()
