@@ -71,7 +71,13 @@ public class UsersController extends AbstractController<User> {
         userRepository.save(updatedUserRole);
         return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
-
+    @PutMapping("/updateUserBranch/{id}")
+    public ResponseEntity<String> updateUserBranch(@PathVariable String id, @RequestBody User user){
+        User updatedUserBranch = userRepository.getUserById(id);
+        updatedUserBranch.setBranch(user.getBranch());
+        userRepository.save(updatedUserBranch);
+        return  new ResponseEntity<String>("User branch successfully updated", HttpStatus.OK);
+    }
 
 
 }
