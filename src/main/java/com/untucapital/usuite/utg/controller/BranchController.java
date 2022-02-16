@@ -44,7 +44,7 @@ public class BranchController extends AbstractController<Branches> {
 
         branchService.deleteBranch(id);
     }
-
+  
     @Override
     protected AbstractService<Branches> getService() {
         return branchService;
