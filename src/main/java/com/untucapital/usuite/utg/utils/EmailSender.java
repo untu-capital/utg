@@ -157,8 +157,8 @@ public class EmailSender {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + firstName + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering on Untu Capital Credit Application Portal. Please click on the below link to activate your account: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + confirmAccountUrl + "?username=" + username + "&code=" + token + "\">Confirm Account</a> </p></blockquote> <p>Cheers</br>Untu Credit Team</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + firstName + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering on Untu Capital Credit Application Portal. Please copy the code below and paste to your Account: <br><br>username: " + username + "<br><br>code: " + token +
+//                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + confirmAccountUrl + "?username=" + username + "&code=" + token + "\">Confirm Account</a> </p></blockquote> <p>Cheers</br>Untu Credit Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
