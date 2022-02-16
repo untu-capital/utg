@@ -56,9 +56,9 @@ public class FileDownloadController {
     }
 
     // select selfie and nationalId files
-    @GetMapping("/downloadFiles/{userId}/{loanId}/{fileDescription}")
-    public ResponseEntity<List<DatabaseFile>> getLoanFiles(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("fileDescription") String fileDescription) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndLoanIdAndFileDescriptionNotContains(userId, loanId, fileDescription), HttpStatus.OK);
+    @GetMapping("/downloadFiless/{userId}/{loanId}/{appraisal}/{assessmentFile}")
+    public ResponseEntity<List<DatabaseFile>> getLoanFiles(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("appraisal") String appraisal, @PathVariable("assessmentFile") String assessmentFile ) {
+        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndLoanIdAndFileDescriptionNotContainsAndFileDescriptionNotContains(userId, loanId, appraisal, assessmentFile), HttpStatus.OK);
     }
 
     // Excel appraisal.. select using userid and description = appraisal

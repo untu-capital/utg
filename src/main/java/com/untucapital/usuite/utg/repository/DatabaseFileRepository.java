@@ -15,7 +15,7 @@ public interface DatabaseFileRepository extends JpaRepository<DatabaseFile, Stri
 
     List<DatabaseFile> findByUserIdAndFileDescriptionNotContainsAndFileDescriptionNotContainsAndFileDescriptionNotContains(String userId, String appraisal, String selfie, String nationalId);
 
-    List<DatabaseFile> findByUserIdAndLoanIdAndFileDescriptionNotContains(String userId, String loanId, String fileDescription);
+    List<DatabaseFile> findByUserIdAndLoanIdAndFileDescriptionNotContainsAndFileDescriptionNotContains(String userId, String loanId, String appraisal, String assessmentFile);
 
     List<DatabaseFile> findByUserIdAndLoanIdAndFileDescription (String userId, String loanId, String fileDescription);
 
