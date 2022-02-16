@@ -336,6 +336,14 @@ public class UserService extends AbstractService<User> {
         return usersByRole;
     }
 
+    public String deleteUserById(String id){
+        confirmationTokenRepository.deleteByUser(id);
+        userRepository.deleteById(id);
+        return "Deleted Successfully";
+    }
+
     public void saveUser(UserPrincipal updatedUserRole) {
     }
+
+
 }

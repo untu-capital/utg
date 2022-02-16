@@ -72,6 +72,12 @@ public class UsersController extends AbstractController<User> {
         return  new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
+    @DeleteMapping("/deleteUser/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable String id){
+        String message = userService.deleteUserById(id);
+        return  new ResponseEntity<String>(message, HttpStatus.OK);
+    }
+
 
 
 }

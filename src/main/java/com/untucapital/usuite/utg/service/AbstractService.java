@@ -51,4 +51,4 @@ public abstract class AbstractService<T> {
 
     public abstract List<User> getUserByRole(String name);
 
-   }
+}
