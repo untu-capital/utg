@@ -1,26 +1,64 @@
 package com.untucapital.usuite.utg.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "branches", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"branchName", "code"})
-})
-public class Branches extends AbstractEntity {
+@Table(name = "disbursement_tickets")
+
+public class DisbursementTicket extends AbstractEntity {
+
+    @NotNull
+    @JoinColumn(nullable = false)
+    private String userId;
+
+    @JoinColumn
+    private String loanId;
 
     private String branchName;
 
-    private  String branchAddress;
+    private String bankAccountHolder;
 
-    private  String branchTellPhone;
+    private String loanAmount;
 
-    private  String branchStatus;
+    private String lessFees;
 
+    private String applicationFee;
 
-    private int code;
+    private String cashHandlingFees;
+
+    private String interestRate;
+
+    private String repaymentAmount;
+
+    private String loanOfficer;
+
+    private String tenor;
+
+    private String product;
+
+    private String collateral;
+
+    private String status;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getLoanId() {
+        return loanId;
+    }
+
+    public void setLoanId(String loanId) {
+        this.loanId = loanId;
+    }
 
     public String getBranchName() {
         return branchName;
@@ -30,35 +68,104 @@ public class Branches extends AbstractEntity {
         this.branchName = branchName;
     }
 
-    public String getBranchAddress() {
-        return branchAddress;
+    public String getBankAccountHolder() {
+        return bankAccountHolder;
     }
 
-    public void setBranchAddress(String branchAddress) {
-        this.branchAddress = branchAddress;
+    public void setBankAccountHolder(String bankAccountHolder) {
+        this.bankAccountHolder = bankAccountHolder;
     }
 
-    public String getBranchTellPhone() {
-        return branchTellPhone;
+    public String getLoanAmount() {
+        return loanAmount;
     }
 
-    public void setBranchTellPhone(String branchTellPhone) {
-        this.branchTellPhone = branchTellPhone;
+    public void setLoanAmount(String loanAmount) {
+        this.loanAmount = loanAmount;
     }
 
-    public String getBranchStatus() {
-        return branchStatus;
+    public String getLessFees() {
+        return lessFees;
     }
 
-    public void setBranchStatus(String branchStatus) {
-        this.branchStatus = branchStatus;
+    public void setLessFees(String lessFees) {
+        this.lessFees = lessFees;
     }
 
-    public int getCode() {
-        return code;
+    public String getApplicationFee() {
+        return applicationFee;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setApplicationFee(String applicationFee) {
+        this.applicationFee = applicationFee;
+    }
+
+    public String getCashHandlingFees() {
+        return cashHandlingFees;
+    }
+
+    public void setCashHandlingFees(String cashHandlingFees) {
+        this.cashHandlingFees = cashHandlingFees;
+    }
+
+    public String getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(String interestRate) {
+        this.interestRate = interestRate;
+    }
+
+    public String getRepaymentAmount() {
+        return repaymentAmount;
+    }
+
+    public void setRepaymentAmount(String repaymentAmount) {
+        this.repaymentAmount = repaymentAmount;
+    }
+
+    public String getLoanOfficer() {
+        return loanOfficer;
+    }
+
+    public void setLoanOfficer(String loanOfficer) {
+        this.loanOfficer = loanOfficer;
+    }
+
+    public String getTenor() {
+        return tenor;
+    }
+
+    public void setTenor(String tenor) {
+        this.tenor = tenor;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public String getCollateral() {
+        return collateral;
+    }
+
+    public void setCollateral(String collateral) {
+        this.collateral = collateral;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
+
+
+
+
+

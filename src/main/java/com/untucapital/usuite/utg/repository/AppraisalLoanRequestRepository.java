@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.repository;
 
-import com.untucapital.usuite.utg.model.Business;
-
+import com.untucapital.usuite.utg.model.AppraisalLoanRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BusinessRepository extends JpaRepository<Business, Integer> {
+public interface AppraisalLoanRequestRepository extends JpaRepository<AppraisalLoanRequest, Integer> {
 }

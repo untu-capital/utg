@@ -1,9 +1,9 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.model.AppraisalLoanRequest;
 import com.untucapital.usuite.utg.model.Business;
-
+import com.untucapital.usuite.utg.service.AppraisalLoanRequestService;
 import com.untucapital.usuite.utg.service.BusinessService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,34 +13,34 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/business")
-public class BusinessController {
+@RequestMapping("/appraisalLoanRequest")
+public class AppraisalLoanRequestController {
     @Autowired
-    BusinessService businessService;
+    AppraisalLoanRequestService appraisalLoanRequestService;
 
-    @GetMapping("getBusiness")
-    public List<Business> list() {
-        return businessService.listAllBusiness();
+    @GetMapping("getAppraisalLoanRequest")
+    public List<AppraisalLoanRequest> list() {
+        return appraisalLoanRequestService.listAllAppraisalLoanRequest();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Business> get(@PathVariable Integer id) {
+    public ResponseEntity<AppraisalLoanRequest> get(@PathVariable Integer id) {
         try {
-            Business business = businessService.getBusiness(id);
-            return new ResponseEntity<Business>(business, HttpStatus.OK);
+            AppraisalLoanRequest appraisalLoanRequest = appraisalLoanRequestService.getAppraisalLoanRequest(id);
+            return new ResponseEntity<AppraisalLoanRequest>(appraisalLoanRequest, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Business>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<AppraisalLoanRequest>(HttpStatus.NOT_FOUND);
         }
     }
-    @PostMapping("/addBusiness")
-    public void add(@RequestBody Business business) {
-        businessService.saveBusiness(business);
+    @PostMapping("/addAppraisalLoanRequest")
+    public void add(@RequestBody AppraisalLoanRequest appraisalLoanRequest) {
+        appraisalLoanRequestService.saveAppraisalLoanRequest(appraisalLoanRequest);
     }
 
 
-    @DeleteMapping("/deleteBusiness/{id}")
+    @DeleteMapping("/deleteAppraisalLoanRequest/{id}")
     public void delete(@PathVariable Integer id) {
 
-        businessService.deleteBusiness(id);
+        appraisalLoanRequestService.deleteAppraisalLoanRequest(id);
     }
 }

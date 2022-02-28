@@ -1,10 +1,7 @@
 package com.untucapital.usuite.utg.service;
-
-import com.untucapital.usuite.utg.model.Branches;
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.model.DisbursementTicket;
 import com.untucapital.usuite.utg.model.User;
-import com.untucapital.usuite.utg.repository.BranchRepository;
+import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,31 +12,30 @@ import java.util.List;
 
 @Transactional
 @Service
-public class BranchService extends AbstractService<Branches> {
+public class DisbursementTicketService extends AbstractService<DisbursementTicket> {
 
-    private static final Logger log = LoggerFactory.getLogger(BranchService.class);
+    private static final Logger log = LoggerFactory.getLogger(DisbursementTicketService.class);
 
-    private final BranchRepository branchRepository;
+    private final DisbursementTicketRepository disbursementTicketRepository;
 
-    public BranchService(BranchRepository branchRepository) {
-        this.branchRepository = branchRepository;
+    public DisbursementTicketService(DisbursementTicketRepository disbursementTicketRepository) {
+        this.disbursementTicketRepository = disbursementTicketRepository;
     }
-    public void saveBranches(Branches branches) {
-        branchRepository.save(branches);
+    public void saveDisbursementTicket(DisbursementTicket disbursementTicket) {
+        disbursementTicketRepository.save(disbursementTicket);
     }
-
-    @Override
-    protected JpaRepository<Branches, String> getRepository() {
-        return branchRepository;
-    }
-
     @Override
     public List<User> getUserByRole(String name) {
         return null;
     }
 
-    public void deleteBranch(String id) {
-        branchRepository.deleteById(id);
+    @Override
+    protected JpaRepository<DisbursementTicket, String> getRepository() {
+        return disbursementTicketRepository;
+    }
+
+        public void deleteDisbursementTicket(String id) {
+            disbursementTicketRepository.deleteById(id);
     }
 
 

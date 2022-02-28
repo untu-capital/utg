@@ -1,52 +1,41 @@
 package com.untucapital.usuite.utg.controller;
-
-import com.untucapital.usuite.utg.model.Branches;
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.Cities;
-import com.untucapital.usuite.utg.model.ClientLoan;
-import com.untucapital.usuite.utg.repository.BranchRepository;
-import com.untucapital.usuite.utg.repository.ClientRepository;
+import com.untucapital.usuite.utg.model.DisbursementTicket;
+import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
-import com.untucapital.usuite.utg.service.BranchService;
-import com.untucapital.usuite.utg.service.CitiesService;
-import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.service.DisbursementTicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(path = "branches")
-public class BranchController extends AbstractController<Branches> {
+@RequestMapping(path = "disbursementTickets")
+public class DisbursementTicketController extends AbstractController<DisbursementTicket> {
     @Autowired
-    BranchRepository branchRepository;
+    DisbursementTicketRepository disbursementTicketRepository;
 
-    private static final Logger log = LoggerFactory.getLogger(BranchController.class);
+    private static final Logger log = LoggerFactory.getLogger(DisbursementTicketController.class);
 
-    private final BranchService branchService;
+    private final DisbursementTicketService disbursementTicketService;
 
-    public BranchController(BranchService branchService) {
-        this.branchService = branchService;
+    public DisbursementTicketController(DisbursementTicketService disbursementTicketService) {
+        this.disbursementTicketService = disbursementTicketService;
     }
 
     //build save branch REST API
-    @PostMapping("/addBranch")
-    public void add(@RequestBody Branches branches) {
-        branchService.saveBranches(branches);
+    @PostMapping("/adddisbursementTicket")
+    public void add(@RequestBody DisbursementTicket disbursementTicket) {
+        disbursementTicketService.saveDisbursementTicket(disbursementTicket);
     }
 
-    @DeleteMapping("/deleteBranch/{id}")
+    @DeleteMapping("/deleteDisbursementTicket/{id}")
     public void delete(@PathVariable String id) {
 
-        branchService.deleteBranch(id);
+        disbursementTicketService.deleteDisbursementTicket(id);
     }
   
     @Override
-    protected AbstractService<Branches> getService() {
-        return branchService;
+    protected AbstractService<DisbursementTicket> getService() {
+        return disbursementTicketService;
     }
 }
