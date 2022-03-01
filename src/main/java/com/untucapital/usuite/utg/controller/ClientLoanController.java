@@ -72,7 +72,7 @@ public class ClientLoanController {
     }
 
     //build delete client loan application REST api
-    @DeleteMapping("{id}")
+    @DeleteMapping("deleteloan/{id}")
     public ResponseEntity<String> deleteClientLoan(@PathVariable("id") String id) {
         //delete client loan from DB
         clientLoanApplication.deleteClientLoan(id);
@@ -148,6 +148,7 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchName(@PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBranchName(branchName), HttpStatus.OK);
     }
+
 }
 
 
