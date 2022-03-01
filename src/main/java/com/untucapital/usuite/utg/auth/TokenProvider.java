@@ -15,7 +15,8 @@ import java.util.Date;
  */
 
 @Component
-public class TokenProvider {
+public class
+TokenProvider {
     private static final Logger log = LoggerFactory.getLogger(TokenProvider.class);
 
     @Value("${auth.token-secret}")
