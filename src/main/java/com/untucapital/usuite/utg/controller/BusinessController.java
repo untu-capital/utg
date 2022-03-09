@@ -32,6 +32,7 @@ public class BusinessController {
             return new ResponseEntity<Business>(HttpStatus.NOT_FOUND);
         }
     }
+
     @PostMapping("/addBusiness")
     public void add(@RequestBody Business business) {
         businessService.saveBusiness(business);

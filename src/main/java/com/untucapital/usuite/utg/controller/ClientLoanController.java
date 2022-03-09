@@ -53,6 +53,7 @@ public class ClientLoanController {
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
+
     @GetMapping("/loanStatus/{loanStatus}")
     public ResponseEntity<String> getClientLoanApplicationStatusByloanStatus(@PathVariable("loanStatus") String loanStatusID) {
         List <ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationStatusByloanStatus(loanStatusID);
@@ -65,10 +66,28 @@ public class ClientLoanController {
         return ResponseEntity.ok(userClientLoans);
     }
 
-    // show all all loans with checked status
+    // show BM all loans with checked status
     @GetMapping("/loanStatus/{loanStatus}/{branchName}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
+    }
+
+    // show BM all loans that have been assessed
+    @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{assessmentStatus}")
+    public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(loanStatus, branchName, assessmentStatus), HttpStatus.OK);
+    }
+
+    // Show loans assigned to a specific loan officer (not yet assessed)
+    @GetMapping("/assessmentNotCompleted/{loanStatus}/{assignTo}/{branchName}/{assessmentStatus}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignToAndBranchNameAndProcessLoanStatus(loanStatus, assignTo, branchName, assessmentStatus), HttpStatus.OK);
+    }
+
+    // Show loans assigned to a specific loan officer that are assessed
+    @GetMapping("/assessmentCompleted/{loanStatus}/{assignTo}/{branchName}/{assessmentStatus}")
+    public ResponseEntity<List<ClientLoan>> getProcessedClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignToAndBranchNameAndProcessLoanStatus(loanStatus, assignTo, branchName, assessmentStatus), HttpStatus.OK);
     }
 
     //build delete client loan application REST api
@@ -89,6 +108,7 @@ public class ClientLoanController {
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
+    // assign each loan to a loan officer
     @PutMapping("/assignTo/{id}")
     public ResponseEntity<String> updateAssignTo(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updatedAssignTo = clientLoanApplication.getClientLoanApplicationById(id);
@@ -99,15 +119,19 @@ public class ClientLoanController {
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
+    // set/Update status that LO has completed processing application
+    @PutMapping("/updateLoanAssessmentStatus/{id}")
+    public ResponseEntity<String> assessmentCompleteStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateProcessLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateProcessLoanStatus.setProcessLoanStatus(clientLoan.getProcessLoanStatus());
+        updateProcessLoanStatus.setProcessedBy(clientLoan.getProcessedBy());
+        clientLoanApplication.saveClientLoan(updateProcessLoanStatus);
+        return new ResponseEntity<String>("Loan Assessment Status successfully updated.", HttpStatus.OK);
+    }
+
     @GetMapping("/loanFileId/{loanFileId}")
     public ResponseEntity<ClientLoan> getClientLoanId(@PathVariable("loanFileId") String loanFileId) {
         return new ResponseEntity<ClientLoan>(clientRepository.findByLoanFileId(loanFileId), HttpStatus.OK);
-    }
-
-    // Show loans assigned to a specific loan officer
-    @GetMapping("/{loanStatus}/{assignTo}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignToAndBranchName(loanStatus, assignTo, branchName), HttpStatus.OK);
     }
 
     // email to Bocos
@@ -127,12 +151,20 @@ public class ClientLoanController {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
     }
 
-    //email to Los
+    //email to LOs
     @PostMapping("bmAssignLoanOfficer/{recipientName}/{recipientEmail}")
     public ResponseEntity<ClientLoan> sendBmAssignLo(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail) {
         String emailText = emailSender.sendBmAssignLoMsg(recipientName, "New loan Application", "");
         emailSender.send(recipientEmail, "Assigned Loan Application", emailText);
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
+    }
+
+    //email to schedule meeting with credit commit
+    @PostMapping("bmScheduleMeeting/{recipientName}/{recipientEmail}/{recipientSubject}/{recipientMessage}/{senderName}")
+    public ResponseEntity<ClientLoan> sendScheduleMeeting(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail, @PathVariable("recipientSubject") String recipientSubject, @PathVariable("recipientMessage") String recipientMessage, @PathVariable("senderName") String senderName) {
+        String emailText = emailSender.sendScheduleMeetingMsg(recipientName, recipientSubject, recipientMessage, senderName);
+        emailSender.send(recipientEmail, recipientSubject, emailText);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendMeetingScheduleSuccess(recipientName, recipientEmail, recipientSubject, recipientMessage, senderName), HttpStatus.OK);
     }
 
     //email to Clients
@@ -148,6 +180,27 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchName(@PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBranchName(branchName), HttpStatus.OK);
     }
+
+    //Update meeting columns
+    @PutMapping("/updateMeeting/{id}")
+    public ResponseEntity<String> updateLoanMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanMeeting = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanMeeting.setMeetingLoanAmount(clientLoan.getMeetingLoanAmount());
+        updatedLoanMeeting.setMeetingTenure(clientLoan.getMeetingTenure());
+        updatedLoanMeeting.setMeetingInterestRate(clientLoan.getMeetingInterestRate());
+        updatedLoanMeeting.setMeetingOnWhichBasis(clientLoan.getMeetingOnWhichBasis());
+
+        updatedLoanMeeting.setMeetingCashHandlingFee(clientLoan.getMeetingCashHandlingFee());
+        updatedLoanMeeting.setMeetingRepaymentAmount(clientLoan.getMeetingRepaymentAmount());
+        updatedLoanMeeting.setMeetingProduct(clientLoan.getMeetingProduct());
+        updatedLoanMeeting.setMeetingRN(clientLoan.getMeetingRN());
+        updatedLoanMeeting.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
+        updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
+        clientLoanApplication.saveClientLoan(updatedLoanMeeting);
+        return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
+    }
+
+
 }
 
 
