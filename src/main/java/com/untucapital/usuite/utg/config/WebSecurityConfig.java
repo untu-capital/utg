@@ -117,6 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/branches/**")
                 .permitAll()
+                .antMatchers("/meetings/**")
+                .permitAll()
                 .antMatchers("/role/**")
                 .permitAll()
                 .antMatchers("/roles/**")

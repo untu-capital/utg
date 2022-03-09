@@ -92,6 +92,46 @@ public class ClientLoan extends AbstractEntity {
 
     private String loanFileId;
 
+    private String processLoanStatus;
+
+    private String processedBy;
+
+    private String meetingLoanAmount;
+
+    private String meetingTenure;
+
+    private String meetingInterestRate;
+
+    private String meetingOnWhichBasis;
+
+    private String meetingCashHandlingFee;
+
+    private String meetingRepaymentAmount;
+
+    private String meetingProduct;
+
+    private String meetingRN;
+
+    private String meetingUpfrontFee;
+
+    private String meetingFinalizedBy;
+
+    public String getProcessLoanStatus() {
+        return processLoanStatus;
+    }
+
+    public void setProcessLoanStatus(String processLoanStatus) {
+        this.processLoanStatus = processLoanStatus;
+    }
+
+    public String getProcessedBy() {
+        return processedBy;
+    }
+
+    public void setProcessedBy(String processedBy) {
+        this.processedBy = processedBy;
+    }
+
     @OneToOne
     @NotNull
     @JoinColumn(name = "fcb_response_id", nullable = false)
@@ -338,5 +378,85 @@ public class ClientLoan extends AbstractEntity {
 
     public void setLoanFileId(String loanFileId) {
         this.loanFileId = loanFileId;
+    }
+
+    public String getMeetingLoanAmount() {
+        return meetingLoanAmount;
+    }
+
+    public void setMeetingLoanAmount(String meetingLoanAmount) {
+        this.meetingLoanAmount = meetingLoanAmount;
+    }
+
+    public String getMeetingTenure() {
+        return meetingTenure;
+    }
+
+    public void setMeetingTenure(String meetingTenure) {
+        this.meetingTenure = meetingTenure;
+    }
+
+    public String getMeetingInterestRate() {
+        return meetingInterestRate;
+    }
+
+    public void setMeetingInterestRate(String meetingInterestRate) {
+        this.meetingInterestRate = meetingInterestRate;
+    }
+
+    public String getMeetingOnWhichBasis() {
+        return meetingOnWhichBasis;
+    }
+
+    public void setMeetingOnWhichBasis(String meetingOnWhichBasis) {
+        this.meetingOnWhichBasis = meetingOnWhichBasis;
+    }
+
+    public String getMeetingCashHandlingFee() {
+        return meetingCashHandlingFee;
+    }
+
+    public void setMeetingCashHandlingFee(String meetingCashHandlingFee) {
+        this.meetingCashHandlingFee = meetingCashHandlingFee;
+    }
+
+    public String getMeetingRepaymentAmount() {
+        return meetingRepaymentAmount;
+    }
+
+    public void setMeetingRepaymentAmount(String meetingRepaymentAmount) {
+        this.meetingRepaymentAmount = meetingRepaymentAmount;
+    }
+
+    public String getMeetingProduct() {
+        return meetingProduct;
+    }
+
+    public void setMeetingProduct(String meetingProduct) {
+        this.meetingProduct = meetingProduct;
+    }
+
+    public String getMeetingRN() {
+        return meetingRN;
+    }
+
+    public void setMeetingRN(String meetingRN) {
+        this.meetingRN = meetingRN;
+    }
+
+    public String getMeetingUpfrontFee() {
+        return meetingUpfrontFee;
+    }
+
+    public void setMeetingUpfrontFee(String meetingUpfrontFee) {
+        this.meetingUpfrontFee = meetingUpfrontFee;
+    }
+
+    public String getMeetingFinalizedBy() {
+        return meetingFinalizedBy;
+    }
+
+    public void setMeetingFinalizedBy(String meetingFinalizedBy) {
+        this.meetingFinalizedBy = meetingFinalizedBy;
     }
 }

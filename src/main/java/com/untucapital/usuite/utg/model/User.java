@@ -55,6 +55,16 @@ public class User extends AbstractEntity {
 
     private String branch;
 
+    private String creditCommitGroup;
+    
+    public String getCreditCommitGroup() {
+        return creditCommitGroup;
+    }
+
+    public void setCreditCommitGroup(String creditCommitGroup) {
+        this.creditCommitGroup = creditCommitGroup;
+    }
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

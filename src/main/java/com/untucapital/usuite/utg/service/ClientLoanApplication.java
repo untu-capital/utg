@@ -12,6 +12,8 @@ public interface ClientLoanApplication {
 
     ClientLoan sendLoanSuccess(String recipientName, String recipientEmail);
 
+    ClientLoan sendMeetingScheduleSuccess(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName);
+
     List<ClientLoan> getAllClientLoanApplication();
 
     ClientLoan getClientLoanApplicationById(String id);
