@@ -72,6 +72,28 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
     }
 
+    // show BM all loans signed by BOCO
+    @GetMapping("/bocoSignature/{bocoSignature}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureAndBranchName(@PathVariable("bocoSignature") String bocoSignature, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBocoSignatureAndBranchName(bocoSignature, branchName), HttpStatus.OK);
+    }
+
+    // show CA all loans signed by BM
+    @GetMapping("/bmSignature/{bmSignature}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBMSignatureAndBranchName(@PathVariable("bmSignature") String bmSignature, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBmSignatureAndBranchName(bmSignature, branchName), HttpStatus.OK);
+    }
+    // show CM all loans signed by CA
+    @GetMapping("/caSignature/{caSignature}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByCASignatureAndBranchName(@PathVariable("caSignature") String caSignature, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByCaSignatureAndBranchName(caSignature, branchName), HttpStatus.OK);
+    }
+    // show CA all loans signed by BM
+    @GetMapping("/cmSignature/{cmSignature}/{branchName}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByCMSignatureAndBranchName(@PathVariable("cmSignature") String cmSignature, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByCmSignatureAndBranchName(cmSignature, branchName), HttpStatus.OK);
+    }
+
     // show BM all loans that have been assessed
     @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{assessmentStatus}")
     public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
@@ -128,6 +150,56 @@ public class ClientLoanController {
         clientLoanApplication.saveClientLoan(updateProcessLoanStatus);
         return new ResponseEntity<String>("Loan Assessment Status successfully updated.", HttpStatus.OK);
     }
+
+    // update predisbursement ticket for BOCO Signature
+    @PutMapping("/updateTicketSignature/{id}")
+    public ResponseEntity<String> ticketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateSignatureStatus.setBocoSignature(clientLoan.getBocoSignature());
+        updateSignatureStatus.setBocoName(clientLoan.getBocoName());
+        clientLoanApplication.saveClientLoan(updateSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
+    // update predisbursement ticket for bm Signature
+    @PutMapping("/updateBmSignature/{id}")
+    public ResponseEntity<String> bmTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateBmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateBmSignatureStatus.setBmSignature(clientLoan.getBmSignature());
+        updateBmSignatureStatus.setBmName(clientLoan.getBmName());
+        clientLoanApplication.saveClientLoan(updateBmSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+    // update predisbursement ticket for CM Signature
+    @PutMapping("/updateCmSignature/{id}")
+    public ResponseEntity<String> cmTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateCmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateCmSignatureStatus.setCmSignature(clientLoan.getCmSignature());
+        updateCmSignatureStatus.setCmName(clientLoan.getCmName());
+        clientLoanApplication.saveClientLoan(updateCmSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
+    // update predisbursement ticket for CA Signature
+    @PutMapping("/updateCaSignature/{id}")
+    public ResponseEntity<String> caTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateCaSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateCaSignatureStatus.setCaSignature(clientLoan.getCaSignature());
+        updateCaSignatureStatus.setCaName(clientLoan.getCaName());
+        clientLoanApplication.saveClientLoan(updateCaSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+    // update predisbursement ticket for Fin Signature
+    @PutMapping("/updateFinSignature/{id}")
+    public ResponseEntity<String> finTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateFinSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateFinSignatureStatus.setFinSignature(clientLoan.getFinSignature());
+        updateFinSignatureStatus.setFinName(clientLoan.getFinName());
+        clientLoanApplication.saveClientLoan(updateFinSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/loanFileId/{loanFileId}")
     public ResponseEntity<ClientLoan> getClientLoanId(@PathVariable("loanFileId") String loanFileId) {
