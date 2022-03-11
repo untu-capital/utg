@@ -28,7 +28,7 @@ public class BusinessUnitService {
         return businessUnitRepository.findAll();
     }
 
-    //Get List of Business Units by Id
+    //Get List of Business Units by Loan Id
     public List<BusinessUnit> lisBusinessUnitByLoanId(String id){
         return businessUnitRepository.findBusinessUnitByLoanId(id);
     }
