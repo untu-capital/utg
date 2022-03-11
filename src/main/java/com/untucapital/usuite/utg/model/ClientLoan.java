@@ -116,6 +116,28 @@ public class ClientLoan extends AbstractEntity {
 
     private String meetingFinalizedBy;
 
+    private String bocoSignature;
+
+    private String bocoName;
+
+    private String bmSignature;
+
+    private String bmName;
+
+    private String caSignature;
+
+    private String caName;
+
+    private String cmSignature;
+
+    private String cmName;
+
+    private String finSignature;
+
+    private String finName;
+
+
+
     public String getProcessLoanStatus() {
         return processLoanStatus;
     }
@@ -458,5 +480,85 @@ public class ClientLoan extends AbstractEntity {
 
     public void setMeetingFinalizedBy(String meetingFinalizedBy) {
         this.meetingFinalizedBy = meetingFinalizedBy;
+    }
+
+    public String getBocoSignature() {
+        return bocoSignature;
+    }
+
+    public void setBocoSignature(String bocoSignature) {
+        this.bocoSignature = bocoSignature;
+    }
+
+    public String getBmSignature() {
+        return bmSignature;
+    }
+
+    public void setBmSignature(String bmSignature) {
+        this.bmSignature = bmSignature;
+    }
+
+    public String getCaSignature() {
+        return caSignature;
+    }
+
+    public void setCaSignature(String caSignature) {
+        this.caSignature = caSignature;
+    }
+
+    public String getCmSignature() {
+        return cmSignature;
+    }
+
+    public void setCmSignature(String cmSignature) {
+        this.cmSignature = cmSignature;
+    }
+
+    public String getFinSignature() {
+        return finSignature;
+    }
+
+    public void setFinSignature(String finSignature) {
+        this.finSignature = finSignature;
+    }
+
+    public String getBocoName() {
+        return bocoName;
+    }
+
+    public void setBocoName(String bocoName) {
+        this.bocoName = bocoName;
+    }
+
+    public String getBmName() {
+        return bmName;
+    }
+
+    public void setBmName(String bmName) {
+        this.bmName = bmName;
+    }
+
+    public String getCaName() {
+        return caName;
+    }
+
+    public void setCaName(String caName) {
+        this.caName = caName;
+    }
+
+    public String getCmName() {
+        return cmName;
+    }
+
+    public void setCmName(String cmName) {
+        this.cmName = cmName;
+    }
+
+    public String getFinName() {
+        return finName;
+    }
+
+    public void setFinName(String finName) {
+        this.finName = finName;
     }
 }
