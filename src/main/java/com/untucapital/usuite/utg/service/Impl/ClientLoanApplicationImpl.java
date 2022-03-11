@@ -61,6 +61,11 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return null;
     }
 
+    @Override
+    public ClientLoan sendFinalMeetingSuccess(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName) {
+        return null;
+    }
+
 //    @Override
 //    public ClientLoan sendLoanSuccess(ClientLoan clientLoan) {
 //        String emailText = emailSender.sendLoanSuccessMsg(clientLoan.getFirstName()+" "+clientLoan.getLastName(), "New loan Application", "");

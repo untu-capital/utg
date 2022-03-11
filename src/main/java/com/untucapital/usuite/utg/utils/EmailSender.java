@@ -529,7 +529,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> " + message +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></br></p>" + senderName +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -542,7 +542,7 @@ public class EmailSender {
                 "</div></div>";
     }
 
-    public String sendFinalMeetingMsg(String recipient, String subject, String message) {
+    public String sendFinalMeetingMsg(String recipient, String subject, String message, String senderName) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:14px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -560,7 +560,7 @@ public class EmailSender {
                 "                  \n" +
                 "                    </td>\n" +
                 "                    <td style=\"font-size:26px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Loan Application Has Been Assigned To You </span>\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Decision set for Loan </span>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </tbody></table>\n" +
@@ -598,8 +598,8 @@ public class EmailSender {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> You have a new loan application awaiting for decision. Please login to the Untu-Capital Credit Application Portal to view the application: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu Credit Team</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> " + message +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -611,4 +611,5 @@ public class EmailSender {
                 "\n" +
                 "</div></div>";
     }
+
 }
