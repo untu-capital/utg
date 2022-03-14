@@ -99,6 +99,11 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(loanStatus, branchName, assessmentStatus), HttpStatus.OK);
     }
+//    // show BOCO all tickets not signed yet.
+//    @GetMapping("/ticketNotSigned/{loanStatus}/{assignTo}/{branchName}/{assessmentStatus}/{bocoSignature}")
+//    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsBySignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("assignTo") String assignTo, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus, @PathVariable("bocoSignature") String bocoSignature) {
+//        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatusAndBocoSignature(loanStatus, assignTo, branchName, assessmentStatus, bocoSignature), HttpStatus.OK);
+//    }
 
     // Show loans assigned to a specific loan officer (not yet assessed)
     @GetMapping("/assessmentNotCompleted/{loanStatus}/{assignTo}/{branchName}/{assessmentStatus}")
