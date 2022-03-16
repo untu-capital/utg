@@ -33,6 +33,11 @@ public class BusinessUnitService {
         return businessUnitRepository.findBusinessUnitByLoanId(id);
     }
 
+    //Get List of Business Units by Id
+    public List<BusinessUnit> lisBusinessUnitByLoanId(String id, String businessUnit){
+        return businessUnitRepository.findBusinessUnitByLoanId(id);
+    }
+
     //Get Business unit by Id
     public List<BusinessUnit> getBusinessUnitById(String id){
         return businessUnitRepository.findBusinessUnitById(id);
