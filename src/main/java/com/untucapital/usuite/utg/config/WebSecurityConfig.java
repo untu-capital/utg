@@ -97,6 +97,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
+                .antMatchers("/direct_costs/**")
+                .permitAll()
                 .antMatchers("/users/**")
                 .permitAll()
                 .antMatchers("/credit_application/**")
@@ -127,7 +129,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/faqs/**")
                 .permitAll()
-
+                .antMatchers("/news/**")
+                .permitAll()
+                .antMatchers("/testimonials/**")
+                .permitAll()
+                .antMatchers("/directors/**")
+                .permitAll()
+                .antMatchers("/teams/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

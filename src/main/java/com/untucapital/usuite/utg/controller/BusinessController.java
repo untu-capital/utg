@@ -18,7 +18,7 @@ public class BusinessController {
     @Autowired
     BusinessService businessService;
 
-    @GetMapping("getBusiness")
+    @GetMapping("/getBusiness")
     public List<Business> list() {
         return businessService.listAllBusiness();
     }

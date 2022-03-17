@@ -32,7 +32,7 @@ public class FaqsController{
         return faqsService.getFaqsById(id);
     }
     //Delete faq by id
-    @DeleteMapping("delete/{faqsId}")
+    @DeleteMapping("/delete/{faqsId}")
     public void deleteFaqs(@PathVariable("faqsId") String id){
         faqsService.deleteFaqsById(id);
     }
