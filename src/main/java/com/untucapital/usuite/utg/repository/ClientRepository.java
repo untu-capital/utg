@@ -13,19 +13,33 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoansByBranchName(String branchName);
 
+    List<ClientLoan> findClientLoansByLoanStatusAndAssignToAndBranchName(String loanStatus, String assignTo, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndAssignedStatusAndBranchName(String loanStatus, String assignedStatus, String branchName);
+
     List<ClientLoan> findClientLoansByLoanStatusAndBranchName(String loanStatus, String branchName);
 
     List<ClientLoan> findClientLoansByBocoSignatureAndBranchName(String bocoSignature, String branchName);
 
     List<ClientLoan> findClientLoansByBmSignatureAndBranchName(String bmSignature, String branchName);
 
-    List<ClientLoan> findClientLoansByCaSignatureAndBranchName(String caSignature, String branchName);
+    List<ClientLoan> findClientLoansByCaSignature(String caSignature);
 
-    List<ClientLoan> findClientLoansByCmSignatureAndBranchName(String cmSignature, String branchName);
+    List<ClientLoan> findClientLoansByCmSignature(String cmSignature);
+
+    List<ClientLoan> findClientLoansByFinSignature(String finSignature);
 
     List<ClientLoan> findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(String loanStatus, String branchName, String assessmentStatus);
 
-//    List<ClientLoan> findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatusAndBocoSignature(String status, String loanStatus, String branchName, String assessmentStatus, String bocoSignature);
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndBranchName(String loanStatus, String processLoanStatus, String bocoSignature, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBmSignatureAndBranchName(String loanStatus, String processLoanStatus, String bmSignature, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndCaSignature(String loanStatus, String processLoanStatus, String CaSignature);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndCmSignature(String loanStatus, String processLoanStatus, String CmSignature);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndFinSignature(String loanStatus, String processLoanStatus, String FinSignature);
 
 //    List<ClientLoan> findClientLoansByLoanStatusAndAssignToAndBranchNameAndProcessLoanStatusNotContains(String loanStatus, String assignTo, String branchName, String assessmentStatus);
 
