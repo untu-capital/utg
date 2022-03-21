@@ -160,6 +160,14 @@ public class ClientLoanController {
     }
 
     //email to schedule meeting with credit commit
+//    @PostMapping("bmScheduleMeeting")
+//    public ResponseEntity<ClientLoan> sendScheduleMeeting(@RequestParam("recipientName") String recipientName, @RequestParam("recipientEmail") String recipientEmail, @RequestParam("recipientSubject") String recipientSubject, @RequestParam("recipientMessage") String recipientMessage, @RequestParam("senderName") String senderName) {
+//        String emailText = emailSender.sendScheduleMeetingMsg(recipientName, recipientSubject, recipientMessage, senderName);
+//        emailSender.send(recipientEmail, recipientSubject, emailText);
+//        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendMeetingScheduleSuccess(recipientName, recipientEmail, recipientSubject, recipientMessage, senderName), HttpStatus.OK);
+//    }
+
+    //email to schedule meeting with credit commit
     @PostMapping("bmScheduleMeeting/{recipientName}/{recipientEmail}/{recipientSubject}/{recipientMessage}/{senderName}")
     public ResponseEntity<ClientLoan> sendScheduleMeeting(@PathVariable("recipientName") String recipientName, @PathVariable("recipientEmail") String recipientEmail, @PathVariable("recipientSubject") String recipientSubject, @PathVariable("recipientMessage") String recipientMessage, @PathVariable("senderName") String senderName) {
         String emailText = emailSender.sendScheduleMeetingMsg(recipientName, recipientSubject, recipientMessage, senderName);
