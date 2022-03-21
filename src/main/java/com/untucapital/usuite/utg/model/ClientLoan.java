@@ -92,6 +92,68 @@ public class ClientLoan extends AbstractEntity {
 
     private String loanFileId;
 
+    private String processLoanStatus;
+
+    private String processedBy;
+
+    private String meetingLoanAmount;
+
+    private String meetingTenure;
+
+    private String meetingInterestRate;
+
+    private String meetingOnWhichBasis;
+
+    private String meetingCashHandlingFee;
+
+    private String meetingRepaymentAmount;
+
+    private String meetingProduct;
+
+    private String meetingRN;
+
+    private String meetingUpfrontFee;
+
+    private String meetingFinalizedBy;
+
+    private String bocoSignature;
+
+    private String bocoName;
+
+    private String bmSignature;
+
+    private String bmName;
+
+    private String caSignature;
+
+    private String caName;
+
+    private String cmSignature;
+
+    private String cmName;
+
+    private String finSignature;
+
+    private String finName;
+
+
+
+    public String getProcessLoanStatus() {
+        return processLoanStatus;
+    }
+
+    public void setProcessLoanStatus(String processLoanStatus) {
+        this.processLoanStatus = processLoanStatus;
+    }
+
+    public String getProcessedBy() {
+        return processedBy;
+    }
+
+    public void setProcessedBy(String processedBy) {
+        this.processedBy = processedBy;
+    }
+
     @OneToOne
     @NotNull
     @JoinColumn(name = "fcb_response_id", nullable = false)
@@ -338,5 +400,165 @@ public class ClientLoan extends AbstractEntity {
 
     public void setLoanFileId(String loanFileId) {
         this.loanFileId = loanFileId;
+    }
+
+    public String getMeetingLoanAmount() {
+        return meetingLoanAmount;
+    }
+
+    public void setMeetingLoanAmount(String meetingLoanAmount) {
+        this.meetingLoanAmount = meetingLoanAmount;
+    }
+
+    public String getMeetingTenure() {
+        return meetingTenure;
+    }
+
+    public void setMeetingTenure(String meetingTenure) {
+        this.meetingTenure = meetingTenure;
+    }
+
+    public String getMeetingInterestRate() {
+        return meetingInterestRate;
+    }
+
+    public void setMeetingInterestRate(String meetingInterestRate) {
+        this.meetingInterestRate = meetingInterestRate;
+    }
+
+    public String getMeetingOnWhichBasis() {
+        return meetingOnWhichBasis;
+    }
+
+    public void setMeetingOnWhichBasis(String meetingOnWhichBasis) {
+        this.meetingOnWhichBasis = meetingOnWhichBasis;
+    }
+
+    public String getMeetingCashHandlingFee() {
+        return meetingCashHandlingFee;
+    }
+
+    public void setMeetingCashHandlingFee(String meetingCashHandlingFee) {
+        this.meetingCashHandlingFee = meetingCashHandlingFee;
+    }
+
+    public String getMeetingRepaymentAmount() {
+        return meetingRepaymentAmount;
+    }
+
+    public void setMeetingRepaymentAmount(String meetingRepaymentAmount) {
+        this.meetingRepaymentAmount = meetingRepaymentAmount;
+    }
+
+    public String getMeetingProduct() {
+        return meetingProduct;
+    }
+
+    public void setMeetingProduct(String meetingProduct) {
+        this.meetingProduct = meetingProduct;
+    }
+
+    public String getMeetingRN() {
+        return meetingRN;
+    }
+
+    public void setMeetingRN(String meetingRN) {
+        this.meetingRN = meetingRN;
+    }
+
+    public String getMeetingUpfrontFee() {
+        return meetingUpfrontFee;
+    }
+
+    public void setMeetingUpfrontFee(String meetingUpfrontFee) {
+        this.meetingUpfrontFee = meetingUpfrontFee;
+    }
+
+    public String getMeetingFinalizedBy() {
+        return meetingFinalizedBy;
+    }
+
+    public void setMeetingFinalizedBy(String meetingFinalizedBy) {
+        this.meetingFinalizedBy = meetingFinalizedBy;
+    }
+
+    public String getBocoSignature() {
+        return bocoSignature;
+    }
+
+    public void setBocoSignature(String bocoSignature) {
+        this.bocoSignature = bocoSignature;
+    }
+
+    public String getBmSignature() {
+        return bmSignature;
+    }
+
+    public void setBmSignature(String bmSignature) {
+        this.bmSignature = bmSignature;
+    }
+
+    public String getCaSignature() {
+        return caSignature;
+    }
+
+    public void setCaSignature(String caSignature) {
+        this.caSignature = caSignature;
+    }
+
+    public String getCmSignature() {
+        return cmSignature;
+    }
+
+    public void setCmSignature(String cmSignature) {
+        this.cmSignature = cmSignature;
+    }
+
+    public String getFinSignature() {
+        return finSignature;
+    }
+
+    public void setFinSignature(String finSignature) {
+        this.finSignature = finSignature;
+    }
+
+    public String getBocoName() {
+        return bocoName;
+    }
+
+    public void setBocoName(String bocoName) {
+        this.bocoName = bocoName;
+    }
+
+    public String getBmName() {
+        return bmName;
+    }
+
+    public void setBmName(String bmName) {
+        this.bmName = bmName;
+    }
+
+    public String getCaName() {
+        return caName;
+    }
+
+    public void setCaName(String caName) {
+        this.caName = caName;
+    }
+
+    public String getCmName() {
+        return cmName;
+    }
+
+    public void setCmName(String cmName) {
+        this.cmName = cmName;
+    }
+
+    public String getFinName() {
+        return finName;
+    }
+
+    public void setFinName(String finName) {
+        this.finName = finName;
     }
 }

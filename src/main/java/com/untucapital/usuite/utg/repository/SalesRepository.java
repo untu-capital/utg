@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface SalesRepository extends JpaRepository<Sales, Integer> {
     List<Sales> findSalestByLoanIdAndBusinessUnitOrderByMonthAsc(String id, String businessUnit);
+
+    //List<Sales> findSalestByLoanIdAndBusinessUnit  OrderByMonthAsc(String id, String businessUnit);
 }

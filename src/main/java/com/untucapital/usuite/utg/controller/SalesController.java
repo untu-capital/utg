@@ -49,5 +49,6 @@ public class SalesController {
     public List<Sales> getSalesByLoanIdAndBusinessUnits(@PathVariable("loanId") String id, @PathVariable("businessUnit") String businessUnit){
         return salesService.lisSalesByLoanId(id, businessUnit);
     }
+
     }
 

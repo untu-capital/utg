@@ -14,6 +14,7 @@ import org.hibernate.engine.jdbc.StreamUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,6 +55,8 @@ public class FileDownloadController {
     public ResponseEntity<List<DatabaseFile>> getUploadFilesByUserId(@PathVariable("userId") String userId, @PathVariable("appraisal") String appraisal, @PathVariable("selfie") String selfie, @PathVariable("nationalId") String nationalId) {
         return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndFileDescriptionNotContainsAndFileDescriptionNotContainsAndFileDescriptionNotContains(userId, appraisal, selfie, nationalId), HttpStatus.OK);
     }
+
+//    @Query(value = "SELECT * FROM files WHERE fielDescription = 'selfie' OR fileDescription = 'nationalId' ")
 
     // select selfie and nationalId files
     @GetMapping("/downloadFiless/{userId}/{loanId}/{appraisal}/{assessmentFile}")

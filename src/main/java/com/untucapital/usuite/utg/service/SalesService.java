@@ -14,6 +14,7 @@ import java.util.List;
 public class SalesService {
     @Autowired
     private SalesRepository salesRepository;
+
     public List<Sales> listAllSales() {
         return salesRepository.findAll();
     }
