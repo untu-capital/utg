@@ -12,6 +12,8 @@ public class Industry extends AbstractEntity {
 
     private String name;
 
+    private String imageUrl;
+
     private int code;
 
     public String getName() {
@@ -28,5 +30,13 @@ public class Industry extends AbstractEntity {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

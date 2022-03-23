@@ -137,6 +137,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/teams/**")
                 .permitAll()
+                .antMatchers("/website-images/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 

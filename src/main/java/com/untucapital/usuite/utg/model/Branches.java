@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -19,6 +18,9 @@ public class Branches extends AbstractEntity {
 
     private  String branchStatus;
 
+    private String googleMap;
+
+    private String directionsLink;
 
     private int code;
 
@@ -60,5 +62,21 @@ public class Branches extends AbstractEntity {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getGoogleMap() {
+        return googleMap;
+    }
+
+    public void setGoogleMap(String googleMap) {
+        this.googleMap = googleMap;
+    }
+
+    public String getDirectionsLink() {
+        return directionsLink;
+    }
+
+    public void setDirectionsLink(String directionsLink) {
+        this.directionsLink = directionsLink;
     }
 }
