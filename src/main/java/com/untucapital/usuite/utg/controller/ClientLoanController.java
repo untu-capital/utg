@@ -170,6 +170,16 @@ public class ClientLoanController {
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setLoanStatus(clientLoan.getLoanStatus());
         updatedLoanStatus.setComment(clientLoan.getComment());
+        updatedLoanStatus.setBocoDate(clientLoan.getBocoDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setBmDateAssignLo(clientLoan.getBmDateAssignLo());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setLoDate(clientLoan.getLoDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setBmDateMeeting(clientLoan.getBmDateMeeting());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setCcDate(clientLoan.getCcDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
         updatedLoanStatus.setLoanStatusAssigner(clientLoan.getLoanStatusAssigner());
         clientLoanApplication.saveClientLoan(updatedLoanStatus);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
@@ -194,6 +204,8 @@ public class ClientLoanController {
         ClientLoan updateProcessLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateProcessLoanStatus.setProcessLoanStatus(clientLoan.getProcessLoanStatus());
         updateProcessLoanStatus.setProcessedBy(clientLoan.getProcessedBy());
+        updateProcessLoanStatus.setLoDate(clientLoan.getLoDate());
+        updateProcessLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
         clientLoanApplication.saveClientLoan(updateProcessLoanStatus);
         return new ResponseEntity<String>("Loan Assessment Status successfully updated.", HttpStatus.OK);
     }
