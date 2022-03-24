@@ -20,17 +20,17 @@ public class SourceOfFundsController {
 
     private static final Logger log = LoggerFactory.getLogger(SourceOfFundsController.class);
 
-    @GetMapping("/get_costs/{loanId}")
+    @GetMapping("/get/{loanId}")
     public List<SourceOfFunds> getByLoanId(@PathVariable("loanId") String loanId) {
         return sourceOfFundsService.getSourceOfFundsByLoanId(loanId);
     }
 
-    @PostMapping("/addDirectCost")
+    @PostMapping("/add")
     public void add(@RequestBody SourceOfFunds sourceOfFunds) {
         sourceOfFundsService.saveSourceOfFunds(sourceOfFunds);
     }
 
-    @DeleteMapping("/deleteSourceOfFunds/{loanId}")
+    @DeleteMapping("/delete/{loanId}")
     public void delete(@PathVariable String id){
         sourceOfFundsService.deleteSourceOfFunds(id);
     }

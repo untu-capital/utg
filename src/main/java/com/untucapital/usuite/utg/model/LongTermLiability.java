@@ -10,7 +10,7 @@ public class LongTermLiability extends AbstractEntity{
     @NotNull
     private String loanId;
     @NotNull
-    private String liablilityName;
+    private String liabilityName;
     private String dateFrom;
     private String dateTo;
     private double value;
@@ -23,12 +23,12 @@ public class LongTermLiability extends AbstractEntity{
         this.loanId = loanId;
     }
 
-    public String getLiablilityName() {
-        return liablilityName;
+    public String getLiabilityName() {
+        return liabilityName;
     }
 
-    public void setLiablilityName(String liablilityName) {
-        this.liablilityName = liablilityName;
+    public void setLiabilityName(String liabilityName) {
+        this.liabilityName = liabilityName;
     }
 
     public String getDateFrom() {

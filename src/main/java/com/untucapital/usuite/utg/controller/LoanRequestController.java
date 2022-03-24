@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/loanRequest")
 public class LoanRequestController {
@@ -25,7 +27,7 @@ public class LoanRequestController {
 
     //get LoanRequest by loan Id
     @GetMapping("/getLoanRequestByLoanId/{id}")
-    public LoanRequest get(@PathVariable("id") String loanId){
+    public List<LoanRequest> get(@PathVariable("id") String loanId){
         return loanRequestService.getByLoanId(loanId);
     }
 

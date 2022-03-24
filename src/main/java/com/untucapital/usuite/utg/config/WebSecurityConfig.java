@@ -167,6 +167,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/bankTo/**")
                 .permitAll()
+                .antMatchers("/currentAssets/**")
+                .permitAll()
+                .antMatchers("/shortTermLiability/**")
+                .permitAll()
+                .antMatchers("/fixedAssets/**")
+                .permitAll()
+                .antMatchers("/longTermLiability/**")
+                .permitAll()
+                .antMatchers("/interestAndFinancialCost/**")
+                .permitAll()
+                .antMatchers("/collateralSecurity/**")
+                .permitAll()
 
 
 

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Service
@@ -17,8 +18,8 @@ public class LoanRequestService {
         loanRequestRepository.save(loanRequest);
     }
 
-    public LoanRequest getByLoanId(String loanId){
-        return loanRequestRepository.findByLoanId(loanId);
+    public List<LoanRequest> getByLoanId(String loanId){
+        return loanRequestRepository.findLoanRequestByLoanId(loanId);
     }
     public void deleteLoanRequest(String id){
         loanRequestRepository.deleteById(id);
