@@ -3,7 +3,7 @@ package com.untucapital.usuite.utg.service;
 import com.untucapital.usuite.utg.model.Industry;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.IndustryRepository;
-import com.untucapital.usuite.utg.untuSite.response.GlobalImageService;
+import com.untucapital.usuite.utg.untu_capital.response.GlobalImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

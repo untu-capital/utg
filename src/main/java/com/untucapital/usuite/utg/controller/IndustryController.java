@@ -3,7 +3,7 @@ package com.untucapital.usuite.utg.controller;
 import com.untucapital.usuite.utg.model.Industry;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.IndustryService;
-import com.untucapital.usuite.utg.untuSite.response.GlobalImageResponse;
+import com.untucapital.usuite.utg.untu_capital.response.GlobalImageResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
