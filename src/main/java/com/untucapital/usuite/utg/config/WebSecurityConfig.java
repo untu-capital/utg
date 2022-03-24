@@ -127,6 +127,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/appraisalLoanRequest/**")
                 .permitAll()
+                .antMatchers("/signature/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
