@@ -3,8 +3,10 @@ package com.untucapital.usuite.utg.micro.qualitativeAssesment.model;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="SwotRiskAnalysisMicro")
 public class SwotRiskAnalysis extends AbstractEntity {
     private String loanId;
     private String strength;

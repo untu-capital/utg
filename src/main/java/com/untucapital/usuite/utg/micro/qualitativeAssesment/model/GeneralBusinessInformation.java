@@ -10,7 +10,7 @@ import javax.persistence.Table;
  */
 
 @Entity
-@Table( name = "GeneralBusinessInformation")
+@Table( name = "GeneralBusinessInformationMicro")
 public class GeneralBusinessInformation extends AbstractEntity {
 
     private String loanId;

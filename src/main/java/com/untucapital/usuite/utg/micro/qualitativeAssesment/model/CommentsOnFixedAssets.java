@@ -6,15 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ClientCharacterAssessmentMicro")
-public class ClientCharacterAssessment extends AbstractEntity {
+@Table(name = "CommentsOnFixedAssetsMicro")
+public class CommentsOnFixedAssets extends AbstractEntity {
     private String loanId;
     private String description;
 
-    public ClientCharacterAssessment() {
+    public CommentsOnFixedAssets() {
     }
 
-    public ClientCharacterAssessment(String loanId, String description) {
+    public CommentsOnFixedAssets(String loanId, String description) {
         this.loanId = loanId;
         this.description = description;
     }
@@ -37,7 +37,7 @@ public class ClientCharacterAssessment extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "ClientCharacterAssessmentService{" +
+        return "CommentsOnFixedAssetsService{" +
                 "loanId='" + loanId + '\'' +
                 ", description='" + description + '\'' +
                 '}';
