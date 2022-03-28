@@ -17,7 +17,7 @@ public class OwnershipDetailsController {
 
     private static final Logger log = LoggerFactory.getLogger(OwnershipDetailsController.class);
 
-    @GetMapping("/ownership_details/{loanId}")
+    @GetMapping("/get/{loanId}")
     public List<OwnershipDetails> getByLoanId(@PathVariable("loanId") String loanId) {
         return ownershipDetailsService.getOwnershipDetailsByLoanId(loanId);
     }

@@ -179,6 +179,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/collateralSecurity/**")
                 .permitAll()
+                .antMatchers("/capitalisationOfProfit/**")
+                .permitAll()
+                .antMatchers("/financialOutflow/**")
+                .permitAll()
+                .antMatchers("/financialInflow/**")
+                .permitAll()
+                .antMatchers("/investmnetInflow/**")
+                .permitAll()
+                .antMatchers("/investmentOutflow/**")
+                .permitAll()
+
 
 
 

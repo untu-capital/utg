@@ -17,7 +17,7 @@ public class MostImportantClientsController {
 
     private static final Logger log = LoggerFactory.getLogger(OwnershipDetailsController.class);
 
-    @GetMapping("/most_important_clients/{loanId}")
+    @GetMapping("/get/{loanId}")
     public List<MostImportantClients> getByLoanId(@PathVariable("loanId") String loanId) {
         return mostImportantaClientsService.getMostImportantClientsByLoanId(loanId);
     }

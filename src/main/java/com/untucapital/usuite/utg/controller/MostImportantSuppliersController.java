@@ -18,7 +18,7 @@ public class MostImportantSuppliersController {
 
     private static final Logger log = LoggerFactory.getLogger(MostImportantSuppliersController.class);
 
-    @GetMapping("/most_important_suppliers/{loanId}")
+    @GetMapping("/get/{loanId}")
     public List<MostImportantSuppliers> getByLoanId(@PathVariable("loanId") String loanId) {
         return mostImportantSuppliersService.getMostImportantSuppliersByLoanId(loanId);
     }
