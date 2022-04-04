@@ -121,6 +121,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/role/**")
                 .permitAll()
+                .antMatchers("/inventories/**")
+                .permitAll()
                 .antMatchers("/roles/**")
                 .permitAll()
                 .antMatchers("/disbursementTickets/**")
