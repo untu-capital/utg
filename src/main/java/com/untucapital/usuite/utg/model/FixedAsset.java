@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -8,8 +9,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "fixedAsset")
 public class FixedAsset extends AbstractEntity{
     @NotNull
+    @Column(nullable = false)
     private String loanId;
     @NotNull
+    @Column(nullable = false)
     private String assetName;
     private String dateFrom;
     private String dateTo;

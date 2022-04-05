@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.CurrentAsset;
 import com.untucapital.usuite.utg.model.FixedAsset;
+//import com.untucapital.usuite.utg.repository.FixedAssetsRepository;
 import com.untucapital.usuite.utg.repository.FixedAssetsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
