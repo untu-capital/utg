@@ -1,46 +1,41 @@
 package com.untucapital.usuite.utg.controller;
 
-
-import com.untucapital.usuite.utg.model.Business;
 import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.service.DirectCostService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/direct_cost")
-public class DirectCostController {
+@Controller
+@RequestMapping("direct_costs")
+public class DirectCostController{
 
     @Autowired
-    DirectCostService directCostService;
+    private final DirectCostService directCostService;
 
-    private static final Logger log = LoggerFactory.getLogger(DirectCostController.class);
-
-
-
-    @GetMapping("")
-    public List<DirectCost> getAllDirectCosts() {
-        return directCostService.getAllDirectCosts();
+    public DirectCostController(DirectCostService directCostService) {
+        this.directCostService = directCostService;
     }
 
-    @GetMapping("/get_costs/{loanId}")
-    public List<DirectCost> getAllDirectCostsByLoanId(@PathVariable("loanId") String loanId) {
-        return directCostService.getDirectCostsByLoanId(loanId);
+    //Save Direct Cost
+    @PostMapping("save")
+    public void addDirectCost(@RequestBody DirectCost directCost){
+        directCostService.addDirectCost(directCost);
     }
 
-    @PostMapping("/addDirectCost")
-    public void add(@RequestBody DirectCost directCost) {
-        directCostService.saveDirectCost(directCost);
+    //Find all Direct Costs and sort by day created
+    @GetMapping("get/{LoanId}")
+    public List<DirectCost> getDirectCost(@PathVariable("LoanId") String id){
+        return directCostService.allDirectCost(id);
     }
 
-    @DeleteMapping("/deleteDirectCost/{loanId}")
-    public void delete(@PathVariable String id) {
-
+    //Delete Direct Cost by Id
+    @DeleteMapping("delete/{id}")
+    public void deleteDirectCost(@PathVariable  String id){
         directCostService.deleteDirectCost(id);
     }
+
 
 }

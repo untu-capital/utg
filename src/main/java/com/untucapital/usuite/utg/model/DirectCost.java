@@ -1,17 +1,16 @@
 package com.untucapital.usuite.utg.model;
 
-
-import com.sun.istack.NotNull;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "directCost")
-public class DirectCost extends AbstractEntity{
+@Table( name = "DirectCost")
+public class DirectCost extends AbstractEntity {
+
     @NotNull
-    @Column(nullable = false)
+    @Column( nullable = false)
     private String loanId;
 
     @NotNull
@@ -30,6 +29,26 @@ public class DirectCost extends AbstractEntity{
     private double month10;
     private double month11;
     private double month12;
+
+    public DirectCost() {
+    }
+
+    public DirectCost(String loanId, String costName, double month1, double month2, double month3, double month4, double month5, double month6, double month7, double month8, double month9, double month10, double month11, double month12) {
+        this.loanId = loanId;
+        this.costName = costName;
+        this.month1 = month1;
+        this.month2 = month2;
+        this.month3 = month3;
+        this.month4 = month4;
+        this.month5 = month5;
+        this.month6 = month6;
+        this.month7 = month7;
+        this.month8 = month8;
+        this.month9 = month9;
+        this.month10 = month10;
+        this.month11 = month11;
+        this.month12 = month12;
+    }
 
     public String getLoanId() {
         return loanId;
@@ -142,5 +161,4 @@ public class DirectCost extends AbstractEntity{
     public void setMonth12(double month12) {
         this.month12 = month12;
     }
-
 }

@@ -1,18 +1,14 @@
 package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.DirectCost;
-import com.untucapital.usuite.utg.model.Sales;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
-public interface DirectCostRepository extends JpaRepository<DirectCost, String> {
+@Repository
+public interface DirectCostRepository extends JpaRepository <DirectCost, String> {
 
-    @Modifying
-    @Query(value = "select * from direct_cost where loan_id = :loanId", nativeQuery = true)
-    List<DirectCost> findbyLoanId(String loanId);
-
+    //Find Business Unit By Loan id
+    List<DirectCost> findDirectCostByLoanId(String loanId);
 
 }
