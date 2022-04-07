@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 public class PurchaseBehaviourMicro extends AbstractEntity {
     @Column(nullable = false)
     private String loanId;
-    private double frequency;
+    private String frequency;
     private double minimum;
     private double normal;
     private double maximum;
@@ -25,11 +25,11 @@ public class PurchaseBehaviourMicro extends AbstractEntity {
         this.loanId = loanId;
     }
 
-    public double getFrequency() {
+    public String getFrequency() {
         return frequency;
     }
 
-    public void setFrequency(double frequency) {
+    public void setFrequency(String frequency) {
         this.frequency = frequency;
     }
 

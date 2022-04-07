@@ -251,6 +251,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/loanOfficerProposal/**")
                 .permitAll()
+                .antMatchers("/dailySales/**")
+                .permitAll()
+                .antMatchers("/averageDailySales/**")
+                .permitAll()
+                .antMatchers("/past3WorkingDays/**")
+                .permitAll()
+                .antMatchers("/past3Months/**")
+                .permitAll()
+                .antMatchers("/cashOnHand/**")
+                .permitAll()
+                .antMatchers("/seasonalityOfSales/**")
+                .permitAll()
+                .antMatchers("/purchaseBehaviour/**")
+                .permitAll()
+                .antMatchers("/mainProductPurchases/**")
+                .permitAll()
+                .antMatchers("/pastPurchases/**")
+                .permitAll()
+
+
+
+
                 .anyRequest()
                 .authenticated();
 

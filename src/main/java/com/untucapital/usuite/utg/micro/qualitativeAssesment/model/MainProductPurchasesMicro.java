@@ -10,7 +10,7 @@ public class MainProductPurchasesMicro extends AbstractEntity {
     @Column(nullable = false)
     private String loanId;
     private String product;
-    private String quality;
+    private double quantity;
     private double frequency;
     private double purchase;
     private double sale;
@@ -31,13 +31,15 @@ public class MainProductPurchasesMicro extends AbstractEntity {
         this.product = product;
     }
 
-    public String getQuality() {
-        return quality;
+
+    public double getQuantity() {
+        return quantity;
     }
 
-    public void setQuality(String quality) {
-        this.quality = quality;
+    public void setQuantity(double quantity) {
+        this.quantity = quantity;
     }
+
 
     public double getFrequency() {
         return frequency;

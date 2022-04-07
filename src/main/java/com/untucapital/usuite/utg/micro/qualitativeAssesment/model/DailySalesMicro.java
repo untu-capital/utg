@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 public class DailySalesMicro extends AbstractEntity {
     @Column(nullable = false)
     private String loanId;
-    private double week;
+    private String week;
     private double badDay;
     private double normal;
     private double goodDay;
@@ -22,11 +22,11 @@ public class DailySalesMicro extends AbstractEntity {
         this.loanId = loanId;
     }
 
-    public double getWeek() {
+    public String getWeek() {
         return week;
     }
 
-    public void setWeek(double week) {
+    public void setWeek(String week) {
         this.week = week;
     }
 
