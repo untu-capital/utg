@@ -28,8 +28,8 @@ public class RepaymentHistoryController {
     public void deleteById(@PathVariable("repaymentHistoryId") String id){
         repaymentHistoryService.deleteBybId(id);
     }
-    //Find All BY Loan Id
-    @GetMapping("get/{loanId}")
+    //Find All BY Loan id
+    @GetMapping("/get/{loanId}")
     public List<RepaymentHistory> findAllByLoanId(@PathVariable("loanId") String id){
         return repaymentHistoryService.findAllByLoanId(id);
     }
