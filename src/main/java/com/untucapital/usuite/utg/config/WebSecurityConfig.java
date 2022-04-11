@@ -231,6 +231,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/commentsOnAccountReceivables/**")
                 .permitAll()
+                .antMatchers("/fixedAssets/**")
+                .permitAll()
                 .antMatchers("/fixedAssetsMicro/**")
                 .permitAll()
                 .antMatchers("/commentsOnFixedAssets/**")
@@ -269,10 +271,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/pastPurchases/**")
                 .permitAll()
-
-
-
-
+                .antMatchers("/motorVehicle/**")
+                .permitAll()
+                .antMatchers("/realEstate/**")
+                .permitAll()
+                .antMatchers("/houseHoldAssets/**")
+                .permitAll()
+                .antMatchers("/businessAssets/**")
+                .permitAll()
+                .antMatchers("/inventoryTwo/**")
+                .permitAll()
+                .antMatchers("/guarantorAssessmentResults/**")
+                .permitAll()
+                .antMatchers("/capacityAssessment/**")
+                .permitAll()
+                .antMatchers("/capacityAssessment2/**")
+                .permitAll()
+                .antMatchers("/loanRequestMicro/**")
+                .permitAll()
+                .antMatchers("/costOfSales/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
