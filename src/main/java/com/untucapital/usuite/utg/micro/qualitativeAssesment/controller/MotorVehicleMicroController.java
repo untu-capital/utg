@@ -29,6 +29,6 @@ public class MotorVehicleMicroController {
     //Find all by loan id
     @GetMapping("/get/{loanId}")
     private List<MotorVehicleMicro> findAllByLoanId(@PathVariable("loanId") String id){
-        return motorVehicleMicroService.findAllByLoanId(id);
+        return  motorVehicleMicroService.findAllByLoanId(id);
     }
 }

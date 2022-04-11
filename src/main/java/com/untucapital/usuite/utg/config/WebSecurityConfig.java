@@ -204,6 +204,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/costOfSales/**")
                 .permitAll()
+                .antMatchers("/currentAssetsMicro/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
