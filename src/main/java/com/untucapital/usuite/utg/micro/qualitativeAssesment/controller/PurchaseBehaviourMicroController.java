@@ -3,10 +3,7 @@ package com.untucapital.usuite.utg.micro.qualitativeAssesment.controller;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.model.PurchaseBehaviourMicro;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.service.PurchaseBehaviourMicroService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,14 +17,17 @@ public class PurchaseBehaviourMicroController {
         this.purchaseBehaviourMicroService = purchaseBehaviourMicroService;
     }
     //Add
+    @PostMapping("/save")
     public void save(@RequestBody PurchaseBehaviourMicro purchaseBehaviourMicro){
         purchaseBehaviourMicroService.save(purchaseBehaviourMicro);
     }
     //Delete by id
+    @DeleteMapping("/delete/{purchaseBehaviourId}")
     public void deleteById(@PathVariable("purchaseBehaviourId") String id){
         purchaseBehaviourMicroService.deleteById(id);
     }
     //Find All by loan ID
+    @GetMapping("/get/{loanId}")
     public List<PurchaseBehaviourMicro> findAllByLoanId(@PathVariable("loanId") String id){
         return purchaseBehaviourMicroService.findAllByLoanId(id);
     }
