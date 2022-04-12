@@ -11,7 +11,7 @@ public class GuarantorAssessmentDetailsMicro extends AbstractEntity {
     private String loanId;
     private String name;
     private String relationship;
-    private String Address;
+    private String address;
     private String phone;
     private String spouse;
     private String familyMembers;
@@ -41,11 +41,11 @@ public class GuarantorAssessmentDetailsMicro extends AbstractEntity {
     }
 
     public String getAddress() {
-        return Address;
+        return address;
     }
 
     public void setAddress(String address) {
-        Address = address;
+        address = address;
     }
 
     public String getPhone() {

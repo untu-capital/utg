@@ -9,8 +9,6 @@ import javax.persistence.Entity;
 public class LoanRequestMicro extends AbstractEntity {
     @Column(nullable = false)
     private String loanId;
-    private String clientMaturity;
-    private double clientAmount;
     private double clientInstallments;
     private double clientInterestRate;
     private double proposeAmount;
@@ -24,22 +22,6 @@ public class LoanRequestMicro extends AbstractEntity {
 
     public void setLoanId(String loanId) {
         this.loanId = loanId;
-    }
-
-    public String getClientMaturity() {
-        return clientMaturity;
-    }
-
-    public void setClientMaturity(String clientMaturity) {
-        this.clientMaturity = clientMaturity;
-    }
-
-    public double getClientAmount() {
-        return clientAmount;
-    }
-
-    public void setClientAmount(double clientAmount) {
-        this.clientAmount = clientAmount;
     }
 
     public double getClientInstallments() {

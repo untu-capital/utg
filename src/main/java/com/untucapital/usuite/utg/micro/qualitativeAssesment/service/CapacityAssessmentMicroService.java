@@ -5,9 +5,11 @@ import com.untucapital.usuite.utg.micro.qualitativeAssesment.repository.Capacity
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class CapacityAssessmentMicroService {
     @Autowired
     private final CapacityAssessmentMicroRepository capacityAssessmentMicroRepository;

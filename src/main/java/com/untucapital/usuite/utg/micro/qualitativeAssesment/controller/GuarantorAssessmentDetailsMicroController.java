@@ -20,6 +20,7 @@ public class GuarantorAssessmentDetailsMicroController {
     @PostMapping("/save")
     public void save(@RequestBody GuarantorAssessmentDetailsMicro guarantorAssessmentDetailsMicro){
         guarantorAssessmentDetailsMicroService.save(guarantorAssessmentDetailsMicro);
+
     }
     //delete by id
     @DeleteMapping("/delete/{guarantorAssessmentDetailsId}")
