@@ -48,10 +48,16 @@ public class UsersController extends AbstractController<User> {
         return userService;
     }
 
-    // Get list of all users with role of Loan Officer
+    // Get list of all users with a certain Branch Name
     @GetMapping("/branch/{branchName}")
     public ResponseEntity<List<User>> getUsersByBranch(@PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<User>>(userRepository.findUsersByBranch(branchName), HttpStatus.OK);
+    }
+
+    // Get list of all users with a certain Branch Name
+    @GetMapping("/creditCommitGroup/{creditCommitGroupName}")
+    public ResponseEntity<List<User>> getUsersByCreditCommitGroupName(@PathVariable("creditCommitGroupName") String creditCommitGroupName) {
+        return new ResponseEntity<List<User>>(userRepository.findUsersByCreditCommitGroup(creditCommitGroupName), HttpStatus.OK);
     }
 
     // Get list of all users with role of Loan Officer

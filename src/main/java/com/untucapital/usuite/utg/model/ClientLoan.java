@@ -136,7 +136,23 @@ public class ClientLoan extends AbstractEntity {
 
     private String finName;
 
+    private String assignedStatus;
 
+    private  String lessFees;
+
+    private  String applicationFee;
+
+    private String bocoDate;
+
+    private String bmDateAssignLo;
+
+    private String loDate;
+
+    private String bmDateMeeting;
+
+    private String ccDate;
+
+    private  String pipelineStatus;
 
     public String getProcessLoanStatus() {
         return processLoanStatus;
@@ -560,5 +576,77 @@ public class ClientLoan extends AbstractEntity {
 
     public void setFinName(String finName) {
         this.finName = finName;
+    }
+
+    public String getAssignedStatus() {
+        return assignedStatus;
+    }
+
+    public void setAssignedStatus(String assignedStatus) {
+        this.assignedStatus = assignedStatus;
+    }
+
+    public String getLessFees() {
+        return lessFees;
+    }
+
+    public void setLessFees(String lessFees) {
+        this.lessFees = lessFees;
+    }
+
+    public String getApplicationFee() {
+        return applicationFee;
+    }
+
+    public void setApplicationFee(String applicationFee) {
+        this.applicationFee = applicationFee;
+    }
+
+    public String getBocoDate() {
+        return bocoDate;
+    }
+
+    public void setBocoDate(String bocoDate) {
+        this.bocoDate = bocoDate;
+    }
+
+    public String getBmDateAssignLo() {
+        return bmDateAssignLo;
+    }
+
+    public void setBmDateAssignLo(String bmDateAssignLo) {
+        this.bmDateAssignLo = bmDateAssignLo;
+    }
+
+    public String getLoDate() {
+        return loDate;
+    }
+
+    public void setLoDate(String loDate) {
+        this.loDate = loDate;
+    }
+
+    public String getBmDateMeeting() {
+        return bmDateMeeting;
+    }
+
+    public void setBmDateMeeting(String bmDateMeeting) {
+        this.bmDateMeeting = bmDateMeeting;
+    }
+
+    public String getCcDate() {
+        return ccDate;
+    }
+
+    public void setCcDate(String ccDate) {
+        this.ccDate = ccDate;
+    }
+
+    public String getPipelineStatus() {
+        return pipelineStatus;
+    }
+
+    public void setPipelineStatus(String pipelineStatus) {
+        this.pipelineStatus = pipelineStatus;
     }
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("direct_costs")
+@RestController
+@RequestMapping("direct_cost")
 public class DirectCostController{
 
     @Autowired
@@ -20,19 +20,19 @@ public class DirectCostController{
     }
 
     //Save Direct Cost
-    @PostMapping("save")
+    @PostMapping("/save")
     public void addDirectCost(@RequestBody DirectCost directCost){
         directCostService.addDirectCost(directCost);
     }
 
     //Find all Direct Costs and sort by day created
-    @GetMapping("get/{LoanId}")
+    @GetMapping("/get/{LoanId}")
     public List<DirectCost> getDirectCost(@PathVariable("LoanId") String id){
         return directCostService.allDirectCost(id);
     }
 
     //Delete Direct Cost by Id
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteDirectCost(@PathVariable  String id){
         directCostService.deleteDirectCost(id);
     }
