@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.Industry;
 import com.untucapital.usuite.utg.model.Role;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.RoleService;
