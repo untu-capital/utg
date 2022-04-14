@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.model.Branches;
+import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.*;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import org.slf4j.Logger;

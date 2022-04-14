@@ -4,24 +4,17 @@ import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "OtherBusinessAndIncomeMicro")
 public class OtherBusinessAndIncome extends AbstractEntity {
+    @NotNull
     private String loanId;
     private String description;
     private String since;
-    private Long monthlyNetIncome;
+    private double monthlyNetIncome;
 
-    public OtherBusinessAndIncome() {
-    }
-
-    public OtherBusinessAndIncome(String loanId, String description, String since, Long monthlyNetIncome) {
-        this.loanId = loanId;
-        this.description = description;
-        this.since = since;
-        this.monthlyNetIncome = monthlyNetIncome;
-    }
 
     public String getLoanId() {
         return loanId;
@@ -47,21 +40,11 @@ public class OtherBusinessAndIncome extends AbstractEntity {
         this.since = since;
     }
 
-    public Long getMonthlyNetIncome() {
+    public double getMonthlyNetIncome() {
         return monthlyNetIncome;
     }
 
-    public void setMonthlyNetIncome(Long monthlyNetIncome) {
+    public void setMonthlyNetIncome(double monthlyNetIncome) {
         this.monthlyNetIncome = monthlyNetIncome;
-    }
-
-    @Override
-    public String toString() {
-        return "OtherBusinessAndIncomeService{" +
-                "loanId='" + loanId + '\'' +
-                ", description='" + description + '\'' +
-                ", since='" + since + '\'' +
-                ", monthlyNetIncome=" + monthlyNetIncome +
-                '}';
     }
 }

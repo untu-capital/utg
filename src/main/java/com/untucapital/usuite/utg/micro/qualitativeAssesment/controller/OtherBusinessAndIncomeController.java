@@ -19,7 +19,7 @@ public class OtherBusinessAndIncomeController {
     }
     //Add
     @PostMapping("/save")
-    public void save(OtherBusinessAndIncome otherBusinessAndIncome){
+    public void save(@RequestBody OtherBusinessAndIncome otherBusinessAndIncome){
         otherBusinessAndIncomeService.save(otherBusinessAndIncome);
     }
     //Delete By Id

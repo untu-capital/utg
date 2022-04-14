@@ -4,10 +4,12 @@ import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "BusinessAndPersonalReferenceMicro")
 public class BusinessAndPersonalReference extends AbstractEntity {
+    @NotNull
     private String loanId;
     private String relation;
     private String fullName;

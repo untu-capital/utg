@@ -16,6 +16,7 @@ public class GeneralBusinessInformation extends AbstractEntity {
     private String loanId;
     private String client;
     private String name;
+    private String visitDate;
     private String activity;
     private String mainLocation;
     private String locationOfOtherPos;
@@ -27,23 +28,31 @@ public class GeneralBusinessInformation extends AbstractEntity {
     private String numberOfWorkingDays;
     private String businessHistoryAndOrganisation;
 
-    public GeneralBusinessInformation() {
+//    public GeneralBusinessInformation() {
+//    }
+//
+//    public GeneralBusinessInformation(String loanId, String client, String name, String activity, String mainLocation, String locationOfOtherPos, Long numberOfWorkers, String clientName, String legalStatus, String activitySince, String businessPremises, String numberOfWorkingDays, String businessHistoryAndOrganisation) {
+//        this.loanId = loanId;
+//        this.client = client;
+//        this.name = name;
+//        this.activity = activity;
+//        this.mainLocation = mainLocation;
+//        this.locationOfOtherPos = locationOfOtherPos;
+//        this.numberOfWorkers = numberOfWorkers;
+//        this.clientName = clientName;
+//        this.legalStatus = legalStatus;
+//        this.activitySince = activitySince;
+//        this.businessPremises = businessPremises;
+//        this.numberOfWorkingDays = numberOfWorkingDays;
+//        this.businessHistoryAndOrganisation = businessHistoryAndOrganisation;
+//    }
+
+    public String getVisitDate() {
+        return visitDate;
     }
 
-    public GeneralBusinessInformation(String loanId, String client, String name, String activity, String mainLocation, String locationOfOtherPos, Long numberOfWorkers, String clientName, String legalStatus, String activitySince, String businessPremises, String numberOfWorkingDays, String businessHistoryAndOrganisation) {
-        this.loanId = loanId;
-        this.client = client;
-        this.name = name;
-        this.activity = activity;
-        this.mainLocation = mainLocation;
-        this.locationOfOtherPos = locationOfOtherPos;
-        this.numberOfWorkers = numberOfWorkers;
-        this.clientName = clientName;
-        this.legalStatus = legalStatus;
-        this.activitySince = activitySince;
-        this.businessPremises = businessPremises;
-        this.numberOfWorkingDays = numberOfWorkingDays;
-        this.businessHistoryAndOrganisation = businessHistoryAndOrganisation;
+    public void setVisitDate(String visitDate) {
+        this.visitDate = visitDate;
     }
 
     public String getLoanId() {
@@ -150,22 +159,5 @@ public class GeneralBusinessInformation extends AbstractEntity {
         this.businessHistoryAndOrganisation = businessHistoryAndOrganisation;
     }
 
-    @Override
-    public String toString() {
-        return "GeneralBusinessInformationService{" +
-                "loanId='" + loanId + '\'' +
-                ", client='" + client + '\'' +
-                ", name='" + name + '\'' +
-                ", activity='" + activity + '\'' +
-                ", mainLocation='" + mainLocation + '\'' +
-                ", locationOfOtherPos='" + locationOfOtherPos + '\'' +
-                ", numberOfWorkers=" + numberOfWorkers +
-                ", clientName='" + clientName + '\'' +
-                ", legalStatus='" + legalStatus + '\'' +
-                ", activitySince='" + activitySince + '\'' +
-                ", businessPremises='" + businessPremises + '\'' +
-                ", numberOfWorkingDays='" + numberOfWorkingDays + '\'' +
-                ", businessHistoryAndOrganisation='" + businessHistoryAndOrganisation + '\'' +
-                '}';
-    }
+
 }

@@ -10,28 +10,13 @@ import javax.persistence.Table;
 public class RepaymentHistory extends AbstractEntity {
     private String loanId;
     private String lendingInstitution;
-    private Long amount;
+    private double amount;
     private String dateOfDisb;
     private String maturity;
     private String outstandingInstallments;
-    private Long totalDaysInArrears;
-    private Long averageDaysInArrears;
+    private double totalDaysInArrears;
+    private double averageDaysInArrears;
     private String classification;
-
-    public RepaymentHistory() {
-    }
-
-    public RepaymentHistory(String loanId, String lendingInstitution, Long amount, String dateOfDisb, String maturity, String outstandingInstallments, Long totalDaysInArrears, Long averageDaysInArrears, String classification) {
-        this.loanId = loanId;
-        this.lendingInstitution = lendingInstitution;
-        this.amount = amount;
-        this.dateOfDisb = dateOfDisb;
-        this.maturity = maturity;
-        this.outstandingInstallments = outstandingInstallments;
-        this.totalDaysInArrears = totalDaysInArrears;
-        this.averageDaysInArrears = averageDaysInArrears;
-        this.classification = classification;
-    }
 
     public String getLoanId() {
         return loanId;
@@ -41,11 +26,19 @@ public class RepaymentHistory extends AbstractEntity {
         this.loanId = loanId;
     }
 
-    public Long getAmount() {
+    public String getLendingInstitution() {
+        return lendingInstitution;
+    }
+
+    public void setLendingInstitution(String lendingInstitution) {
+        this.lendingInstitution = lendingInstitution;
+    }
+
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
@@ -65,14 +58,6 @@ public class RepaymentHistory extends AbstractEntity {
         this.maturity = maturity;
     }
 
-    public String getLendingInstitution() {
-        return lendingInstitution;
-    }
-
-    public void setLendingInstitution(String lendingInstitution) {
-        this.lendingInstitution = lendingInstitution;
-    }
-
     public String getOutstandingInstallments() {
         return outstandingInstallments;
     }
@@ -81,19 +66,19 @@ public class RepaymentHistory extends AbstractEntity {
         this.outstandingInstallments = outstandingInstallments;
     }
 
-    public Long getTotalDaysInArrears() {
+    public double getTotalDaysInArrears() {
         return totalDaysInArrears;
     }
 
-    public void setTotalDaysInArrears(Long totalDaysInArrears) {
+    public void setTotalDaysInArrears(double totalDaysInArrears) {
         this.totalDaysInArrears = totalDaysInArrears;
     }
 
-    public Long getAverageDaysInArrears() {
+    public double getAverageDaysInArrears() {
         return averageDaysInArrears;
     }
 
-    public void setAverageDaysInArrears(Long averageDaysInArrears) {
+    public void setAverageDaysInArrears(double averageDaysInArrears) {
         this.averageDaysInArrears = averageDaysInArrears;
     }
 
@@ -103,19 +88,5 @@ public class RepaymentHistory extends AbstractEntity {
 
     public void setClassification(String classification) {
         this.classification = classification;
-    }
-
-    @Override
-    public String toString() {
-        return "RepaymentHistory{" +
-                "loanId='" + loanId + '\'' +
-                ", amount=" + amount +
-                ", dateOfDisb='" + dateOfDisb + '\'' +
-                ", maturity='" + maturity + '\'' +
-                ", outstandingInstallments='" + outstandingInstallments + '\'' +
-                ", totalDaysInArrears=" + totalDaysInArrears +
-                ", averageDaysInArrears=" + averageDaysInArrears +
-                ", classification='" + classification + '\'' +
-                '}';
     }
 }

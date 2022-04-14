@@ -4,26 +4,19 @@ import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "InventoryMicro")
 public class Inventory extends AbstractEntity {
+    @NotNull
     private String loanId;
     private String product;
     private String quantity;
     private String purchasePrice;
     private String salePrice;
+    private String stockCountDate;
 
-    public Inventory() {
-    }
-
-    public Inventory(String loanId, String product, String quantity, String purchasePrice, String salePrice) {
-        this.loanId = loanId;
-        this.product = product;
-        this.quantity = quantity;
-        this.purchasePrice = purchasePrice;
-        this.salePrice = salePrice;
-    }
 
     public String getLoanId() {
         return loanId;
@@ -65,14 +58,12 @@ public class Inventory extends AbstractEntity {
         this.salePrice = salePrice;
     }
 
-    @Override
-    public String toString() {
-        return "Inventory{" +
-                "loanId='" + loanId + '\'' +
-                ", product='" + product + '\'' +
-                ", quantity='" + quantity + '\'' +
-                ", purchasePrice='" + purchasePrice + '\'' +
-                ", salePrice='" + salePrice + '\'' +
-                '}';
+    public String getStockCountDate() {
+        return stockCountDate;
     }
+
+    public void setStockCountDate(String stockCountDate) {
+        this.stockCountDate = stockCountDate;
+    }
+
 }

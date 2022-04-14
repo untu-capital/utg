@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "commentsOnAmountReceivable")
+@RequestMapping(path = "commentsOnAccountReceivables")
 public class CommentsOnAccountReceivablesController {
     @Autowired
     private final CommentsOnAccountReceivablesService commentsOnAccountReceivablesService;

@@ -4,20 +4,15 @@ import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "CommentsOnFixedAssetsMicro")
 public class CommentsOnFixedAssets extends AbstractEntity {
+    @NotNull
     private String loanId;
+    @NotNull
     private String description;
-
-    public CommentsOnFixedAssets() {
-    }
-
-    public CommentsOnFixedAssets(String loanId, String description) {
-        this.loanId = loanId;
-        this.description = description;
-    }
 
     public String getLoanId() {
         return loanId;
@@ -33,13 +28,5 @@ public class CommentsOnFixedAssets extends AbstractEntity {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public String toString() {
-        return "CommentsOnFixedAssetsService{" +
-                "loanId='" + loanId + '\'' +
-                ", description='" + description + '\'' +
-                '}';
     }
 }
