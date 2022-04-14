@@ -154,6 +154,16 @@ public class ClientLoan extends AbstractEntity {
 
     private  String pipelineStatus;
 
+    private String bmSetMeeting;
+
+    public String getBmSetMeeting() {
+        return bmSetMeeting;
+    }
+
+    public void setBmSetMeeting(String bmSetMeeting) {
+        this.bmSetMeeting = bmSetMeeting;
+    }
+
     public String getProcessLoanStatus() {
         return processLoanStatus;
     }
