@@ -117,6 +117,12 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(loanStatus, branchName, assessmentStatus), HttpStatus.OK);
     }
 
+    // show all loans awaiting for meeting final decision
+    @GetMapping("/loanAwaitingDecision/{loanStatus}/{branchName}/{pipelineStatus}/{creditCommit}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(loanStatus, branchName, pipelineStatus, creditCommit), HttpStatus.OK);
+    }
+
     // show BOCO all tickets not signed yet.
     @GetMapping("/ticketNotSigned/{loanStatus}/{processLoanStatus}/{bocoSignature}/{branchName}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsBySignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("bocoSignature") String bocoSignature, @PathVariable("branchName") String branchName) {
@@ -139,7 +145,7 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByforCmSignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("cmSignature") String cmSignature) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndProcessLoanStatusAndCmSignature(loanStatus, processLoanStatus, cmSignature), HttpStatus.OK);
     }
-    // show CM all tickets not signed yet.
+    // show Fin all tickets not signed yet.
     @GetMapping("/finTicketNotSigned/{loanStatus}/{processLoanStatus}/{finSignature}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByforFinSignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("finSignature") String finSignature) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndProcessLoanStatusAndFinSignature(loanStatus, processLoanStatus, finSignature), HttpStatus.OK);
