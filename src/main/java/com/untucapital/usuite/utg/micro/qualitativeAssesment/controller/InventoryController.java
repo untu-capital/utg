@@ -24,7 +24,7 @@ public class InventoryController {
     //Delete by id
     @DeleteMapping("/delete/{inventoryId}")
     public void deleteById(@PathVariable("inventoryId") String id){
-        inventoryService.findAllByLoanId(id);
+        inventoryService.deleteById(id);
     }
     //Find all by id
     @GetMapping("/get/{loanId}")

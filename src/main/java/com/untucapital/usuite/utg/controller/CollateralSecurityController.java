@@ -29,9 +29,8 @@ public class CollateralSecurityController {
         collateralSecurityService.add(collateralSecurity);
     }
 
-    @DeleteMapping("/delete/{loanId}")
-    public void delete(@PathVariable String id){
+    @DeleteMapping("/delete/{Id}")
+    public void delete(@PathVariable("Id") String id){
         collateralSecurityService.delete(id);
     }
-
 }

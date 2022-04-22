@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.BankTo;
-import com.untucapital.usuite.utg.model.Sales;
 import com.untucapital.usuite.utg.repository.BankToRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,11 @@ import java.util.List;
 @Transactional
 public class BankToService {
     @Autowired
-    BankToRepository bankToRepository;
+    private final BankToRepository bankToRepository;
+
+    public BankToService(BankToRepository bankToRepository) {
+        this.bankToRepository = bankToRepository;
+    }
 
     public List<BankTo> listAllBankTo() {
         return bankToRepository.findAll();
@@ -28,4 +31,7 @@ public class BankToService {
         return bankToRepository.findBankToByLoanIdAndBankOrderByMonthAsc(id, bank);
     }
 
+    public void deleteById(String id) {
+        bankToRepository.deleteById(id);
+    }
 }

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ownership_details")
+@RequestMapping("ownership_details")
 public class OwnershipDetailsController {
     @Autowired
     OwnershipDetailsService ownershipDetailsService;
@@ -27,8 +27,8 @@ public class OwnershipDetailsController {
         ownershipDetailsService.saveOwenershipDetails(ownershipDetails);
     }
 
-    @DeleteMapping("/delete_ownership_details/{id}")
-    public void delete(@PathVariable String id) {
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable("id") String id) {
         ownershipDetailsService.deleteOwnershipDetails(id);
     }
 }

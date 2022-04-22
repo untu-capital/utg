@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("/sales")
+@RequestMapping("sales")
 public class SalesController {
     @Autowired
     SalesService salesService;
@@ -24,7 +24,7 @@ public class SalesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Sales> get(@PathVariable Integer id) {
+    public ResponseEntity<Sales> get(@PathVariable String id) {
         try {
             Sales sales = salesService.getSales(id);
             return new ResponseEntity<Sales>(sales, HttpStatus.OK);
@@ -38,10 +38,14 @@ public class SalesController {
     }
 
 
-    @DeleteMapping("/deleteSales/{id}")
-    public void delete(@PathVariable Integer id) {
+    @DeleteMapping("/deleteSales/{Id}")
+    public void delete(@PathVariable("Id") String id) {
 
         salesService.deleteSales(id);
+    }
+    @DeleteMapping("/delete/{Id}")
+    public void deleteById(@PathVariable("Id") String id){
+        salesService.deleteById(id);
     }
 
     //Get list Business Units by Loan Id and groupBy Bsn unit

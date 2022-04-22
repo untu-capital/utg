@@ -28,7 +28,7 @@ public class MostImportantClientsController {
     }
 
     @DeleteMapping("/delete_most_importanta_clients/{id}")
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable("id") String id) {
         mostImportantaClientsService.deleteMostImportantCliennts(id);
     }
 

@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/source_of_funds")
+@RequestMapping("source_of_funds")
 public class SourceOfFundsController {
 
     @Autowired
@@ -30,8 +30,8 @@ public class SourceOfFundsController {
         sourceOfFundsService.saveSourceOfFunds(sourceOfFunds);
     }
 
-    @DeleteMapping("/delete/{loanId}")
-    public void delete(@PathVariable String id){
+    @DeleteMapping("/delete/{Id}")
+    public void delete(@PathVariable("Id") String id){
         sourceOfFundsService.deleteSourceOfFunds(id);
     }
 
