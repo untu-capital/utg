@@ -169,17 +169,10 @@ public class ClientLoanController {
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setLoanStatus(clientLoan.getLoanStatus());
         updatedLoanStatus.setComment(clientLoan.getComment());
+        updatedLoanStatus.setLoanStatusAssigner(clientLoan.getLoanStatusAssigner());
         updatedLoanStatus.setBocoDate(clientLoan.getBocoDate());
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        updatedLoanStatus.setBmDateAssignLo(clientLoan.getBmDateAssignLo());
-        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        updatedLoanStatus.setLoDate(clientLoan.getLoDate());
-        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        updatedLoanStatus.setBmDateMeeting(clientLoan.getBmDateMeeting());
-        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        updatedLoanStatus.setCcDate(clientLoan.getCcDate());
-        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        updatedLoanStatus.setLoanStatusAssigner(clientLoan.getLoanStatusAssigner());
+
         clientLoanApplication.saveClientLoan(updatedLoanStatus);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
@@ -193,6 +186,8 @@ public class ClientLoanController {
         updatedAssignTo.setProcessLoanStatus(clientLoan.getProcessLoanStatus());
         updatedAssignTo.setAdditionalRemarks(clientLoan.getAdditionalRemarks());
         updatedAssignTo.setAssignedStatus("Assigned");
+        updatedAssignTo.setBmDateAssignLo(clientLoan.getBmDateAssignLo());
+        updatedAssignTo.setPipelineStatus(clientLoan.getPipelineStatus());
         clientLoanApplication.saveClientLoan(updatedAssignTo);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
@@ -258,8 +253,6 @@ public class ClientLoanController {
         clientLoanApplication.saveClientLoan(updateFinSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
-
-
 
     @GetMapping("/loanFileId/{loanFileId}")
     public ResponseEntity<ClientLoan> getClientLoanId(@PathVariable("loanFileId") String loanFileId) {
@@ -344,6 +337,27 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
         clientLoanApplication.saveClientLoan(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
+    }
+
+    //Update meeting columns
+    @PutMapping("/updateBmDateMeeting/{id}")
+    public ResponseEntity<String> updateBmDateMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanStatus.setBmDateMeeting(clientLoan.getBmDateMeeting());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setBmSetMeeting(clientLoan.getBmSetMeeting());
+        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
+    }
+
+    //Update meeting columns
+    @PutMapping("/updateCcFinalMeeting/{id}")
+    public ResponseEntity<String> updateCcFinalMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanStatus.setCcDate(clientLoan.getCcDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
     }
 
     //email to schedule meeting with credit commit

@@ -42,9 +42,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
         log.info("Loan Application Request - {}", FormatterUtil.toJson(clientLoan));
-        // 1. Check if user nationality is Zimbabwean
-        // 2. Check if age is legal > 18
-        // 3.
         ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
 
         log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
@@ -66,15 +63,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return null;
     }
 
-//    @Override
-//    public ClientLoan sendLoanSuccess(ClientLoan clientLoan) {
-//        String emailText = emailSender.sendLoanSuccessMsg(clientLoan.getFirstName()+" "+clientLoan.getLastName(), "New loan Application", "");
-//        emailSender.send("randakelvin@gmail.com", "Untu Credit Application New loan Application", emailText);
-//
-//        log.info(String.valueOf(clientLoan));
-//        return new <ClientLoan>(clientLoanApplication.sendLoanSuccess(clientLoan), HttpStatus.OK);
-//    }
-
     @Override
     public List<ClientLoan> getAllClientLoanApplication() {
         return clientRepository.findAll();
@@ -82,21 +70,12 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
     @Override
     public ClientLoan getClientLoanApplicationById(String id) {
-//        Optional <ClientLoan> clientLoan = clientRepository.findById(id);
-//        if(clientLoan.isPresent()){
-//            return clientLoan.get();
-//        } else {
-//            throw new ResourceNotFoundException("ClientLoan", "Id", id);
-//        }
+
         return clientRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("ClientLoan", "Id", id));
     }
 
-//    @Override
-//    public ClientLoan getClientLoanApplicationByStatus(String loanStatus) {
-//        return clientRepository.findById(loanStatus).orElseThrow(() ->
-//                new ResourceNotFoundException("ClientLoan", "Id", loanStatus));
-//    }
+
 
     @Override
     public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
