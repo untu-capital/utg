@@ -53,7 +53,6 @@ public class ClientLoanController {
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
-
     @GetMapping("/loanStatus/{loanStatus}")
     public ResponseEntity<String> getClientLoanApplicationStatusByloanStatus(@PathVariable("loanStatus") String loanStatusID) {
         List <ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationStatusByloanStatus(loanStatusID);
@@ -164,7 +163,7 @@ public class ClientLoanController {
     }
 
     //build delete client loan application REST api
-    @DeleteMapping("{id}")
+    @DeleteMapping("deleteloan/{id}")
     public ResponseEntity<String> deleteClientLoan(@PathVariable("id") String id) {
         //delete client loan from DB
         clientLoanApplication.deleteClientLoan(id);
