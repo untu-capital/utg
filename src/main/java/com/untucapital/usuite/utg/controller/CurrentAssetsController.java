@@ -23,6 +23,11 @@ public class CurrentAssetsController {
         return currentAssetsService.getCurrentAssets(loanId);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable String id){
+        currentAssetsService.deleteCurrentAsset(id);
+    }
+
     @PostMapping("/add")
     public void add(@RequestBody CurrentAsset currentAsset) {
         currentAssetsService.saveCurrentAssets(currentAsset);

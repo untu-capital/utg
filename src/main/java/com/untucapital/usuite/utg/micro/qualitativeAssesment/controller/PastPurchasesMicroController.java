@@ -27,7 +27,7 @@ public class PastPurchasesMicroController {
     //Delete by id
     @DeleteMapping("/delete/{pastPurchasesId}")
     public void deleteById(@PathVariable("pastPurchasesId") String id){
-
+        pastPurchasesMicroService.deleteById(id);
     }
     //Find all loan id
     @GetMapping("/get/{loanId}")

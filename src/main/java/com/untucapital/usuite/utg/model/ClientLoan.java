@@ -156,6 +156,8 @@ public class ClientLoan extends AbstractEntity {
 
     private String bmSetMeeting;
 
+    private String creditCommit;
+
     public String getBmSetMeeting() {
         return bmSetMeeting;
     }
@@ -658,5 +660,13 @@ public class ClientLoan extends AbstractEntity {
 
     public void setPipelineStatus(String pipelineStatus) {
         this.pipelineStatus = pipelineStatus;
+    }
+
+    public String getCreditCommit() {
+        return creditCommit;
+    }
+
+    public void setCreditCommit(String creditCommit) {
+        this.creditCommit = creditCommit;
     }
 }

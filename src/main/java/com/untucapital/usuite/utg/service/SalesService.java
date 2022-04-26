@@ -23,16 +23,20 @@ public class SalesService {
         salesRepository.save(sales);
     }
 
-    public Sales getSales(Integer id) {
+    public Sales getSales(String id) {
         return salesRepository.findById(id).get();
     }
 
-    public void deleteSales(Integer id) {
+    public void deleteSales(String id) {
         salesRepository.deleteById(id);
     }
 
     //Get List of Business Units by Id
     public List<Sales> lisSalesByLoanId(String id, String businessUnit){
         return salesRepository.findSalestByLoanIdAndBusinessUnitOrderByMonthAsc(id, businessUnit);
+    }
+
+    public void deleteById(String id) {
+        salesRepository.deleteById(id);
     }
 }

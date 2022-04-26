@@ -22,7 +22,10 @@ public class LongTermLiabilityController {
     public List<LongTermLiability> getAllByLoanId(@PathVariable("loanId") String loanId) {
         return longTermLiabilityService.getLiability(loanId);
     }
-
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable String id) {
+        longTermLiabilityService.deleteLiability(id);
+    }
     @PostMapping("/add")
     public void add(@RequestBody LongTermLiability longTermLiability) {
         longTermLiabilityService.saveLiability(longTermLiability);

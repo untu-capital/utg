@@ -29,4 +29,8 @@ public class StockController {
     public List<Stock> getStockByLoanId(@PathVariable("loanId") String loanId) {
         return stockService.getStockByLoanId(loanId);
     }
+    @DeleteMapping("/deleteStock/{id}")
+    public void deleteStockById(@PathVariable String id){
+        stockService.deleteStockById(id);
+    }
 }

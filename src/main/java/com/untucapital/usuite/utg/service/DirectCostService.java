@@ -29,6 +29,6 @@ public class DirectCostService{
 
     //Delete Direct Cost By id
     public void deleteDirectCost(String id){
-        deleteDirectCost(id);
+        directCostRepository.deleteById(id);
     }
 }

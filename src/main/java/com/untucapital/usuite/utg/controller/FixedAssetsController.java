@@ -23,6 +23,11 @@ public class FixedAssetsController {
         return fixedAssetService.getFixedAssets(loanId);
     }
 
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable String id){
+            fixedAssetService.deleteFixedAsset(id);
+    }
+
     @PostMapping("/add")
     public void add(@RequestBody FixedAsset fixedAsset) {
         fixedAssetService.saveFixedAssets(fixedAsset);

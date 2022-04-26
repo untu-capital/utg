@@ -23,4 +23,8 @@ public class StockService {
     public List<Stock> getStockByLoanId(String loanId) {
         return stockRepository.findbyLoanId(loanId);
     }
+
+    public void deleteStockById(String id) {
+        stockRepository.deleteById(id);
+    }
 }

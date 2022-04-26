@@ -22,6 +22,10 @@ public class ShortTermLiabilityController {
     public List<ShortTermLiability> getAllByLoanId(@PathVariable("loanId") String loanId) {
         return shortTermLiabilityService.getLiability(loanId);
     }
+    @DeleteMapping("/delete/{id}")
+    public void deleteById(@PathVariable String id){
+        shortTermLiabilityService.deleteLiablity(id);
+    }
 
     @PostMapping("/add")
     public void add(@RequestBody ShortTermLiability shortTermLiability) {
