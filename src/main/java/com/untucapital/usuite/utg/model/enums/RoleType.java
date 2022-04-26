@@ -15,5 +15,4 @@ public enum RoleType {
     ROLE_CM,
     ROLE_FIN,
     ROLE_BOARD,
-
 }
