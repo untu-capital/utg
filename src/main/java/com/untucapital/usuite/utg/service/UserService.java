@@ -145,9 +145,9 @@ public class UserService extends AbstractService<User> {
             throw new ValidationException("Email Address not valid");
         }
 
-        if (userRepository.existsByContactDetail_EmailAddress(signUpRequest.getEmail())) {
-            throw new ValidationException("Email Address already in exists");
-        }
+//        if (userRepository.existsByContactDetail_EmailAddress(signUpRequest.getEmail())) {
+//            throw new ValidationException("Email Address already exists");
+//        }
 
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
