@@ -26,7 +26,7 @@ public class DatabaseFileService {
         d.setFileDescription(fileDescription);
         d.setUserId(userId);
         d.setLoanId(loanId);
-        //dbFileRepository.save(d);
+//        dbFileRepository.save(d);
 
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
