@@ -303,6 +303,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/appraisalFileUpload/**")
                 .permitAll()
+                .antMatchers("/assessmentFileUpload/**")
+                .permitAll()
+
 
 
 
