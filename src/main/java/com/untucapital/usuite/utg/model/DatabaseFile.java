@@ -15,9 +15,7 @@ public class DatabaseFile extends AbstractEntity{
 	//private String id;
 
 	private String fileName;
-
 	private String fileType;
-
 	private String fileDescription;
 
 	@NotNull
