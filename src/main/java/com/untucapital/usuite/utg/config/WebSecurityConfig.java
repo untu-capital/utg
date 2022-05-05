@@ -301,11 +301,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/guarantorAssessmentDetails/**")
                 .permitAll()
-                .antMatchers("/appraisalFileUpload/**")
-                .permitAll()
                 .antMatchers("/assessmentFileUpload/**")
                 .permitAll()
 
+                .antMatchers("/appraisalFileUpload/**")
+                .permitAll()
 
 
 
