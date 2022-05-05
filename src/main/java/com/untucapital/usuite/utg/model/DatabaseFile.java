@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 
 @Entity
-@Table(name = "files")
+@Table(name = "DataFiles")
 public class DatabaseFile extends AbstractEntity{
 	//@Id
 	//@GeneratedValue(generator = "uuid")
