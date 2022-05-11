@@ -22,7 +22,7 @@ public class AssessmentFileUploadController {
 
     @PostMapping("/add")
     public ResponseEntity<String> add(@RequestBody AssessmentFileUpload assessmentFileUpload){
-        System.out.println(assessmentFileUpload.getFileName());
+//        System.out.println(assessmentFileUpload.getFileName());
         assessmentFileUploadService.save(assessmentFileUpload);
         return new ResponseEntity<String>("Assessment file uploaded", HttpStatus.OK);
     }
@@ -32,7 +32,5 @@ public class AssessmentFileUploadController {
         return assessmentFileUploadService.getAssessmentFileUpload(loanId);
 
     }
-
-
 
 }

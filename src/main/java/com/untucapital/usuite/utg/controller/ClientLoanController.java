@@ -111,14 +111,26 @@ public class ClientLoanController {
     }
 
     // show BM all loans that have been assessed
-    @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{assessmentStatus}")
-    public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(loanStatus, branchName, assessmentStatus), HttpStatus.OK);
+//    @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{assessmentStatus}")
+//    public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
+//        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(loanStatus, branchName, assessmentStatus), HttpStatus.OK);
+//    }
+
+    // show BM all loans that have been assessed
+    @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{pipelineStatus}")
+    public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("pipelineStatus") String pipelineStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndPipelineStatus(loanStatus, branchName, pipelineStatus), HttpStatus.OK);
     }
 
     // show all loans awaiting for meeting final decision
-    @GetMapping("/loanAwaitingDecision/{loanStatus}/{branchName}/{pipelineStatus}/{creditCommit}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
+    @GetMapping("/loanAwaitingDecision/{loanStatus}/{pipelineStatus}/{creditCommit}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(loanStatus, pipelineStatus, creditCommit), HttpStatus.OK);
+    }
+
+    // show all loans awaiting for meeting final decision to branch managers
+    @GetMapping("/finalizedLoan/{loanStatus}/{branchName}/{pipelineStatus}/{creditCommit}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatustoBms(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(loanStatus, branchName, pipelineStatus, creditCommit), HttpStatus.OK);
     }
 
@@ -341,6 +353,8 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingRN(clientLoan.getMeetingRN());
         updatedLoanMeeting.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
+        updatedLoanMeeting.setCcDate(clientLoan.getCcDate());
+        updatedLoanMeeting.setPipelineStatus(clientLoan.getPipelineStatus());
         clientLoanApplication.saveClientLoan(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
     }
