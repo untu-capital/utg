@@ -29,7 +29,7 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoansByFinSignature(String finSignature);
 
-    List<ClientLoan> findClientLoansByLoanStatusAndBranchNameAndProcessLoanStatus(String loanStatus, String branchName, String assessmentStatus);
+    List<ClientLoan> findClientLoansByLoanStatusAndBranchNameAndPipelineStatus(String loanStatus, String branchName, String pipelineStatus);
 
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndBranchName(String loanStatus, String processLoanStatus, String bocoSignature, String branchName);
 
@@ -46,6 +46,8 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
     List<ClientLoan> findClientLoansByLoanStatusAndAssignToAndBranchNameAndProcessLoanStatus(String loanStatus, String assignTo, String branchName, String assessmentStatus);
 
     ClientLoan findByLoanFileId(String loanAndFileId);
+
+    List<ClientLoan> findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(String loanStatus, String pipelineStatus, String creditCommit);
 
     List<ClientLoan> findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(String loanStatus, String branchName, String pipelineStatus, String creditCommit);
 
