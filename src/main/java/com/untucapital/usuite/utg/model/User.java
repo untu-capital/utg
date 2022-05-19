@@ -21,17 +21,17 @@ import static javax.persistence.CascadeType.*;
 public class User extends AbstractEntity {
 
     @NotBlank
-    @Size(min = 4, max = 15)
+    @Size(min = 2, max = 40)
     @Column(name = "username", nullable = false)
     private String username;
 
     @NotBlank
-    @Size(min = 4, max = 20)
+    @Size(min = 2, max = 40)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
     @NotBlank
-    @Size(min = 4, max = 20)
+    @Size(min = 2, max = 40)
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
