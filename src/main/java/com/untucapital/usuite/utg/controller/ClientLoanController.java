@@ -83,8 +83,13 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndAssignedStatusAndBranchName(loanStatus,assignedStatus, branchName), HttpStatus.OK);
     }
 
+
+
+
+
+
     // show BM all loans signed by BOCO
-    @GetMapping("/bocoSignature/{bocoSignature}/{branchName}")
+    @GetMapping("/bocoSignature/{bocoSignature}/{branchName}/")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureAndBranchName(@PathVariable("bocoSignature") String bocoSignature, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBocoSignatureAndBranchName(bocoSignature, branchName), HttpStatus.OK);
     }
@@ -94,6 +99,7 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBMSignatureAndBranchName(@PathVariable("bmSignature") String bmSignature, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBmSignatureAndBranchName(bmSignature, branchName), HttpStatus.OK);
     }
+
     // show CM all loans signed by CA
     @GetMapping("/caSignature/{caSignature}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByCASignatureAndBranchName(@PathVariable("caSignature") String caSignature) {
@@ -227,7 +233,9 @@ public class ClientLoanController {
     public ResponseEntity<String> ticketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateSignatureStatus.setBocoSignature(clientLoan.getBocoSignature());
+//        updateSignatureStatus.setBcUserId(clientLoan.getBcUserId());
         updateSignatureStatus.setBocoName(clientLoan.getBocoName());
+        updateSignatureStatus.setBocoSignatureImage(clientLoan.getBocoSignatureImage());
         updateSignatureStatus.setLessFees(clientLoan.getLessFees());
         updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
         clientLoanApplication.saveClientLoan(updateSignatureStatus);
@@ -238,6 +246,8 @@ public class ClientLoanController {
     @PutMapping("/updateBmSignature/{id}")
     public ResponseEntity<String> bmTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateBmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+//        updateBmSignatureStatus.setBmSignatureImage(clientLoan.getBmSignatureImage());
+//        updateBmSignatureStatus.setBmUserId(clientLoan.getBmUserId());
         updateBmSignatureStatus.setBmSignature(clientLoan.getBmSignature());
         updateBmSignatureStatus.setBmName(clientLoan.getBmName());
         clientLoanApplication.saveClientLoan(updateBmSignatureStatus);
@@ -247,6 +257,8 @@ public class ClientLoanController {
     @PutMapping("/updateCmSignature/{id}")
     public ResponseEntity<String> cmTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateCmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+//        updateCmSignatureStatus.setCmSignatureImage(clientLoan.getCmSignatureImage());
+//        updateCmSignatureStatus.setCmUserId(clientLoan.getCmUserId());
         updateCmSignatureStatus.setCmSignature(clientLoan.getCmSignature());
         updateCmSignatureStatus.setCmName(clientLoan.getCmName());
         clientLoanApplication.saveClientLoan(updateCmSignatureStatus);
@@ -257,6 +269,8 @@ public class ClientLoanController {
     @PutMapping("/updateCaSignature/{id}")
     public ResponseEntity<String> caTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateCaSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+//        updateCaSignatureStatus.setCaSignatureImage(clientLoan.getCaSignatureImage());
+//        updateCaSignatureStatus.setCaUserId(clientLoan.getCaUserId());
         updateCaSignatureStatus.setCaSignature(clientLoan.getCaSignature());
         updateCaSignatureStatus.setCaName(clientLoan.getCaName());
         clientLoanApplication.saveClientLoan(updateCaSignatureStatus);
@@ -266,6 +280,8 @@ public class ClientLoanController {
     @PutMapping("/updateFinSignature/{id}")
     public ResponseEntity<String> finTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateFinSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+//        updateFinSignatureStatus.setFinSignatureImage(clientLoan.getFinSignatureImage());
+//        updateFinSignatureStatus.setFinUserId(clientLoan.getFinUserId());
         updateFinSignatureStatus.setFinSignature(clientLoan.getFinSignature());
         updateFinSignatureStatus.setFinName(clientLoan.getFinName());
         clientLoanApplication.saveClientLoan(updateFinSignatureStatus);

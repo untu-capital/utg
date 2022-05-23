@@ -149,6 +149,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/comments/**")
                 .permitAll()
+                .antMatchers("/signatures/**")
+                .permitAll()
                 .antMatchers("/credit_history/**")
                 .permitAll()
                 .antMatchers("/disbursementTickets/**")
