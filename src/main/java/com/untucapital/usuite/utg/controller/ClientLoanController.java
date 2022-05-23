@@ -128,7 +128,7 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchNameAndPipelineStatus(loanStatus, branchName, pipelineStatus), HttpStatus.OK);
     }
 
-    // show all loans awaiting for meeting final decision
+    // show all loans awaiting for meeting final decision to Credit commit
     @GetMapping("/loanAwaitingDecision/{loanStatus}/{pipelineStatus}/{creditCommit}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(loanStatus, pipelineStatus, creditCommit), HttpStatus.OK);
@@ -345,7 +345,7 @@ public class ClientLoanController {
     //get applications by BranchName and loan display loan with status pending for BOCO
     @GetMapping("/byBranch/{branchName}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchName(@PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBranchName(branchName), HttpStatus.OK);
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBranchNameOrderByCreatedAtDesc(branchName), HttpStatus.OK);
     }
 
     //display unchecked loans  with status pending for BOCO
@@ -382,6 +382,7 @@ public class ClientLoanController {
         updatedLoanStatus.setBmDateMeeting(clientLoan.getBmDateMeeting());
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
         updatedLoanStatus.setBmSetMeeting(clientLoan.getBmSetMeeting());
+        updatedLoanStatus.setCreditCommit(clientLoan.getCreditCommit());
         clientLoanApplication.saveClientLoan(updatedLoanStatus);
         return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
     }

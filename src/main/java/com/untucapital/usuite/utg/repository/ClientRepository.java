@@ -10,6 +10,8 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findByUserId(String userId);
+    List<ClientLoan> findClientLoansByBranchNameOrderByCreatedAtDesc(String branchName);
+
 
     List<ClientLoan> findClientLoansByBranchName(String branchName);
 
