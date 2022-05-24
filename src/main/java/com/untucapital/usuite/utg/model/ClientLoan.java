@@ -118,6 +118,8 @@ public class ClientLoan extends AbstractEntity {
 
     private String bocoSignature;
 
+    private String bocoSignatureImage;
+
     private String bocoName;
 
     private String bmSignature;
@@ -157,6 +159,24 @@ public class ClientLoan extends AbstractEntity {
     private String bmSetMeeting;
 
     private String creditCommit;
+
+//    private String bcUserId;
+//
+//    private String bmUserId;
+//
+//    private String caUserId;
+//
+//    private String cmUserId;
+//
+//    private String finUserId;
+//
+//    private String bmSignatureImage;
+//
+//    private String caSignatureImage;
+//
+//    private String cmSignatureImage;
+//
+//    private String finSignatureImage;
 
     public String getBmSetMeeting() {
         return bmSetMeeting;
@@ -669,4 +689,84 @@ public class ClientLoan extends AbstractEntity {
     public void setCreditCommit(String creditCommit) {
         this.creditCommit = creditCommit;
     }
+
+    public String getBocoSignatureImage() {
+        return bocoSignatureImage;
+    }
+
+    public void setBocoSignatureImage(String bocoSignatureImage) {
+        this.bocoSignatureImage = bocoSignatureImage;
+    }
+
+//    public String getBcUserId() {
+//        return bcUserId;
+//    }
+//
+//    public void setBcUserId(String bcUserId) {
+//        this.bcUserId = bcUserId;
+//    }
+//
+//    public String getBmUserId() {
+//        return bmUserId;
+//    }
+//
+//    public void setBmUserId(String bmUserId) {
+//        this.bmUserId = bmUserId;
+//    }
+//
+//    public String getCaUserId() {
+//        return caUserId;
+//    }
+//
+//    public void setCaUserId(String caUserId) {
+//        this.caUserId = caUserId;
+//    }
+//
+//    public String getCmUserId() {
+//        return cmUserId;
+//    }
+//
+//    public void setCmUserId(String cmUserId) {
+//        this.cmUserId = cmUserId;
+//    }
+//
+//    public String getFinUserId() {
+//        return finUserId;
+//    }
+//
+//    public void setFinUserId(String finUserId) {
+//        this.finUserId = finUserId;
+//    }
+//
+//    public String getBmSignatureImage() {
+//        return bmSignatureImage;
+//    }
+//
+//    public void setBmSignatureImage(String bmSignatureImage) {
+//        this.bmSignatureImage = bmSignatureImage;
+//    }
+//
+//    public String getCaSignatureImage() {
+//        return caSignatureImage;
+//    }
+//
+//    public void setCaSignatureImage(String caSignatureImage) {
+//        this.caSignatureImage = caSignatureImage;
+//    }
+//
+//    public String getCmSignatureImage() {
+//        return cmSignatureImage;
+//    }
+//
+//    public void setCmSignatureImage(String cmSignatureImage) {
+//        this.cmSignatureImage = cmSignatureImage;
+//    }
+//
+//    public String getFinSignatureImage() {
+//        return finSignatureImage;
+//    }
+//
+//    public void setFinSignatureImage(String finSignatureImage) {
+//        this.finSignatureImage = finSignatureImage;
+//    }
 }
