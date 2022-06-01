@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping(path = "credit_application")
 public class ClientLoanController {
 
+    
     @Autowired
     ClientRepository clientRepository;
 
@@ -89,7 +90,7 @@ public class ClientLoanController {
 
 
     // show BM all loans signed by BOCO
-    @GetMapping("/bocoSignature/{bocoSignature}/{branchName}/")
+    @GetMapping("/bocoSignature/{bocoSignature}/{branchName}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureAndBranchName(@PathVariable("bocoSignature") String bocoSignature, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBocoSignatureAndBranchName(bocoSignature, branchName), HttpStatus.OK);
     }
