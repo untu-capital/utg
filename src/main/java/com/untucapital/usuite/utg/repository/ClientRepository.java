@@ -54,4 +54,16 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
     List<ClientLoan> findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(String loanStatus, String branchName, String pipelineStatus, String creditCommit);
 
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndPipelineStatusAndBranchName(String loanStatus, String processLoanStatus, String bocoSignature, String pipelineStatus, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBmSignatureAndPipelineStatusAndBranchName(String loanStatus, String processLoanStatus, String bmSignature, String pipelineStatus, String branchName);
+
+    List<ClientLoan> findClientLoansByBocoSignatureAndCompletelyDoneAndBranchName(String bocoSignature, String completelyDone, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBmSignatureAndBocoSignatureAndPipelineStatusAndBranchName(String loanStatus, String processLoanStatus, String bmSignature, String bocoSignature, String pipelineStatus, String branchName);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBmSignatureAndCaSignature(String loanStatus, String processLoanStatus, String bmSignature, String caSignature);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndCaSignatureAndCmSignature(String loanStatus, String processLoanStatus, String caSignature, String cmSignature);
+
+    List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndCmSignatureAndFinSignature(String loanStatus, String processLoanStatus, String cmSignature, String finSignature);
 }
