@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(path = "credit_application")
 public class ClientLoanController {
 
-    
+
     @Autowired
     ClientRepository clientRepository;
 
@@ -54,6 +54,7 @@ public class ClientLoanController {
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
+
     @GetMapping("/loanStatus/{loanStatus}")
     public ResponseEntity<String> getClientLoanApplicationStatusByloanStatus(@PathVariable("loanStatus") String loanStatusID) {
         List <ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationStatusByloanStatus(loanStatusID);
