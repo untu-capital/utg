@@ -249,7 +249,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> You have received a new application on Untu Capital Credit Application Portal. Please login to your account to see the application: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br>Untu Credit Team</p>" +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br>Untu Credit Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -319,7 +319,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> You have received a Checked application on Untu Capital Credit Application Portal. Please login to your account to view the application: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu Credit Team</p>" +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu Credit Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -389,7 +389,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> You have been assigned a loan application to process on Untu Capital Credit Application Portal. Please login to your account to view the application: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu Credit Team</p>" +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Go to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu Credit Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -459,7 +459,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> We have received your loan application on Untu-Capital Credit Application Portal. You can login to your account to track your application: " +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Take me to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu-Capital Team</p>" +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Take me to Portal</a> </p></blockquote> <p>Cheers</br></br>Untu-Capital Team</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -529,7 +529,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> " + message +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -599,7 +599,7 @@ public class EmailSender {
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
                 "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Dear " + recipient + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> " + message +
-                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"http://localhost/untucapital/production/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
+                "               </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #e8b592;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"${untu.domain-path.link}/index.php\">Go to Portal</a> </p></blockquote> <p>Regards,</br></p>" + senderName +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
