@@ -154,8 +154,8 @@ public class UserService extends AbstractService<User> {
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setActive(false);
-        user.setVerified(false);
+        user.setActive(true);
+        user.setVerified(true);
 
         ContactDetail cd = new ContactDetail();
         cd.setEmailAddress(signUpRequest.getEmail());

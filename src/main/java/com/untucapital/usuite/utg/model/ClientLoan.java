@@ -60,7 +60,7 @@ public class ClientLoan extends AbstractEntity {
 
     private String suburb;
 
-    private String photoUpload;
+//    private String photoUpload;
 
     @Column(nullable = false)
     private String city;
@@ -84,34 +84,46 @@ public class ClientLoan extends AbstractEntity {
 
     private String comment;
 
+    @Column(length = 80)
     private String assignTo;
 
+    @Column(length = 80)
     private String assignedBy;
 
     private String additionalRemarks;
 
+    @Column(length = 80)
     private String loanFileId;
 
+    @Column(length = 80)
     private String processLoanStatus;
 
+    @Column(length = 80)
     private String processedBy;
 
+    @Column(length = 80)
     private String meetingLoanAmount;
 
     private String meetingTenure;
 
+    @Column(length = 20)
     private String meetingInterestRate;
 
+    @Column(length = 20)
     private String meetingOnWhichBasis;
 
+    @Column(length = 20)
     private String meetingCashHandlingFee;
 
     private String meetingRepaymentAmount;
 
+    @Column(length = 20)
     private String meetingProduct;
 
+    @Column(length = 20)
     private String meetingRN;
 
+    @Column(length = 20)
     private String meetingUpfrontFee;
 
     private String meetingFinalizedBy;
@@ -140,8 +152,10 @@ public class ClientLoan extends AbstractEntity {
 
     private String assignedStatus;
 
+    @Column(length = 20)
     private  String lessFees;
 
+    @Column(length = 20)
     private  String applicationFee;
 
     private String bocoDate;
@@ -154,13 +168,34 @@ public class ClientLoan extends AbstractEntity {
 
     private String ccDate;
 
+    @Column(length = 40)
     private  String pipelineStatus;
 
     private String bmSetMeeting;
 
     private String creditCommit;
 
+    @Column(length = 40)
     private String completelyDone;
+
+    @Column(length = 80)
+    private String nextOfKinName;
+
+    @Column(length = 20)
+    private String nextOfKinPhone;
+
+    private String nextOfKinRelationship;
+
+    private String nextOfKinAddress;
+
+    private String nextOfKinName2;
+
+    @Column(length = 20)
+    private String nextOfKinPhone2;
+
+    private String nextOfKinRelationship2;
+
+    private String nextOfKinAddress2;
 
 
     public String getBmSetMeeting() {
@@ -227,10 +262,14 @@ public class ClientLoan extends AbstractEntity {
     public String getMaritalStatus() {
         return maritalStatus;
     }
-    public String getPhotoUpload() {
-        return photoUpload;
-    }
-    public void setPhotoUpload(String photoUpload) { this.photoUpload = photoUpload;}
+
+
+//    public String getPhotoUpload() {
+//        return photoUpload;
+//    }
+//
+//    public void setPhotoUpload(String photoUpload) { this.photoUpload = photoUpload;}
+
     public void setMaritalStatus(String maritalStatus) {
         this.maritalStatus = maritalStatus;
     }
@@ -302,6 +341,7 @@ public class ClientLoan extends AbstractEntity {
     public String getSuburb() {
         return suburb;
     }
+
     public void setSuburb(String suburb) {
         this.suburb = suburb;
     }
@@ -689,5 +729,69 @@ public class ClientLoan extends AbstractEntity {
 
     public void setCompletelyDone(String completelyDone) {
         this.completelyDone = completelyDone;
+    }
+
+    public String getNextOfKinName() {
+        return nextOfKinName;
+    }
+
+    public void setNextOfKinName(String nextOfKinName) {
+        this.nextOfKinName = nextOfKinName;
+    }
+
+    public String getNextOfKinPhone() {
+        return nextOfKinPhone;
+    }
+
+    public void setNextOfKinPhone(String nextOfKinPhone) {
+        this.nextOfKinPhone = nextOfKinPhone;
+    }
+
+    public String getNextOfKinRelationship() {
+        return nextOfKinRelationship;
+    }
+
+    public void setNextOfKinRelationship(String nextOfKinRelationship) {
+        this.nextOfKinRelationship = nextOfKinRelationship;
+    }
+
+    public String getNextOfKinAddress() {
+        return nextOfKinAddress;
+    }
+
+    public void setNextOfKinAddress(String nextOfKinAddress) {
+        this.nextOfKinAddress = nextOfKinAddress;
+    }
+
+    public String getNextOfKinName2() {
+        return nextOfKinName2;
+    }
+
+    public void setNextOfKinName2(String nextOfKinName2) {
+        this.nextOfKinName2 = nextOfKinName2;
+    }
+
+    public String getNextOfKinPhone2() {
+        return nextOfKinPhone2;
+    }
+
+    public void setNextOfKinPhone2(String nextOfKinPhone2) {
+        this.nextOfKinPhone2 = nextOfKinPhone2;
+    }
+
+    public String getNextOfKinRelationship2() {
+        return nextOfKinRelationship2;
+    }
+
+    public void setNextOfKinRelationship2(String nextOfKinRelationship2) {
+        this.nextOfKinRelationship2 = nextOfKinRelationship2;
+    }
+
+    public String getNextOfKinAddress2() {
+        return nextOfKinAddress2;
+    }
+
+    public void setNextOfKinAddress2(String nextOfKinAddress2) {
+        this.nextOfKinAddress2 = nextOfKinAddress2;
     }
 }
