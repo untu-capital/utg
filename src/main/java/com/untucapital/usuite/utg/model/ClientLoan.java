@@ -150,6 +150,10 @@ public class ClientLoan extends AbstractEntity {
 
     private String finName;
 
+    private String boardSignature;
+
+    private String boardName;
+
     private String assignedStatus;
 
     @Column(length = 20)
@@ -633,6 +637,22 @@ public class ClientLoan extends AbstractEntity {
 
     public void setFinName(String finName) {
         this.finName = finName;
+    }
+
+    public String getBoardSignature() {
+        return boardSignature;
+    }
+
+    public void setBoardSignature(String boardSignature) {
+        this.boardSignature = boardSignature;
+    }
+
+    public String getBoardName() {
+        return boardName;
+    }
+
+    public void setBoardName(String boardName) {
+        this.boardName = boardName;
     }
 
     public String getAssignedStatus() {

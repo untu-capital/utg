@@ -119,6 +119,12 @@ public class ClientLoanController {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByFinSignature(finSignature), HttpStatus.OK);
     }
 
+    // show signed tickets for Fin
+    @GetMapping("/boardSignature/{boardSignature}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBoardSignature(@PathVariable("boardSignature") String boardSignature) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBoardSignature(boardSignature), HttpStatus.OK);
+    }
+
     // show BM all loans that have been assessed
 //    @GetMapping("/loanStatusAssessed/{loanStatus}/{branchName}/{assessmentStatus}")
 //    public ResponseEntity<List<ClientLoan>> getAssessedClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName, @PathVariable("assessmentStatus") String assessmentStatus) {
@@ -148,6 +154,7 @@ public class ClientLoanController {
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsBySignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("bocoSignature") String bocoSignature, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndPipelineStatusAndBranchName(loanStatus, processLoanStatus, bocoSignature, pipelineStatus, branchName), HttpStatus.OK);
     }
+
     // show BM all tickets not signed yet.
     @GetMapping("/bmTicketNotSigned/{loanStatus}/{processLoanStatus}/{bmSignature}/{bocoSignature}/{pipelineStatus}/{branchName}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByforBmSignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("bmSignature") String bmSignature, @PathVariable("bocoSignature") String bocoSignature, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("branchName") String branchName) {
@@ -169,6 +176,12 @@ public class ClientLoanController {
     @GetMapping("/finTicketNotSigned/{loanStatus}/{processLoanStatus}/{cmSignature}/{finSignature}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByforFinSignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("cmSignature") String cmSignature, @PathVariable("finSignature") String finSignature) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndProcessLoanStatusAndCmSignatureAndFinSignature(loanStatus, processLoanStatus,cmSignature, finSignature), HttpStatus.OK);
+    }
+
+    // show Board all tickets not signed yet.
+    @GetMapping("/boardTicketNotSigned/{loanStatus}/{processLoanStatus}/{finSignature}/{boardSignature}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByforBoardSignatureStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("processLoanStatus") String processLoanStatus, @PathVariable("finSignature") String finSignature, @PathVariable("boardSignature") String boardSignature) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndProcessLoanStatusAndFinSignatureAndBoardSignature(loanStatus, processLoanStatus, finSignature, boardSignature), HttpStatus.OK);
     }
 
     // Show loans assigned to a specific loan officer (not yet assessed)
@@ -276,11 +289,19 @@ public class ClientLoanController {
     @PutMapping("/updateFinSignature/{id}")
     public ResponseEntity<String> finTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updateFinSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
-//        updateFinSignatureStatus.setFinSignatureImage(clientLoan.getFinSignatureImage());
-//        updateFinSignatureStatus.setFinUserId(clientLoan.getFinUserId());
         updateFinSignatureStatus.setFinSignature(clientLoan.getFinSignature());
         updateFinSignatureStatus.setFinName(clientLoan.getFinName());
         clientLoanApplication.saveClientLoan(updateFinSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
+    // update predisbursement ticket for Board Signature
+    @PutMapping("/updateBoardSignature/{id}")
+    public ResponseEntity<String> boardTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateBoardSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateBoardSignatureStatus.setBoardSignature(clientLoan.getBoardSignature());
+        updateBoardSignatureStatus.setBoardName(clientLoan.getBoardName());
+        clientLoanApplication.saveClientLoan(updateBoardSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
