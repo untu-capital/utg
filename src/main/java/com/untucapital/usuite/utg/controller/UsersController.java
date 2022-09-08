@@ -78,6 +78,28 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable String id, @RequestBody User user){
+        User updatedUser = userRepository.getUserById(id);
+        updatedUser.setFirstName(user.getFirstName());
+        updatedUser.setLastName(user.getLastName());
+
+        updatedUser.setUsername(user.getUsername());
+        updatedUser.setContactDetail(user.getContactDetail());
+        updatedUser.setPassword(user.getPassword());
+
+        userRepository.save(updatedUser);
+        return new ResponseEntity<String>("User Info Status successfully updated.", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateUserPassword/{id}")
+    public ResponseEntity<String> updateUserPassword(@PathVariable String id, @RequestBody User user){
+        User updatedUser = userRepository.getUserById(id);
+        updatedUser.setPassword(user.getPassword());
+        userRepository.save(updatedUser);
+        return new ResponseEntity<String>("User password Info Status successfully updated.", HttpStatus.OK);
+    }
+
     @DeleteMapping("/deleteUser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable String id){
         String message = userService.deleteUserById(id);

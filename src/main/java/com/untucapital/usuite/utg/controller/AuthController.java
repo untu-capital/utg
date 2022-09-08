@@ -3,8 +3,8 @@ package com.untucapital.usuite.utg.controller;
 import com.untucapital.usuite.utg.controller.payload.*;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.UserService;
-import com.untucapital.usuite.utg.utils.EmailSender;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +38,8 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final UserRepository userRepository;
+
     @Value("${untu.reset-token.link}")
     private String resetPassUrl;
 
@@ -45,8 +47,9 @@ public class AuthController {
     private String resetEmailUrl;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -176,6 +179,27 @@ public class AuthController {
         if (user == null) {
 //            model.addAttribute("message", "Invalid Token");
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Token used nolonger valid"));
+//            return "message";
+        } else {
+            userService.updatePassword(user, password);
+
+            return ResponseEntity.ok(new UsuiteApiResp("You have successfully changed your password. You can now login"));
+//            model.addAttribute("message", "You have successfully changed your password.");
+        }
+
+    }
+
+    @PostMapping("/reset_mobile_password")
+    public ResponseEntity<UsuiteApiResp> processResetMobilePassword(HttpServletRequest request, Model model) {
+        String userId = request.getParameter("userid");
+        String password = request.getParameter("password");
+
+        User user = userRepository.getUserById(userId);
+        model.addAttribute("title", "Reset your password");
+
+        if (user == null) {
+//            model.addAttribute("message", "Invalid Token");
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("UserId not valid"));
 //            return "message";
         } else {
             userService.updatePassword(user, password);
