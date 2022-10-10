@@ -70,7 +70,7 @@ public class CreditCheckService {
 
         List<ClientLoan> pendingClientCreditChecks = clientLoans
                 .stream()
-                .filter(cl -> "INCONCLUSIVE".equals(cl.getFcbStatus()) && "PENDING".equals(cl.getLoanStatus()))
+                .filter(cl -> "PENDING".equals(cl.getLoanStatus()))
                 .collect(Collectors.toList());
 
         pendingClientCreditChecks.forEach(this::fetchFCBCreditStatus);

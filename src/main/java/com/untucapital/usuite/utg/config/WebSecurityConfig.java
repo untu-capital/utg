@@ -109,6 +109,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_application/**")
                 .permitAll()
+                .antMatchers("/credit_app/**")
+                .permitAll()
+
                 .antMatchers("/industries/**")
                 .permitAll()
                 .antMatchers("/uploadFile/**")
@@ -311,6 +314,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ClientFileUpload/**")
                 .permitAll()
                 .antMatchers("/xdsFileUpload/**")
+                .permitAll()
+                .antMatchers("/musoni/**")
                 .permitAll()
 
 

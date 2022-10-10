@@ -10,6 +10,8 @@ public interface ClientLoanApplication {
 
     ClientLoan saveClientLoan(ClientLoan clientLoan);
 
+    ClientLoan updateClientLoan(ClientLoan clientLoan);
+
     ClientLoan sendLoanSuccess(String recipientName, String recipientEmail);
 
     ClientLoan sendMeetingScheduleSuccess(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName);
@@ -26,7 +28,9 @@ public interface ClientLoanApplication {
 
     void deleteClientLoan(String id);
 
-    List<ClientLoan> getClientLoanApplicationStatusByloanStatus(String loanStatusID);
+    List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus);
 
     List<ClientLoan> getClientLoanApplicationByBranchName(String branchName);
+
+
 }

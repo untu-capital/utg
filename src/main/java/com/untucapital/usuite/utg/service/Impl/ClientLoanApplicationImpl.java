@@ -49,6 +49,12 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
+    public ClientLoan updateClientLoan(ClientLoan clientLoan) {
+        return null;
+    }
+
+
+    @Override
     public ClientLoan sendLoanSuccess(String recipientName, String recipientEmail) {
         return null;
     }
@@ -109,11 +115,10 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public List<ClientLoan> getClientLoanApplicationStatusByloanStatus(String loanStatusID) {
-        userService.find(loanStatusID).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", loanStatusID));
-
-        return clientRepository.findByUserId(loanStatusID);
+    public List<ClientLoan> getClientLoanApplicationsByLoanStatus (String loanStatus) {
+        userService.find(loanStatus).orElseThrow(() ->
+                new ResourceNotFoundException("Loan", "loan status", loanStatus));
+        return clientRepository.findClientLoansByLoanStatus(loanStatus);
     }
 
     @Override

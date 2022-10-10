@@ -33,6 +33,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User getUserById (String userId);
 
+    User getUserByContactDetail_MobileNumber(long mobileNumber);
+
     List<User> findUsersByBranch(String branchName);
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);

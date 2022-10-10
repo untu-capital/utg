@@ -70,6 +70,12 @@ public class UsersController extends AbstractController<User> {
     public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
         return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
     }
+
+    @GetMapping ("getUserByMobileNumber/{mobileNumber}")
+    public ResponseEntity<User> getUserByMobileNumber(@PathVariable("mobileNumber") Long mobileNumber) {
+        return new ResponseEntity<User>(userRepository.getUserByContactDetail_MobileNumber(mobileNumber),HttpStatus.OK);
+    }
+
     @PutMapping("/updateUserRole/{id}")
         public ResponseEntity<String> updateUserRole(@PathVariable String id, @RequestBody User user) {
         User updatedUserRole = userRepository.getUserById(id);

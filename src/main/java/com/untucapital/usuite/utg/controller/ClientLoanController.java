@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +38,7 @@ public class ClientLoanController {
     @PostMapping
     public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) {
         log.info(String.valueOf(clientLoan));
-        return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
+        return new ResponseEntity<ClientLoan>(clientRepository.save(clientLoan), HttpStatus.CREATED);
     }
 
     //build get all loan applications REST API
@@ -55,10 +54,11 @@ public class ClientLoanController {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
 
+
+    // show BM all loans with checked status
     @GetMapping("/loanStatus/{loanStatus}")
-    public ResponseEntity<String> getClientLoanApplicationStatusByloanStatus(@PathVariable("loanStatus") String loanStatusID) {
-        List <ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationStatusByloanStatus(loanStatusID);
-        return ResponseEntity.ok(loanStatusID);
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatus(@PathVariable("loanStatus") String loanStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatus(loanStatus), HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
@@ -213,7 +213,7 @@ public class ClientLoanController {
         updatedLoanStatus.setBocoDate(clientLoan.getBocoDate());
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
 
-        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
@@ -228,7 +228,7 @@ public class ClientLoanController {
         updatedAssignTo.setAssignedStatus("Assigned");
         updatedAssignTo.setBmDateAssignLo(clientLoan.getBmDateAssignLo());
         updatedAssignTo.setPipelineStatus(clientLoan.getPipelineStatus());
-        clientLoanApplication.saveClientLoan(updatedAssignTo);
+        clientRepository.save(updatedAssignTo);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
@@ -240,7 +240,7 @@ public class ClientLoanController {
         updateProcessLoanStatus.setProcessedBy(clientLoan.getProcessedBy());
         updateProcessLoanStatus.setLoDate(clientLoan.getLoDate());
         updateProcessLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        clientLoanApplication.saveClientLoan(updateProcessLoanStatus);
+        clientRepository.save(updateProcessLoanStatus);
         return new ResponseEntity<String>("Loan Assessment Status successfully updated.", HttpStatus.OK);
     }
 
@@ -253,7 +253,7 @@ public class ClientLoanController {
         updateSignatureStatus.setBocoSignatureImage(clientLoan.getBocoSignatureImage());
         updateSignatureStatus.setLessFees(clientLoan.getLessFees());
         updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
-        clientLoanApplication.saveClientLoan(updateSignatureStatus);
+        clientRepository.save(updateSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
@@ -263,7 +263,7 @@ public class ClientLoanController {
         ClientLoan updateBmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateBmSignatureStatus.setBmSignature(clientLoan.getBmSignature());
         updateBmSignatureStatus.setBmName(clientLoan.getBmName());
-        clientLoanApplication.saveClientLoan(updateBmSignatureStatus);
+        clientRepository.save(updateBmSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
     // update predisbursement ticket for CM Signature
@@ -272,7 +272,7 @@ public class ClientLoanController {
         ClientLoan updateCmSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateCmSignatureStatus.setCmSignature(clientLoan.getCmSignature());
         updateCmSignatureStatus.setCmName(clientLoan.getCmName());
-        clientLoanApplication.saveClientLoan(updateCmSignatureStatus);
+        clientRepository.save(updateCmSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
@@ -282,7 +282,7 @@ public class ClientLoanController {
         ClientLoan updateCaSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateCaSignatureStatus.setCaSignature(clientLoan.getCaSignature());
         updateCaSignatureStatus.setCaName(clientLoan.getCaName());
-        clientLoanApplication.saveClientLoan(updateCaSignatureStatus);
+        clientRepository.save(updateCaSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
     // update predisbursement ticket for Fin Signature
@@ -291,7 +291,7 @@ public class ClientLoanController {
         ClientLoan updateFinSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateFinSignatureStatus.setFinSignature(clientLoan.getFinSignature());
         updateFinSignatureStatus.setFinName(clientLoan.getFinName());
-        clientLoanApplication.saveClientLoan(updateFinSignatureStatus);
+        clientRepository.save(updateFinSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
@@ -301,7 +301,7 @@ public class ClientLoanController {
         ClientLoan updateBoardSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateBoardSignatureStatus.setBoardSignature(clientLoan.getBoardSignature());
         updateBoardSignatureStatus.setBoardName(clientLoan.getBoardName());
-        clientLoanApplication.saveClientLoan(updateBoardSignatureStatus);
+        clientRepository.save(updateBoardSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
@@ -388,7 +388,7 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
         updatedLoanMeeting.setCcDate(clientLoan.getCcDate());
         updatedLoanMeeting.setPipelineStatus(clientLoan.getPipelineStatus());
-        clientLoanApplication.saveClientLoan(updatedLoanMeeting);
+        clientRepository.save(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
     }
 
@@ -400,7 +400,7 @@ public class ClientLoanController {
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
         updatedLoanStatus.setBmSetMeeting(clientLoan.getBmSetMeeting());
         updatedLoanStatus.setCreditCommit(clientLoan.getCreditCommit());
-        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
     }
 
@@ -410,15 +410,26 @@ public class ClientLoanController {
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setCcDate(clientLoan.getCcDate());
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
-        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
     }
+
+    //Update meeting columns
+    @PutMapping("/predisbursementTicket/{id}")
+    public ResponseEntity<String> updatePredisbursementTicket(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanStatus.setPredisDate(clientLoan.getPredisDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        clientRepository.save(updatedLoanStatus);
+        return new ResponseEntity<String>("Predisbursement ticket successfully updated.", HttpStatus.OK);
+    }
+
     //Update completely done disbursed tickets
     @PutMapping("/complete/{id}")
     public ResponseEntity<String> complete(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setCompletelyDone(clientLoan.getCompletelyDone());
-        clientLoanApplication.saveClientLoan(updatedLoanStatus);
+        clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Done.", HttpStatus.OK);
     }
 

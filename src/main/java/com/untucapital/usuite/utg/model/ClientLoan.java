@@ -172,6 +172,8 @@ public class ClientLoan extends AbstractEntity {
 
     private String ccDate;
 
+    private String predisDate;
+
     @Column(length = 40)
     private  String pipelineStatus;
 
@@ -717,6 +719,14 @@ public class ClientLoan extends AbstractEntity {
 
     public void setCcDate(String ccDate) {
         this.ccDate = ccDate;
+    }
+
+    public String getPredisDate() {
+        return predisDate;
+    }
+
+    public void setPredisDate(String predisDate) {
+        this.predisDate = predisDate;
     }
 
     public String getPipelineStatus() {
