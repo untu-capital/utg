@@ -1,16 +1,26 @@
 
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.model.ClientLoan;
+import com.untucapital.usuite.utg.UntuTransactionGatewayApplication;
 import com.untucapital.usuite.utg.service.MusoniService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
+import javax.persistence.QueryHint;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.hibernate.annotations.QueryHints.READ_ONLY;
+import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
+import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 
 @AllArgsConstructor
 @RestController
@@ -23,9 +33,6 @@ public class MusoniController {
     MusoniService musoniService;
 
     HttpHeaders headers;
-
-//    @Value("${untu.musoni-path.link}")
-//    private String musoniUrl;
 
     //    Get All Clients
     @GetMapping("clients")
@@ -56,4 +63,46 @@ public class MusoniController {
         return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/"+loanId, HttpMethod.GET, entity, String.class).getBody();
     }
 
+    public static String[] getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar cal = Calendar.getInstance();
+        String endDate = dateFormat.format(cal.getTime());
+        System.out.println("Current Date Time : " + endDate);
+
+        cal.add(Calendar.YEAR, -1);
+        String startDate = dateFormat.format(cal.getTime());
+        System.out.println("Subtract one year from current date : " + startDate);
+
+        return new String[] {startDate, endDate};
+
+    }
+
+    //Get All Loans
+    @GetMapping("loans")
+    @QueryHints(value = {
+            @QueryHint(name = HINT_FETCH_SIZE, value = "" + Integer.MIN_VALUE),
+            @QueryHint(name = HINT_CACHEABLE, value = "false"),
+            @QueryHint(name = READ_ONLY, value = "true")
+    })
+
+    public String getLoans() {
+        String[] dates = getDate();
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans?disbursementFromDate=" + dates[0] + "&disbursementToDate=" + dates[1] + "&limit=2000&orderBy=id&sortOrder=DESC", HttpMethod.GET, entity, String.class).getBody();
+    }
+
+    //    Collect Transaction from Musoni
+    @GetMapping("/getTransations/loanid/{loanId}/transactionId/{transactionId}")
+    public String getMusoniPastelTrans(@PathVariable("loanId") String loanId, @PathVariable("transactionId") String transactionId) {
+
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" +loanId + "/transactions/" + transactionId, HttpMethod.GET, entity, String.class).getBody();
+    }
+    // Add years to a date in Java
+    public Date addYears(Date date, int years) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.YEAR, years);
+        return cal.getTime();
+    }
 }

@@ -38,7 +38,7 @@ public class ClientLoanController {
     @PostMapping
     public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) {
         log.info(String.valueOf(clientLoan));
-        return new ResponseEntity<ClientLoan>(clientRepository.save(clientLoan), HttpStatus.CREATED);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
     }
 
     //build get all loan applications REST API
@@ -439,6 +439,40 @@ public class ClientLoanController {
         String emailText = emailSender.sendFinalMeetingMsg(recipientName, recipientSubject, recipientMessage, senderName);
         emailSender.send(recipientEmail, recipientSubject, emailText);
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendFinalMeetingSuccess(recipientName, recipientEmail, recipientSubject, recipientMessage, senderName), HttpStatus.OK);
+    }
+
+    //Update Loan Info columns
+    @PutMapping("/updateLoan/{id}")
+    public ResponseEntity<String> updateLoan(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoan = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoan.setIdNumber(clientLoan.getIdNumber());
+        updatedLoan.setMaritalStatus(clientLoan.getMaritalStatus());
+        updatedLoan.setGender(clientLoan.getGender());
+        updatedLoan.setDateOfBirth(clientLoan.getDateOfBirth());
+        updatedLoan.setPhoneNumber(clientLoan.getPhoneNumber());
+        updatedLoan.setPlaceOfBusiness(clientLoan.getPlaceOfBusiness());
+        updatedLoan.setIndustryCode(clientLoan.getIndustryCode());
+        updatedLoan.setStreetNo(clientLoan.getStreetNo());
+        updatedLoan.setStreetName(clientLoan.getStreetName());
+        updatedLoan.setSuburb(clientLoan.getSuburb());
+        updatedLoan.setCity(clientLoan.getCity());
+        updatedLoan.setLoanAmount(clientLoan.getLoanAmount());
+        updatedLoan.setTenure(clientLoan.getTenure());
+        updatedLoan.setBusinessName(clientLoan.getBusinessName());
+        updatedLoan.setPlaceOfBusiness(clientLoan.getPlaceOfBusiness());
+        updatedLoan.setBusinessStartDate(clientLoan.getBusinessStartDate());
+        updatedLoan.setBranchName(clientLoan.getBranchName());
+        updatedLoan.setNextOfKinName(clientLoan.getNextOfKinName());
+        updatedLoan.setNextOfKinPhone(clientLoan.getNextOfKinPhone());
+        updatedLoan.setNextOfKinRelationship(clientLoan.getNextOfKinRelationship());
+        updatedLoan.setNextOfKinAddress(clientLoan.getNextOfKinAddress());
+        updatedLoan.setNextOfKinName2(clientLoan.getNextOfKinName2());
+        updatedLoan.setNextOfKinPhone2(clientLoan.getNextOfKinPhone2());
+        updatedLoan.setNextOfKinRelationship2(clientLoan.getNextOfKinRelationship2());
+        updatedLoan.setNextOfKinAddress2(clientLoan.getNextOfKinAddress2());
+
+        clientRepository.save(updatedLoan);
+        return new ResponseEntity<String>("Loan successfully updated.", HttpStatus.OK);
     }
 
 }

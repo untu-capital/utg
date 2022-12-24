@@ -317,6 +317,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/musoni/**")
                 .permitAll()
+                .antMatchers("/musoni_pastel/**")
+                .permitAll()
+
 
 
 

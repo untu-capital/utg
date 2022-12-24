@@ -92,7 +92,7 @@ public class UsersController extends AbstractController<User> {
 
         updatedUser.setUsername(user.getUsername());
         updatedUser.setContactDetail(user.getContactDetail());
-        updatedUser.setPassword(user.getPassword());
+//        updatedUser.setPassword(user.getPassword());
 
         userRepository.save(updatedUser);
         return new ResponseEntity<String>("User Info Status successfully updated.", HttpStatus.OK);

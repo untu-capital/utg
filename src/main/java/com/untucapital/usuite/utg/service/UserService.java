@@ -29,8 +29,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+//import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -154,8 +155,8 @@ public class UserService extends AbstractService<User> {
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        user.setActive(false);
-        user.setVerified(false);
+        user.setActive(true);
+        user.setVerified(true);
 
         ContactDetail cd = new ContactDetail();
         cd.setEmailAddress(signUpRequest.getEmail());
@@ -180,7 +181,7 @@ public class UserService extends AbstractService<User> {
         confirmationTokenRepository.save(confirmToken);
 
         String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
-         emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
+        emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
         // emailSender.sendMail(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
 
         return Optional.of(createdUser.getId());

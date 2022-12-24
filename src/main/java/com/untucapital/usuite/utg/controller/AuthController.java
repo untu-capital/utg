@@ -5,6 +5,7 @@ import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.UserService;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class AuthController {
             return ResponseEntity.created(location).body(new UsuiteApiResp("User registered successfully"));
         } else
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Failed to register user"));
-}
+    }
 
     @PostMapping("/confirm_account")
     public ResponseEntity<UsuiteApiResp> confirm(@RequestParam("username") String username,
@@ -125,7 +126,7 @@ public class AuthController {
 
     }
 
-    public void sendEmail(String recipientEmail, String link)
+    public void sendEmail(String recipientEmail, String resetPasswordLink)
             throws MessagingException, UnsupportedEncodingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -138,7 +139,7 @@ public class AuthController {
         String content = "<p>Hello,</p>"
                 + "<p>You have requested to reset your password.</p>"
                 + "<p>Click the link below to change your password:</p>"
-                + "<p><a href=\"" + link + "\">Change my password</a></p>"
+                + "<p><a href=\"" + resetPasswordLink + "\">Change my password</a></p>"
                 + "<br>"
                 + "<p>Ignore this email if you do remember your password, "
                 + "or you have not made the request.</p>";
