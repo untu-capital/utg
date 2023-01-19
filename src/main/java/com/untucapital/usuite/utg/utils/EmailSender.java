@@ -35,6 +35,7 @@ public class EmailSender {
     private String confirmAccountUrl;
 
     @Autowired
+
     public EmailSender(JavaMailSender mailSender, SimpleMailMessage preConfiguredMessage) {
         this.mailSender = mailSender;
         this.preConfiguredMessage = preConfiguredMessage;

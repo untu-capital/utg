@@ -84,6 +84,7 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
 
+
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<String> updateUser(@PathVariable String id, @RequestBody User user){
         User updatedUser = userRepository.getUserById(id);
@@ -92,7 +93,13 @@ public class UsersController extends AbstractController<User> {
 
         updatedUser.setUsername(user.getUsername());
         updatedUser.setContactDetail(user.getContactDetail());
-//        updatedUser.setPassword(user.getPassword());
+        updatedUser.setDirtOfBirth(user.getDirtOfBirth());
+        updatedUser.setMaritalStatus(user.getMaritalStatus());
+        updatedUser.setGender(user.getGender());
+        updatedUser.setCity(user.getCity());
+        updatedUser.setSuburb(user.getSuburb());
+        updatedUser.setStreetName(user.getStreetName());
+        updatedUser.setStreetNumber(user.getStreetNumber());
 
         userRepository.save(updatedUser);
         return new ResponseEntity<String>("User Info Status successfully updated.", HttpStatus.OK);

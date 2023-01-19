@@ -56,7 +56,23 @@ public class User extends AbstractEntity {
     private String branch;
 
     private String creditCommitGroup;
-    
+
+    private String dirtOfBirth;
+
+    private String maritalStatus;
+
+    private String Gender;
+
+    private String City;
+
+    private String suburb;
+
+    private String streetName;
+
+    private String streetNumber;
+
+
+
     public String getCreditCommitGroup() {
         return creditCommitGroup;
     }
@@ -149,5 +165,61 @@ public class User extends AbstractEntity {
 
     public void setBranch(String branch) {
         this.branch = branch;
+    }
+
+    public String getDirtOfBirth() {
+        return dirtOfBirth;
+    }
+
+    public void setDirtOfBirth(String dirtOfBirth) {
+        this.dirtOfBirth = dirtOfBirth;
+    }
+
+    public String getMaritalStatus() {
+        return maritalStatus;
+    }
+
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
+    }
+
+    public String getGender() {
+        return Gender;
+    }
+
+    public void setGender(String gender) {
+        Gender = gender;
+    }
+
+    public String getCity() {
+        return City;
+    }
+
+    public void setCity(String city) {
+        City = city;
+    }
+
+    public String getSuburb() {
+        return suburb;
+    }
+
+    public void setSuburb(String suburb) {
+        this.suburb = suburb;
+    }
+
+    public String getStreetName() {
+        return streetName;
+    }
+
+    public void setStreetName(String streetName) {
+        this.streetName = streetName;
+    }
+
+    public String getStreetNumber() {
+        return streetNumber;
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        this.streetNumber = streetNumber;
     }
 }
