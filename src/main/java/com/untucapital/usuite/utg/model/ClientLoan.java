@@ -203,6 +203,8 @@ public class ClientLoan extends AbstractEntity {
 
     private String nextOfKinAddress2;
 
+    private String clientLoanId;
+
 
     public String getBmSetMeeting() {
         return bmSetMeeting;
@@ -823,5 +825,13 @@ public class ClientLoan extends AbstractEntity {
 
     public void setNextOfKinAddress2(String nextOfKinAddress2) {
         this.nextOfKinAddress2 = nextOfKinAddress2;
+    }
+
+    public String getClientLoanId() {
+        return clientLoanId;
+    }
+
+    public void setClientLoanId(String clientLoanId) {
+        this.clientLoanId = clientLoanId;
     }
 }

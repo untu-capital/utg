@@ -71,6 +71,8 @@ public class User extends AbstractEntity {
 
     private String streetNumber;
 
+    private String musoniClientId;
+
 
 
     public String getCreditCommitGroup() {
@@ -221,5 +223,13 @@ public class User extends AbstractEntity {
 
     public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
+    }
+
+    public String getMusoniClientId() {
+        return musoniClientId;
+    }
+
+    public void setMusoniClientId(String musoniClientId) {
+        this.musoniClientId = musoniClientId;
     }
 }
