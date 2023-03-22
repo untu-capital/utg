@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping(path = "credit_application_enquiry")
 public class ClientLoanEnquiryController {
 
-
     @Autowired
     ClientLoanEnquiryRepository clientLoanEnquiryRepository;
 
@@ -40,7 +39,6 @@ public class ClientLoanEnquiryController {
     @GetMapping
     public List<ClientLoanEnquiry> getAllClientLoanEnquiries() {
         return clientLoanEnquiryService.getAllClientLoanEnquiries();
-
     }
 
     //build get clientLoan by ID REST API
@@ -50,11 +48,10 @@ public class ClientLoanEnquiryController {
     }
 
     //build get clientLoan by ID REST API
-    @GetMapping("userid{userId}")
+    @GetMapping("/userid/{userId}")
     public ResponseEntity<List<ClientLoanEnquiry>> getClientLoanEnquiryByUserId(@PathVariable("userId") String userId) {
-        return new ResponseEntity<List<ClientLoanEnquiry>>(clientLoanEnquiryRepository.findClientLoanEnquiryByUserId(userId), HttpStatus.OK);
+        return new ResponseEntity<List<ClientLoanEnquiry>>(clientLoanEnquiryRepository.findClientLoanEnquiriesByUserId(userId), HttpStatus.OK);
     }
-
 
 }
 

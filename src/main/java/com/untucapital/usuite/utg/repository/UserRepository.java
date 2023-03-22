@@ -39,5 +39,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByBranch(String branchName);
 
+    List<User> findUsersByBranchNotNull();
+
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
 }

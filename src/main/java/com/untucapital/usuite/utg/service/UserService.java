@@ -337,6 +337,20 @@ public class UserService extends AbstractService<User> {
         return usersByRole;
     }
 
+//    public List<User> getUsersByRoleAndBranchname(String roleName) {
+//        List<User> users = userRepository.findAll();
+//        List<User> usersByRole = users.stream()
+//                .filter(user ->
+//                        user.getRoles().stream()
+//                                .anyMatch(userRole -> roleName.equals(userRole.getDescription())))
+//                .collect(Collectors.toList());
+//
+//        List<User> usersByBranch = users.stream()
+//                .filter(user -> user.getRoles().stream().anyMatch(userRole -> roleName.equals(userRole.getDescription())))
+//                .collect(Collectors.toList());
+//        return usersByRole;
+//    }
+
     public String deleteUserById(String id){
         confirmationTokenRepository.deleteByUser(id);
         userRepository.deleteById(id);

@@ -322,8 +322,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/credit_application_enquiry/**")
                 .permitAll()
 
+                .antMatchers("/requestCollateralSecurity/**")
+                .permitAll()
 
+                .antMatchers("/credit_application_feedback/**")
+                .permitAll()
 
+                .antMatchers("/sms/**")
+                .permitAll()
 
 
                 .anyRequest()

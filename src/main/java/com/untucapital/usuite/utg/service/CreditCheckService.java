@@ -16,10 +16,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author Chirinda Nyasha Dell - 9/12/2021
- */
-
 @Service
 public class CreditCheckService {
 
@@ -61,7 +57,7 @@ public class CreditCheckService {
         return clientLoan;
     }
 
-    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
+//    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
     protected void pollCreditChecks() {
         log.debug("Polling Inconclusive Credit Checks");
         long startTime = System.currentTimeMillis();

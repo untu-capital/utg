@@ -64,14 +64,20 @@ public class UsersController extends AbstractController<User> {
     @GetMapping("/role/{roleName}")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable("roleName") String roleName) {
         return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
-
     }
+
+    // Get list of all users with role of Loan Officer
+    @GetMapping("/roleAndBranch/{roleName}/{branchName}")
+    public ResponseEntity<List<User>> getUsersByRoleAndBranch(@PathVariable("roleName") String roleName, @PathVariable("branchName") String branchName) {
+        return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
+    }
+
     @GetMapping ("getUser/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
         return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
     }
 
-    @GetMapping ("getUserByMobileNumber/{mobileNumber}")
+    @GetMapping ("/getUserByMobileNumber/{mobileNumber}")
     public ResponseEntity<User> getUserByMobileNumber(@PathVariable("mobileNumber") Long mobileNumber) {
         return new ResponseEntity<User>(userRepository.getUserByContactDetail_MobileNumber(mobileNumber),HttpStatus.OK);
     }
@@ -132,6 +138,12 @@ public class UsersController extends AbstractController<User> {
         updatedUserGroup.setCreditCommitGroup(user.getCreditCommitGroup());
         userRepository.save(updatedUserGroup);
         return  new ResponseEntity<String>("User group successfully updated", HttpStatus.OK);
+    }
+
+    // Get list of all users with a certain Branch Name
+    @GetMapping("/untuStaff")
+    public ResponseEntity<List<User>> getUntuStaff() {
+        return new ResponseEntity<List<User>>(userRepository.findUsersByBranchNotNull(), HttpStatus.OK);
     }
 
 

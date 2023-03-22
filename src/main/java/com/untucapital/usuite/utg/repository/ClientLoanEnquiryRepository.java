@@ -13,7 +13,7 @@ public interface ClientLoanEnquiryRepository extends JpaRepository<ClientLoanEnq
 
     ClientLoanEnquiry findClientLoanEnquiryById (String id);
 
-    List<ClientLoanEnquiry> findClientLoanEnquiryByUserId(String userId);
+    List<ClientLoanEnquiry> findClientLoanEnquiriesByUserId(String userId);
 
 
 }

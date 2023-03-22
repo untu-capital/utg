@@ -19,6 +19,7 @@ public class CollateralSecurity extends AbstractEntity {
     private String marketValue;
     private String discountValue;
 
+
     public String getLoanId() {
         return loanId;
     }

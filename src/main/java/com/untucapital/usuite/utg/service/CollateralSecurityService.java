@@ -11,12 +11,12 @@ import java.util.List;
 @Transactional
 @Service
 public class CollateralSecurityService {
+
     @Autowired
     CollateraiSecurityRepository collateraiSecurityRepository;
 
     public List<CollateralSecurity> get(String loanId){
         return collateraiSecurityRepository.findCollateralSecurityByLoanId(loanId);
-
     }
 
     public void delete(String id){
@@ -26,4 +26,6 @@ public class CollateralSecurityService {
     public void add(CollateralSecurity collateralSecurity){
         collateraiSecurityRepository.save(collateralSecurity);
     }
+
+
 }

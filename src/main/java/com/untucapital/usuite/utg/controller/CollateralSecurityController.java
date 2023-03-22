@@ -33,4 +33,6 @@ public class CollateralSecurityController {
     public void delete(@PathVariable("Id") String id){
         collateralSecurityService.delete(id);
     }
+
+
 }
