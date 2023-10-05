@@ -1,6 +1,4 @@
 package com.untucapital.usuite.utg.model;
-
-
 import org.stringtemplate.v4.ST;
 
 import javax.persistence.Entity;
@@ -25,8 +23,9 @@ public class clientsDatasets {
     private String loanProduct;
     private String creditRating;
     private String branch;
-
     private String origin;
+    private String loanOfficer;
+    private String smsSent;
 
     public String getOrigin() {
         return origin;
@@ -138,5 +137,21 @@ public class clientsDatasets {
 
     public Long getId() {
         return id;
+    }
+
+    public String getLoanOfficer() {
+        return loanOfficer;
+    }
+
+    public void setLoanOfficer(String loanOfficer) {
+        this.loanOfficer = loanOfficer;
+    }
+
+    public String getSmsSent() {
+        return smsSent;
+    }
+
+    public void setSmsSent(String smsSent) {
+        this.smsSent = smsSent;
     }
 }

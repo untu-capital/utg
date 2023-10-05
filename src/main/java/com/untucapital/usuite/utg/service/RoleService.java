@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.Industry;
 import com.untucapital.usuite.utg.model.Role;
+import com.untucapital.usuite.utg.model.Sales;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.IndustryRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
@@ -33,5 +34,9 @@ public class RoleService extends AbstractService<Role> {
     @Override
     public List<User> getUserByRole(String name) {
         return null;
+    }
+
+    public void saveRole(Role role) {
+        roleRepository.save(role);
     }
 }

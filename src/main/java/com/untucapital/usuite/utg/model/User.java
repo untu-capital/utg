@@ -1,11 +1,12 @@
 package com.untucapital.usuite.utg.model;
 
+import com.untucapital.usuite.utg.model.cms.CmsUser;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.*;
@@ -44,6 +45,11 @@ public class User extends AbstractEntity {
     @NotNull
     @JoinColumn(name = "contact_detail_id", nullable = false)
     private ContactDetail contactDetail;
+
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @NotNull
+    @JoinColumn(name = "cms_user_id", nullable = false)
+    private CmsUser cmsUser;
 
     @NotNull
     @Column(nullable = false)
@@ -231,5 +237,13 @@ public class User extends AbstractEntity {
 
     public void setMusoniClientId(String musoniClientId) {
         this.musoniClientId = musoniClientId;
+    }
+
+    public CmsUser getCmsUser() {
+        return cmsUser;
+    }
+
+    public void setCmsUser(CmsUser cmsUser) {
+        this.cmsUser = cmsUser;
     }
 }

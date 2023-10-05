@@ -45,6 +45,12 @@ public class Response extends AbstractEntity {
     private List<Exposure> exposures;
 
     @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
+    private List<Incomes> incomes;
+
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
+    private List<Employer> employer;
+
+    @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
     @JsonProperty(value = "additional_info")
     private List<AdditionalInfo> additionalInfo;
 
@@ -82,7 +88,7 @@ public class Response extends AbstractEntity {
 
     public List<Search> getSearches() {
         return searches;
-    }
+    } 
 
     public void setSearches(List<Search> searches) {
         this.searches = searches;
@@ -120,11 +126,27 @@ public class Response extends AbstractEntity {
         this.exposures = exposures;
     }
 
+    public List<Incomes> getIncomes() {
+        return incomes;
+    }
+
+    public void setIncomes(List<Incomes> incomes) {
+        this.incomes = incomes;
+    }
+
     public List<AdditionalInfo> getAdditionalInfo() {
         return additionalInfo;
     }
 
     public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
         this.additionalInfo = additionalInfo;
+    }
+
+    public List<Employer> getEmployer() {
+        return employer;
+    }
+
+    public void setEmployer(List<Employer> employer) {
+        this.employer = employer;
     }
 }

@@ -24,7 +24,7 @@ public class CitiesService extends AbstractService<Cities> {
     public CitiesService(CitiesRepository citiesRepository) {
         this.citiesRepository = citiesRepository;
     }
-        public void saveCities(Cities cities) {
+    public void saveCities(Cities cities) {
         citiesRepository.save(cities);
     }
     @Override

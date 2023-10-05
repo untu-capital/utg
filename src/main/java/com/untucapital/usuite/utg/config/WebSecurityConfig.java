@@ -321,6 +321,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_application_enquiry/**")
                 .permitAll()
+                .antMatchers("/amortize/**")
+                .permitAll()
 
                 .antMatchers("/requestCollateralSecurity/**")
                 .permitAll()
@@ -331,10 +333,47 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/sms/**")
                 .permitAll()
 
+                .antMatchers("/credit_application_pipeline/**")
+                .permitAll()
+
+                .antMatchers("/leadStatus/**")
+                .permitAll()
+
+                .antMatchers("/zones/**")
+                .permitAll()
+
+                .antMatchers("/events/**")
+                .permitAll()
+
+                .antMatchers("/market_campaigns/**")
+                .permitAll()
+
+                .antMatchers("/followUpDiary/**")
+                .permitAll()
+
+                .antMatchers("/marketLeads/**")
+                .permitAll()
+
+                .antMatchers("/credit_application_client_datasets/**")
+                .permitAll()
+
+                .antMatchers("/access_logs/**")
+                .permitAll()
+
+                .antMatchers("/requisitions/**")
+                .permitAll()
+
+                .antMatchers("/poTransactions/**")
+                .permitAll()
+
+                .antMatchers("/pos/**")
+                .permitAll()
+
+                .antMatchers("/cms/**")
+                .permitAll()
 
                 .anyRequest()
                 .authenticated();
-
 
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }

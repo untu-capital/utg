@@ -41,9 +41,7 @@ public class BranchService extends AbstractService<Branches> {
         branchRepository.deleteById(id);
     }
 
-
+    public Branches getBranchesById(String id) {
+        return branchRepository.findBranchesById(id);
     }
-
-
-
-
+}

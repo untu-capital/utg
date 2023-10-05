@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.google.gson.Gson;
+import com.untucapital.usuite.utg.DTO.BulkEmail;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
@@ -7,11 +9,16 @@ import com.untucapital.usuite.utg.utils.EmailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONArray;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "credit_application")
@@ -45,7 +52,6 @@ public class ClientLoanController {
     @GetMapping
     public List<ClientLoan> getAllClientLoanApplication() {
         return clientLoanApplication.getAllClientLoanApplication();
-
     }
 
     //build get clientLoan by ID REST API
@@ -54,6 +60,102 @@ public class ClientLoanController {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
 
+    @GetMapping("/caseloads")
+    public String getAllClientLoansData() throws JSONException, ParseException {
+        List<ClientLoan> clientLoanList = new ArrayList<>(clientRepository.findAll());
+        Map<LocalDate, Integer> countMap = new TreeMap<>();
+
+        for (ClientLoan clientLoan : clientLoanList) {
+            LocalDate createdAtDate = clientLoan.getCreatedAt().toLocalDate();
+            countMap.put(createdAtDate, countMap.getOrDefault(createdAtDate, 0) + 1);
+        }
+
+        List<List<Object>> data = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, Integer> entry : countMap.entrySet()) {
+            List<Object> dataEntry = new ArrayList<>();
+            long createdAtMillis = entry.getKey().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+            int count = entry.getValue();
+
+            dataEntry.add(createdAtMillis);
+            dataEntry.add(count);
+            data.add(dataEntry);
+        }
+
+// Create a JSON array
+        JSONArray jsonArray = new JSONArray(data);
+
+// Convert the JSON array to a string
+        String json = jsonArray.toString();
+
+        return json;
+
+
+    }
+
+    @GetMapping("/caseloadsByBranch/{branch}")
+    public String getAllClientLoansDataByBranch(@PathVariable String branch) throws JSONException, ParseException {
+        List<ClientLoan> clientLoanList = new ArrayList<>(clientRepository.findClientLoansByBranchName(branch));
+        Map<LocalDate, Integer> countMap = new TreeMap<>();
+
+        for (ClientLoan clientLoan : clientLoanList) {
+            LocalDate createdAtDate = clientLoan.getCreatedAt().toLocalDate();
+            countMap.put(createdAtDate, countMap.getOrDefault(createdAtDate, 0) + 1);
+        }
+
+        List<List<Object>> data = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, Integer> entry : countMap.entrySet()) {
+            List<Object> dataEntry = new ArrayList<>();
+            long createdAtMillis = entry.getKey().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+            int count = entry.getValue();
+
+            dataEntry.add(createdAtMillis);
+            dataEntry.add(count);
+            data.add(dataEntry);
+        }
+
+// Create a JSON array
+        JSONArray jsonArray = new JSONArray(data);
+
+// Convert the JSON array to a string
+        String json = jsonArray.toString();
+
+        return json;
+    }
+
+//    @GetMapping("/caseloadsByLoanCount/{loanCount}")
+//    public String getAllClientLoansDataByLoanCount(@PathVariable String loanCount) throws JSONException, ParseException {
+//        List<ClientLoan> clientLoanList = new ArrayList<>(clientRepository.findClientLoansByLoanCount(loanCount));
+//        Map<LocalDate, Integer> countMap = new TreeMap<>();
+//
+//        for (ClientLoan clientLoan : clientLoanList) {
+//            LocalDate createdAtDate = clientLoan.getCreatedAt().toLocalDate();
+//            countMap.put(createdAtDate, countMap.getOrDefault(createdAtDate, 0) + 1);
+//        }
+//
+//        List<List<Object>> data = new ArrayList<>();
+//
+//        for (Map.Entry<LocalDate, Integer> entry : countMap.entrySet()) {
+//            List<Object> dataEntry = new ArrayList<>();
+//            long createdAtMillis = entry.getKey().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+//            int count = entry.getValue();
+//
+//            dataEntry.add(createdAtMillis);
+//            dataEntry.add(count);
+//            data.add(dataEntry);
+//        }
+//
+//// Create a JSON array
+//        JSONArray jsonArray = new JSONArray(data);
+//
+//// Convert the JSON array to a string
+//        String json = jsonArray.toString();
+//
+//        return json;
+//
+//
+//    }
 
     // show BM all loans with checked status
     @GetMapping("/loanStatus/{loanStatus}")
@@ -141,6 +243,11 @@ public class ClientLoanController {
     @GetMapping("/loanAwaitingDecision/{loanStatus}/{pipelineStatus}/{creditCommit}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("pipelineStatus") String pipelineStatus, @PathVariable("creditCommit") String creditCommit) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(loanStatus, pipelineStatus, creditCommit), HttpStatus.OK);
+    }
+
+    @GetMapping("/loanAwaitingDecision/{loanStatus}/{pipelineStatus}")
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByPipelineStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("pipelineStatus") String pipelineStatus) {
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoanByLoanStatusAndPipelineStatus(loanStatus, pipelineStatus), HttpStatus.OK);
     }
 
     // show all loans awaiting for meeting final decision to branch managers
@@ -250,9 +357,9 @@ public class ClientLoanController {
         ClientLoan updateSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updateSignatureStatus.setBocoSignature(clientLoan.getBocoSignature());
         updateSignatureStatus.setBocoName(clientLoan.getBocoName());
-        updateSignatureStatus.setBocoSignatureImage(clientLoan.getBocoSignatureImage());
-        updateSignatureStatus.setLessFees(clientLoan.getLessFees());
-        updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
+//        updateSignatureStatus.setBocoSignatureImage(clientLoan.getBocoSignatureImage());
+//        updateSignatureStatus.setLessFees(clientLoan.getLessFees());
+//        updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
         clientRepository.save(updateSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
@@ -318,6 +425,14 @@ public class ClientLoanController {
 //        log.info(String.valueOf(clientLoan));
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(recipientName, recipientEmail), HttpStatus.OK);
     }
+
+    @PostMapping("sendBulkEmail")
+    public ResponseEntity<ClientLoan> sendBulkEmail(@RequestBody BulkEmail bulkEmail) {
+        String recipientEmail = emailSender.sendBulkEmail(bulkEmail.getRecipients(), bulkEmail.getSubject(), bulkEmail.getMessage());
+        emailSender.sendBulk(bulkEmail.getRecipients(), bulkEmail.getSubject(), recipientEmail);
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(Arrays.toString(bulkEmail.getRecipients()), bulkEmail.getSubject()), HttpStatus.OK);
+    }
+
 
     //email to Bms
     @PostMapping("bocoCheckLoanStatus/{recipientName}/{recipientEmail}")
@@ -387,7 +502,6 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
         updatedLoanMeeting.setCcDate(clientLoan.getCcDate());
-        updatedLoanMeeting.setPipelineStatus(clientLoan.getPipelineStatus());
         clientRepository.save(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
     }
@@ -409,6 +523,17 @@ public class ClientLoanController {
     public ResponseEntity<String> updateCcFinalMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){
         ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
         updatedLoanStatus.setCcDate(clientLoan.getCcDate());
+        updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
+        updatedLoanStatus.setCreditCommit(clientLoan.getCreditCommit());
+        clientRepository.save(updatedLoanStatus);
+        return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateRecommentCcFinalMeeting/{id}")
+    public ResponseEntity<String> updateRecommentCcFinalMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updatedLoanStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updatedLoanStatus.setCcDate(clientLoan.getCcDate());
+        updatedLoanStatus.setCreditCommit(clientLoan.getCreditCommit());
         updatedLoanStatus.setPipelineStatus(clientLoan.getPipelineStatus());
         clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Meeting status successfully updated.", HttpStatus.OK);

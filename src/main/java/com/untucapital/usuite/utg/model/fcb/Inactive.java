@@ -27,6 +27,10 @@ public class Inactive extends AbstractEntity {
 
     private String comment;
 
+    private String court_ref;
+
+    private String event_date;
+
     public String getCounterparty() {
         return counterparty;
     }
@@ -73,5 +77,21 @@ public class Inactive extends AbstractEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public java.lang.String getCourt_ref() {
+        return court_ref;
+    }
+
+    public void setCourt_ref(java.lang.String court_ref) {
+        this.court_ref = court_ref;
+    }
+
+    public String getEvent_date() {
+        return event_date;
+    }
+
+    public void setEvent_date(String event_date) {
+        this.event_date = event_date;
     }
 }
