@@ -42,8 +42,14 @@ public class CreditCheckService {
 
         Response savedResponse = fcbResponseRepository.save(creditResponse);
 
-        String creditStatus = creditResponse.getReport().get(0).getStatus();
-        Integer creditScore = creditResponse.getReport().get(0).getScore();
+        String creditStatus = "UNKNOWN";
+        Integer creditScore = 0;
+        if (creditResponse.getReport() == null){
+
+        } else {
+            creditStatus = creditResponse.getReport().get(0).getStatus();
+            creditScore = creditResponse.getReport().get(0).getScore();
+        }
 
         clientLoan.setFcbResponse(savedResponse);
         clientLoan.setFcbStatus(creditStatus);

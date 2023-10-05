@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.BulkSMSDto;
-import com.untucapital.usuite.utg.DTO.PhoneNumbers;
-import com.untucapital.usuite.utg.DTO.SMSDto;
+import com.untucapital.usuite.utg.DTO.*;
 import com.untucapital.usuite.utg.model.Sms;
 import com.untucapital.usuite.utg.repository.SMSRepo;
 import lombok.extern.slf4j.Slf4j;
@@ -52,62 +50,35 @@ public class SmsService {
     }
 
     public String sendSingle(String destination, String messageText) {
+        if (!destination.startsWith("0") && !destination.startsWith("2")) {
+            destination = "0" + destination;
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String messageDate = dateFormat.format(new Date()) + 5;
         String messageReference = UUID.randomUUID().toString();
-//        Sms sms = new Sms("UNTU",destination,messageText,messageReference,messageDate,"","");
         SMSDto smsDto = new SMSDto("UNTU", destination, messageText, messageReference, messageDate, "", "");
         HttpEntity<SMSDto> entity = new HttpEntity<>(smsDto, setESolutionsHeaders());
         return restTemplate.exchange(eSolutionsBaseURL + "single", HttpMethod.POST, entity, String.class).getBody();
     }
 
-    public String sendBulk(){
-        List<Sms> listSMS = smsRepo.findAll();
-        BulkSMSDto bulkSMSDto = new BulkSMSDto();
-        List<Map> listSMS1 = new ArrayList<>();
-        for (Sms sms : listSMS
+    public String sendBulkSMS(BulkSMSDTO bulkSMSDTO) {
+
+        List<BulkSMS> bulkSMS = new ArrayList<>();
+
+        for (String phoneNumber: bulkSMSDTO.getPhoneNumbers()
         ) {
-            bulkSMSDto.setOriginator(sms.getOriginator());
-            bulkSMSDto.setDestination(sms.getDestination());
-            bulkSMSDto.setMessageText(sms.getMessageText());
-            bulkSMSDto.setMessageReference(sms.getMessageReference());
-
-            setMessageTextObject(bulkSMSDto);
-
-
+            String messageReference = "R"+UUID.randomUUID();
+            bulkSMS.add(new BulkSMS("UNTU",phoneNumber, bulkSMSDTO.getMessage(),messageReference));
         }
 
-        return sendSMS(listSMS1);
-    }
+        String batchNumber = "B" + UUID.randomUUID();
+        Bulk bulk = Bulk.builder()
+                .batchNumber(batchNumber)
+                .messages(bulkSMS)
+                .build();
 
-    public String sendBulkTest(PhoneNumbers phoneNumbers) {
-
-        List<String> mobileNumbers = phoneNumbers.getNumber();
-        BulkSMSDto bulkSMSDto = new BulkSMSDto();
-        List<Map> listSMS1 = new ArrayList<>();
-
-        for (String mobileNumber : mobileNumbers) {
-            bulkSMSDto.setOriginator("UNTU");
-            bulkSMSDto.setDestination(mobileNumber);
-            bulkSMSDto.setMessageText(phoneNumbers.getMessageText());
-//            bulkSMSDto.setMessageReference(batchNumber);
-
-            listSMS1.add(setMessageTextObject(bulkSMSDto));
-
-        }
-
-        return sendSMS(listSMS1);
-    }
-
-    private Map setMessageTextObject(BulkSMSDto bulkSMSDto) {
-        String referenceNumber = UUID.randomUUID().toString();
-        Map<String, Object> bulk1 = new HashMap<>();
-        bulk1.put("originator",bulkSMSDto.getOriginator());
-        bulk1.put("destination",bulkSMSDto.getDestination());
-        bulk1.put("messageText", bulkSMSDto.getMessageText() );
-        bulk1.put("messageReference",referenceNumber);
-
-        return bulk1;
+        HttpEntity<Bulk> entity = new HttpEntity<>(bulk, setESolutionsHeaders());
+        return restTemplate.exchange(eSolutionsBaseURL + "bulk", HttpMethod.POST, entity, String.class).getBody();
     }
 
     private String sendSMS(List<Map> listSMS1) {
@@ -126,10 +97,10 @@ public class SmsService {
         return restTemplate.exchange(eSolutionsBaseURL + "balance/UNTUAPI", HttpMethod.GET, entity, String.class).getBody();
     }
 
-    @Scheduled(fixedRate = 5000)
-    public String SchedulerConfig() {
-        System.out.println("The time is now {}");
-        return "The time is now {}";
-    }
+//    @Scheduled(fixedRate = 5000)
+//    public String SchedulerConfig() {
+//        System.out.println("The time is now {}");
+//        return "The time is now {}";
+//    }
 
 }
