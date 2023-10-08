@@ -1,0 +1,24 @@
+package com.untucapital.usuite.utg.model.transactions;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TransactionInfo {
+    private String toAccount;
+    private String transactionType;
+    private String exchangeRate;
+    private String description;
+    private String fromAccount;
+    private String reference;
+    private String currency;
+    private Double amount;
+    private LocalDate transactionDate;
+
+}

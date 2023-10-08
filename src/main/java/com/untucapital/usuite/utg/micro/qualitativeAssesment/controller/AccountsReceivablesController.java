@@ -26,7 +26,7 @@ public class AccountsReceivablesController {
     public void deleteById(@PathVariable("accountsReceivablesId") String id){
         accountsReceivablesService.deleteById(id);
     }
-    //Find All By Loan id
+    //Find All By PageItem id
     @GetMapping("/get/{loanId}")
     public List<AccountsReceivable> findAllByLoanId(@PathVariable("loanId") String id){
         return accountsReceivablesService.findAllByLoanId(id);

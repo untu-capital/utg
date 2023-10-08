@@ -23,7 +23,7 @@ public class AccountsReceivablesService {
     public void deleteById(String id){
         accountsReceivableRepository.deleteById(id);
     }
-    //Find All Loan By id
+    //Find All PageItem By id
     public List<AccountsReceivable> findAllByLoanId(String id){
         return accountsReceivableRepository.findAlByLoanId(id);
     }

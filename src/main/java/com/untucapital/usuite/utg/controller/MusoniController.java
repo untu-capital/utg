@@ -2,6 +2,7 @@
 package com.untucapital.usuite.utg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.SmsService;
 import lombok.AllArgsConstructor;
@@ -85,11 +86,18 @@ public class MusoniController {
         return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/clients/"+status, HttpMethod.GET, entity, String.class).getBody();
     }
 
-    //Get Loan By Id
+    //Get PageItem By Id
     @GetMapping("loans/{loanId}")
     public String getLoanById(@PathVariable Long loanId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/"+loanId, HttpMethod.GET, entity, String.class).getBody();
+    }
+
+    @GetMapping("loans/transactions/{timestamp}")
+    public ResponseEntity<List<TransactionInfo>> getTransactionsByTimestamp(@PathVariable Long timestamp) throws ParseException, JsonProcessingException {
+       List<TransactionInfo> transactionList = musoniService.getLoansByTimestamp(timestamp);
+
+       return new ResponseEntity<>(transactionList,HttpStatus.OK);
     }
 
     public static String[] getDate() {
@@ -143,7 +151,7 @@ public class MusoniController {
         return restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
     }
 
-    //Get Loan Repayment Schedule By Id
+    //Get PageItem Repayment Schedule By Id
     @GetMapping("loansRepaymentSchedule/{loanId}")
     public String getLoanLoanRepaymentScheduleById(@PathVariable Long loanId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -211,9 +219,9 @@ public class MusoniController {
         String maturityDate = jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(2).toString()+ "-" +jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(1).toString()+"-"+jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(0).toString();
 
         String loanBal =
-                "{\n\"Mini Statement for Loan Account\":"+ accountNo +","+
-                        "\n\n\"Loan Status\": " + "\"" + status + "\"" +","+
-                        "\n\"Loan Amount Disbursed\": " + principalDisbursed +","+
+                "{\n\"Mini Statement for PageItem Account\":"+ accountNo +","+
+                        "\n\n\"PageItem Status\": " + "\"" + status + "\"" +","+
+                        "\n\"PageItem Amount Disbursed\": " + principalDisbursed +","+
                         "\n\"Disbursment Date\": " + "\"" + disbursmentDate + "\"" +","+
                         "\n\"Amount Paid\": " + amountPaid +","+
                         "\n\"Amount Overdue\": " + amountOverdue +","+
@@ -249,7 +257,7 @@ public class MusoniController {
             String amountPaid = jsonLoanSummary.getString("totalPaidForPeriod").toString();
             String amountOutstanding = jsonLoanSummary.getString("totalOutstandingForPeriod").toString();
 
-            String loanBal = "{\n\"Prepayment Schedule for Loan Account\":"+ "accountNo" +","+
+            String loanBal = "{\n\"Prepayment Schedule for PageItem Account\":"+ "accountNo" +","+
                     "\n\n\"Period\": " + "\"" + period + "\"" +","+
                     "\n\"From Date\": " + fromDate +","+
                     "\n\"To Date\": " + "\"" + dueDate + "\"" +","+
