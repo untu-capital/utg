@@ -101,7 +101,7 @@ public class VaultService {
         Vault existingVault = vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
 
-        existingVault.setMaxAmount(existingVault.getMaxAmount().add(amount));
+        existingVault.setMaxAmount(amount);
 
         return vaultRepository.save(existingVault);
     }
