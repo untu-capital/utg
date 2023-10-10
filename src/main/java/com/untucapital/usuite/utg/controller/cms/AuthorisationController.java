@@ -55,7 +55,6 @@ public class AuthorisationController extends AbstractController<Authorisation> {
             updateauthorisation.setBranchId(authorisation.getBranchId());
             updateauthorisation.setUserId(authorisation.getUserId());
 
-
             authorisationRepository.save(updateauthorisation);
             return new ResponseEntity<>("Auth successfully updated.", HttpStatus.OK);
         } else {
