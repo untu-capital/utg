@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
 import com.untucapital.usuite.utg.DTO.PhoneNumbers;
 import com.untucapital.usuite.utg.service.SmsService;
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,9 @@ public class SmsController {
         return smsService.sendSingle(destination, messageText);
     }
 
-    @GetMapping("bulk")
-    public String sendBulk() {
-        return smsService.sendBulk();
-    }
-
-    @GetMapping("bulk-body")
-    public String sendBulk(@RequestBody PhoneNumbers phoneNumbers) {
-        return smsService.sendBulkTest(phoneNumbers);
+    @PostMapping("bulk")
+    public String sendBulk(@RequestBody BulkSMSDTO bulkSMSDTO){
+        return smsService.sendBulkSMS(bulkSMSDTO);
     }
 
     @GetMapping("balance")
@@ -35,10 +31,10 @@ public class SmsController {
         return smsService.getBalance();
     }
 
-    @GetMapping("time")
-    public String getTime(){
-        return smsService.SchedulerConfig();
-    }
+//    @GetMapping("time")
+//    public String getTime(){
+//        return smsService.SchedulerConfig();
+//    }
 
 
 }

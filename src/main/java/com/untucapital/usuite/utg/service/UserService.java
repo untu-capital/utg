@@ -7,10 +7,8 @@ import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
-import com.untucapital.usuite.utg.model.ConfirmationToken;
-import com.untucapital.usuite.utg.model.ContactDetail;
-import com.untucapital.usuite.utg.model.Role;
-import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.*;
+import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.model.enums.RoleType;
 import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
@@ -23,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,6 +30,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 //import javax.transaction.Transactional;
 import javax.validation.ValidationException;
@@ -38,8 +41,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.untucapital.usuite.utg.model.enums.RoleType.ROLE_LO;
 
 /**
  * @author Chirinda Nyasha Dell 22/11/2021
@@ -60,11 +61,13 @@ public class UserService extends AbstractService<User> {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailSender emailSender;
 
+    private final SmsService smsService;
+
     @Autowired
     public UserService(AuthenticationManager authenticationManager, TokenProvider tokenProvider,
                        UserRepository userRepository, EmailValidator emailValidator, RoleRepository roleRepository,
                        ConfirmationTokenRepository confirmationTokenRepository, BCryptPasswordEncoder passwordEncoder,
-                       EmailSender emailSender) {
+                       EmailSender emailSender, SmsService smsService) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
@@ -73,6 +76,7 @@ public class UserService extends AbstractService<User> {
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailSender = emailSender;
+        this.smsService = smsService;
     }
 
     @Override
@@ -111,7 +115,7 @@ public class UserService extends AbstractService<User> {
 
         String failedValidationMsg = "Login failed : Invalid Username or Password!";
 
-        Optional<User> optionalUser = userRepository.findByUsername(username);
+        Optional<User> optionalUser = findUserByUsernameOrMobileNumber(username);
         if (optionalUser.isEmpty()) {
             log.error("User with username: {}, does not exist.", username);
             throw new SecurityException(failedValidationMsg);
@@ -142,9 +146,9 @@ public class UserService extends AbstractService<User> {
             throw new ValidationException("Mobile Number already exists");
         }
 
-        if (!emailValidator.test(signUpRequest.getEmail())) {
-            throw new ValidationException("Email Address not valid");
-        }
+//        if (!emailValidator.test(signUpRequest.getEmail())) {
+//            throw new ValidationException("Email Address not valid");
+//        }
 
 //        if (userRepository.existsByContactDetail_EmailAddress(signUpRequest.getEmail())) {
 //            throw new ValidationException("Email Address already exists");
@@ -163,6 +167,10 @@ public class UserService extends AbstractService<User> {
         cd.setMobileNumber(signUpRequest.getMobileNumber());
         user.setContactDetail(cd);
 
+        CmsUser cmsUser = new CmsUser();
+        cmsUser.setRole("");
+        user.setCmsUser(cmsUser);
+
         Role userRole = roleRepository.findByName(RoleType.ROLE_CLIENT)
                 .orElseThrow(() -> new UntuSuiteException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
@@ -172,7 +180,7 @@ public class UserService extends AbstractService<User> {
         User createdUser = userRepository.save(user);
 
         // Generate and Save confirmation token
-        String token = RandomNumUtils.generateCode(10);
+        String token = RandomNumUtils.generateCode(6);
 
         ConfirmationToken confirmToken = new ConfirmationToken();
         confirmToken.setToken(token);
@@ -182,7 +190,11 @@ public class UserService extends AbstractService<User> {
 
         String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
         emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
-        // emailSender.sendMail(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
+
+        String smsText = "Your verification code is : " + token +
+                "\nYou can use: " + user.getUsername() + " as your username, or login using your mobile number: " + user.getContactDetail().getMobileNumber() + "." +
+                "\n\nThank you for registering with us.\nUntu Capital Ltd";
+        smsService.sendSingle(String.valueOf(user.getContactDetail().getMobileNumber()), smsText);
 
         return Optional.of(createdUser.getId());
     }
@@ -270,7 +282,7 @@ public class UserService extends AbstractService<User> {
     public boolean confirmUserAccount(String username, String verificationCode) {
         log.debug("User Confirmation Request username: {}, verificationCode: {}", username, verificationCode);
 
-        User user = userRepository.findByUsername(username)
+        User user = findUserByUsernameOrMobileNumber(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "Username", username));
 
         ConfirmationToken confirmationToken = confirmationTokenRepository.findConfirmationTokenByToken(verificationCode)
@@ -304,6 +316,12 @@ public class UserService extends AbstractService<User> {
         return userRepository.existsByContactDetail_EmailAddress(email);
     }
 
+    public boolean checkUserMobile(long mobile) {
+        log.debug("Check User Mobile Request mobile: {}", mobile);
+
+        return userRepository.existsByContactDetailMobileNumber(mobile);
+    }
+
     public void updateResetPasswordToken(String token, String email) throws ResourceNotFoundException {
         User user = userRepository.findByContactDetail_EmailAddress(email);
         if (user != null) {
@@ -311,6 +329,16 @@ public class UserService extends AbstractService<User> {
             userRepository.save(user);
         } else {
             throw new ResourceNotFoundException("Could not find any %s with the email: ", "user" ,email);
+        }
+    }
+
+    public void updateResetPasswordTokenMobile(String token, long mobile) throws ResourceNotFoundException {
+        User user = userRepository.findByContactDetail_MobileNumber(mobile);
+        if (user != null) {
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+        } else {
+            throw new ResourceNotFoundException("Could not find any %s with the mobile number: ", "user" ,mobile);
         }
     }
 
@@ -337,25 +365,40 @@ public class UserService extends AbstractService<User> {
         return usersByRole;
     }
 
-//    public List<User> getUsersByRoleAndBranchname(String roleName) {
-//        List<User> users = userRepository.findAll();
-//        List<User> usersByRole = users.stream()
-//                .filter(user ->
-//                        user.getRoles().stream()
-//                                .anyMatch(userRole -> roleName.equals(userRole.getDescription())))
-//                .collect(Collectors.toList());
-//
-//        List<User> usersByBranch = users.stream()
-//                .filter(user -> user.getRoles().stream().anyMatch(userRole -> roleName.equals(userRole.getDescription())))
-//                .collect(Collectors.toList());
-//        return usersByRole;
-//    }
+    public Optional<User> findUserByUsernameOrMobileNumber(String username) {
+        try {
+            Long mobileNumber = Long.parseLong(username);
+            return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
+        } catch (NumberFormatException e) {
+            return userRepository.findByUsername(username);
+        }
+    }
 
     public String deleteUserById(String id){
         confirmationTokenRepository.deleteByUser(id);
         userRepository.deleteById(id);
         return "Deleted Successfully";
     }
+
+    public void resetTokenExpired(long mobile) throws ResourceNotFoundException {
+        User updateExpiredToken = userRepository.findByContactDetail_MobileNumber(mobile);
+        if (updateExpiredToken != null) {
+//            user.setResetPasswordToken(token);
+//            userRepository.save(user);
+
+//            User createdUser = userRepository.save(user);
+            // Generate and Save confirmation token
+            String token = RandomNumUtils.generateCode(6);
+            ConfirmationToken confirmToken = new ConfirmationToken();
+            confirmToken.setToken(token);
+            confirmToken.setExpirationDate(LocalDateTime.now().plusMinutes(30));
+            confirmToken.setUser(updateExpiredToken);
+            confirmationTokenRepository.save(confirmToken);
+        } else {
+            throw new ResourceNotFoundException("Could not find any %s with the mobile number: ", "user" ,mobile);
+        }
+    }
+
 
     public void saveUser(UserPrincipal updatedUserRole) {
     }
