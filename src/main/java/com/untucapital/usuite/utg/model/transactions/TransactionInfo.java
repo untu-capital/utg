@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class TransactionInfo {
     private String toAccount;
     private String transactionType;
-    private String exchangeRate;
+    private int exchangeRate;
     private String description;
     private String fromAccount;
     private String reference;

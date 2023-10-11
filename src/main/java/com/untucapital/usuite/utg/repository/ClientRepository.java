@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
-    List<ClientLoan> findByUserId(String userId);
+    List<ClientLoan> findByUserIdOrderByCreatedAtAsc(String userId);
     List<ClientLoan> findClientLoansByBranchNameOrderByCreatedAtDesc(String branchName);
 
 //    ClientLoan findClientLoanBy (String loanAndFileId);
@@ -54,6 +54,8 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(String loanStatus, String pipelineStatus, String creditCommit);
 
+    List<ClientLoan> findClientLoanByLoanStatusAndPipelineStatus(String loanStatus, String pipelineStatus);
+
     List<ClientLoan> findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(String loanStatus, String branchName, String pipelineStatus, String creditCommit);
 
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndPipelineStatusAndBranchName(String loanStatus, String processLoanStatus, String bocoSignature, String pipelineStatus, String branchName);
@@ -73,4 +75,6 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndFinSignatureAndBoardSignature(String loanStatus, String processLoanStatus, String finSignature, String boardSignature);
 
     List<ClientLoan> findClientLoansByBoardSignature(String boardSignature);
+
+    List<ClientLoan> findByUserId(String userId);
 }

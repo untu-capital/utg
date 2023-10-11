@@ -17,6 +17,9 @@ public class Branches extends AbstractEntity {
     private  String branchTellPhone;
 
     private  String branchStatus;
+    private  String vaultAccountNumber;
+
+    private  String branchCode;
 
     private String googleMap;
 
@@ -70,6 +73,22 @@ public class Branches extends AbstractEntity {
 
     public void setGoogleMap(String googleMap) {
         this.googleMap = googleMap;
+    }
+
+    public String getVaultAccountNumber() {
+        return vaultAccountNumber;
+    }
+
+    public void setVaultAccountNumber(String vaultAccountNumber) {
+        this.vaultAccountNumber = vaultAccountNumber;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
     }
 
     public String getDirectionsLink() {

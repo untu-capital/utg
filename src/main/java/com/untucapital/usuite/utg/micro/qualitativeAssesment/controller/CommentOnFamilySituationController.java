@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.micro.qualitativeAssesment.controller;
 
-import com.untucapital.usuite.utg.micro.qualitativeAssesment.model.CommentsOnFamilySituation;
+import com.untucapital.usuite.utg.model.CommentsOnFamilySituation;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.service.CommentsOnFamilySituationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

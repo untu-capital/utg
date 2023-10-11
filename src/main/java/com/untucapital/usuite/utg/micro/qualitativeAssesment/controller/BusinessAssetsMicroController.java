@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.micro.qualitativeAssesment.controller;
 
-import com.untucapital.usuite.utg.micro.qualitativeAssesment.model.BusinessAssetsMicro;
+import com.untucapital.usuite.utg.model.BusinessAssetsMicro;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.service.BusinessAssetsMicroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

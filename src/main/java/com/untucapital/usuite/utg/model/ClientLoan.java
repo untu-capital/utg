@@ -205,6 +205,10 @@ public class ClientLoan extends AbstractEntity {
 
     private String clientLoanId;
 
+    private String loanCount;
+
+    private String platformUsed;
+
 
     public String getBmSetMeeting() {
         return bmSetMeeting;
@@ -833,5 +837,21 @@ public class ClientLoan extends AbstractEntity {
 
     public void setClientLoanId(String clientLoanId) {
         this.clientLoanId = clientLoanId;
+    }
+
+    public String getLoanCount() {
+        return loanCount;
+    }
+
+    public void setLoanCount(String loanCount) {
+        this.loanCount = loanCount;
+    }
+
+    public String getPlatformUsed() {
+        return platformUsed;
+    }
+
+    public void setPlatformUsed(String platformUsed) {
+        this.platformUsed = platformUsed;
     }
 }

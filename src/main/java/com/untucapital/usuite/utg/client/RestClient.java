@@ -2,6 +2,8 @@ package com.untucapital.usuite.utg.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.untucapital.usuite.utg.model.Employee;
+import com.untucapital.usuite.utg.model.Staff;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
@@ -105,6 +107,20 @@ public class RestClient {
 
         return cashTransactions;
 
+    }
+
+    public List<Employee> getAllUsers() throws JsonProcessingException {
+        log.info("Calling musoni to get staff");
+
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        String staffString = restTemplate.exchange(baseUrl+"staff",HttpMethod.GET,entity, String.class).getBody();
+        log.info("Employees in the system: {}", staffString);
+
+        Staff staff =objectMapper.readValue(staffString, Staff.class);
+
+        log.info("Loans object: {}", staff.toString());
+
+        return staff.getEmployees();
     }
 
 }

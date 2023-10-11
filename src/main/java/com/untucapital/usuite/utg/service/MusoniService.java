@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.untucapital.usuite.utg.DTO.RepaymentScheduleDTO;
 import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.Loans;
@@ -10,11 +11,13 @@ import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.processor.MusoniProcessor;
 import com.untucapital.usuite.utg.repository.MusoniRepository;
+import com.untucapital.usuite.utg.repository2.PostGlRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
@@ -59,6 +62,8 @@ public class MusoniService {
     private final RestClient restClient;
 
     private final MusoniProcessor musoniProcessor;
+
+    private final PostGlRepository postGlRepository;
 
     private static final Logger log = LoggerFactory.getLogger(RoleService.class);
 
@@ -129,8 +134,15 @@ public class MusoniService {
 
             for (TransactionInfo transactionInfo : transactionInfoList) {
 
+                PostGl postGl = new PostGl();
+
                 log.info("Required Transactions to be saved in the database: {}", transactionInfo);
-//                musoniRepository.save(transactionInfo);
+
+                BeanUtils.copyProperties(transactionInfo, postGl);
+
+                log.info("PostGL transaction: {}", postGl.toString());
+//
+                postGlRepository.save(postGl);
             }
         }
         return transactionInfoList;

@@ -12,6 +12,8 @@ public class Cities extends AbstractEntity {
 
     private String name;
 
+    private String description;
+
     private int code;
 
     public String getName() {
@@ -28,5 +30,13 @@ public class Cities extends AbstractEntity {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.micro.qualitativeAssesment.controller;
 
-import com.untucapital.usuite.utg.micro.qualitativeAssesment.model.SwotRiskAnalysis;
+import com.untucapital.usuite.utg.model.SwotRiskAnalysis;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.service.SwotRiskAnalysisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.micro.qualitativeAssesment.service;
 
-import com.untucapital.usuite.utg.micro.qualitativeAssesment.model.DailySalesMicro;
-import com.untucapital.usuite.utg.micro.qualitativeAssesment.repository.DailySalesMicroRepository;
+import com.untucapital.usuite.utg.model.DailySalesMicro;
+import com.untucapital.usuite.utg.micro.qualitativeAssesment.repo.DailySalesMicroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
