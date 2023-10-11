@@ -18,6 +18,8 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoansByLoanStatus(String loanStatus);
 
+    List<ClientLoan> findClientLoansByUserId(String userId);
+
     List<ClientLoan> findClientLoansByLoanStatusAndAssignToAndBranchName(String loanStatus, String assignTo, String branchName);
 
     List<ClientLoan> findClientLoansByLoanStatusAndAssignedStatusAndBranchName(String loanStatus, String assignedStatus, String branchName);

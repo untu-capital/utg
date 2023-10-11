@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface VaultRepository extends JpaRepository<Vault, Integer> {
 
-    List<Vault> findVaultByBranch_BranchNameAndType(String branchName, String type);
+    Vault findVaultByBranch_BranchNameAndType(String branchName, String type);
 
     List<Vault> findVaultByBranch_BranchName(String branch);
 }

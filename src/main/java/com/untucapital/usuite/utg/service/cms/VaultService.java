@@ -106,7 +106,7 @@ public class VaultService {
         return vaultRepository.save(existingVault);
     }
 
-    public List<Vault> getVaultsByBranchAndType(String branch, String type) {
+    public Vault getVaultByBranchAndType(String branch, String type) {
         return vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
     }
 

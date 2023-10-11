@@ -38,9 +38,6 @@ public class ClientLoanController {
         this.emailSender = emailSender;
     }
 
-
-
-
     //build save loan REST API
     @PostMapping
     public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) {
@@ -165,9 +162,14 @@ public class ClientLoanController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
-        List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
-        return ResponseEntity.ok(userClientLoans);
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByUserId(userId), HttpStatus.OK);
     }
+
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
+//        List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
+//        return ResponseEntity.ok(userClientLoans);
+//    }
 
     // show BM all loans with checked status
     @GetMapping("/loanStatus/{loanStatus}/{branchName}")
@@ -323,6 +325,44 @@ public class ClientLoanController {
         clientRepository.save(updatedLoanStatus);
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
+
+    @PutMapping("/bocoUpdate/{id}")
+    public ResponseEntity<String> updateClientLoan(@PathVariable String id, @RequestBody ClientLoan updatedClientLoan) {
+        ClientLoan existingClientLoan = clientLoanApplication.getClientLoanApplicationById(id);
+
+        // Update the fields with values from the updatedClientLoan
+        existingClientLoan.setMiddleName(updatedClientLoan.getMiddleName());
+        existingClientLoan.setLastName(updatedClientLoan.getLastName());
+        existingClientLoan.setIdNumber(updatedClientLoan.getIdNumber());
+        existingClientLoan.setBranchName(updatedClientLoan.getBranchName());
+        existingClientLoan.setMaritalStatus(updatedClientLoan.getMaritalStatus());
+        existingClientLoan.setGender(updatedClientLoan.getGender());
+        existingClientLoan.setDateOfBirth(updatedClientLoan.getDateOfBirth());
+        existingClientLoan.setPhoneNumber(updatedClientLoan.getPhoneNumber());
+        existingClientLoan.setPlaceOfBusiness(updatedClientLoan.getPlaceOfBusiness());
+        existingClientLoan.setIndustryCode(updatedClientLoan.getIndustryCode());
+        existingClientLoan.setLoanAmount(updatedClientLoan.getLoanAmount());
+        existingClientLoan.setStreetNo(updatedClientLoan.getStreetNo());
+        existingClientLoan.setBusinessName(updatedClientLoan.getBusinessName());
+        existingClientLoan.setBusinessStartDate(updatedClientLoan.getBusinessStartDate());
+        existingClientLoan.setStreetName(updatedClientLoan.getStreetName());
+        existingClientLoan.setSuburb(updatedClientLoan.getSuburb());
+        existingClientLoan.setCity(updatedClientLoan.getCity());
+        existingClientLoan.setTenure(updatedClientLoan.getTenure());
+        existingClientLoan.setNextOfKinName(updatedClientLoan.getNextOfKinName());
+        existingClientLoan.setNextOfKinPhone(updatedClientLoan.getNextOfKinPhone());
+        existingClientLoan.setNextOfKinRelationship(updatedClientLoan.getNextOfKinRelationship());
+        existingClientLoan.setNextOfKinAddress(updatedClientLoan.getNextOfKinAddress());
+        existingClientLoan.setNextOfKinName2(updatedClientLoan.getNextOfKinName2());
+        existingClientLoan.setNextOfKinPhone2(updatedClientLoan.getNextOfKinPhone2());
+        existingClientLoan.setNextOfKinRelationship2(updatedClientLoan.getNextOfKinRelationship2());
+        existingClientLoan.setNextOfKinAddress2(updatedClientLoan.getNextOfKinAddress2());
+
+        clientRepository.save(existingClientLoan);
+
+        return new ResponseEntity<String>("Client Loan successfully updated.", HttpStatus.OK);
+    }
+
 
     // assign each loan to a loan officer
     @PutMapping("/assignTo/{id}")
