@@ -7,6 +7,10 @@ import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
+import com.untucapital.usuite.utg.model.ConfirmationToken;
+import com.untucapital.usuite.utg.model.ContactDetail;
+import com.untucapital.usuite.utg.model.Role;
+import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.*;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.model.enums.RoleType;
@@ -41,6 +45,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.untucapital.usuite.utg.model.enums.RoleType.ROLE_LO;
 
 /**
  * @author Chirinda Nyasha Dell 22/11/2021
@@ -147,8 +153,6 @@ public class UserService extends AbstractService<User> {
         }
         return loginRespOptional;
     }
-
-
 
 
 
