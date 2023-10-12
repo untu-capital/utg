@@ -89,6 +89,26 @@ public class UserService extends AbstractService<User> {
         return null;
     }
 
+//    public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
+//        log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
+//
+//        validateUserStatus(loginReq.getUsername());
+//
+//        Authentication authentication = authenticationManager
+//                .authenticate(new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
+//
+//        Optional<LoginResp> loginRespOptional = Optional.empty();
+//        if (authentication != null) {
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//            String accessToken = tokenProvider.generateToken(authentication);
+//            loginRespOptional = Optional.of(
+//                    new LoginResp(accessToken, ((UserPrincipal) authentication.getPrincipal()).getId())
+//            );
+//        }
+//        return loginRespOptional;
+//    }
+
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
         log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
 
@@ -102,12 +122,33 @@ public class UserService extends AbstractService<User> {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String accessToken = tokenProvider.generateToken(authentication);
-            loginRespOptional = Optional.of(
-                    new LoginResp(accessToken, ((UserPrincipal) authentication.getPrincipal()).getId())
-            );
+
+            // Get the user ID from the UserPrincipal
+            UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+            String userId = userPrincipal.getId();
+
+            // Fetch the user
+            Optional<User> userOptional = userRepository.findById(userId);
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+
+                // Create a default CmsUser if it's null
+                CmsUser cmsUser = user.getCmsUser();
+                if (cmsUser == null) {
+                    cmsUser = new CmsUser();
+                    cmsUser.setRole(""); // Set the role or any other necessary fields
+                    user.setCmsUser(cmsUser);
+                    userRepository.save(user);
+                }
+
+                // Create the LoginResp
+                loginRespOptional = Optional.of(new LoginResp(accessToken, userId));
+            }
         }
         return loginRespOptional;
     }
+
+
 
 
 
@@ -402,6 +443,26 @@ public class UserService extends AbstractService<User> {
 
     public void saveUser(UserPrincipal updatedUserRole) {
     }
+
+    public User updateUserCmsUser(String userId, CmsUser defaultCmsUser) {
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            CmsUser cmsUser = user.getCmsUser();
+
+            if (cmsUser == null) {
+                // If the user's cmsUser is null, set it to the defaultCmsUser
+                user.setCmsUser(defaultCmsUser);
+                userRepository.save(user);
+            }
+            return user;
+        } else {
+            // Handle the case where the user with the provided userId is not found.
+            throw new ResourceNotFoundException("User", "id", userId);
+        }
+    }
+
 
 
 }
