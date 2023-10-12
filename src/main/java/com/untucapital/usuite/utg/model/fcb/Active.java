@@ -20,12 +20,16 @@ public class Active extends AbstractEntity {
 
     private String amount;
 
+    private String court_ref;
+
     @JsonProperty(value = "event_type")
     private String eventType;
 
     private String currency;
 
     private String comment;
+
+    private String event_date;
 
     public String getCounterparty() {
         return counterparty;
@@ -73,5 +77,21 @@ public class Active extends AbstractEntity {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getCourt_ref() {
+        return court_ref;
+    }
+
+    public void setCourt_ref(String court_ref) {
+        this.court_ref = court_ref;
+    }
+
+    public java.lang.String getEvent_date() {
+        return event_date;
+    }
+
+    public void setEvent_date(java.lang.String event_date) {
+        this.event_date = event_date;
     }
 }

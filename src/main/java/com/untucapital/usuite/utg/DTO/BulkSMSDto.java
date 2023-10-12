@@ -1,13 +1,11 @@
 package com.untucapital.usuite.utg.DTO;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-public class BulkSMSDto {
-    private String originator;
-    private String destination;
-    private String messageText;
-    private String messageReference;
+import java.util.List;
+
+@Data
+public class BulkSMSDTO {
+    private List<String> phoneNumbers;
+    private String message;
 }

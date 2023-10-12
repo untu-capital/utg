@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.repository;
 
-import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.cms.CmsUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,11 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByContactDetail_EmailAddress(String emailAddress);
 
+    boolean existsByContactDetail_MobileNumber(long mobile);
+
     User findByContactDetail_EmailAddress(String email);
+
+    User findByContactDetail_MobileNumber(long mobile);
 
     //ContactDetail findByEmail(String email);
 
@@ -37,9 +41,15 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User getUserByContactDetail_MobileNumber(long mobileNumber);
 
+    User getUserByContactDetail_EmailAddress(String email);
+
     List<User> findUsersByBranch(String branchName);
+
+    List<User> findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(String role);
 
     List<User> findUsersByBranchNotNull();
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
+
+    List<User> findUsersByBranchIsNull();
 }

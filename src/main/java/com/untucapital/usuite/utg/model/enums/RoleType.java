@@ -5,7 +5,6 @@ package com.untucapital.usuite.utg.model.enums;
  */
 
 public enum RoleType {
-
     ROLE_CLIENT,
     ROLE_LO,
     ROLE_BOCO,
@@ -16,4 +15,10 @@ public enum RoleType {
     ROLE_FIN,
     ROLE_BOARD,
     ROLE_AUDIT,
+    ROLE_OP,
+
+//    Cash Management Roles
+    ROLE_CASHIER,
+    ROLE_ACCOUNTANT,
+
 }
