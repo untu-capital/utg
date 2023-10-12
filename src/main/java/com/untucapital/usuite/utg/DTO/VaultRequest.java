@@ -15,4 +15,5 @@ public class VaultRequest {
     private String name;
     private String type;
     private String branchId;
+    private String accountLink;
 }
