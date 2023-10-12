@@ -119,27 +119,48 @@ public class UsersController extends AbstractController<User> {
         userRepository.save(updatedUserRole);
         return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
-
     @PutMapping("/updateCmsUserRole/{id}")
     public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
+        // Log the received ID for debugging
+        System.out.println("Received ID: " + id);
+
         // Retrieve the User entity by ID
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findUserById(id);
 
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
-
-            // Update the role of the existing user's CmsUser
+            // Update the role of the existing user's CmsUser or create a new one if it's null
             CmsUser cmsUser = existingUser.getCmsUser();
+
+            if (cmsUser == null) {
+                cmsUser = new CmsUser();
+            }
+
             cmsUser.setRole(updatedCmsUser.getRole());
+
+            // Set the updated CmsUser back to the User entity
+            existingUser.setCmsUser(cmsUser);
 
             // Save the updated user
             userRepository.save(existingUser);
 
-            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
         } else {
-            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+
+
+
+
+//    @PutMapping("/updateCmsUserRole/{userId}")
+//    public ResponseEntity<User> updateCmsUser(@PathVariable String userId, @RequestBody CmsUser updatedCmsUser) {
+//        // Create a default CmsUser here with your desired values
+//        CmsUser defaultCmsUser = new CmsUser();
+//        defaultCmsUser.setRole(updatedCmsUser.getRole()); // Set your default values here
+//        User updatedUser = userService.updateUserCmsUser(userId, defaultCmsUser);
+//        return ResponseEntity.ok(updatedUser);
+//    }
 
 
 
