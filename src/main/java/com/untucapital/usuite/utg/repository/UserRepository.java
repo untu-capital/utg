@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.repository;
 
-import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -25,15 +24,19 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     boolean existsByContactDetail_EmailAddress(String emailAddress);
 
+    boolean existsByContactDetail_MobileNumber(long mobile);
+
     User findByContactDetail_EmailAddress(String email);
+
+    User findByContactDetail_MobileNumber(long mobile);
 
     //ContactDetail findByEmail(String email);
 
     User findByResetPasswordToken(String token);
 
-    User getUserById (String userId);
+    User getUserById(String userId);
 
-    User findUsersById (String userId);
+    User findUsersById(String userId);
 
     User getUserByContactDetail_MobileNumber(long mobileNumber);
 
@@ -42,4 +45,6 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findUsersByBranchNotNull();
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
+
+    List<User> findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(String s);
 }

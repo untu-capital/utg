@@ -6,7 +6,6 @@ import com.untucapital.usuite.utg.auth.UserPrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -95,6 +93,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/webjars/**")
+                .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
                 .antMatchers("/direct_cost/**")
@@ -111,7 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_app/**")
                 .permitAll()
-
+                .antMatchers("/cms_authorisation/**")
+                .permitAll()
                 .antMatchers("/industries/**")
                 .permitAll()
                 .antMatchers("/uploadFile/**")
@@ -308,7 +315,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/assessmentFileUpload/**")
                 .permitAll()
-
                 .antMatchers("/appraisalFileUpload/**")
                 .permitAll()
                 .antMatchers("/ClientFileUpload/**")
@@ -321,20 +327,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_application_enquiry/**")
                 .permitAll()
-
+                .antMatchers("/amortize/**")
+                .permitAll()
                 .antMatchers("/requestCollateralSecurity/**")
                 .permitAll()
-
                 .antMatchers("/credit_application_feedback/**")
                 .permitAll()
-
                 .antMatchers("/sms/**")
                 .permitAll()
-
-
+                .antMatchers("/credit_application_pipeline/**")
+                .permitAll()
+                .antMatchers("/leadStatus/**")
+                .permitAll()
+                .antMatchers("/zones/**")
+                .permitAll()
+                .antMatchers("/events/**")
+                .permitAll()
+                .antMatchers("/pos/**")
+                .permitAll()
+                .antMatchers("/cms/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
-
 
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }
