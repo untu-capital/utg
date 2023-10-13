@@ -4,8 +4,9 @@ import com.untucapital.usuite.utg.controller.payload.*;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.UserRepository;
+import com.untucapital.usuite.utg.service.SmsService;
 import com.untucapital.usuite.utg.service.UserService;
-import com.untucapital.usuite.utg.utils.EmailSender;
+import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class AuthController {
 
     private final UserService userService;
 
+    private final SmsService smsService;
     private final UserRepository userRepository;
 
     @Value("${untu.reset-token.link}")
@@ -48,8 +50,9 @@ public class AuthController {
     private String resetEmailUrl;
 
     @Autowired
-    public AuthController(UserService userService, UserRepository userRepository) {
+    public AuthController(UserService userService, SmsService smsService, UserRepository userRepository) {
         this.userService = userService;
+        this.smsService = smsService;
         this.userRepository = userRepository;
     }
 
@@ -97,6 +100,15 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Email provided does not exist"));
     }
 
+    @GetMapping("/check_mobile")
+    public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") long mobile) {
+
+        if (userService.checkUserMobile(mobile)) {
+            return ResponseEntity.ok(new UsuiteApiResp("Mobile number exists"));
+        } else
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("Mobile number provided does not exist"));
+    }
+
 
     @Autowired
     private JavaMailSender mailSender;
@@ -124,6 +136,23 @@ public class AuthController {
 
 //        return "We have sent a reset password link to your email. Please check.";
 
+    }
+
+    @PostMapping("/forgot_password_mobile")
+    public ResponseEntity<UsuiteApiResp> processForgotPasswordMobile(HttpServletRequest request, Model model) {
+        String mobile = request.getParameter("mobile");
+        String token = RandomNumUtils.generateCode(4);
+
+        try {
+            userService.updateResetPasswordTokenMobile(String.valueOf(token), Long.parseLong(mobile));
+            String resetPin = "Your One-Time-Pasword (OTP) is: " + token;
+//            sendEmail(email, resetPasswordLink);
+            smsService.sendSingle(mobile, resetPin);
+            return ResponseEntity.ok(new UsuiteApiResp("We have sent an OTP Code to your mobile number. Please check."));
+        } catch (ResourceNotFoundException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("Failed to sent a reset password link"));
+        }
     }
 
     public void sendEmail(String recipientEmail, String resetPasswordLink)
