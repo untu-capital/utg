@@ -164,26 +164,26 @@ public class UsersController extends AbstractController<User> {
 
 
 
-    @PutMapping("/updateCmsUserRole/{id}")
-    public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
-        // Retrieve the User entity by ID
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        if (optionalUser.isPresent()) {
-            User existingUser = optionalUser.get();
-
-            // Update the role of the existing user's CmsUser
-            CmsUser cmsUser = existingUser.getCmsUser();
-            cmsUser.setRole(updatedCmsUser.getRole());
-
-            // Save the updated user
-            userRepository.save(existingUser);
-
-            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
-        }
-    }
+//    @PutMapping("/updateCmsUserRole/{id}")
+//    public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
+//        // Retrieve the User entity by ID
+//        Optional<User> optionalUser = userRepository.findById(id);
+//
+//        if (optionalUser.isPresent()) {
+//            User existingUser = optionalUser.get();
+//
+//            // Update the role of the existing user's CmsUser
+//            CmsUser cmsUser = existingUser.getCmsUser();
+//            cmsUser.setRole(updatedCmsUser.getRole());
+//
+//            // Save the updated user
+//            userRepository.save(existingUser);
+//
+//            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 
 
