@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.controller.cms;
 import com.untucapital.usuite.utg.controller.AbstractController;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Authorisation;
+import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.cms.AuthorisationService;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "cms/cms_authorisation")
@@ -70,5 +73,10 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     @Override
     protected AbstractService<Authorisation> getService() {
         return authorisationService;
+    }
+
+    @GetMapping("branch/{id}")
+    public List<Authorisation> getAuthorisationByBranchId(@PathVariable String id) {
+        return authorisationService.getAuthorisationByBranchId(id);
     }
 }

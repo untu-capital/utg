@@ -44,4 +44,8 @@ public class BranchService extends AbstractService<Branches> {
     public Branches getBranchesById(String id) {
         return branchRepository.findBranchesById(id);
     }
+
+    public Branches getBranchByName(String name) {
+        return branchRepository.findBranchesByBranchName(name);
+    }
 }

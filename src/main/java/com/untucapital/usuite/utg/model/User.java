@@ -48,7 +48,7 @@ public class User extends AbstractEntity {
     private ContactDetail contactDetail;
 
     @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
-    @NotNull
+//    @NotNull
     @JoinColumn(name = "cms_user_id", nullable = false)
     private CmsUser cmsUser;
 
