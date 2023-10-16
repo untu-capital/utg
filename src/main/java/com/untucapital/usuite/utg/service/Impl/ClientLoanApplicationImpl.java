@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.List;
 
 @Service
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
@@ -86,7 +87,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
 
-
     @Override
     public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
         userService.find(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
@@ -100,7 +100,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                 () -> new ResourceNotFoundException("ClientLoan", "Id", id));
         clientLoan.setId(existingClientLoan.getId());
         /*existingClientLoan.setFirstName(clientLoan.getFirstName());
-
         existingClientLoan.setStatus(clientLoan.getStatus());
 */
         //save existing client to DB
@@ -117,7 +116,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public List<ClientLoan> getClientLoanApplicationsByLoanStatus (String loanStatus) {
+    public List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus) {
         userService.find(loanStatus).orElseThrow(() ->
                 new ResourceNotFoundException("Loan", "loan status", loanStatus));
         return clientRepository.findClientLoansByLoanStatus(loanStatus);
@@ -182,7 +181,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
         return clientRepository.findAll();
     }
-
 
 
 }

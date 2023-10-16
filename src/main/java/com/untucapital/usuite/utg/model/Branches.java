@@ -12,14 +12,14 @@ public class Branches extends AbstractEntity {
 
     private String branchName;
 
-    private  String branchAddress;
+    private String branchAddress;
 
-    private  String branchTellPhone;
+    private String branchTellPhone;
 
-    private  String branchStatus;
-    private  String vaultAccountNumber;
+    private String branchStatus;
+    private String vaultAccountNumber;
 
-    private  String branchCode;
+    private String branchCode;
 
     private String googleMap;
 

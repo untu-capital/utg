@@ -14,11 +14,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 //@EnableScheduling
 public class UntuTransactionGatewayApplication {
 
+    static final Logger log = LoggerFactory.getLogger(UntuTransactionGatewayApplication.class);
     @Value("${musoni.url}")
     private String musoniUrl;
     @Value("${musoni.username}")
@@ -29,7 +31,7 @@ public class UntuTransactionGatewayApplication {
     private String musoniTenantId;
     @Value("${musoni.X_API_KEY}")
     private String musoniApiKey;
-    static final Logger log = LoggerFactory.getLogger(UntuTransactionGatewayApplication.class);
+
     public static void main(String[] args) throws ParseException {
         SpringApplication.run(UntuTransactionGatewayApplication.class, args);
 

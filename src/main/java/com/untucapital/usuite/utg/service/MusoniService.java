@@ -1,5 +1,9 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.DTO.*;
+import com.untucapital.usuite.utg.DTO.AllLoans;
+import com.untucapital.usuite.utg.DTO.DisbursedLoan;
+import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
+import com.untucapital.usuite.utg.DTO.RepaymentScheduleDTO;
+import com.untucapital.usuite.utg.DTO.loanObjects.Loan;
 import com.untucapital.usuite.utg.exception.InvalidDateFormatExceptionHandler;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.MusoniClient;
@@ -58,8 +62,7 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @Setter
-@RequiredArgsConstructor
-@Configuration
+@AllArgsConstructor
 public class MusoniService {
     @Autowired
     private static final String DB_URL = "jdbc:mysql://localhost:3306/u-tran-gateway-db?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false";
@@ -91,11 +94,12 @@ public class MusoniService {
         headers.set("X-Fineract-Platform-TenantId",musoniTenantId);
         headers.set("x-api-key",musoniApiKey);
         headers.set("Content-Type", "application/json");
+
         return headers;
     }
 
     private HttpEntity<String> setHttpEntity() {
-        return new HttpEntity<String>(httpHeaders());
+        return new HttpEntity<>(httpHeaders());
     }
 
     @Autowired
@@ -266,7 +270,6 @@ public class MusoniService {
             repaymentSms(loan_id, phone_number, timestamps, transIds);
 
 //            repayment
-
             StringBuilder menu = new StringBuilder("");
             String timestampObject = menu.append("{")
                     .append("\"loanId\"").append(" : ").append(loan_id).append(",")
@@ -288,6 +291,7 @@ public class MusoniService {
 
         for (int transId = transIds; transId <= transIds+10; transId++) {
             try {
+//            URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 
                 System.out.println("This is before Musoni Transactions Query- Disbursements!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -375,8 +379,11 @@ public class MusoniService {
             }catch (HttpClientErrorException | ParseException | SQLException e){
                 e.getMessage();
             }
+
+
         }
         // EXIT WHILE LOOP
+
 
     return "";
     }
@@ -385,7 +392,9 @@ public class MusoniService {
 
         for (int transId = transIds; transId <= transIds+5; transId++) {
             try {
+//            URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 
+                System.out.println("This is before Musoni Transactions Query!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
                 System.out.println("This is before Musoni Transactions Query - Repayments!");
                 if (new JSONObject(restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {

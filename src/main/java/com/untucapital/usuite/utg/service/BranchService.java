@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
-import com.untucapital.usuite.utg.model.*;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +22,7 @@ public class BranchService extends AbstractService<Branches> {
     public BranchService(BranchRepository branchRepository) {
         this.branchRepository = branchRepository;
     }
+
     public void saveBranches(Branches branches) {
         branchRepository.save(branches);
     }
@@ -39,6 +39,10 @@ public class BranchService extends AbstractService<Branches> {
 
     public void deleteBranch(String id) {
         branchRepository.deleteById(id);
+    }
+
+    public List<Branches> getAllBranches() {
+        return branchRepository.findAll();
     }
 
     public Branches getBranchesById(String id) {

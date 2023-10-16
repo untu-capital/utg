@@ -18,25 +18,27 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping(path = "credit_application")
 public class ClientLoanController {
 
 
+    private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
+    private final EmailSender emailSender;
     @Autowired
     ClientRepository clientRepository;
-
-    private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
-
-    private ClientLoanApplication clientLoanApplication;
-    private final EmailSender emailSender;
+    private final ClientLoanApplication clientLoanApplication;
 
     public ClientLoanController(ClientLoanApplication clientLoanApplication, EmailSender emailSender) {
         this.clientLoanApplication = clientLoanApplication;
         this.emailSender = emailSender;
     }
+
 
     //build save loan REST API
     @PostMapping
@@ -197,7 +199,7 @@ public class ClientLoanController {
 
     // Completely done loan applications
     @GetMapping("/bocoSignature/{bocoSignature}/{completelyDone}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureDoneStatusAndBranchName(@PathVariable("bocoSignature") String bocoSignature , @PathVariable("completelyDone") String  completelyDone, @PathVariable("branchName") String branchName) {
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureDoneStatusAndBranchName(@PathVariable("bocoSignature") String bocoSignature, @PathVariable("completelyDone") String completelyDone, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBocoSignatureAndCompletelyDoneAndBranchName(bocoSignature, completelyDone, branchName), HttpStatus.OK);
     }
 
@@ -542,6 +544,7 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
         updatedLoanMeeting.setCcDate(clientLoan.getCcDate());
+        updatedLoanMeeting.setPipelineStatus(clientLoan.getPipelineStatus());
         clientRepository.save(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
     }

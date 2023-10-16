@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.repository;
 
+import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,7 +36,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByResetPasswordToken(String token);
 
-    User getUserById (String userId);
+    User getUserById(String userId);
 
     Optional<User> findUserById(String userId);
 
@@ -52,4 +53,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
 
     List<User> findUsersByBranchIsNull();
+
 }

@@ -11,6 +11,7 @@ import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
+import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import org.slf4j.Logger;

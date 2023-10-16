@@ -2,11 +2,13 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.auth.TokenProvider;
 import com.untucapital.usuite.utg.auth.UserPrincipal;
+import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.controller.payload.LoginReq;
 import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
+import com.untucapital.usuite.utg.model.*;
 import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.ContactDetail;
 import com.untucapital.usuite.utg.model.Role;
@@ -467,6 +469,11 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+
+    //Find All User By
+    public List<User> findAllById(List<String> userIds){
+        return userRepository.findAllById(userIds);
+    }
 
 
 }
