@@ -1,7 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.controller.AbstractController;
-import com.untucapital.usuite.utg.model.*;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
@@ -43,6 +41,12 @@ public class BranchController extends AbstractController<Branches> {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("byName/{name}")
+    public Branches getBranchByName(@PathVariable("name") String name) {
+       return branchService.getBranchByName(name);
+
     }
 
 //    @PutMapping("/update/{id}")

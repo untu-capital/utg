@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -24,7 +25,7 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoansByLoanStatusAndAssignedStatusAndBranchName(String loanStatus, String assignedStatus, String branchName);
 
-    List<ClientLoan> findClientLoansByLoanStatusAndBranchName(String loanStatus, String branchName);
+    List<ClientLoan> findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(String loanStatus, String branchName, Pageable pageable);
 
     List<ClientLoan> findClientLoansByBocoSignatureAndBranchName(String bocoSignature, String branchName);
 

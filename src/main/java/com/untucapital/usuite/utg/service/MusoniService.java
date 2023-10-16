@@ -1,9 +1,5 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.DTO.AllLoans;
-import com.untucapital.usuite.utg.DTO.DisbursedLoan;
-import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
-import com.untucapital.usuite.utg.DTO.RepaymentScheduleDTO;
-import com.untucapital.usuite.utg.DTO.loanObjects.Loan;
+import com.untucapital.usuite.utg.DTO.*;
 import com.untucapital.usuite.utg.exception.InvalidDateFormatExceptionHandler;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.MusoniClient;
@@ -62,7 +58,8 @@ import java.util.stream.Collectors;
 @Service
 @Getter
 @Setter
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Configuration
 public class MusoniService {
     @Autowired
     private static final String DB_URL = "jdbc:mysql://localhost:3306/u-tran-gateway-db?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'&jdbcCompliantTruncation=false";
@@ -94,12 +91,11 @@ public class MusoniService {
         headers.set("X-Fineract-Platform-TenantId",musoniTenantId);
         headers.set("x-api-key",musoniApiKey);
         headers.set("Content-Type", "application/json");
-
         return headers;
     }
 
     private HttpEntity<String> setHttpEntity() {
-        return new HttpEntity<>(httpHeaders());
+        return new HttpEntity<String>(httpHeaders());
     }
 
     @Autowired
@@ -270,6 +266,7 @@ public class MusoniService {
             repaymentSms(loan_id, phone_number, timestamps, transIds);
 
 //            repayment
+
             StringBuilder menu = new StringBuilder("");
             String timestampObject = menu.append("{")
                     .append("\"loanId\"").append(" : ").append(loan_id).append(",")
@@ -286,12 +283,11 @@ public class MusoniService {
     }
 
 
-//          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
+    //          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
     public String disbursementSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
 
         for (int transId = transIds; transId <= transIds+10; transId++) {
             try {
-//            URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 
                 System.out.println("This is before Musoni Transactions Query- Disbursements!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -311,66 +307,66 @@ public class MusoniService {
                         JSONObject json = new JSONObject(loanTransBody);
                         JSONObject type = json.getJSONObject("type");
 
-        //                        GET TRANSACTION TYPE
+                        //                        GET TRANSACTION TYPE
                         Object transactionType = type.get("value");
                         System.out.println(transactionType);
                         System.out.println("YOUR DIS NUMBER: "+phone_number);
 
 //                        GET TRANSACTION DATE
-                JSONArray datetime = json.getJSONArray("date");
-                String oldstring = datetime.get(0) + "-" + datetime.get(1) + "-" + datetime.get(2);
-                DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
-                SimpleDateFormat old_format = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
-                Date transDates = old_format.parse(oldstring);
-                String transDate = new_format.format(transDates);
-                System.out.println(transDate);
+                        JSONArray datetime = json.getJSONArray("date");
+                        String oldstring = datetime.get(0) + "-" + datetime.get(1) + "-" + datetime.get(2);
+                        DateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+                        SimpleDateFormat old_format = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
+                        Date transDates = old_format.parse(oldstring);
+                        String transDate = new_format.format(transDates);
+                        System.out.println(transDate);
 
 //                        GET TRACTIONACTION AMOUNT
-                Object amount = json.get("amount");
-                System.out.println(amount);
+                        Object amount = json.get("amount");
+                        System.out.println(amount);
 
 //                        GET TRANSACTION CODE
-                JSONObject currency = json.getJSONObject("currency");
-                Object currencyCode = currency.get("code");
-                System.out.println(currencyCode);
-                System.out.println("Loan ID is: " + loanId + "\n And transaction ID is: " + transId);
+                        JSONObject currency = json.getJSONObject("currency");
+                        Object currencyCode = currency.get("code");
+                        System.out.println(currencyCode);
+                        System.out.println("Loan ID is: " + loanId + "\n And transaction ID is: " + transId);
 
 //                        FOR DISBURSMENT TRANSACTION
-                if (transactionType.equals("Disbursement")) {
-                    System.out.println(transactionType);
+                        if (transactionType.equals("Disbursement")) {
+                            System.out.println(transactionType);
 
-                    Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
-                    Statement stmt1 = conn.createStatement();
+                            Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
+                            Statement stmt1 = conn.createStatement();
 
-                    ResultSet searchTransId = stmt1.executeQuery("SELECT * FROM sms_notification WHERE trans_id = " + transId);
+                            ResultSet searchTransId = stmt1.executeQuery("SELECT * FROM sms_notification WHERE trans_id = " + transId);
 
-                    List<Integer> transIdArray = new ArrayList<Integer>();
-                    while (searchTransId.next()) {
-                        transIdArray.add(searchTransId.getInt("trans_id"));
-                    }
-                    List<Integer> transArray = transIdArray;
+                            List<Integer> transIdArray = new ArrayList<Integer>();
+                            while (searchTransId.next()) {
+                                transIdArray.add(searchTransId.getInt("trans_id"));
+                            }
+                            List<Integer> transArray = transIdArray;
 
-                    if (transArray.contains(transId)) {
-                        System.out.println("Sms Already Send");
-                        System.out.println(transId);
-                    }else {
+                            if (transArray.contains(transId)) {
+                                System.out.println("Sms Already Send");
+                                System.out.println(transId);
+                            }else {
 
 //                        Todo: SET SEND SMS HERE...
-                        System.out.println("Disbursement message has been sent..");
-                        String sms_disburse = "This serves to confirm that a loan amount of " + currencyFormatter(new BigDecimal(loanTransAmount)) + " has been disbursed to Account: " + loanId + " on " + transDate + " and has been collected.";
-                        smsService.sendSingle(phone_number, sms_disburse);
+                                System.out.println("Disbursement message has been sent..");
+                                String sms_disburse = "This serves to confirm that a loan amount of " + currencyFormatter(new BigDecimal(loanTransAmount)) + " has been disbursed to Account: " + loanId + " on " + transDate + " and has been collected.";
+                                smsService.sendSingle(phone_number, sms_disburse);
 
-                        //  INSERT TRANSACTION DETAILS INTO DATABASE
-                        System.out.println("Inserting SMS records into the table...");
-                        String sql = "INSERT INTO `sms_notification` (`trans_id`, `loan_id`, `description`, `phone_number`, `unix_timestamp`) VALUES (" + transId + ", '" + loanId + "', '" + transactionType + "', '" + phone_number + "', '" + unixTimestamp + "')";
-                        stmt1.executeUpdate(sql);
+                                //  INSERT TRANSACTION DETAILS INTO DATABASE
+                                System.out.println("Inserting SMS records into the table...");
+                                String sql = "INSERT INTO `sms_notification` (`trans_id`, `loan_id`, `description`, `phone_number`, `unix_timestamp`) VALUES (" + transId + ", '" + loanId + "', '" + transactionType + "', '" + phone_number + "', '" + unixTimestamp + "')";
+                                stmt1.executeUpdate(sql);
 //                                stmt1.close();
-                        System.out.println(transId);
+                                System.out.println(transId);
+                            }
+                            searchTransId.close();
+                        }
                     }
-                    searchTransId.close();
-                }
-       }
                 }
                 else {
                     System.out.println("else part in disbursement");
@@ -379,22 +375,17 @@ public class MusoniService {
             }catch (HttpClientErrorException | ParseException | SQLException e){
                 e.getMessage();
             }
-
-
         }
         // EXIT WHILE LOOP
 
-
-    return "";
+        return "";
     }
 
     public String repaymentSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
 
         for (int transId = transIds; transId <= transIds+5; transId++) {
             try {
-//            URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 
-                System.out.println("This is before Musoni Transactions Query!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
                 System.out.println("This is before Musoni Transactions Query - Repayments!");
                 if (new JSONObject(restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {

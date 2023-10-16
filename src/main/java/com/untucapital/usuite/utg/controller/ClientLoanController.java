@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "credit_application")
@@ -173,10 +172,17 @@ public class ClientLoanController {
 //        return ResponseEntity.ok(userClientLoans);
 //    }
 
-    // show BM all loans with checked status
     @GetMapping("/loanStatus/{loanStatus}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(
+            @PathVariable("loanStatus") String loanStatus,
+            @PathVariable("branchName") String branchName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size); // Set the limit to 20 records
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(
+                loanStatus, branchName, pageable);
+        return new ResponseEntity<>(clientLoans, HttpStatus.OK);
     }
 
     // show BM all loans with checked status
@@ -406,6 +412,22 @@ public class ClientLoanController {
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
 
+    @PutMapping("/updateTicketInfo/{id}")
+    public ResponseEntity<String> updateTicketInfo(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateSignatureStatus.setLessFees(clientLoan.getLessFees());
+        updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
+        updateSignatureStatus.setMeetingLoanAmount(clientLoan.getMeetingLoanAmount());
+        updateSignatureStatus.setMeetingCashHandlingFee(clientLoan.getMeetingCashHandlingFee());
+        updateSignatureStatus.setMeetingInterestRate(clientLoan.getMeetingInterestRate());
+        updateSignatureStatus.setMeetingRepaymentAmount(clientLoan.getMeetingRepaymentAmount());
+        updateSignatureStatus.setMeetingTenure(clientLoan.getMeetingTenure());
+        updateSignatureStatus.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
+
+        clientRepository.save(updateSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
     // update predisbursement ticket for bm Signature
     @PutMapping("/updateBmSignature/{id}")
     public ResponseEntity<String> bmTicketStatus(@PathVariable String id, @RequestBody ClientLoan clientLoan){
@@ -525,8 +547,16 @@ public class ClientLoanController {
     //display unchecked loans  with status pending for BOCO
 
     @GetMapping("/unchecked/{loanStatus}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchNameAndLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchNameAndLoanStatus(
+            @PathVariable("loanStatus") String loanStatus,
+            @PathVariable("branchName") String branchName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size); // Set the limit to 20 records
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(
+                loanStatus, branchName, pageable);
+        return new ResponseEntity<>(clientLoans, HttpStatus.OK);
     }
 
     //Update meeting columns
