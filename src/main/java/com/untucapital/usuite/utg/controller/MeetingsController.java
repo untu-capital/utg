@@ -48,13 +48,6 @@ public class MeetingsController extends AbstractController<Meetings> {
         return meetingsRepository.findMeetingsByLoanId(loanId);
     }
 
-
-
-//    @DeleteMapping("/deleteBranch/{id}")
-//    public void delete(@PathVariable String id) {
-//
-//        meetingsService.deleteMeeting(id);
-
     @Override
     protected AbstractService<Meetings> getService() {
         return meetingsService;
