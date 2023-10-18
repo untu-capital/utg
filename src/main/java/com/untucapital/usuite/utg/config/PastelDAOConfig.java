@@ -9,6 +9,7 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -32,6 +33,7 @@ import java.util.Map;
         basePackages 	 = {"com.untucapital.usuite.utg.repository2"},
         transactionManagerRef = "pastelTransactionManager"
 )
+
 public class PastelDAOConfig {
 
      @Value("${spring.second-datasource.url}")
@@ -75,66 +77,11 @@ public class PastelDAOConfig {
 
         }
 
-        @Primary
-        @Bean("pastelTransactionManager")
+
+        @Bean(name = "pastelTransactionManager")
         public PlatformTransactionManager transactionManager(@Qualifier("pastelEntityManagerFactory") EntityManagerFactory entityManagerFactory ) {
             return new JpaTransactionManager(entityManagerFactory);
         }
-
-
-
-//
-//
-//        @Value("${spring.second-datasource.url}")
-//        private String url2;
-//
-//        @Value("${spring.second-datasource.username}")
-//        private String username2;
-//
-//        @Value("${spring.second-datasource.password}")
-//        private String password2;
-//
-//        @Value("${spring.second-datasource.driverClassName}")
-//        private String driverClass2;
-//
-//
-//        @Primary
-//        @Bean(name = "pastelEntityManagerFactory")
-//        public LocalContainerEntityManagerFactoryBean pastelEntityManagerFactory(EntityManagerFactoryBuilder builder,
-//                                                                           @Qualifier("datasource") DataSource dataSource) {
-//            Map<String, Object> properties = new HashMap<>();
-//            properties.put("hibernate.hbm2ddl.auto", "update");
-//            properties.put("hibernate.dialect", "org.hibernate.dialect.SQLServer2012Dialect");
-//            // properties.put("hibernate.physical_naming_strategy", CamelCaseSplittingFieldNamingStrategy.class.getName());
-//            return builder.dataSource(dataSource)
-//                    .properties(properties)
-//                    .packages("com.untucapital.usuite.utg.entity")
-//                    .persistenceUnit("User").build();
-//        }
-//
-//        @Primary
-//        @Bean(name = "pastelTransactionManager")
-//        public PlatformTransactionManager transactionManager(@Qualifier("pastelEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
-//            return new JpaTransactionManager(entityManagerFactory);
-//
-//        }
-//
-////        @Bean(name = "secondJdbcTemplate")
-////        public JdbcTemplate secondJdbcTemplate(@Qualifier("secondDataSource") DataSource dataSource) {
-////            return new JdbcTemplate(dataSource);
-////        }
-//
-//        @Bean(name = "datasource")
-//        public DataSource secondDataSource() {
-//            DriverManagerDataSource
-//
-//                    dataSource = new DriverManagerDataSource();
-//            dataSource.setDriverClassName(driverClass2);
-//            dataSource.setUrl(url2);
-//            dataSource.setUsername(username2);
-//            dataSource.setPassword(password2);
-//            return dataSource;
-//        }
 
 
 

@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

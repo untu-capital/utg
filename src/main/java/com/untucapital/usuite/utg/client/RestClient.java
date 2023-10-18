@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -65,33 +66,49 @@ public class RestClient {
         return new HttpEntity<String>(httpHeaders());
     }
 
-    public Loans getLoans(Long timestamp) throws JsonProcessingException {
+    public Loans getLoans(Long timestamp) {
         log.info("Calling musoni to get loans");
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        String loanString = restTemplate.exchange(baseUrl+"loans?modifiedSinceTimestamp="+MusoniUtils.generateTimestamp(timestamp),HttpMethod.GET,entity, String.class).getBody();
-        log.info("Loans in the past 24 hours: {}", loanString);
+        Loans loans = new Loans();
 
-        Loans loans =objectMapper.readValue(loanString, Loans.class);
+        try {
+            String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + MusoniUtils.generateTimestamp(timestamp), HttpMethod.GET, entity, String.class).getBody();
+            log.info("Loans in the past 24 hours: {}", loanString);
 
-        log.info("Loans object: {}", loans);
+            loans = objectMapper.readValue(loanString, Loans.class);
+
+            log.info("Loans object: {}", loans);
+        }catch (Exception e){
+            log.info("Exception: {}", e.getMessage());
+        }
 
         return loans;
     }
 
-    public List<Transactions> getTransactions(int loanId) throws JsonProcessingException {
+    public List<Transactions> getTransactions(int loanId) {
 
         log.info("PageItem Id :{}", loanId);
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        String loanString = restTemplate.exchange(baseUrl+"loans/"+loanId+"?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
+        PageItem pageItem = new PageItem();
 
-        log.info("PageItem with id " + loanId + " and transaction information: {}", loanString);
+        try {
+            String loanString = restTemplate.exchange(baseUrl + "loans/" + loanId + "?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
 
-        PageItem pageItem = objectMapper.readValue(loanString, PageItem.class);
+            log.info("PageItem with id " + loanId + " and transaction information: {}", loanString);
 
-        log.info("Transaction information for a loan: {}", pageItem);
+            pageItem = objectMapper.readValue(loanString, PageItem.class);
 
+            log.info("Transaction information for a loan: {}", pageItem);
+        }catch (Exception e){
+            log.info("Failed to get Loans: {}", e.getMessage());
+        }
 
         List<Transactions> transactions = pageItem.getTransactions();
+
+        if (transactions == null){
+
+            return null;
+        }
 
         log.info("Transactions : {}", transactions.toString());
 
@@ -109,18 +126,24 @@ public class RestClient {
 
     }
 
-    public List<Employee> getAllUsers() throws JsonProcessingException {
+    public List<Employee> getAllUsers() {
         log.info("Calling musoni to get staff");
-
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        String staffString = restTemplate.exchange(baseUrl+"staff",HttpMethod.GET,entity, String.class).getBody();
-        log.info("Employees in the system: {}", staffString);
+        List<Employee> employees = new ArrayList<Employee>();
+        try {
+            String staffString = restTemplate.exchange(baseUrl + "users", HttpMethod.GET, entity, String.class).getBody();
+            log.info("Employees in the system: {}", staffString);
 
-        Staff staff =objectMapper.readValue(staffString, Staff.class);
+            Employee[] employeeList = objectMapper.readValue(staffString, Employee[].class);
 
-        log.info("Loans object: {}", staff.toString());
+            employees = List.of(employeeList);
 
-        return staff.getEmployees();
+            log.info("Loans object: {}", Arrays.toString(employeeList));
+        }catch(Exception e){
+            log.info("Failed to get Employees", e.getMessage());
+        }
+
+        return employees;
     }
 
 }

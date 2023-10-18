@@ -12,7 +12,7 @@ import java.util.Date;
 public class PostGl {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AutoIdx")
     private BigInteger AutoIdx;
 

@@ -8,11 +8,13 @@ import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author tjchidanika
@@ -21,11 +23,15 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Slf4j
 public class VaultService {
+
     private final VaultRepository vaultRepository;
     private final BranchRepository branchRepository;
+
+
     //Add
+    @Transactional(value = "transactionManager")
     public Vault addVault(VaultRequest vaultRequest) {
 
         Branches branch = branchRepository.findById(vaultRequest.getBranchId())
@@ -34,13 +40,12 @@ public class VaultService {
                 .account(vaultRequest.getAccount())
                 .type(vaultRequest.getType())
                 .name(vaultRequest.getName())
-                .branch(branch)
                 .build();
         return vaultRepository.save(vault);
     }
 
     //Update
-    @Transactional
+    @Transactional(value = "transactionManager")
     public Vault updateVault(UpdateVaultRequest vault) {
 
         Vault existingVault = vaultRepository.findById(vault.getId())
@@ -67,7 +72,9 @@ public class VaultService {
 
         return vaultRepository.save(existingVault);
     }
-    //Delete
+
+   // Delete
+    @Transactional(value = "transactionManager")
     public String deleteVault(Integer vaultId) {
 
         Vault existingVault = vaultRepository.findById(vaultId)
@@ -76,17 +83,22 @@ public class VaultService {
 
         return String.format("Vault with id %d deleted successfully", vaultId);
     }
+
     //Get
+    @Transactional(value = "transactionManager")
     public Vault getVault(Integer vaultId) {
         return vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
     }
+
     //Get All
+    @Transactional(value = "transactionManager")
     public List<Vault> getAllVaults() {
         return vaultRepository.findAll();
     }
 
-    //Update Vault Amount
+  //  Update Vault Amount
+    @Transactional(value = "transactionManager")
     public Vault updateVaultAmount(Integer vaultId, BigDecimal amount) {
 
         Vault existingVault = vaultRepository.findById(vaultId)
@@ -96,6 +108,7 @@ public class VaultService {
     }
 
     //Update Maximum Amount
+    @Transactional(value = "transactionManager")
     public Vault updateVaultMaxAmount(Integer vaultId, BigDecimal amount) {
 
         Vault existingVault = vaultRepository.findById(vaultId)
@@ -106,11 +119,25 @@ public class VaultService {
         return vaultRepository.save(existingVault);
     }
 
-    public List<Vault> getVaultsByBranchAndType(String branch, String type) {
-        return vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
+    @Transactional(value = "transactionManager")
+    public Vault getVaultsByBranchAndType(String branch, String type) {
+        log.info("Branch and Type:{}", branch + type);
+        Optional<Vault> vault = vaultRepository.findVaultByNameAndType(branch, type);
+        if(vault.isEmpty()) {
+            Vault vault1 = new Vault();
+            vault1.setAccount("8422/000/HRE/FCA/MV");
+            return vault1;
+        }
+
+        return vault.get();
     }
 
+    @Transactional(value = "transactionManager")
     public List<Vault> getVaultsByBranch(String branch) {
-        return vaultRepository.findVaultByBranch_BranchName(branch);
+        List<Vault> vaultList = vaultRepository.findVaultByBranch_BranchName(branch);
+
+        log.info("Vault list:{}", vaultList.toString());
+
+        return  vaultList;
     }
 }

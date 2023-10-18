@@ -11,11 +11,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionInfo {
-    private String toAccount;
+    private int toAccount;
     private String transactionType;
     private int exchangeRate;
     private String description;
-    private String fromAccount;
+    private int fromAccount;
     private String reference;
     private String currency;
     private Double amount;
