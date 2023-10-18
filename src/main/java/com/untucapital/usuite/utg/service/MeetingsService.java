@@ -40,4 +40,7 @@ public class MeetingsService extends AbstractService<Meetings>{
     public List<User> getUserByRole(String name) {
         return null;
     }
+
+
+
 }
