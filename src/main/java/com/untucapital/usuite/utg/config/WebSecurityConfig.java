@@ -95,6 +95,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/webjars/**")
+                .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
                 .antMatchers("/direct_cost/**")
@@ -111,7 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_app/**")
                 .permitAll()
-
+                .antMatchers("/cms_authorisation/**")
+                .permitAll()
                 .antMatchers("/industries/**")
                 .permitAll()
                 .antMatchers("/uploadFile/**")
@@ -308,7 +317,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/assessmentFileUpload/**")
                 .permitAll()
-
                 .antMatchers("/appraisalFileUpload/**")
                 .permitAll()
                 .antMatchers("/ClientFileUpload/**")
@@ -323,7 +331,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/amortize/**")
                 .permitAll()
-
                 .antMatchers("/requestCollateralSecurity/**")
                 .permitAll()
 
@@ -374,6 +381,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .anyRequest()
                 .authenticated();
+
 
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }

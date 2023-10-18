@@ -40,6 +40,7 @@ public class VaultService {
                 .account(vaultRequest.getAccount())
                 .type(vaultRequest.getType())
                 .name(vaultRequest.getName())
+                .branch(branch)
                 .build();
         return vaultRepository.save(vault);
     }
@@ -114,7 +115,7 @@ public class VaultService {
         Vault existingVault = vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
 
-        existingVault.setMaxAmount(existingVault.getMaxAmount().add(amount));
+        existingVault.setMaxAmount(amount);
 
         return vaultRepository.save(existingVault);
     }
@@ -134,10 +135,6 @@ public class VaultService {
 
     @Transactional(value = "transactionManager")
     public List<Vault> getVaultsByBranch(String branch) {
-        List<Vault> vaultList = vaultRepository.findVaultByBranch_BranchName(branch);
-
-        log.info("Vault list:{}", vaultList.toString());
-
-        return  vaultList;
+        return vaultRepository.findVaultByBranch_BranchName(branch);
     }
 }

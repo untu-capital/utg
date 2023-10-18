@@ -22,6 +22,12 @@ import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -48,6 +54,8 @@ import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 @RequiredArgsConstructor
 public class MusoniController {
 
+
+    private static final Logger log = LoggerFactory.getLogger(MusoniPastelController.class);
     @Autowired
     RestTemplate restTemplate;
     @Value("${musoni.url}")
@@ -65,7 +73,7 @@ public class MusoniController {
     private  PostGlService postGlService;
 
 
-    public HttpHeaders httpHeaders(){
+    public HttpHeaders httpHeaders() {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -88,8 +96,6 @@ public class MusoniController {
     SmsService smsService;
 
     HttpHeaders headers;
-
-    private static final Logger log = LoggerFactory.getLogger(MusoniPastelController.class);
 
     //    Get All Clients
     @GetMapping("clients")
@@ -190,7 +196,7 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
     }
 
-    //Get PageItem Repayment Schedule By Id
+    //Get Loan Repayment Schedule By Id
     @GetMapping("loansRepaymentSchedule/{loanId}")
     public String getLoanLoanRepaymentScheduleById(@PathVariable Long loanId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -206,7 +212,7 @@ public class MusoniController {
 
     //Get ClientID by PhoneNumber
     @PostMapping("datafilters")
-    public String getClientIDByDataFilter(@RequestBody Map<String,Object> body ) {
+    public String getClientIDByDataFilter(@RequestBody Map<String, Object> body) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         return restTemplate.exchange(musoniUrl + "datafilters/clients/queries/run-filter", HttpMethod.GET, entity, String.class).getBody();
     }
@@ -218,7 +224,7 @@ public class MusoniController {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         String clientAccount = restTemplate.exchange(musoniUrl + "clients/" + clientLoans + "/accounts", HttpMethod.GET, entity, String.class).getBody();
 
-        for (int i = 0; i<new JSONObject(clientAccount).getJSONArray("loanAccounts").length(); i++) {
+        for (int i = 0; i < new JSONObject(clientAccount).getJSONArray("loanAccounts").length(); i++) {
             String clientAccountsList = new JSONObject(new JSONObject(clientAccount).getJSONArray("loanAccounts").get(i).toString()).getString("accountNo");
             clientAccounts.add(clientAccountsList);
         }
@@ -248,20 +254,20 @@ public class MusoniController {
         String principalDisbursed = jsonLoanSummary.getJSONObject("summary").getString("principalDisbursed");
         String amountPaid = jsonLoanSummary.getJSONObject("summary").getString("principalPaid");
         String amountOverdue = jsonLoanSummary.getJSONObject("summary").getString("principalOverdue");
-        String disbursmentDate = jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(2).toString()+ "-" +jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(1).toString()+"-"+jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(0).toString();
+        String disbursmentDate = jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(2).toString() + "-" + jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(1).toString() + "-" + jsonLoanSummary.getJSONObject("timeline").getJSONArray("actualDisbursementDate").get(0).toString();
         String status = jsonLoanSummary.getJSONObject("status").getString("value");
         String numberOfRepayments = jsonLoanSummary.getString("numberOfRepayments");
-        String maturityDate = jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(2).toString()+ "-" +jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(1).toString()+"-"+jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(0).toString();
+        String maturityDate = jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(2).toString() + "-" + jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(1).toString() + "-" + jsonLoanSummary.getJSONObject("timeline").getJSONArray("expectedMaturityDate").get(0).toString();
 
         String loanBal =
-                "{\n\"Mini Statement for PageItem Account\":"+ accountNo +","+
-                        "\n\n\"PageItem Status\": " + "\"" + status + "\"" +","+
-                        "\n\"PageItem Amount Disbursed\": " + principalDisbursed +","+
-                        "\n\"Disbursment Date\": " + "\"" + disbursmentDate + "\"" +","+
-                        "\n\"Amount Paid\": " + amountPaid +","+
-                        "\n\"Amount Overdue\": " + amountOverdue +","+
-                        "\n\"No. of Repayments\": " + numberOfRepayments +","+
-                        "\n\"Maturity Date\": " + "\"" + maturityDate + "\"" + "\n }," ;
+                "{\n\"Mini Statement for Loan Account\":" + accountNo + "," +
+                        "\n\n\"Loan Status\": " + "\"" + status + "\"" + "," +
+                        "\n\"Loan Amount Disbursed\": " + principalDisbursed + "," +
+                        "\n\"Disbursment Date\": " + "\"" + disbursmentDate + "\"" + "," +
+                        "\n\"Amount Paid\": " + amountPaid + "," +
+                        "\n\"Amount Overdue\": " + amountOverdue + "," +
+                        "\n\"No. of Repayments\": " + numberOfRepayments + "," +
+                        "\n\"Maturity Date\": " + "\"" + maturityDate + "\"" + "\n },";
 
         JSONObject json = new JSONObject(loanBal);
 //        System.out.println(json.toString());
@@ -274,7 +280,7 @@ public class MusoniController {
     @GetMapping("getLoanRepaymentSchedule/{loanAccount}")
     public Object getLoanRepaymentSchedule(@PathVariable String loanAccount) throws JSONException, JsonProcessingException {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        String clientAccount = restTemplate.exchange(musoniUrl + "loans/"+ loanAccount +"?associations=repaymentSchedule", HttpMethod.GET, entity, String.class).getBody();
+        String clientAccount = restTemplate.exchange(musoniUrl + "loans/" + loanAccount + "?associations=repaymentSchedule", HttpMethod.GET, entity, String.class).getBody();
 
         Locale usa = new Locale("en", "US");
         NumberFormat currency = NumberFormat.getCurrencyInstance(usa);
@@ -282,7 +288,7 @@ public class MusoniController {
         JSONArray jsonLoanArray = new JSONArray(String.valueOf(new JSONObject(clientAccount).getJSONObject("repaymentSchedule").getJSONArray("periods")));
 
         loanAccRepay.clear();
-        for (int i = 1; i<jsonLoanArray.length(); i++){
+        for (int i = 1; i < jsonLoanArray.length(); i++) {
             JSONObject jsonLoanSummary = new JSONObject(new JSONObject(clientAccount).getJSONObject("repaymentSchedule").getJSONArray("periods").get(i).toString());
 
             String period = jsonLoanSummary.getString("period");
@@ -292,13 +298,13 @@ public class MusoniController {
             String amountPaid = jsonLoanSummary.getString("totalPaidForPeriod").toString();
             String amountOutstanding = jsonLoanSummary.getString("totalOutstandingForPeriod").toString();
 
-            String loanBal = "{\n\"Prepayment Schedule for PageItem Account\":"+ "accountNo" +","+
-                    "\n\n\"Period\": " + "\"" + period + "\"" +","+
-                    "\n\"From Date\": " + fromDate +","+
-                    "\n\"To Date\": " + "\"" + dueDate + "\"" +","+
-                    "\n\"Amount Due\": " + amountDue +","+
-                    "\n\"Amount Paid\": " + amountPaid +","+
-                    "\n\"Amount Outstanding\": " + "\"" + amountOutstanding + "\"" + "\n }" ;
+            String loanBal = "{\n\"Prepayment Schedule for Loan Account\":" + "accountNo" + "," +
+                    "\n\n\"Period\": " + "\"" + period + "\"" + "," +
+                    "\n\"From Date\": " + fromDate + "," +
+                    "\n\"To Date\": " + "\"" + dueDate + "\"" + "," +
+                    "\n\"Amount Due\": " + amountDue + "," +
+                    "\n\"Amount Paid\": " + amountPaid + "," +
+                    "\n\"Amount Outstanding\": " + "\"" + amountOutstanding + "\"" + "\n }";
             JSONObject json = new JSONObject(loanBal);
 //            System.out.println(json.toString());
             loanAccRepay.add(json.toString());
@@ -321,7 +327,7 @@ public class MusoniController {
         String timestampedLoanAcc = restTemplate.exchange(musoniUrl + "loans?modifiedSinceTimestamp="+timestamps, HttpMethod.GET, entity, String.class).getBody();
 
         timestampedLoanAccs.clear();
-        for (int i = 0; i<new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").length(); i++) {
+        for (int i = 0; i < new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").length(); i++) {
             String loan_id = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getString("id");
             String status = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getJSONObject("status").getString("active");
             String client_id = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getString("clientId");
@@ -378,7 +384,7 @@ public class MusoniController {
         return timestampedLoanAccs.toString();
     }
 
-    public String currencyFormatter(String amount){
+    public String currencyFormatter(String amount) {
         Locale usa = new Locale("en", "US");
         NumberFormat currency = NumberFormat.getCurrencyInstance(usa);
         return currency.format(amount);

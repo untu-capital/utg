@@ -32,6 +32,10 @@ public class CmsVaultPermissionService {
         return cmsVaultPermissionRepository.getCmsVaultPermissionById(id);
     }
 
+    public List<CmsVaultPermission> getCmsVaultPermissionByUserId(String userId) {
+        return cmsVaultPermissionRepository.findCmsVaultPermissionsByUserid(userId);
+    }
+
 
     public void deleteCmsVaultPermission(String id) {
         cmsVaultPermissionRepository.deleteById(id);

@@ -1,106 +1,52 @@
-package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.model.MusoniPastel;
-import com.untucapital.usuite.utg.repository.MusoniPastelRepository;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.RestTemplate;
-
-import java.text.*;
-import java.util.Arrays;
-import java.util.List;
-
-import java.io.*;
-import java.net.*;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.*;
-import java.util.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
-@Service
-@Getter
-@Setter
-@AllArgsConstructor
-@Configuration
-public class MusoniPastelService {
-
-    @Autowired
-    private static final String DB_URL = "${spring.datasource.url}";
-    @Autowired
-    private static final String USER = "${spring.datasource.username}";
-    @Autowired
-    private static final String PASS = "${spring.datasource.password}";
-
-    @Autowired
-    private static final String musoniUrl = "${musoni.url}";
-    @Autowired
-    private static final String musoniUsername = "${musoni.username}";
-    @Autowired
-    private static final String musoniPassword = "${musoni.password}";
-    @Autowired
-    private static final String musoniTenantId = "${musoni.X_FINERACT_PLATFORM_TENANTID}";
-    @Autowired
-    private static final String musoniApiKey = "${musoni.X_API_KEY}";
-
-    @Autowired
-    private final RestTemplate restTemplate;
-
-    private static final Logger log = LoggerFactory.getLogger(RoleService.class);
-
-    public HttpHeaders httpHeaders(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setBasicAuth(musoniUsername,musoniPassword);
-        headers.set("X-Fineract-Platform-TenantId",musoniTenantId);
-        headers.set("x-api-key",musoniApiKey);
-        headers.set("Content-Type", "application/json");
-        return headers;
-    }
-
-    private HttpEntity<String> setHttpEntity() {
-        return new HttpEntity<String>(httpHeaders());
-    }
-
-//    public HttpHeaders httpHeader(){
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-//        headers.setBasicAuth("Admin","");
-//        headers.set("Content-Type", "application/json");
-//        return headers;
+//package com.untucapital.usuite.utg.service;
+//
+//import com.untucapital.usuite.utg.model.MusoniPastel;
+//import lombok.AllArgsConstructor;
+//import lombok.Getter;
+//import lombok.Setter;
+//import org.springframework.boot.configurationprocessor.json.JSONArray;
+//import org.springframework.boot.configurationprocessor.json.JSONException;
+//import org.springframework.boot.configurationprocessor.json.JSONObject;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.stereotype.Service;
+//
+//import java.io.*;
+//import java.net.HttpURLConnection;
+//import java.net.URL;
+//import java.nio.charset.Charset;
+//import java.nio.charset.StandardCharsets;
+//import java.sql.*;
+//import java.text.DateFormat;
+//import java.text.ParseException;
+//import java.text.SimpleDateFormat;
+//import java.util.ArrayList;
+//import java.util.Date;
+//import java.util.List;
+//import java.util.Objects;
+//import java.util.concurrent.Executors;
+//import java.util.concurrent.ScheduledExecutorService;
+//import java.util.concurrent.TimeUnit;
+//
+//
+//@Service
+//@Getter
+//@Setter
+//@AllArgsConstructor
+//@Configuration
+//public class MusoniPastelService {
+//    static final String DB_URL = "jdbc:mysql://localhost:3306/u-tran-gateway-db";
+//    static final String USER = "tranGatewayAdmin";
+//    static final String PASS = "u92uCuwte9@ta";
+//
+//    private static String readAll(Reader rd) throws IOException {
+//        StringBuilder sb = new StringBuilder();
+//        int cp;
+//        while ((cp = rd.read()) != -1) {
+//            sb.append((char) cp);
+//        }
+//        return sb.toString();
 //    }
-
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
+//
 //    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
 //        InputStream is = new URL(url).openStream();
 //        try {
@@ -112,37 +58,52 @@ public class MusoniPastelService {
 //            is.close();
 //        }
 //    }
-
-    @Autowired
-    MusoniPastelRepository musoniPastelRepository;
-
-    @Autowired
-    MusoniService musoniService;
-
-    HttpHeaders headers;
-
-    public String getMusoniTrans(@PathVariable("loanId") String loanId, @PathVariable("transactionId") String transactionId) {
-        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        return restTemplate.exchange(musoniUrl + "loans/" +loanId + "/transactions/" + transactionId, HttpMethod.GET, entity, String.class).getBody();
-    }
-
-//    public String musoniPastelSync(int loanId) throws IOException, JSONException {
+//
+//    public static void main(String[] args) {
+//        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+//
+//        // Schedule the task to run every 5 hours
+////        executor.scheduleAtFixedRate(MusoniPastel::runScript, 0, 24, TimeUnit.HOURS);
+//    }
+//    public static void runScript() {
 //        try(
+////                Class.forName("com.mysql.jdbc.Driver");
+////                DriverManager.registerDriver(new com.jdbc.Driver ());
 //                Connection conn = DriverManager.getConnection(DB_URL, USER, PASS);
 //                Statement stmt0 = conn.createStatement();
 //                Statement stmt = conn.createStatement();
 //                Statement stmt1 = conn.createStatement();
 //                Statement stmt2 = conn.createStatement();
-//
+//                Statement stmt3 = conn.createStatement();
+//                Statement stmt4 = conn.createStatement();
+//                Statement stmt5 = conn.createStatement();
+//                Statement stmt6 = conn.createStatement();
 //        ) {
 //
 ////         #############################################################################################################
 //
 ////         COLLECTING LOAN IDS FROM MUSONI TO DATABASE TABLE
 //
+////         #############################################################################################################
+//
+//
+//            Timestamp timestamp = (new Timestamp(System.currentTimeMillis()));
+//            long stamps = timestamp.getTime();
+//            String stampString = String.valueOf(stamps);
+//            String stamp = stampString.substring(0, stampString.length()-3);
+//            long timestamps = Long.valueOf(stamp) - 86400L; // 1 day is 86400
+//
+//            JSONObject json = readJsonFromUrl("http://localhost:7878/api/utg/musoni/loans/modifiedSinceTimestamp/"+ 1694469600L);
+//            JSONArray pageItems = json.getJSONArray("pageItems");
+//
+//
+//
+//            for (int i = 0; i < pageItems.length(); i++) {
+//                JSONObject page = pageItems.getJSONObject(i);
+//
 //                //  Check if Loan_id exists
 //                ResultSet res = stmt0.executeQuery("SELECT * FROM musoni_loan_ids");
-////                int loanId = (Integer) page.get("id");
+//                int loanId = (Integer) page.get("id");
 //                List<Integer> loansArray = new ArrayList<Integer>();
 //                while (res.next()) {
 //                    loansArray.add(res.getInt("loan_id"));
@@ -158,24 +119,28 @@ public class MusoniPastelService {
 //                    stmt0.executeUpdate(sql);
 //                    System.out.println(loanId);
 //                }
-////            }
+//            }
+//
+//
 //
 ////         #############################################################################################################
 //
 ////          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
 //
-//            ResultSet rs = stmt.executeQuery("SELECT * FROM musoni_loan_ids");
-////                SELECTED LARGEST TRANS ID IN MUSONI
-//            ResultSet transIdrs = stmt.executeQuery("SELECT transaction_id FROM musoni_pastel WHERE transaction_id = (SELECT MAX(transaction_id) FROM musoni_pastel)");
+////         #############################################################################################################
 //
-//            int transactId = 0; // Initialize with a default value
+//            ResultSet rs = stmt4.executeQuery("SELECT * FROM musoni_loan_ids");
+//            //                SELECTED LARGEST TRANS ID IN MUSONI
+//            ResultSet transIdrs = stmt3.executeQuery("SELECT transaction_id FROM musoni_pastel WHERE transaction_id = (SELECT MAX(transaction_id) FROM musoni_pastel)");
+//
+//            int transactId = 504779; // Initialize with a default value
 //
 //            if (transIdrs.next()) {
 //                transactId = transIdrs.getInt("transaction_id");
 //            }
 //            while (rs.next()) {
-//                loanId = rs.getInt("loan_id");
-//                for (int transId = transactId; transId < transactId+15; transId++) {
+//                int loanId = rs.getInt("loan_id");
+//                for (int transId = transactId; transId < transactId+20; transId++) {
 //                    URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 //                    HttpURLConnection connection = (HttpURLConnection)url.openConnection();
 //                    connection.setRequestMethod("GET");
@@ -184,7 +149,7 @@ public class MusoniPastelService {
 //                    System.out.println(code);
 //
 //                    if (code == 200) {
-//                        JSONObject json = new JSONObject(getMusoniTrans(String.valueOf(loanId), String.valueOf(transId)));
+//                        json = readJsonFromUrl("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 ////                        RETURNED JSON WHEN STATUS OK (200)
 ////                        System.out.println(json.toString());
 //                        JSONObject type = json.getJSONObject("type");
@@ -213,14 +178,44 @@ public class MusoniPastelService {
 //                        System.out.println(currencyCode);
 //                        System.out.println("Loan ID is: " + loanId + "\n And transaction ID is: " + transId);
 //
+//
+////                        GET OFFICE NAME FROM LOAN ID
+//                        JSONObject officeJson = readJsonFromUrl("http://localhost:7878/api/utg/musoni/loans/" + loanId);
+//                        String officeName = officeJson.getString("officeName");
+//                        System.out.println("Branch name is: " + officeName);
+//
+//
+//
+//                        String fromAccount = "000/000/000";
+//                        String toAccount = "000/000/000";
 ////                        FOR DISBURSMENT TRANSACTION
 //                        if (transactionType.equals("Disbursement")) {
 //                            System.out.println(transactionType);
 //                            String transType = "LOA-DIS";
-//                            String transDescr = "Disbursement transaction";
-//                            String fromAccount = "8420/000/FCA";
-//                            String toAccount = "8700/000/000";
-//                            String referenc = "DS261";
+//                            String transDescr = "Disbursement-transaction";
+//
+//                            if(Objects.equals(officeName, "Harare") || Objects.equals(officeName, "HarareA")) {
+//                                fromAccount = "8422/000/HRE/FCA";   // from teller
+//                                toAccount = "8000/000/HO/LD";     // to disbursement acc
+//                            }
+//
+//                            else if (Objects.equals(officeName, "Bulawayo")) {
+//                                fromAccount = "8422/000/BYO/FCA";
+//                                toAccount = "8000/000/HO/LD";     // to disbursement acc
+//
+//                            } else if (Objects.equals(officeName, "Gweru")) {
+//                                fromAccount = "8422/000/GWR/FCA";
+//                                toAccount = "8000/000/HO/LD";     // to disbursement acc
+//
+//                            } else if (Objects.equals(officeName, "Gokwe")) {
+//                                fromAccount = "8422/000/GKW/FCA";
+//                                toAccount = "8000/000/HO/LD";     // to disbursement acc
+//
+//                            } else {
+//                                fromAccount = "8422/000/HO/FCA/FCA";
+//                                toAccount = "8000/000/HO/LD";     // to disbursement acc
+//                            }
+//                            String referenc = "DS"+transId;
 //
 //                            System.out.println("############################# CAN NOW READ SCRIPT ##############################");
 //
@@ -251,15 +246,34 @@ public class MusoniPastelService {
 //                        else if (transactionType.equals("Repayment")) {
 //                            String transType = "LOA-REP";
 //                            String transDescr = "Repayment Transaction";
-//                            String fromAccount = "8700/000/000";
-//                            String toAccount = "8420/000/FCA";
-//                            String referenc = "RP261";
+//                            if(Objects.equals(officeName, "Harare") || Objects.equals(officeName, "HarareA")) {
+//                                fromAccount = "8000/000/HO/LR";   // from loan repayment
+//                                toAccount = "8422/000/HRE/FCA";     // to teller acc
+//                            }
 //
-//                            ResultSet searchTransId = stmt.executeQuery("SELECT * FROM musoni_pastel WHERE transaction_id = " + transId);
+//                            else if (Objects.equals(officeName, "Bulawayo")) {
+//                                fromAccount = "8000/000/HO/LR";
+//                                toAccount = "8422/000/BYO/FCA";
+//
+//                            } else if (Objects.equals(officeName, "Gweru")) {
+//                                fromAccount = "8000/000/HO/LR";
+//                                toAccount = "8422/000/GWR/FCA";
+//
+//                            } else if (Objects.equals(officeName, "Gokwe")) {
+//                                fromAccount = "8000/000/HO/LR";
+//                                toAccount = "8422/000/GKW/FCA";
+//
+//                            } else {
+//                                fromAccount = "8000/000/HO/LR";
+//                                toAccount = "8422/000/HO/FCA/FCA";
+//                            }
+//                            String referenc = "RP"+transId;
+//
+//                            ResultSet searchTransId = stmt5.executeQuery("SELECT * FROM musoni_pastel WHERE transaction_id = " + transId);
 //
 //                            List<Integer> transIdArray = new ArrayList<Integer>();
 //                            while (searchTransId.next()) {
-//                                transIdArray.add(rs.getInt("transaction_id"));
+//                                transIdArray.add(searchTransId.getInt("transaction_id"));
 //                            }
 //                            List<Integer> transArray = transIdArray;
 //
@@ -285,15 +299,17 @@ public class MusoniPastelService {
 //
 ////      POST TRANSACTION FROM DATABASE TO PASTEL EVOLUTION
 //
-//            ResultSet non_synced = stmt.executeQuery("SELECT * FROM musoni_pastel WHERE synced = '0'");
+////      ##########################################################################################################
+//
+//
+//            ResultSet non_synced = stmt6.executeQuery("SELECT * FROM musoni_pastel WHERE synced = 0");
 //
 //            while (non_synced.next()) {
 //                int nonSyncedTrans = non_synced.getInt("transaction_id");
-//
 //                JSONObject jsonObject = new JSONObject();
 //                //Inserting key-value pairs into the json object
 //                jsonObject.put("APIUsername", "Admin");
-//                jsonObject.put("APIPassword", "");
+//                jsonObject.put("APIPassword", "Admin");
 //                jsonObject.put("TransactionType", non_synced.getString("transaction_type"));
 //                jsonObject.put("TransactionDate", non_synced.getString("transaction_date"));
 //                jsonObject.put("FromAccount", non_synced.getString("from_account"));
@@ -304,86 +320,43 @@ public class MusoniPastelService {
 //                jsonObject.put("Amount", non_synced.getString("amount"));
 //                jsonObject.put("ExchangeRate", non_synced.getString("exchange_rate"));
 //
-//                URL url = new URL("http://192.168.2.103:1335/api/PastelTeller/PostJournalTxn");
-//                URLConnection con = url.openConnection();
-//                HttpURLConnection http = (HttpURLConnection)con;
-//                http.setRequestMethod("POST"); // PUT is another valid option
-//                http.setDoOutput(true);
-//                byte[] out = jsonObject.toString() .getBytes(StandardCharsets.UTF_8);
+//                URL url = new URL("http://192.168.2.104:1335/api/PastelTeller/PostJournalTxn");
+//                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+//                con.setRequestMethod("POST");
+//                con.setDoOutput(true);
+//                byte[] out = jsonObject.toString().getBytes(StandardCharsets.UTF_8);
 //                int length = out.length;
-//                http.setFixedLengthStreamingMode(length);
-//                http.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//                http.connect();
-//                try(OutputStream os = http.getOutputStream()) {
+//                con.setFixedLengthStreamingMode(length);
+//                con.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//                con.connect();
+//
+////                int respCode = con.getResponseCode();
+////                System.out.println(respCode);
+//
+//                try (OutputStream os = con.getOutputStream()) {
 //                    os.write(out);
-//                    int respCode = ((HttpURLConnection) con).getResponseCode();
-//                    System.out.println(respCode);
-////                    System.out.print(transId);
-//                    System.out.println((jsonObject).toString());
+//                    int respCode = con.getResponseCode();
+//                    System.out.println("..Reached Here2..");
+//                    System.out.println("Your response is: " + respCode);
+//                    System.out.println(jsonObject);
 //
 //                    if (respCode == 200) {
 //                        String sql = "UPDATE `musoni_pastel` SET `synced`='1' WHERE `transaction_id` = " + nonSyncedTrans;
 //                        stmt2.executeUpdate(sql);
-////                        stmt2.close();
+//                        // stmt2.close();
+//                    } else {
+//                        System.out.println("..Failed to post transaction..");
 //                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
 //                }
 //            }
-//        } catch (SQLException | ParseException e) {
+//            System.out.print("############################################### \n\nEXECUTION PROCESS HAS COMPLETED SUCCESSFULLY \n\n#################################################");
+//
+//        } catch (SQLException | IOException e) {
 //            e.printStackTrace();
+//        } catch (ParseException e) {
+//            throw new RuntimeException(e);
 //        }
-//        return "##########################################################################" +
-//                "\n\nEXECUTION PROCESS HAS COMPLETED SUCESSFULLY " +
-//                "\n\n##########################################################################";
-//
 //    }
-
-    List<String> timestampedLoanAccs = new ArrayList<>();
-//    @Scheduled(fixedRate = 21600000)
-//    public String getLoansByTimestamp() throws JSONException, ParseException, SQLException, IOException {
-//        Timestamp timestamp = (new Timestamp(System.currentTimeMillis()));
-//        long stamps = timestamp.getTime();
-//        String stampString = String.valueOf(stamps);
-//        String stamp = stampString.substring(0, stampString.length()-3);
-//
-//        long timestamps = Long.valueOf(stamp) - 345600L;
-//        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-//        String timestampedLoanAcc = restTemplate.exchange(musoniUrl + "loans?modifiedSinceTimestamp="+timestamps, HttpMethod.GET, entity, String.class).getBody();
-//
-//        timestampedLoanAccs.clear();
-//        for (int i = 0; i<new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").length(); i++) {
-//            String loan_id = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getString("id");
-//            String status = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getJSONObject("status").getString("active");
-//            String client_id = new JSONObject(new JSONObject(timestampedLoanAcc).getJSONArray("pageItems").get(i).toString()).getString("clientId");
-//            musoniPastelSync(Integer.parseInt(loan_id));
-//            StringBuilder menu = new StringBuilder("");
-//            String timestampObject = menu.append("{")
-//                    .append("\"loanId\"").append(" : ").append(loan_id).append(",")
-//                    .append("\"statusActive\"").append(" : ").append(status).append(",")
-//                    .append("\"clientId\"").append(" : ").append(client_id).append(",")
-//                    .append("}").toString();
-//            System.out.println(loan_id);
-//            timestampedLoanAccs.add(timestampObject);
-//        }
-//
-//        return "Pastel Integration Cycle completed..";
-//    }
-
-    public String currencyFormatter(String amount){
-        Locale usa = new Locale("en", "US");
-        NumberFormat currency = NumberFormat.getCurrencyInstance(usa);
-        return currency.format(amount);
-    }
-
-    public void save(MusoniPastel musoniPastel){
-        musoniPastelRepository.save(musoniPastel);
-    }
-
-    public MusoniPastel getMusoniPastelById(String transactionId){
-        return musoniPastelRepository.findByTransactionId(transactionId);
-    }
-
-    public List<MusoniPastel> getMusoniPastelBySynced(String synced){
-        return musoniPastelRepository.findBySynced(synced);
-    }
-    }
 //}

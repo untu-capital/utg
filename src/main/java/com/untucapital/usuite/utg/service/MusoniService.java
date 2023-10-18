@@ -126,7 +126,7 @@ public class MusoniService {
     @Autowired
     MusoniRepository musoniRepository;
 
-    public void save(MusoniClient musoniClient) {
+    public void save(MusoniClient musoniClient){
         musoniRepository.save(musoniClient);
     }
 
@@ -329,7 +329,7 @@ public class MusoniService {
             String phone_number = "0";
             if (new JSONObject(getClientById(client_id)).has("mobileNo")) {
 //                phone_number = new JSONObject(getClientById(client_id)).getString("mobileNo");
-                phone_number = "0784315526";
+                phone_number = "0775797299";
             }
             System.out.println(phone_number);
 
@@ -355,34 +355,34 @@ public class MusoniService {
     }
 
 
-//          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
+    //          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
     public String disbursementSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
 
         for (int transId = transIds; transId <= transIds+10; transId++) {
             try {
-//            URL url = new URL("http://localhost:7878/api/utg/musoni/getTransations/loanid/" + loanId +"/transactionId/"+ transId);
 
-                System.out.println("This is before Musoni Transactions Query!");
+                System.out.println("This is before Musoni Transactions Query- Disbursements!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-                if (new JSONObject(restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {
+                if (new JSONObject(restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {
                     System.out.println("trans id exists for this trans");
 
-                    String loanTransBody = restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody();
+                    String loanTransBody = restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody();
 
                     String loanTrans = new JSONObject(loanTransBody).getJSONObject("type").getString("value");
                     String loanTransAmount = new JSONObject(loanTransBody).getString("amount");
 
 
-                    if (loanTrans.equals("")) {
+                    if (loanTrans.equals("")){
                         System.out.println("Loan with Transaction not found!");
-                    } else if (loanTrans != "") {
+                    }
+                    else if (loanTrans != "") {
                         JSONObject json = new JSONObject(loanTransBody);
                         JSONObject type = json.getJSONObject("type");
 
                         //                        GET TRANSACTION TYPE
                         Object transactionType = type.get("value");
                         System.out.println(transactionType);
-                        System.out.println("YOUR DIS NUMBER: " + phone_number);
+                        System.out.println("YOUR DIS NUMBER: "+phone_number);
 
 //                        GET TRANSACTION DATE
                         JSONArray datetime = json.getJSONArray("date");
@@ -402,7 +402,7 @@ public class MusoniService {
                         JSONObject currency = json.getJSONObject("currency");
                         Object currencyCode = currency.get("code");
                         System.out.println(currencyCode);
-                        System.out.println("PageItem ID is: " + loanId + "\n And transaction ID is: " + transId);
+                        System.out.println("Loan ID is: " + loanId + "\n And transaction ID is: " + transId);
 
 //                        FOR DISBURSMENT TRANSACTION
                         if (transactionType.equals("Disbursement")) {
@@ -422,23 +422,23 @@ public class MusoniService {
                             if (transArray.contains(transId)) {
                                 System.out.println("Sms Already Send");
                                 System.out.println(transId);
-                            } else {
+                            }else {
 
 //                        Todo: SET SEND SMS HERE...
-                        System.out.println("Disbursement message has been sent..");
-                        String sms_disburse = "This serves to confirm that a loan amount of " + currencyFormatter(new BigDecimal(loanTransAmount)) + " has been disbursed to Account: " + loanId + " on " + transDate + " and has been collected.";
-                        smsService.sendSingle(phone_number, sms_disburse);
+                                System.out.println("Disbursement message has been sent..");
+                                String sms_disburse = "This serves to confirm that a loan amount of " + currencyFormatter(new BigDecimal(loanTransAmount)) + " has been disbursed to Account: " + loanId + " on " + transDate + " and has been collected.";
+                                smsService.sendSingle(phone_number, sms_disburse);
 
                                 //  INSERT TRANSACTION DETAILS INTO DATABASE
                                 System.out.println("Inserting SMS records into the table...");
                                 String sql = "INSERT INTO `sms_notification` (`trans_id`, `loan_id`, `description`, `phone_number`, `unix_timestamp`) VALUES (" + transId + ", '" + loanId + "', '" + transactionType + "', '" + phone_number + "', '" + unixTimestamp + "')";
                                 stmt1.executeUpdate(sql);
 //                                stmt1.close();
-                        System.out.println(transId);
+                                System.out.println(transId);
+                            }
+                            searchTransId.close();
+                        }
                     }
-                    searchTransId.close();
-                }
-       }
                 }
                 else {
                     System.out.println("else part in disbursement");
@@ -452,8 +452,7 @@ public class MusoniService {
         }
         // EXIT WHILE LOOP
 
-
-    return "";
+        return "";
     }
 
     public String repaymentSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
@@ -464,10 +463,11 @@ public class MusoniService {
 
                 System.out.println("This is before Musoni Transactions Query!");
                 HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-                if (new JSONObject(restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {
+                System.out.println("This is before Musoni Transactions Query - Repayments!");
+                if (new JSONObject(restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody()).has("id")) {
                     System.out.println("trans id exists for this trans");
 
-                    String loanTransBody = restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody();
+                    String loanTransBody = restTemplate.exchange(musoniUrl + "loans/" + loanId + "/transactions/" + transId, HttpMethod.GET, entity, String.class).getBody();
 
                     String loanTrans = new JSONObject(loanTransBody).getJSONObject("type").getString("value");
                     String loanTransAmount = new JSONObject(loanTransBody).getString("amount");
@@ -525,8 +525,9 @@ public class MusoniService {
                             }else {
 
 //                        Todo: SET SEND SMS HERE...
-//                        System.out.println("Disbursement message has been sent..");
-                                smsService.sendSingle(phone_number, "You have repaid to us..");
+//                        System.out.println("Repayment message has been sent..");
+                                String sms_repayment = "This serves to confirm that a repayment of " + currencyFormatter(new BigDecimal(loanTransAmount)) + " has been made to Account: " + loanId + " on " + transDate;
+                                smsService.sendSingle(phone_number, sms_repayment);
 
                                 //  INSERT TRANSACTION DETAILS INTO DATABASE
                                 System.out.println("Inserting SMS records into the table...");
@@ -544,7 +545,7 @@ public class MusoniService {
                     System.out.println("else part in repayment");
                 }
 
-            } catch (HttpClientErrorException | ParseException | SQLException e) {
+            }catch (HttpClientErrorException | ParseException | SQLException e){
                 e.getMessage();
             }
 

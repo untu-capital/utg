@@ -11,6 +11,8 @@ public interface CmsVaultPermissionRepository extends JpaRepository<CmsVaultPerm
 
     Optional<CmsVaultPermission> getCmsVaultPermissionById(String id);
 
+    List<CmsVaultPermission> findCmsVaultPermissionsByUserid(String userId);
+
 //    List<CmsVaultPermission> getCmsVaultPermissionsByVault_acc_code (String vault_acc);
 
 }

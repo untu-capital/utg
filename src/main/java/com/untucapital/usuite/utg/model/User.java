@@ -19,6 +19,7 @@ import static javax.persistence.CascadeType.*;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username", "contact_detail_id"})
 })
+
 public class User extends AbstractEntity {
 
     @NotBlank
@@ -47,7 +48,7 @@ public class User extends AbstractEntity {
     private ContactDetail contactDetail;
 
     @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
-    @NotNull
+//    @NotNull
     @JoinColumn(name = "cms_user_id", nullable = false)
     private CmsUser cmsUser;
 
@@ -78,8 +79,11 @@ public class User extends AbstractEntity {
     private String streetNumber;
 
     private String musoniClientId;
-
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public String getCreditCommitGroup() {
         return creditCommitGroup;
@@ -88,12 +92,6 @@ public class User extends AbstractEntity {
     public void setCreditCommitGroup(String creditCommitGroup) {
         this.creditCommitGroup = creditCommitGroup;
     }
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
 
     public String getUsername() {
         return username;

@@ -49,6 +49,11 @@ public class CmsVaultPermissionController {
         }
     }
 
+    @GetMapping("user/{userId}")
+    public List<CmsVaultPermission> getCmsVaultPermissionByUserId(@PathVariable String userId) {
+        return cmsVaultPermissionService.getCmsVaultPermissionByUserId(userId);
+    }
+
 //    @GetMapping("/getByVaultAccCode/{vaultAccCode}")
 //    public ResponseEntity<List<CmsVaultPermission>> getCmsVaultPermissionByVaultAccCode(@PathVariable("vaultAccCode") String vaultAccCode) {
 //        List<CmsVaultPermission> cmsVaultPermissions = cmsVaultPermissionService.getCmsVaultPermissionByVaultAccCode(vaultAccCode);
@@ -63,15 +68,4 @@ public class CmsVaultPermissionController {
 
 
 
-//    @GetMapping("getByPoNumber/{poNumber}")
-//    public ResponseEntity<CmsVaultPermission> getCmsVaultPermissionByPoNumber(@PathVariable("poNumber") String poNumber) {
-//        Optional<CmsVaultPermission> cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionByPoNumber(poNumber);
-//
-//        if (cmsVaultPermission.isPresent()) {
-//            return new ResponseEntity<>(cmsVaultPermission.get(), HttpStatus.OK);
-//        } else {
-//            // Handle the case when no CmsVaultPermissions objects are found
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
 }

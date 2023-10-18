@@ -56,14 +56,14 @@ public class CreditCheckService {
         clientLoan.setFcbScore(creditScore);
 
         //if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
-          //  clientLoan.setLoanStatus("ACCEPTED");
+        //  clientLoan.setLoanStatus("ACCEPTED");
         //} else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
-            //clientLoan.setLoanStatus("REJECTED");
-       // }
+        //clientLoan.setLoanStatus("REJECTED");
+        // }
         return clientLoan;
     }
 
-//    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
+    //    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
     protected void pollCreditChecks() {
         log.debug("Polling Inconclusive Credit Checks");
         long startTime = System.currentTimeMillis();

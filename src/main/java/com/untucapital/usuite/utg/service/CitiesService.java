@@ -1,10 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.Cities;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.CitiesRepository;
-import com.untucapital.usuite.utg.repository.IndustryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,9 +22,11 @@ public class CitiesService extends AbstractService<Cities> {
     public CitiesService(CitiesRepository citiesRepository) {
         this.citiesRepository = citiesRepository;
     }
+
     public void saveCities(Cities cities) {
         citiesRepository.save(cities);
     }
+
     @Override
     protected JpaRepository<Cities, String> getRepository() {
         return citiesRepository;

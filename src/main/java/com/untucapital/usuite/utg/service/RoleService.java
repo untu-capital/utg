@@ -39,4 +39,9 @@ public class RoleService extends AbstractService<Role> {
     public void saveRole(Role role) {
         roleRepository.save(role);
     }
+
+
+    public List<Role> findAllRoles() {
+        return roleRepository.findAll();
+    }
 }

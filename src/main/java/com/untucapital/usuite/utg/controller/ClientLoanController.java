@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,20 +27,16 @@ import java.util.*;
 public class ClientLoanController {
 
 
+    private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
+    private final EmailSender emailSender;
     @Autowired
     ClientRepository clientRepository;
-
-    private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
-
-    private ClientLoanApplication clientLoanApplication;
-    private final EmailSender emailSender;
+    private final ClientLoanApplication clientLoanApplication;
 
     public ClientLoanController(ClientLoanApplication clientLoanApplication, EmailSender emailSender) {
         this.clientLoanApplication = clientLoanApplication;
         this.emailSender = emailSender;
     }
-
-
 
 
     //build save loan REST API
@@ -165,14 +163,26 @@ public class ClientLoanController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
-        List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
-        return ResponseEntity.ok(userClientLoans);
+        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByUserId(userId), HttpStatus.OK);
     }
 
-    // show BM all loans with checked status
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByUserId(@PathVariable("userId") String userId) {
+//        List<ClientLoan> userClientLoans = clientLoanApplication.getClientLoanApplicationsByUserId(userId);
+//        return ResponseEntity.ok(userClientLoans);
+//    }
+
     @GetMapping("/loanStatus/{loanStatus}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByLoanStatusAndBranchName(
+            @PathVariable("loanStatus") String loanStatus,
+            @PathVariable("branchName") String branchName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size); // Set the limit to 20 records
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(
+                loanStatus, branchName, pageable);
+        return new ResponseEntity<>(clientLoans, HttpStatus.OK);
     }
 
     // show BM all loans with checked status
@@ -195,7 +205,7 @@ public class ClientLoanController {
 
     // Completely done loan applications
     @GetMapping("/bocoSignature/{bocoSignature}/{completelyDone}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureDoneStatusAndBranchName(@PathVariable("bocoSignature") String bocoSignature , @PathVariable("completelyDone") String  completelyDone, @PathVariable("branchName") String branchName) {
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationsByBocoSignatureDoneStatusAndBranchName(@PathVariable("bocoSignature") String bocoSignature, @PathVariable("completelyDone") String completelyDone, @PathVariable("branchName") String branchName) {
         return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByBocoSignatureAndCompletelyDoneAndBranchName(bocoSignature, completelyDone, branchName), HttpStatus.OK);
     }
 
@@ -324,6 +334,44 @@ public class ClientLoanController {
         return new ResponseEntity<String>("Loan Status successfully updated.", HttpStatus.OK);
     }
 
+    @PutMapping("/bocoUpdate/{id}")
+    public ResponseEntity<String> updateClientLoan(@PathVariable String id, @RequestBody ClientLoan updatedClientLoan) {
+        ClientLoan existingClientLoan = clientLoanApplication.getClientLoanApplicationById(id);
+
+        // Update the fields with values from the updatedClientLoan
+        existingClientLoan.setMiddleName(updatedClientLoan.getMiddleName());
+        existingClientLoan.setLastName(updatedClientLoan.getLastName());
+        existingClientLoan.setIdNumber(updatedClientLoan.getIdNumber());
+        existingClientLoan.setBranchName(updatedClientLoan.getBranchName());
+        existingClientLoan.setMaritalStatus(updatedClientLoan.getMaritalStatus());
+        existingClientLoan.setGender(updatedClientLoan.getGender());
+        existingClientLoan.setDateOfBirth(updatedClientLoan.getDateOfBirth());
+        existingClientLoan.setPhoneNumber(updatedClientLoan.getPhoneNumber());
+        existingClientLoan.setPlaceOfBusiness(updatedClientLoan.getPlaceOfBusiness());
+        existingClientLoan.setIndustryCode(updatedClientLoan.getIndustryCode());
+        existingClientLoan.setLoanAmount(updatedClientLoan.getLoanAmount());
+        existingClientLoan.setStreetNo(updatedClientLoan.getStreetNo());
+        existingClientLoan.setBusinessName(updatedClientLoan.getBusinessName());
+        existingClientLoan.setBusinessStartDate(updatedClientLoan.getBusinessStartDate());
+        existingClientLoan.setStreetName(updatedClientLoan.getStreetName());
+        existingClientLoan.setSuburb(updatedClientLoan.getSuburb());
+        existingClientLoan.setCity(updatedClientLoan.getCity());
+        existingClientLoan.setTenure(updatedClientLoan.getTenure());
+        existingClientLoan.setNextOfKinName(updatedClientLoan.getNextOfKinName());
+        existingClientLoan.setNextOfKinPhone(updatedClientLoan.getNextOfKinPhone());
+        existingClientLoan.setNextOfKinRelationship(updatedClientLoan.getNextOfKinRelationship());
+        existingClientLoan.setNextOfKinAddress(updatedClientLoan.getNextOfKinAddress());
+        existingClientLoan.setNextOfKinName2(updatedClientLoan.getNextOfKinName2());
+        existingClientLoan.setNextOfKinPhone2(updatedClientLoan.getNextOfKinPhone2());
+        existingClientLoan.setNextOfKinRelationship2(updatedClientLoan.getNextOfKinRelationship2());
+        existingClientLoan.setNextOfKinAddress2(updatedClientLoan.getNextOfKinAddress2());
+
+        clientRepository.save(existingClientLoan);
+
+        return new ResponseEntity<String>("Client Loan successfully updated.", HttpStatus.OK);
+    }
+
+
     // assign each loan to a loan officer
     @PutMapping("/assignTo/{id}")
     public ResponseEntity<String> updateAssignTo(@PathVariable String id, @RequestBody ClientLoan clientLoan){
@@ -360,6 +408,22 @@ public class ClientLoanController {
 //        updateSignatureStatus.setBocoSignatureImage(clientLoan.getBocoSignatureImage());
 //        updateSignatureStatus.setLessFees(clientLoan.getLessFees());
 //        updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
+        clientRepository.save(updateSignatureStatus);
+        return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateTicketInfo/{id}")
+    public ResponseEntity<String> updateTicketInfo(@PathVariable String id, @RequestBody ClientLoan clientLoan){
+        ClientLoan updateSignatureStatus = clientLoanApplication.getClientLoanApplicationById(id);
+        updateSignatureStatus.setLessFees(clientLoan.getLessFees());
+        updateSignatureStatus.setApplicationFee(clientLoan.getApplicationFee());
+        updateSignatureStatus.setMeetingLoanAmount(clientLoan.getMeetingLoanAmount());
+        updateSignatureStatus.setMeetingCashHandlingFee(clientLoan.getMeetingCashHandlingFee());
+        updateSignatureStatus.setMeetingInterestRate(clientLoan.getMeetingInterestRate());
+        updateSignatureStatus.setMeetingRepaymentAmount(clientLoan.getMeetingRepaymentAmount());
+        updateSignatureStatus.setMeetingTenure(clientLoan.getMeetingTenure());
+        updateSignatureStatus.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
+
         clientRepository.save(updateSignatureStatus);
         return new ResponseEntity<String>("Ticket successfully signed.", HttpStatus.OK);
     }
@@ -483,8 +547,16 @@ public class ClientLoanController {
     //display unchecked loans  with status pending for BOCO
 
     @GetMapping("/unchecked/{loanStatus}/{branchName}")
-    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchNameAndLoanStatus(@PathVariable("loanStatus") String loanStatus, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<ClientLoan>>(clientRepository.findClientLoansByLoanStatusAndBranchName(loanStatus, branchName), HttpStatus.OK);
+    public ResponseEntity<List<ClientLoan>> getClientLoanApplicationByBranchNameAndLoanStatus(
+            @PathVariable("loanStatus") String loanStatus,
+            @PathVariable("branchName") String branchName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size); // Set the limit to 20 records
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(
+                loanStatus, branchName, pageable);
+        return new ResponseEntity<>(clientLoans, HttpStatus.OK);
     }
 
     //Update meeting columns
@@ -502,6 +574,7 @@ public class ClientLoanController {
         updatedLoanMeeting.setMeetingUpfrontFee(clientLoan.getMeetingUpfrontFee());
         updatedLoanMeeting.setMeetingFinalizedBy(clientLoan.getMeetingFinalizedBy());
         updatedLoanMeeting.setCcDate(clientLoan.getCcDate());
+        updatedLoanMeeting.setPipelineStatus(clientLoan.getPipelineStatus());
         clientRepository.save(updatedLoanMeeting);
         return new ResponseEntity<String>("Loan Meeting successfully updated.", HttpStatus.OK);
     }

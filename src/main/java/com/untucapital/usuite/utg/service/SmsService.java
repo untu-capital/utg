@@ -2,6 +2,10 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.DTO.*;
 import com.untucapital.usuite.utg.model.Sms;
+import com.untucapital.usuite.utg.DTO.Bulk;
+import com.untucapital.usuite.utg.DTO.BulkSMS;
+import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
+import com.untucapital.usuite.utg.DTO.SMSDto;
 import com.untucapital.usuite.utg.repository.SMSRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +60,7 @@ public class SmsService {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         String messageDate = dateFormat.format(new Date()) + 5;
         String messageReference = UUID.randomUUID().toString();
+//        Sms sms = new Sms("UNTU",destination,messageText,messageReference,messageDate,"","");
         SMSDto smsDto = new SMSDto("UNTU", destination, messageText, messageReference, messageDate, "", "");
         HttpEntity<SMSDto> entity = new HttpEntity<>(smsDto, setESolutionsHeaders());
         return restTemplate.exchange(eSolutionsBaseURL + "single", HttpMethod.POST, entity, String.class).getBody();
@@ -84,10 +89,10 @@ public class SmsService {
     private String sendSMS(List<Map> listSMS1) {
         String batchNumber = "B" + UUID.randomUUID();
         Map<String, Object> json = new HashMap<>();
-        json.put("batchNumber",batchNumber);
+        json.put("batchNumber", batchNumber);
         json.put("messages", listSMS1);
         String json1 = new JSONObject(json).toString();
-        System.out.printf("Bulk Message => %s%n",json1);
+        System.out.printf("Bulk Message => %s%n", json1);
         HttpEntity<String> entity = new HttpEntity<>(json1, setESolutionsHeaders());
         return restTemplate.exchange(eSolutionsBaseURL + "bulk", HttpMethod.POST, entity, String.class).getBody();
     }
