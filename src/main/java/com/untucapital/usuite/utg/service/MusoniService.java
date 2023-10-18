@@ -1,5 +1,8 @@
 package com.untucapital.usuite.utg.service;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.untucapital.usuite.utg.DTO.*;
+import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.exception.InvalidDateFormatExceptionHandler;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.MusoniClient;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
@@ -94,7 +98,7 @@ public class MusoniService {
 
     private final MusoniProcessor musoniProcessor;
 
-    private final PostGlRepository postGlRepository;
+    private final PostGlService postGlService;
 
     private static final Logger log = LoggerFactory.getLogger(RoleService.class);
 
@@ -134,7 +138,7 @@ public class MusoniService {
         return musoniRepository.findMusoniClientsByStatus(status);
     }
 
-    public String getRepaymentSchedule(String loanAccount) {
+    public String getRepaymentSchedule(String loanAccount)  {
         String repaymentSchedule = restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/" + loanAccount + "?associations=repaymentSchedule", HttpMethod.GET, setHttpEntity(), String.class).getBody();
         System.out.println(repaymentSchedule);
         return repaymentSchedule;
@@ -163,13 +167,14 @@ public class MusoniService {
         return loanDetails;
     }
 
-    public List<TransactionInfo> getLoansByTimestamp(Long timestamp) throws ParseException, JsonProcessingException {
+    public List<PostGl> getLoansByTimestamp(Long timestamp) throws ParseException, JsonProcessingException, AccountNotFoundException {
 
         Loans loans = restClient.getLoans(timestamp);
         log.info("Loans from Musoni : {}", loans.toString());
 
         List<Transactions> transactions = new ArrayList<Transactions>();
-        List<TransactionInfo> transactionInfoList = new ArrayList<>();
+        List<PostGl> postGlList = new ArrayList<>();
+        List<PostGl> postGlListLB = new ArrayList<>();
 
 
         List<PageItem> pageItemList = loans.getPageItems();
@@ -180,24 +185,36 @@ public class MusoniService {
             //Get all transactions for the pageItem
             transactions = restClient.getTransactions(loanId);
 
+            if(transactions ==null){
+                return null;
+            }
+
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
-            transactionInfoList = musoniProcessor.createPastelTransaction(transactions);
+//            transactionInfoList = musoniProcessor.createPastelTransaction(transactions);
+            postGlList =musoniProcessor.setPostGlFields(transactions);
+            postGlListLB = musoniProcessor.setPostGlClientLoanBook(transactions);
 
-            for (TransactionInfo transactionInfo : transactionInfoList) {
+            int maxIterations = Math.max(postGlList.size(), postGlListLB.size());
 
-                PostGl postGl = new PostGl();
+            for(int i = 0; i < maxIterations; i++){
+                if (i < postGlList.size()){
 
-                log.info("Required Transactions to be saved in the database: {}", transactionInfo);
+                    postGlService.savePostGl(postGlList.get(i));
+                    log.info("PostGl transaction saved in the database: {}", postGlList.get(i).toString());
 
-                BeanUtils.copyProperties(transactionInfo, postGl);
+                }
 
-                log.info("PostGL transaction: {}", postGl.toString());
-//
-                postGlRepository.save(postGl);
+                if(i< postGlListLB.size()){
+
+                    postGlService.savePostGl(postGlListLB.get(i));
+                    log.info(" PostGl LB transaction saved in the database: {}", postGlListLB.get(i).toString());
+                }
             }
+
+
         }
-        return transactionInfoList;
+        return postGlList;
     }
 
     //    ToDo: Get Required information from the loan returned
@@ -357,7 +374,7 @@ public class MusoniService {
 
 
                     if (loanTrans.equals("")) {
-                        System.out.println("PageItem with Transaction not found!");
+                        System.out.println("Loan with Transaction not found!");
                     } else if (loanTrans != "") {
                         JSONObject json = new JSONObject(loanTransBody);
                         JSONObject type = json.getJSONObject("type");

@@ -12,22 +12,22 @@ public class AccountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AccountLink")
-    private int accountLink;
+    private Integer accountLink;
 
     @Column(name = "Master_Sub_Account")
     private String masterSubAccount;
 
     @Column(name = "AccountLevel")
-    private int accountLevel;
+    private Integer accountLevel;
 
     @Column(name = "Account")
     private String account;
 
     @Column(name = "iAccountType")
-    private int iAccountType;
+    private Integer iAccountType;
 
     @Column(name = "SubAccOfLink")
-    private int subAccOfLink;
+    private Integer subAccOfLink;
 
     @Column(name = "Dept")
     private String dept;
@@ -36,7 +36,7 @@ public class AccountEntity {
     private String brch;
 
     @Column(name = "Jr")
-    private boolean jr;
+    private Boolean jr;
 
     @Column(name = "Description")
     private String description;
@@ -45,7 +45,7 @@ public class AccountEntity {
     private String caseAcc;
 
     @Column(name = "ActiveAccount")
-    private boolean activeAccount;
+    private Boolean activeAccount;
 
     @Column(name = "dAccountsTimeStamp")
     private String dAccountsTimeStamp;
@@ -54,109 +54,109 @@ public class AccountEntity {
     private String cNextChequeNum;
 
     @Column(name = "iGLSegment0ID")
-    private int iGLSegment0ID;
+    private Integer iGLSegment0ID;
 
     @Column(name = "iGLSegment1ID")
-    private int iGLSegment1ID;
+    private Integer iGLSegment1ID;
 
     @Column(name = "iGLSegment2ID")
-    private int iGLSegment2ID;
+    private Integer iGLSegment2ID;
 
     @Column(name = "iGLSegment3ID")
-    private int iGLSegment3ID;
+    private Integer iGLSegment3ID;
 
     @Column(name = "iGLSegment4ID")
-    private int iGLSegment4ID;
+    private Integer iGLSegment4ID;
 
     @Column(name = "iGLSegment5ID")
-    private int iGLSegment5ID;
+    private Integer iGLSegment5ID;
 
     @Column(name = "iGLSegment6ID")
-    private int iGLSegment6ID;
+    private Integer iGLSegment6ID;
 
     @Column(name = "iGLSegment7ID")
-    private int iGLSegment7ID;
+    private Integer iGLSegment7ID;
 
     @Column(name = "iGLSegment8ID")
-    private int iGLSegment8ID;
+    private Integer iGLSegment8ID;
 
     @Column(name = "iGLSegment9ID")
-    private int iGLSegment9ID;
+    private Integer iGLSegment9ID;
 
     @Column(name = "iReportCategoryID")
-    private int iReportCategoryID;
+    private Integer iReportCategoryID;
 
     @Column(name = "fBankStatementBalance")
-    private float fBankStatementBalance;
+    private Float fBankStatementBalance;
 
     @Column(name = "cExtDescription")
     private String cExtDescription;
 
     @Column(name = "iTaxTypeINVID")
-    private int iTaxTypeINVID;
+    private Integer iTaxTypeINVID;
 
     @Column(name = "iTaxTypeCRNID")
-    private int iTaxTypeCRNID;
+    private Integer iTaxTypeCRNID;
 
     @Column(name = "iTaxTypeGRVID")
-    private int iTaxTypeGRVID;
+    private Integer iTaxTypeGRVID;
 
     @Column(name = "iTaxTypeRTSID")
-    private int iTaxTypeRTSID;
+    private Integer iTaxTypeRTSID;
 
     @Column(name = "iAllowICSales")
-    private boolean iAllowICSales;
+    private Boolean iAllowICSales;
 
     @Column(name = "iAllowICPurchases")
-    private boolean iAllowICPurchases;
+    private Boolean iAllowICPurchases;
 
     @Column(name = "iMBReportingCategoryID")
-    private int iMBReportingCategoryID;
+    private Integer iMBReportingCategoryID;
 
     @Column(name = "iMBCashFlowCategoryID")
-    private int iMBCashFlowCategoryID;
+    private Integer iMBCashFlowCategoryID;
 
     @Column(name = "bMBIsAsset")
-    private boolean bMBIsAsset;
+    private Boolean bMBIsAsset;
 
     @Column(name = "bMBIsGrant")
-    private boolean bMBIsGrant;
+    private Boolean bMBIsGrant;
 
     @Column(name = "iMBAssetClassificationID")
-    private int iMBAssetClassificationID;
+    private Integer iMBAssetClassificationID;
 
     @Column(name = "iMBAssetCategoryID")
-    private int iMBAssetCategoryID;
+    private Integer iMBAssetCategoryID;
 
     @Column(name = "iMBAssetTypeID")
-    private int iMBAssetTypeID;
+    private Integer iMBAssetTypeID;
 
     @Column(name = "iMBGrantLevel1TypeID")
-    private int iMBGrantLevel1TypeID;
+    private Integer iMBGrantLevel1TypeID;
 
     @Column(name = "iMBGrantLevel2TypeID")
-    private int iMBGrantLevel2TypeID;
+    private Integer iMBGrantLevel2TypeID;
 
     @Column(name = "iMBGrantLevel3TypeID")
-    private int iMBGrantLevel3TypeID;
+    private Integer iMBGrantLevel3TypeID;
 
     @Column(name = "bIsBranchLoanAccount")
-    private boolean bIsBranchLoanAccount;
+    private Boolean bIsBranchLoanAccount;
 
     @Column(name = "iForeignBankCurrencyID")
-    private int iForeignBankCurrencyID;
+    private Integer iForeignBankCurrencyID;
 
     @Column(name = "iForeignBankPEXAccID")
-    private int iForeignBankPEXAccID;
+    private Integer iForeignBankPEXAccID;
 
     @Column(name = "iForeignBankLEXAccID")
-    private int iForeignBankLEXAccID;
+    private Integer iForeignBankLEXAccID;
 
     @Column(name = "bRevalueWithSellingRate")
-    private boolean bRevalueWithSellingRate;
+    private Boolean bRevalueWithSellingRate;
 
     @Column(name = "bPaymentsBasedTax")
-    private boolean bPaymentsBasedTax;
+    private Boolean bPaymentsBasedTax;
 
     @Column(name = "cBankName")
     private String cBankName;
@@ -180,16 +180,16 @@ public class AccountEntity {
     private String cBankRefNr;
 
     @Column(name = "iAttributeGroupID")
-    private int iAttributeGroupID;
+    private Integer iAttributeGroupID;
 
     @Column(name = "xAttribute")
     private String xAttribute;
 
     @Column(name = "bForeignBankAcc")
-    private boolean bForeignBankAcc;
+    private Boolean bForeignBankAcc;
 
     @Column(name = "Accounts_iBranchID")
-    private int accountsIBranchID;
+    private Integer accountsIBranchID;
 
     @Column(name = "Accounts_dCreatedDate")
     private String accountsDCreatedDate;
@@ -198,19 +198,19 @@ public class AccountEntity {
     private String accountsDModifiedDate;
 
     @Column(name = "Accounts_iCreatedBranchID")
-    private int accountsICreatedBranchID;
+    private Integer accountsICreatedBranchID;
 
     @Column(name = "Accounts_iModifiedBranchID")
-    private int accountsIModifiedBranchID;
+    private Integer accountsIModifiedBranchID;
 
     @Column(name = "Accounts_iCreatedAgentID")
-    private int accountsICreatedAgentID;
+    private Integer accountsICreatedAgentID;
 
     @Column(name = "Accounts_iModifiedAgentID")
-    private int accountsIModifiedAgentID;
+    private Integer accountsIModifiedAgentID;
 
     @Column(name = "Accounts_iChangeSetID")
-    private int accountsIChangeSetID;
+    private Integer accountsIChangeSetID;
 
     @Column(name = "Accounts_Checksum")
     private byte[] accountsChecksum;

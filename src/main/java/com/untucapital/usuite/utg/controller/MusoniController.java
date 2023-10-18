@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.DTO.DisbursedLoans;
+import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.service.MusoniService;
+import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.QueryHint;
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -56,6 +60,9 @@ public class MusoniController {
     private String musoniTenantId;
     @Value("${musoni.X_API_KEY}")
     private String musoniApiKey;
+
+    @Autowired
+    private  PostGlService postGlService;
 
 
     public HttpHeaders httpHeaders(){
@@ -92,6 +99,12 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "clients", HttpMethod.GET, entity, String.class).getBody();
     }
 
+    @GetMapping("postGl")
+    public List<PostGl> getAllPostGl() {
+
+        return postGlService.getAllPostGl();
+    }
+
     //Get Client By Id
     @GetMapping("clients/{clientId}")
     public String getClientById(@PathVariable String clientId) {
@@ -121,8 +134,8 @@ public class MusoniController {
     }
 
     @GetMapping("loans/transactions/{timestamp}")
-    public ResponseEntity<List<TransactionInfo>> getTransactionsByTimestamp(@PathVariable Long timestamp) throws ParseException, JsonProcessingException {
-       List<TransactionInfo> transactionList = musoniService.getLoansByTimestamp(timestamp);
+    public ResponseEntity<List<PostGl>> getTransactionsByTimestamp(@PathVariable Long timestamp) throws ParseException, JsonProcessingException, AccountNotFoundException {
+       List<PostGl> transactionList = musoniService.getLoansByTimestamp(timestamp);
 
        return new ResponseEntity<>(transactionList,HttpStatus.OK);
     }
