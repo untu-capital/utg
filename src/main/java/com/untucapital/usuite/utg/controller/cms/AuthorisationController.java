@@ -30,7 +30,6 @@ public class AuthorisationController extends AbstractController<Authorisation> {
         this.authorisationService = authorisationService;
     }
 
-
     //build save branch REST API
     @PostMapping("/addAuthorisation")
     public void add(@RequestBody Authorisation authorisation) {
@@ -69,6 +68,7 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     public void delete(@PathVariable String id) {
         authorisationService.deleteAuthorisation(id);
     }
+
 
     @Override
     protected AbstractService<Authorisation> getService() {

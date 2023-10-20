@@ -5,6 +5,8 @@ import java.net.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.controller.MusoniController;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -111,7 +113,7 @@ public class MusoniSyncClientsService {
 
             CMSPhoneArray.add(Integer.valueOf(CMSphone));
 
-            System.out.println("From CMS  "+CMSphone);
+            System.out.println("From CMS  " + CMSphone);
         }
 
 
@@ -145,10 +147,10 @@ public class MusoniSyncClientsService {
 
                 JSONObject Mobjson = MobilereadJsonFromUrl("http://localhost:7878/api/utg/users/getUserByMobileNumber/"+searchValue);
                 String CMSUserID = Mobjson.getString("id");
-                System.out.println("The UserID of the found Mobile Number is "+CMSUserID);
+                System.out.println("The UserID of the found Mobile Number is " + CMSUserID);
 
                 // Set the URL of the server endpoint that you want to send the PUT request to
-                URL url = new URL("http://localhost:7878/api/utg/users/updateMusoniClientID/"+CMSUserID);
+                URL url = new URL("http://localhost:7878/api/utg/users/updateMusoniClientID/" + CMSUserID);
 
                 // Create a HttpURLConnection object and set its request method to "PUT"
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();

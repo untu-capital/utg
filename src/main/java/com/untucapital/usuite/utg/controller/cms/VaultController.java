@@ -88,4 +88,10 @@ public class VaultController {
         return ResponseEntity.ok(vaults);
     }
 
+    //Get Vaults By Branch Id
+    @GetMapping("/get/all-by-branch/{branchId}")
+    public ResponseEntity<List<Vault>> getAllVaultsByBranch(@PathVariable String branchId) {
+        return ResponseEntity.ok(vaultService.getAllVaultsByBranch(branchId));
+    }
+
 }

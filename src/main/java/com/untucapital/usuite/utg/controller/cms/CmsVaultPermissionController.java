@@ -16,10 +16,9 @@ import java.util.Optional;
 @RequestMapping("cms/cms_vault_permission")
 public class CmsVaultPermissionController {
 
+    private static final Logger log = LoggerFactory.getLogger(CmsVaultPermissionController.class);
     @Autowired
     CmsVaultPermissionService cmsVaultPermissionService;
-
-    private static final Logger log = LoggerFactory.getLogger(CmsVaultPermissionController.class);
 
     @GetMapping
     public List<CmsVaultPermission> list() {

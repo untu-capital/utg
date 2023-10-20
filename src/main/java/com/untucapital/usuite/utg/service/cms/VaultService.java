@@ -113,4 +113,10 @@ public class VaultService {
     public List<Vault> getVaultsByBranch(String branch) {
         return vaultRepository.findVaultByBranch_BranchName(branch);
     }
+    //Vaults By Branch
+    public List<Vault> getAllVaultsByBranch(String branchId) {
+        Branches branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+        return vaultRepository.findByBranch(branch);
+    }
 }

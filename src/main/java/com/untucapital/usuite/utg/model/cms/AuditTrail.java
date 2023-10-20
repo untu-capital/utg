@@ -30,6 +30,7 @@ public class AuditTrail {
 
     private String initiator;
     private BigDecimal amount;
+
     private String fromVault;
     private String toVault;
     private LocalDateTime initiatedAt;
