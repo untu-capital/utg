@@ -160,7 +160,7 @@ public class AuthController {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
-        helper.setFrom("credit.application@untu-capital.com", "Credit Application");
+        helper.setFrom("credit.application@untucapital.co.zw", "Credit Application");
         helper.setTo(recipientEmail);
 
         String subject = "Here's the link to reset your password";
