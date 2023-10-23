@@ -43,6 +43,7 @@ public class TransactionVoucherService {
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
         User user = userService.find(request.getInitiator()).orElseThrow();
+
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
