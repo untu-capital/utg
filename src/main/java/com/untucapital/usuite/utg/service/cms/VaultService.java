@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.service.cms;
 
 import com.untucapital.usuite.utg.DTO.cms.UpdateVaultRequest;
 import com.untucapital.usuite.utg.DTO.cms.VaultRequest;
+import com.untucapital.usuite.utg.exception.ResourceNotFoundRequestException;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import com.untucapital.usuite.utg.model.Branches;
@@ -79,8 +80,9 @@ public class VaultService {
     //Get
     public Vault getVault(Integer vaultId) {
         return vaultRepository.findById(vaultId)
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
+                .orElseThrow(() -> new ResourceNotFoundRequestException("Vault", "id", vaultId));
     }
+
     //Get All
     public List<Vault> getAllVaults() {
         return vaultRepository.findAll();

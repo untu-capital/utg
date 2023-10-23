@@ -51,6 +51,8 @@ public class TransactionPurposeService {
     }
     //get by id
     public TransactionPurpose getById(Integer id){
-        return transactionPurposeRepository.findById(id).orElseThrow(() -> new RuntimeException("Transaction Purpose Does Not Exist"));
+        return transactionPurposeRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Transaction Purpose Does Not Exist")
+        );
     }
 }

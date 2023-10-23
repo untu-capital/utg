@@ -377,7 +377,7 @@ public class MusoniService {
     return "";
     }
 
-    public String repaymentSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
+    public void repaymentSms(String loanId, String phone_number, Long unixTimestamp, int transIds) throws JSONException, SQLException {
 
         for (int transId = transIds; transId <= transIds+5; transId++) {
             try {
@@ -474,10 +474,10 @@ public class MusoniService {
         // EXIT WHILE LOOP
 
 
-        return "";
     }
 
     public String disbursedLoans(String fromDate, String toDate) throws JSONException {
+
         JSONObject json = new JSONObject(getLoansByDisbursementDate(fromDate, toDate));
         JSONArray pageItems = json.getJSONArray("pageItems");
         JSONArray disbursedLoans = new JSONArray();
@@ -651,15 +651,18 @@ public class MusoniService {
     private List<DisbursedLoanMonth> groupByMonth(List<DisbursedLoan> disbursedLoans) {
         List<DisbursedLoanMonth> disbursedLoanMonths = new ArrayList<>();
 
+        //Group the list of returned loans by month and branch.
         Map<String, Map<String, List<DisbursedLoan>>> loansByMonthAndBranch = disbursedLoans.stream()
                 .collect(Collectors.groupingBy(DisbursedLoan::getDisbursedMonth,
                         Collectors.groupingBy(DisbursedLoan::getBranch)));
 
+//                Get Loans By Branch
         for (Map.Entry<String, Map<String, List<DisbursedLoan>>> entry : loansByMonthAndBranch.entrySet()) {
             String month = entry.getKey();
             Map<String, List<DisbursedLoan>> loansByBranch = entry.getValue();
             List<DisbursedLoanMonth.BranchDisbursedLoan> branchDisbursedLoans = new ArrayList<>();
 
+            //A for loop to return loans per branch to find total principal and number of loans
             for (Map.Entry<String, List<DisbursedLoan>> branchEntry : loansByBranch.entrySet()) {
                 String branch = branchEntry.getKey();
                 List<DisbursedLoan> loansOfBranch = branchEntry.getValue();
