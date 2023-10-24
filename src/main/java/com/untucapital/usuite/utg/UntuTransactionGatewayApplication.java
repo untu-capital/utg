@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
-//@EnableScheduling
 public class UntuTransactionGatewayApplication {
 
     static final Logger log = LoggerFactory.getLogger(UntuTransactionGatewayApplication.class);

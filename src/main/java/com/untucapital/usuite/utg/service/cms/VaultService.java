@@ -30,67 +30,66 @@ public class VaultService {
     private final BranchRepository branchRepository;
 
 
-    //Add
-    @Transactional(value = "transactionManager")
-    public Vault addVault(VaultRequest vaultRequest) {
-
-        Branches branch = branchRepository.findById(vaultRequest.getBranchId())
-                .orElseThrow(() -> new RuntimeException("Branch not found"));
-        Vault vault = Vault.builder()
-                .account(vaultRequest.getAccount())
-                .type(vaultRequest.getType())
-                .name(vaultRequest.getName())
-                .branch(branch)
-                .build();
-        return vaultRepository.save(vault);
-    }
+//    //Add
+//    @Transactional(value = "transactionManager")
+//    public Vault addVault(VaultRequest vaultRequest) {
+//
+//        Branches branch = branchRepository.findById(vaultRequest.getBranchId())
+//                .orElseThrow(() -> new RuntimeException("Branch not found"));
+//        Vault vault = Vault.builder()
+//                .account(vaultRequest.getAccount())
+//                .type(vaultRequest.getType())
+//                .name(vaultRequest.getName())
+//                .build();
+//        return vaultRepository.save(vault);
+//    }
 
     //Update
-    @Transactional(value = "transactionManager")
-    public Vault updateVault(UpdateVaultRequest vault) {
+//    @Transactional(value = "transactionManager")
+//    public Vault updateVault(UpdateVaultRequest vault) {
+//
+//        Vault existingVault = vaultRepository.findById(vault.getId())
+//                .orElseThrow(() -> new RuntimeException("Vault not found"));
+//
+//
+//        if (vault.getAccount() != null && !vault.getAccount().equals(existingVault.getAccount())) {
+//            existingVault.setAccount(vault.getAccount());
+//        }
+//
+//        if (vault.getName() != null && !vault.getName().equals(existingVault.getName())) {
+//            existingVault.setName(vault.getName());
+//        }
+//
+//        if (vault.getType() != null && !vault.getType().equals(existingVault.getType())) {
+//            existingVault.setType(vault.getType());
+//        }
+//
+//        if (vault.getBranchId() != null && !vault.getBranchId().equals(existingVault.getBranch().getId())) {
+//            Branches branch = branchRepository.findById(vault.getBranchId())
+//                    .orElseThrow(() -> new RuntimeException("Branch not found"));
+//            existingVault.setBranch(branch);
+//        }
+//
+//        return vaultRepository.save(existingVault);
+//    }
 
-        Vault existingVault = vaultRepository.findById(vault.getId())
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
-
-
-        if (vault.getAccount() != null && !vault.getAccount().equals(existingVault.getAccount())) {
-            existingVault.setAccount(vault.getAccount());
-        }
-
-        if (vault.getName() != null && !vault.getName().equals(existingVault.getName())) {
-            existingVault.setName(vault.getName());
-        }
-
-        if (vault.getType() != null && !vault.getType().equals(existingVault.getType())) {
-            existingVault.setType(vault.getType());
-        }
-
-        if (vault.getBranchId() != null && !vault.getBranchId().equals(existingVault.getBranch().getId())) {
-            Branches branch = branchRepository.findById(vault.getBranchId())
-                    .orElseThrow(() -> new RuntimeException("Branch not found"));
-            existingVault.setBranch(branch);
-        }
-
-        return vaultRepository.save(existingVault);
-    }
-
-   // Delete
-    @Transactional(value = "transactionManager")
-    public String deleteVault(Integer vaultId) {
-
-        Vault existingVault = vaultRepository.findById(vaultId)
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
-        vaultRepository.delete(existingVault);
-
-        return String.format("Vault with id %d deleted successfully", vaultId);
-    }
+    //Delete
+//    @Transactional(value = "transactionManager")
+//    public String deleteVault(Integer vaultId) {
+//
+//        Vault existingVault = vaultRepository.findById(vaultId)
+//                .orElseThrow(() -> new RuntimeException("Vault not found"));
+//        vaultRepository.delete(existingVault);
+//
+//        return String.format("Vault with id %d deleted successfully", vaultId);
+//    }
 
     //Get
-    @Transactional(value = "transactionManager")
-    public Vault getVault(Integer vaultId) {
-        return vaultRepository.findById(vaultId)
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
-    }
+//    @Transactional(value = "transactionManager")
+//    public Vault getVault(Integer vaultId) {
+//        return vaultRepository.findById(vaultId)
+//                .orElseThrow(() -> new RuntimeException("Vault not found"));
+//    }
 
     //Get All
     @Transactional(value = "transactionManager")
@@ -98,27 +97,27 @@ public class VaultService {
         return vaultRepository.findAll();
     }
 
-  //  Update Vault Amount
-    @Transactional(value = "transactionManager")
-    public Vault updateVaultAmount(Integer vaultId, BigDecimal amount) {
-
-        Vault existingVault = vaultRepository.findById(vaultId)
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
-        existingVault.setCurrentAmount(existingVault.getCurrentAmount().add(amount));
-        return vaultRepository.save(existingVault);
-    }
+    //Update Vault Amount
+//    @Transactional(value = "transactionManager")
+//    public Vault updateVaultAmount(Integer vaultId, BigDecimal amount) {
+//
+//        Vault existingVault = vaultRepository.findById(vaultId)
+//                .orElseThrow(() -> new RuntimeException("Vault not found"));
+//        existingVault.setCurrentAmount(existingVault.getCurrentAmount().add(amount));
+//        return vaultRepository.save(existingVault);
+//    }
 
     //Update Maximum Amount
-    @Transactional(value = "transactionManager")
-    public Vault updateVaultMaxAmount(Integer vaultId, BigDecimal amount) {
-
-        Vault existingVault = vaultRepository.findById(vaultId)
-                .orElseThrow(() -> new RuntimeException("Vault not found"));
-
-        existingVault.setMaxAmount(amount);
-
-        return vaultRepository.save(existingVault);
-    }
+//    @Transactional(value = "transactionManager")
+//    public Vault updateVaultMaxAmount(Integer vaultId, BigDecimal amount) {
+//
+//        Vault existingVault = vaultRepository.findById(vaultId)
+//                .orElseThrow(() -> new RuntimeException("Vault not found"));
+//
+//        existingVault.setMaxAmount(existingVault.getMaxAmount().add(amount));
+//
+//        return vaultRepository.save(existingVault);
+//    }
 
     @Transactional(value = "transactionManager")
     public Vault getVaultsByBranchAndType(String branch, String type) {
@@ -133,8 +132,12 @@ public class VaultService {
         return vault.get();
     }
 
-    @Transactional(value = "transactionManager")
-    public List<Vault> getVaultsByBranch(String branch) {
-        return vaultRepository.findVaultByBranch_BranchName(branch);
-    }
+//    @Transactional(value = "transactionManager")
+//    public List<Vault> getVaultsByBranch(String branch) {
+//        List<Vault> vaultList = vaultRepository.findVaultByBranch_BranchName(branch);
+//
+//        log.info("Vault list:{}", vaultList.toString());
+//
+//        return  vaultList;
+//    }
 }

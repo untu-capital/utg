@@ -1,7 +1,5 @@
 package com.untucapital.usuite.utg.service.Impl;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
@@ -13,14 +11,8 @@ import com.untucapital.usuite.utg.utils.FormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.util.*;
 import java.util.List;
 
 @Service
@@ -130,7 +122,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return clientRepository.findClientLoansByBranchName(branchName);
     }
 
-    public List<ClientLoan> getAllClientLoansData() throws JSONException {
+    public List<ClientLoan> getAllClientLoansData() {
 
 //        System.out.println(clientRepository.findAll());
 //        List<ClientLoan> clientLoanList = clientRepository.findAll();

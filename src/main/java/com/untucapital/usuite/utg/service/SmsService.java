@@ -1,15 +1,20 @@
 package com.untucapital.usuite.utg.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.*;
+import com.untucapital.usuite.utg.DTO.sms.BulkMessage;
 import com.untucapital.usuite.utg.model.Sms;
 import com.untucapital.usuite.utg.DTO.Bulk;
 import com.untucapital.usuite.utg.DTO.BulkSMS;
 import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
 import com.untucapital.usuite.utg.DTO.SMSDto;
 import com.untucapital.usuite.utg.repository.SMSRepo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -26,6 +31,8 @@ import java.util.*;
 @Transactional
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@Data
 public class SmsService {
     private final SMSRepo smsRepo;
     private final RestTemplate restTemplate;
@@ -36,11 +43,6 @@ public class SmsService {
     private String username;
     @Value("${esolutions.password}")
     private String password;
-
-    public SmsService(SMSRepo smsRepo, RestTemplate restTemplate) {
-        this.smsRepo = smsRepo;
-        this.restTemplate = restTemplate;
-    }
 
 
     public HttpHeaders setESolutionsHeaders() {
@@ -86,13 +88,33 @@ public class SmsService {
         return restTemplate.exchange(eSolutionsBaseURL + "bulk", HttpMethod.POST, entity, String.class).getBody();
     }
 
-    private String sendSMS(List<Map> listSMS1) {
+//    private String sendSMS(List<Map> listSMS1) {
+//        String batchNumber = "B" + UUID.randomUUID();
+//        Map<String, Object> json = new HashMap<>();
+//        json.put("batchNumber", batchNumber);
+//        json.put("messages", listSMS1);
+//        String json1 = new JSONObject(json).toString();
+//        System.out.printf("Bulk Message => %s%n", json1);
+//        HttpEntity<String> entity = new HttpEntity<>(json1, setESolutionsHeaders());
+//        return restTemplate.exchange(eSolutionsBaseURL + "bulk", HttpMethod.POST, entity, String.class).getBody();
+//    }
+
+
+    private String sendSMS(List<Map> listSMS1) throws  JsonProcessingException {
         String batchNumber = "B" + UUID.randomUUID();
-        Map<String, Object> json = new HashMap<>();
-        json.put("batchNumber", batchNumber);
-        json.put("messages", listSMS1);
-        String json1 = new JSONObject(json).toString();
+
+        BulkMessage bulkMessage = new BulkMessage();
+        bulkMessage.setBatchNumber(batchNumber);
+        bulkMessage.setMessages(listSMS1);
+
+        // Create an ObjectMapper
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        // Serialize the BulkMessage object to JSON
+        String json1 = objectMapper.writeValueAsString(bulkMessage);
+
         System.out.printf("Bulk Message => %s%n", json1);
+
         HttpEntity<String> entity = new HttpEntity<>(json1, setESolutionsHeaders());
         return restTemplate.exchange(eSolutionsBaseURL + "bulk", HttpMethod.POST, entity, String.class).getBody();
     }

@@ -17,4 +17,5 @@ public class PaymentDetailData {
     private String receiptNumber;
     private String bankNumber;
 
+
 }

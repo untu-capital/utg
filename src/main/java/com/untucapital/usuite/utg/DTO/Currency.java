@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Currency {
+
     private String code;
     private String name;
     private Integer decimalPlaces;
@@ -17,5 +18,6 @@ public class Currency {
     private String displaySymbol;
     private String nameCode;
     private String displayLabel;
+
 
 }

@@ -12,5 +12,5 @@ public class AuditData {
     private String createdByUsername;
     private long lastModifiedOnTimestamp;
     private String lastModifiedByUsername;
-    // Add getters and setters
+
 }
