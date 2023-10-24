@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.untucapital.usuite.utg.DTO.*;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.entity.AccountEntity;
@@ -17,16 +18,18 @@ import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.security.auth.login.AccountNotFoundException;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -43,113 +46,46 @@ public class MusoniProcessor {
 
     private final AccountService accountService;
 
-    public List<TransactionInfo> createPastelTransaction(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
-
-        log.info("Transactions:{}", transactions.toString());
-
-        List<TransactionInfo> transactionInfoList = new ArrayList<>();
-
-        for (Transactions transaction : transactions) {
-
-            int[] dateArray = transaction.getSubmittedOnDate();
-            log.info("Date Array: {}", dateArray.toString());
-
-            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
-
-            if (isTransactionRequired) {
-
-                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-
-
-                log.info("Formatted date:{}", formattedDate.toString());
-
-                TransactionInfo transactionInfo = new TransactionInfo();
-
-
-                transactionInfo.setAmount(transaction.getAmount());
-                transactionInfo.setTransactionDate(formattedDate);
-                if (transaction.getCurrency().getCode().equalsIgnoreCase("USD")) {
-
-                    transactionInfo.setCurrency(AppConstants.CURRENCY);
-
-                }
-                transactionInfo.setDescription(transaction.getType().getValue());
-
-                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-
-
-                    transactionInfo.setTransactionType(AppConstants.DISBURSEMENT);
-                    transactionInfo.setReference("DIS-" + transaction.getId());
-
-                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-
-                    transactionInfo.setTransactionType(AppConstants.REPAYMENT);
-                    transactionInfo.setReference("REP-" + transaction.getId());
-                }
-
-                transactionInfo.setExchangeRate(1);
-
-                //TODO put the actual dto and from account
-
-                AccountEntity accountEntity = getAccountLink(transaction);
-
-                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-
-                    transactionInfo.setFromAccount(accountEntity.getAccountLink());
-                    transactionInfo.setToAccount(AppConstants.LOAN_BOOK);
-
-                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-
-                    transactionInfo.setFromAccount(AppConstants.LOAN_BOOK);
-                    transactionInfo.setToAccount(accountEntity.getAccountLink());
-                }
-
-
-                transactionInfoList.add(transactionInfo);
-            }
-
-        }
-
-        return transactionInfoList;
-    }
-
 
     public List<PostGl> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
-
-
-        log.info("Transactions:{}", transactions.toString());
+        log.info("Transactions: {}", transactions);
 
         List<PostGl> postGlList = new ArrayList<>();
+        java.util.Date utilDate = new java.util.Date();
+        Date sqlDate = new Date(utilDate.getTime());
 
         for (Transactions transaction : transactions) {
-
             int[] dateArray = transaction.getSubmittedOnDate();
-            log.info("Date Array: {}", dateArray.toString());
+            log.info("Date Array: {}", Arrays.toString(dateArray));
 
             boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
 
             if (isTransactionRequired) {
-
                 LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-
                 Date date = Date.valueOf(formattedDate);
+                log.info("Formatted date: {}", formattedDate);
 
-                log.info("Formatted date:{}", formattedDate.toString());
+                String typeValue = transaction.getType().getValue();
+                AccountEntity entity = getAccountLink(transaction);
+                float creditAmount = 0.0f;
+                float debitAmount = 0.0f;
+                String reference = "";
 
+                if ("disbursement".equalsIgnoreCase(typeValue)) {
+                    reference = "DIS-" + transaction.getId();
+                    creditAmount = (float) transaction.getAmount();
+                } else if ("repayment".equalsIgnoreCase(typeValue)) {
+                    reference = "REP-" + transaction.getId();
+                    debitAmount = (float) transaction.getAmount();
+                }
 
                 PostGl postGl = new PostGl();
-
                 postGl.setTxDate(date);
-                // Get the current date and time
-                java.util.Date utilDate = new java.util.Date();
-
-                // Convert the java.util.Date to java.sql.Date
-                Date sqlDate = new Date(utilDate.getTime());
                 postGl.setDTStamp(sqlDate);
                 postGl.setId("JL");
                 postGl.setICurrencyID(1);
                 postGl.setFExchangeRate(1.0f);
-                postGl.setDescription(transaction.getType().getValue());
+                postGl.setDescription(typeValue);
                 postGl.setBIsJCDocLine(false);
                 postGl.setBIsSTGLDocLine(false);
                 postGl.setBPrintCheque(false);
@@ -157,49 +93,36 @@ public class MusoniProcessor {
                 postGl.setBPBTPaid(false);
                 postGl.setBReconciled(false);
                 postGl.setUserName(transaction.getSubmittedByUsername());
-                postGl.setFExchangeRate(0F);
-                postGl.setFForeignDebit(0F);
-                postGl.setFForeignCredit(0F);
+                postGl.setFExchangeRate(0.0f);
+                postGl.setFForeignDebit(0.0f);
+                postGl.setFForeignCredit(0.0f);
                 postGl.setTaxTypeID(0);
-                postGl.setTax_Amount(0F);
+                postGl.setTax_Amount(0.0f);
                 postGl.setProject(0);
                 postGl.setDrCrAccount(0);
                 postGl.setJobCodeLink(0);
                 postGl.setRepID(0);
-                postGl.setFJCRepCost(0F);
+                postGl.setFJCRepCost(0.0f);
                 postGl.setIMFPID(0);
                 postGl.setITxBranchID(0);
                 postGl.setIGLTaxAccountID(0);
                 postGl.setPostGL_iBranchID(0);
                 postGl.setIImportDeclarationID(0);
                 postGl.setIMajorIndustryCodeID(0);
+                postGl.setFForeignTax(0.0f);
 
-                AccountEntity entity = getAccountLink(transaction);
-
-                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-
-                    postGl.setReference("DIS-" + transaction.getId());
-                    postGl.setCredit((float) transaction.getAmount());
-                    postGl.setDebit(0f);
-                    postGl.setAccountLink(entity.getAccountLink());
-
-
-                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-
-                    postGl.setReference("REP-" + transaction.getId());
-                    postGl.setCredit(0f);
-                    postGl.setDebit((float) transaction.getAmount());
-                    postGl.setAccountLink(entity.getAccountLink());
-
-                }
+                postGl.setReference(reference);
+                postGl.setCredit(creditAmount);
+                postGl.setDebit(debitAmount);
+                postGl.setAccountLink(entity.getAccountLink());
 
                 postGlList.add(postGl);
             }
-
         }
 
         return postGlList;
     }
+
 
 
     public List<PostGl> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
@@ -257,6 +180,7 @@ public class MusoniProcessor {
                 postGl.setPostGL_iBranchID(0);
                 postGl.setIImportDeclarationID(0);
                 postGl.setIMajorIndustryCodeID(0);
+                postGl.setFForeignTax(0F);
 
                 AccountEntity entity = getAccountLink(transaction);
 
@@ -290,53 +214,111 @@ public class MusoniProcessor {
      */
 
     public AccountEntity getAccountLink(Transactions transaction) throws JsonProcessingException, AccountNotFoundException {
-
         List<Employee> employees = restClient.getAllUsers();
-        AccountEntity accountEntity = new AccountEntity();
+        String submittedUsername = transaction.getSubmittedByUsername();
 
-        //filter out the employee who initiated the transaction
-        if (employees.isEmpty()) {
-            throw new NullPointerException("There are no users in the database");
-        }
-
-        log.info("Transaction initiator username:{}", transaction.getSubmittedByUsername());
+        // Filter out the employee who initiated the transaction
         Optional<Employee> initiator = employees.stream()
-                .filter(employee -> employee.getUsername().equals(transaction.getSubmittedByUsername()))
+                .filter(employee -> employee.getUsername().equals(submittedUsername))
                 .findFirst();
 
-        if(initiator.isEmpty()) {
-             throw new UsernameNotFoundException("The user with this username: {} is not in the system");
+        if (initiator.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
         }
 
-        log.info("Employee who initiated the transaction: {}", initiator.toString());
+        Employee employee = initiator.get();
+        String officeName = employee.getOfficeName();
+        String subString = " Teller Account";
 
-        if (initiator.isPresent()) {
-            Vault vault = new Vault();
-            Employee employee = initiator.get();
-            String officeName = employee.getOfficeName();
-            String subString = " Teller Account";
+        if (officeName.contains(subString)) {
+            officeName += subString;
+        }
 
-            if (officeName.contains(subString)) {
-                vault = vaultService.getVaultsByBranchAndType(officeName, AppConstants.VAULT_TYPE);
-            } else {
-                vault = vaultService.getVaultsByBranchAndType(officeName+subString, AppConstants.VAULT_TYPE);
-            }
+        Vault vault = vaultService.getVaultsByBranchAndType(officeName, AppConstants.VAULT_TYPE);
 
+        if (vault == null) {
+            throw new VaultNotFoundException("Vault not found");
+        }
 
-            if (vault == null) {
-                throw new VaultNotFoundException("Vault not found");
-            }
-            log.info("Vault :{}", vault.toString());
+        String accountName = vault.getAccount();
+        AccountEntity accountEntity = accountService.findAccountByAccount(accountName);
 
-            String accountName = vault.getAccount();
-
-            accountEntity = accountService.findAccountByAccount(accountName);
-            log.info("Account :{}", accountEntity);
-
-        } else {
-            throw new UsernameNotFoundException("The user with the username is not found in the database");
+        if (accountEntity == null) {
+            throw new AccountNotFoundException("Account not found");
         }
 
         return accountEntity;
     }
+
+
+    public List<DisbursedLoan> getDisbursedLoans(List<Loan> loans) {
+        List<DisbursedLoan> disbursedLoans = new ArrayList<>();
+        for (Loan loan : loans) {
+            if (loan.getTimeline().getActualDisbursementDate() != null) {
+                DisbursedLoan disbursedLoan = DisbursedLoan.builder()
+                        .loanName(loan.getClientName())
+                        .expectedDisbursementDate(loan.getTimeline().getExpectedDisbursementDate())
+                        .disbursedAt(loan.getTimeline().getActualDisbursementDate())
+                        .loanId(loan.getAccountNo())
+                        .disbursedMonth(MusoniUtils.getYearMonth(loan.getTimeline().getActualDisbursementDate()))
+                        .principal(loan.getPrincipal())
+                        .build();
+
+                disbursedLoans.add(disbursedLoan);
+            }
+        }
+        return disbursedLoans;
+    }
+
+    public List<DisbursedLoanMonth> groupByMonth(List<DisbursedLoan> disbursedLoans) {
+
+        List<DisbursedLoanMonth> disbursedLoanMonths = new ArrayList<>();
+
+        Map<String, List<DisbursedLoan>> loansByMonth = disbursedLoans.stream()
+                .collect(Collectors.groupingBy(DisbursedLoan::getDisbursedMonth));
+
+
+        for (Map.Entry<String, List<DisbursedLoan>> entry : loansByMonth.entrySet()) {
+            String month = entry.getKey();
+            List<DisbursedLoan> loansOfMonth = entry.getValue();
+            BigDecimal totalPrincipal = loansOfMonth.stream()
+                    .map(DisbursedLoan::getPrincipal)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            int count = loansOfMonth.size();
+            DisbursedLoanMonth disbursedLoanMonth = DisbursedLoanMonth.builder()
+                    .month(month)
+                    .numberOfDisbursedLoans(count)
+                    .disbursedLoans(loansOfMonth)
+                    .totalPrincipalDisbursed(totalPrincipal)
+                    .build();
+
+            disbursedLoanMonths.add(disbursedLoanMonth);
+
+        }
+
+        disbursedLoanMonths.sort(Comparator.comparing(DisbursedLoanMonth::getMonth));
+        return disbursedLoanMonths;
+    }
+
+    public DisbursedLoans disbursedLoans(List<DisbursedLoanMonth> disbursedLoanMonths){
+        BigDecimal totalPrincipalDisbursed = disbursedLoanMonths.stream()
+                .map(DisbursedLoanMonth::getTotalPrincipalDisbursed)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return DisbursedLoans.builder()
+                .totalPrincipalDisbursed(totalPrincipalDisbursed)
+                .disbursedLoanMonths(disbursedLoanMonths)
+                .build();
+    }
+
+    public List<DisbursedLoan> getDisbursedLoansByRange(List<Loan> loans, String fromDate, String toDate) {
+        List<DisbursedLoan> disbursedLoans = getDisbursedLoans(loans);
+
+        return disbursedLoans.stream()
+                .filter(disbursedLoan -> disbursedLoan.getDisbursedAt().isAfter(LocalDate.parse(fromDate)))
+                .filter(disbursedLoan -> disbursedLoan.getDisbursedAt().isBefore(LocalDate.parse(toDate)))
+                .collect(Collectors.toList());
+
+    }
+
+
 }

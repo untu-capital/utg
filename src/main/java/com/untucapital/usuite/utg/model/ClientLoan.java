@@ -136,6 +136,7 @@ public class ClientLoan extends AbstractEntity {
 
     private String bmSignature;
 
+    @Column(name="bmName")
     private String bmName;
 
     private String caSignature;

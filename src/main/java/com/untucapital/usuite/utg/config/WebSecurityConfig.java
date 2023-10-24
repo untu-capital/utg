@@ -142,6 +142,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/disbursementTickets/**")
                 .permitAll()
+                .antMatchers("/disbursed-by-range/**")
+                .permitAll()
                 .antMatchers("/appraisalLoanRequest/**")
                 .permitAll()
                 .antMatchers("/sales/**")
@@ -370,6 +372,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
                 .antMatchers("/cms/**")
+                .permitAll()
+
+                .antMatchers("/swagger-ui/**")
+                .permitAll()
+
+                .antMatchers("/v3/**")
                 .permitAll()
 
                 .anyRequest()

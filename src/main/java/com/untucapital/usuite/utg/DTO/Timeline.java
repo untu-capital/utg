@@ -30,4 +30,5 @@ public class Timeline {
     private LocalDate closedOnDate;
     private LocalDate expectedMaturityDate;
 
+
 }

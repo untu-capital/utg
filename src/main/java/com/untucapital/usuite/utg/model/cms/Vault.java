@@ -37,8 +37,8 @@ public class Vault {
 
     private Integer accountLink;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Branches branch;
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Branches branch;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -102,13 +102,13 @@ public class Vault {
         this.accountLink = accountLink;
     }
 
-    public Branches getBranch() {
-        return branch;
-    }
-
-    public void setBranch(Branches branch) {
-        this.branch = branch;
-    }
+//    public Branches getBranch() {
+//        return branch;
+//    }
+//
+//    public void setBranch(Branches branch) {
+//        this.branch = branch;
+//    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

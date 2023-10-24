@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +22,18 @@ public class AmortizeController {
     private static final Logger log = LoggerFactory.getLogger(AmortizeController.class);
 
     @GetMapping("table/{loanId}/{period}")
-    public String getTable(@PathVariable String loanId, @PathVariable String period) throws JSONException {
-        return  amortizeService.getTable(loanId, period);
+    public String getTable(@PathVariable String loanId, @PathVariable String period) {
+
+            return amortizeService.getTable(loanId, period);
     }
 
     @GetMapping("loanInterest/{rangeStart}/{rangeEnd}/{period}")
-    public String getLoanInterest(@PathVariable String rangeStart, @PathVariable String rangeEnd, @PathVariable String period) throws JSONException {
+    public String getLoanInterest(@PathVariable String rangeStart, @PathVariable String rangeEnd, @PathVariable String period)  {
         return  amortizeService.getLoanInterest(rangeStart,rangeEnd,period);
     }
 
     @GetMapping("getLoansDisbursedByDate/{rangeStart}/{rangeEnd}/{period}")
-    public String getLoanByDate(@PathVariable String rangeStart, @PathVariable String rangeEnd, @PathVariable String period) throws JSONException {
+    public String getLoanByDate(@PathVariable String rangeStart, @PathVariable String rangeEnd, @PathVariable String period)  {
         return  amortizeService.getLoansDisbursedByDate(rangeStart,rangeEnd,period);
     }
 }

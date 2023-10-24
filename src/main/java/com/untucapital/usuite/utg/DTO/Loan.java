@@ -50,4 +50,6 @@ public class Loan {
     private Summary summary;
     private TermPeriodFrequencyType termPeriodFrequencyType;
     private Currency currency;
+
+
 }

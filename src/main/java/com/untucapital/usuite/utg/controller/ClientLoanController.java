@@ -6,11 +6,10 @@ import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.utils.EmailSender;
+import io.swagger.v3.oas.annotations.Operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -42,6 +41,7 @@ public class ClientLoanController {
 
     //build save loan REST API
     @PostMapping
+    @Operation(summary = "Create a new client loan application")
     public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) {
         log.info(String.valueOf(clientLoan));
         return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
@@ -49,18 +49,21 @@ public class ClientLoanController {
 
     //build get all loan applications REST API
     @GetMapping
+    @Operation(summary = "Get all client loan applications")
     public List<ClientLoan> getAllClientLoanApplication() {
         return clientLoanApplication.getAllClientLoanApplication();
     }
 
     //build get clientLoan by ID REST API
     @GetMapping("{id}")
+    @Operation(summary = "Get a client loan application by ID")
     public ResponseEntity<ClientLoan> getClientLoanApplicationById(@PathVariable("id") String clientloanID) {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.getClientLoanApplicationById(clientloanID), HttpStatus.OK);
     }
 
     @GetMapping("/caseloads")
-    public String getAllClientLoansData() throws JSONException, ParseException {
+    @Operation(summary = "Get data on client loans")
+    public List<List<Object>> getAllClientLoansData(){
         List<ClientLoan> clientLoanList = new ArrayList<>(clientRepository.findAll());
         Map<LocalDate, Integer> countMap = new TreeMap<>();
 
@@ -81,19 +84,12 @@ public class ClientLoanController {
             data.add(dataEntry);
         }
 
-// Create a JSON array
-        JSONArray jsonArray = new JSONArray(data);
-
-// Convert the JSON array to a string
-        String json = jsonArray.toString();
-
-        return json;
-
-
+        return data;
     }
 
     @GetMapping("/caseloadsByBranch/{branch}")
-    public String getAllClientLoansDataByBranch(@PathVariable String branch) throws JSONException, ParseException {
+    @Operation(summary = "Get data on client loans by branch")
+    public List<List<Object>> getAllClientLoansDataByBranch(@PathVariable String branch) throws ParseException {
         List<ClientLoan> clientLoanList = new ArrayList<>(clientRepository.findClientLoansByBranchName(branch));
         Map<LocalDate, Integer> countMap = new TreeMap<>();
 
@@ -114,14 +110,9 @@ public class ClientLoanController {
             data.add(dataEntry);
         }
 
-// Create a JSON array
-        JSONArray jsonArray = new JSONArray(data);
-
-// Convert the JSON array to a string
-        String json = jsonArray.toString();
-
-        return json;
+        return data;
     }
+
 
 //    @GetMapping("/caseloadsByLoanCount/{loanCount}")
 //    public String getAllClientLoansDataByLoanCount(@PathVariable String loanCount) throws JSONException, ParseException {
