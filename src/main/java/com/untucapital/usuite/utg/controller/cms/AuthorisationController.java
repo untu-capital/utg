@@ -79,4 +79,9 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     public List<Authorisation> getAuthorisationByBranchId(@PathVariable String id) {
         return authorisationService.getAuthorisationByBranchId(id);
     }
+
+    @GetMapping("authLevel/{branch}/{authLevel}")
+    public List<Authorisation> getAuthorisationByBranchIdAndAuthLevel(@PathVariable String branch, @PathVariable String authLevel) {
+        return authorisationService.getAuthorisationByBranchIdAndAuthLevel(branch, authLevel);
+    }
 }
