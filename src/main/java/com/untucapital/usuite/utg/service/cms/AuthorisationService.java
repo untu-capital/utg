@@ -52,6 +52,10 @@ public class AuthorisationService extends AbstractService<Authorisation> {
         return authorisationRepository.findAuthorisationByBranchId(branchId);
     }
 
+    public List<Authorisation> getAuthorisationByBranchIdAndAuthLevel(String branchId, String authLevel){
+        return authorisationRepository.findAuthorisationByBranchIdAndAuthLevel(branchId, authLevel);
+    }
+
 }
 
 
