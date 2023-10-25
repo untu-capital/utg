@@ -15,14 +15,17 @@ public class CollateralSecurityService {
     @Autowired
     CollateraiSecurityRepository collateraiSecurityRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<CollateralSecurity> get(String loanId){
         return collateraiSecurityRepository.findCollateralSecurityByLoanId(loanId);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void delete(String id){
         collateraiSecurityRepository.deleteById(id);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void add(CollateralSecurity collateralSecurity){
         collateraiSecurityRepository.save(collateralSecurity);
     }

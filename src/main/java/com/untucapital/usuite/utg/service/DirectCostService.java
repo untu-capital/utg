@@ -4,6 +4,7 @@ import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.repository.DirectCostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,16 +19,19 @@ public class DirectCostService{
     }
 
     //Add New Direct Cost
+    @Transactional(value = "transactionManager")
     public void addDirectCost(DirectCost directCost){
         directCostRepository.save(directCost);
     }
 
     //Find all Direct Costs by Loan id and Sort CreatedAt
+    @Transactional(value = "transactionManager")
     public List<DirectCost> allDirectCost(String id){
         return directCostRepository.findDirectCostByLoanId(id);
     }
 
     //Delete Direct Cost By id
+    @Transactional(value = "transactionManager")
     public void deleteDirectCost(String id){
         directCostRepository.deleteById(id);
     }

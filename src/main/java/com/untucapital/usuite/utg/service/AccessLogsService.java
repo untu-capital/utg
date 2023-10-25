@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.service;
 import com.untucapital.usuite.utg.model.AccessLogs;
 import com.untucapital.usuite.utg.repository.AccessLogsRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AccessLogsService {
         this.accessLogsRepository = accessLogsRepository;
     }
 
-
+    @Transactional(value = "transactionManager")
     public List<AccessLogs> getAccessLogs() {
         return accessLogsRepository.findAll();
     }

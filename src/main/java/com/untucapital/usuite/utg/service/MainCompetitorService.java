@@ -15,14 +15,17 @@ public class MainCompetitorService {
     @Autowired
     MainCompetitorRepository mainCompetitorRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveMainCompetitor(MainCompetitor mainCompetitor){
         mainCompetitorRepository.save(mainCompetitor);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<MainCompetitor> getMainCompetitorByLoanId(String loanId){
         return mainCompetitorRepository.findByLoanId(loanId);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void deleteMainCompetitor(String id){
         mainCompetitorRepository.deleteById(id);
     }

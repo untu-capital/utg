@@ -30,16 +30,18 @@ public class PettyCashPaymentsService {
     private  final PettyCashPaymentsRepository pettyCashPaymentsRepository;
 
     //Get All
+    @Transactional(value = "transactionManager")
     public List<PettyCashPayments> getAllPettyCashPayments(){
         return pettyCashPaymentsRepository.findAll();
     }
     //Get By Id
+    @Transactional(value = "transactionManager")
     public PettyCashPayments getPettyCashPaymentsById(String id){
         return pettyCashPaymentsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Petty Cash Payment not found"));
     }
 
-
+    @Transactional(value = "transactionManager")
     public PettyCashPayments updatePettyCashPayments(String id, PettyCashPayments pettyCashPayments) {
         Optional<PettyCashPayments> optionalPettyCashPayments = pettyCashPaymentsRepository.findById(id);
         if (optionalPettyCashPayments.isPresent()) {

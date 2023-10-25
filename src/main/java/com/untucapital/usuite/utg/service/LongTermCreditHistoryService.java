@@ -15,14 +15,17 @@ public class LongTermCreditHistoryService {
     @Autowired
     LongTermCreditHistoryRepository longTermCreditHistoryRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveCreditHistory(LongTermCreditHistory creditHistory){
         longTermCreditHistoryRepository.save(creditHistory);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<LongTermCreditHistory> getCreditHistoryByLoanId(String loanId){
         return longTermCreditHistoryRepository.findByLoanId(loanId);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void deleteCreditHistory(String id){
         longTermCreditHistoryRepository.deleteById(id);
     }

@@ -4,12 +4,12 @@ import com.untucapital.usuite.utg.model.ClientFeedback;
 import com.untucapital.usuite.utg.repository.ClientFeedbackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@javax.transaction.Transactional
 public class ClientFeedbackService {
 
     @Autowired
@@ -19,6 +19,7 @@ public class ClientFeedbackService {
         return clientFeedbackRepository.save(clientFeedback);
     }
 
+    @Transactional(value = "transactionManager")
     public List<ClientFeedback> getAllClientFeedback() {
         return clientFeedbackRepository.findAll();
     }

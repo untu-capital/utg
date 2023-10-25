@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+@javax.transaction.Transactional
 @Service
 public class RoleService extends AbstractService<Role> {
 
@@ -36,11 +36,12 @@ public class RoleService extends AbstractService<Role> {
         return null;
     }
 
+    @Transactional(value = "transactionManager")
     public void saveRole(Role role) {
         roleRepository.save(role);
     }
 
-
+    @Transactional(value = "transactionManager")
     public List<Role> findAllRoles() {
         return roleRepository.findAll();
     }

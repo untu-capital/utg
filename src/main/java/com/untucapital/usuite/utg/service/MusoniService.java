@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -79,14 +80,17 @@ public class MusoniService {
     @Autowired
     MusoniRepository musoniRepository;
 
+    @Transactional(value = "transactionManager")
     public void save(MusoniClient musoniClient) {
         musoniRepository.save(musoniClient);
     }
 
+    @Transactional(value = "transactionManager")
     public MusoniClient getMusoniClientById(String clientId) {
         return musoniRepository.findMusoniClientById(clientId);
     }
 
+    @Transactional(value = "transactionManager")
     public List<MusoniClient> getMusoniClientsByStatus(String status) {
         return musoniRepository.findMusoniClientsByStatus(status);
     }
@@ -251,6 +255,7 @@ public class MusoniService {
 
 
     //          SELECT LOAN IDS FROM TABLE AND MATCH WITH TRANSACTION IDS
+    @Transactional(value = "transactionManager")
     public String disbursementSms(String loanId, String phone_number, Long unixTimestamp, int transIds) {
 
         for (int transId = transIds; transId <= transIds + 10; transId++) {
@@ -341,6 +346,7 @@ public class MusoniService {
         return "";
     }
 
+    @Transactional(value = "transactionManager")
     public String repaymentSms(String loanId, String phone_number, Long unixTimestamp, int transIds) {
 
         for (int transId = transIds; transId <= transIds + 5; transId++) {

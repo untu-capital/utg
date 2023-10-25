@@ -7,11 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+@javax.transaction.Transactional
 @Service
 public class BranchService extends AbstractService<Branches> {
 
@@ -23,32 +23,39 @@ public class BranchService extends AbstractService<Branches> {
         this.branchRepository = branchRepository;
     }
 
+    @Transactional(value = "transactionManager")
     public void saveBranches(Branches branches) {
         branchRepository.save(branches);
     }
 
     @Override
-    protected JpaRepository<Branches, String> getRepository() {
+    @Transactional(value = "transactionManager")
+    public JpaRepository<Branches, String> getRepository() {
         return branchRepository;
     }
 
     @Override
+    @Transactional(value = "transactionManager")
     public List<User> getUserByRole(String name) {
         return null;
     }
 
+    @Transactional(value = "transactionManager")
     public void deleteBranch(String id) {
         branchRepository.deleteById(id);
     }
 
+    @Transactional(value = "transactionManager")
     public List<Branches> getAllBranches() {
         return branchRepository.findAll();
     }
 
+    @Transactional(value = "transactionManager")
     public Branches getBranchesById(String id) {
         return branchRepository.findBranchesById(id);
     }
 
+    @Transactional(value = "transactionManager")
     public Branches getBranchByName(String name) {
         return branchRepository.findBranchesByBranchName(name);
     }

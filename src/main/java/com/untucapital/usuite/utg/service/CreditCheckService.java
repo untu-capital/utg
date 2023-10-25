@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +33,7 @@ public class CreditCheckService {
         this.fcbResponseRepository = fcbResponseRepository;
     }
 
+    @Transactional(value = "transactionManager")
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
         log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
 
@@ -64,7 +66,8 @@ public class CreditCheckService {
     }
 
     //    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
-    protected void pollCreditChecks() {
+    @Transactional(value = "transactionManager")
+    public void pollCreditChecks() {
         log.debug("Polling Inconclusive Credit Checks");
         long startTime = System.currentTimeMillis();
 

@@ -4,6 +4,7 @@ import com.untucapital.usuite.utg.model.MarketLeads;
 import com.untucapital.usuite.utg.repository.MarketLeadsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +19,12 @@ public class MarketLeadsService {
         this.marketLeadsRepository = marketLeadsRepository;
     }
 
+    @Transactional(value = "transactionManager")
     public MarketLeads createMarketLeads(MarketLeads marketLeads) {
         return marketLeadsRepository.save(marketLeads);
     }
 
+    @Transactional(value = "transactionManager")
     public MarketLeads updateMarketLeads(String id, MarketLeads marketLeads) {
         Optional<MarketLeads> optionalMarketLeads = marketLeadsRepository.findById(id);
         if (optionalMarketLeads.isPresent()) {
@@ -42,6 +45,7 @@ public class MarketLeadsService {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public MarketLeads updateMarketLeadsStatus(String id, MarketLeads marketLeads) {
         Optional<MarketLeads> optionalMarketLeads = marketLeadsRepository.findById(id);
         if (optionalMarketLeads.isPresent()) {
@@ -54,15 +58,18 @@ public class MarketLeadsService {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public MarketLeads getMarketLeadsById(String id) {
         Optional<MarketLeads> optionalMarketLeads = marketLeadsRepository.findById(id);
         return optionalMarketLeads.orElse(null);
     }
 
+    @Transactional(value = "transactionManager")
     public List<MarketLeads> getAllMarketLeads() {
         return marketLeadsRepository.findAll();
     }
 
+    @Transactional(value = "transactionManager")
     public void deleteMarketLeads(String id) {
         marketLeadsRepository.deleteById(id);
     }

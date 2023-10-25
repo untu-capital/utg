@@ -67,7 +67,7 @@ public class VaultController {
 
     @GetMapping("/get/byBranchAndType/{branch}/{type}")
     public ResponseEntity<Vault> getVaultByBranchAndType(@PathVariable String branch, @PathVariable String type) {
-        Vault vault = vaultService.getVaultsByBranchAndType(branch, type);
+        Vault vault = vaultService.getVaultByBranchAndType(branch, type);
 
         if (vault == null) {
             return ResponseEntity.noContent().build(); // Return 404 if no vaults are found

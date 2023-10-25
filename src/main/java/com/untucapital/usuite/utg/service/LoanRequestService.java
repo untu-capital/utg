@@ -14,13 +14,17 @@ public class LoanRequestService {
     @Autowired
     LoanRequestRepository loanRequestRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveLoanRequest(LoanRequest loanRequest){
         loanRequestRepository.save(loanRequest);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<LoanRequest> getByLoanId(String loanId){
         return loanRequestRepository.findLoanRequestByLoanId(loanId);
     }
+
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void deleteLoanRequest(String id){
         loanRequestRepository.deleteById(id);
     }

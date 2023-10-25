@@ -12,14 +12,14 @@ import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.processor.AmortizeProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+
 @Service
 @Slf4j
 public class AmortizeService {
@@ -35,6 +35,7 @@ public class AmortizeService {
         this.amortizeProcessor = amortizeProcessor;
     }
 
+    @Transactional(value = "transactionManager")
     public String getTable(String loanId, String periodRange) {
 
         log.info("LOAN ID IS: " + loanId);
@@ -136,6 +137,7 @@ public class AmortizeService {
     }
 
 
+    @Transactional(value = "transactionManager")
     public String getLoanInterest(String rangeStart, String rangeEnd, String periodRange) {
         JsonArray resultArray = new JsonArray();
 
@@ -245,6 +247,7 @@ public class AmortizeService {
         return json;
     }
 
+    @Transactional(value = "transactionManager")
     public String getLoansDisbursedByDate(String rangeStart, String rangeEnd, String periodRange) {
         JsonArray resultArray = new JsonArray();
 
