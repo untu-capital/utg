@@ -30,7 +30,6 @@ public class AuthorisationController extends AbstractController<Authorisation> {
         this.authorisationService = authorisationService;
     }
 
-
     //build save branch REST API
     @PostMapping("/addAuthorisation")
     public void add(@RequestBody Authorisation authorisation) {
@@ -70,6 +69,7 @@ public class AuthorisationController extends AbstractController<Authorisation> {
         authorisationService.deleteAuthorisation(id);
     }
 
+
     @Override
     protected AbstractService<Authorisation> getService() {
         return authorisationService;
@@ -78,5 +78,10 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     @GetMapping("branch/{id}")
     public List<Authorisation> getAuthorisationByBranchId(@PathVariable String id) {
         return authorisationService.getAuthorisationByBranchId(id);
+    }
+
+    @GetMapping("authLevel/{branch}/{authLevel}")
+    public List<Authorisation> getAuthorisationByBranchIdAndAuthLevel(@PathVariable String branch, @PathVariable String authLevel) {
+        return authorisationService.getAuthorisationByBranchIdAndAuthLevel(branch, authLevel);
     }
 }

@@ -19,4 +19,5 @@ public class DisbursedLoan {
     private LocalDate disbursedAt;
     private String disbursedMonth;
     private BigDecimal principal;
+    private String branch;
 }
