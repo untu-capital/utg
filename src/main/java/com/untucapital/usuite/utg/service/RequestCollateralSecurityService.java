@@ -17,6 +17,7 @@ public class RequestCollateralSecurityService {
     @Autowired
     RequestCollateraiSecurityRepository requestCollateraiSecurityRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveCollateralSecurity(String phoneNumber, String loanAccount, String clientName){
         RequestCollateralSecurity requestCollateralSecurity = new RequestCollateralSecurity();
         requestCollateralSecurity.setPhoneNumber(phoneNumber);

@@ -25,6 +25,7 @@ public class AuditTrailService {
     private final AuditTrailRepository auditTrailRepository;
 
     //Get All
+    @Transactional(value = "transactionManager")
     public List<AuditTrail> getAllAuditTrails(){
         return auditTrailRepository.findAll();
     }
@@ -46,6 +47,7 @@ public class AuditTrailService {
     }
 
     //Add First Approver
+    @Transactional(value = "transactionManager")
     public AuditTrail addFirstApprover(ApproverRequest request){
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
@@ -56,7 +58,7 @@ public class AuditTrailService {
     }
 
     //Add Second Approver
-    @Transactional
+    @Transactional(value = "transactionManager")
     public AuditTrail addSecondApprover(ApproverRequest request){
 
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
@@ -69,6 +71,7 @@ public class AuditTrailService {
     }
 
     //Delete Audit Trail
+    @Transactional(value = "transactionManager")
     public String deleteAuditTrail(Integer id){
 
         AuditTrail auditTrail = auditTrailRepository.findById(id)
@@ -79,7 +82,7 @@ public class AuditTrailService {
     }
 
     //Update Audit Trail
-    @Transactional
+    @Transactional(value = "transactionManager")
     public AuditTrail updateAmount(ChangeAmountRequest request){
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));

@@ -21,6 +21,7 @@ public class ClientLoanEnquiryService {
         return clientLoanEnquiryRepository.save(clientLoanEnquiry);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<ClientLoanEnquiry> getAllClientLoanEnquiries() {
         return clientLoanEnquiryRepository.findAll();
     }

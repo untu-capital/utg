@@ -18,10 +18,12 @@ public class CommentsService {
     @Autowired
     private CommentsRepository commentsRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void  saveComments(Comments comments) {
         commentsRepository.save(comments);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<Comments> getByLoanId(String loanId) {
         return commentsRepository.findbyLoanId(loanId);
     }

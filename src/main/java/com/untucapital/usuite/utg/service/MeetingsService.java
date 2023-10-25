@@ -23,9 +23,12 @@ public class MeetingsService extends AbstractService<Meetings>{
 
     private final MeetingsRepository meetingsRepository;
 
+
     public MeetingsService(MeetingsRepository meetingsRepository) {
         this.meetingsRepository = meetingsRepository;
     }
+
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveMeetings(Meetings meetings) {
         meetingsRepository.save(meetings);
     }

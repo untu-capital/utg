@@ -234,7 +234,7 @@ public class MusoniProcessor {
             officeName += subString;
         }
 
-        Vault vault = vaultService.getVaultsByBranchAndType(officeName, AppConstants.VAULT_TYPE);
+        Vault vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
 
         if (vault == null) {
             throw new VaultNotFoundException("Vault not found");

@@ -4,6 +4,7 @@ import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.repository.cms.TransactionPurposeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public class TransactionPurposeService {
     private final TransactionPurposeRepository transactionPurposeRepository;
 
     //save
+    @Transactional(value = "transactionManager")
     public TransactionPurpose save(TransactionPurpose transactionPurpose){
         Optional<TransactionPurpose> transactionPurpose1 = transactionPurposeRepository.findByName(transactionPurpose.getName());
 
@@ -28,6 +30,7 @@ public class TransactionPurposeService {
         return transactionPurposeRepository.save(transactionPurpose);
     }
     //update
+    @Transactional(value = "transactionManager")
     public TransactionPurpose update(TransactionPurpose transactionPurpose){
         TransactionPurpose transactionPurpose1 = transactionPurposeRepository.getById(transactionPurpose.getId());
         if (transactionPurpose1.getId() == null){
@@ -37,6 +40,7 @@ public class TransactionPurposeService {
         return transactionPurposeRepository.save(transactionPurpose);
     }
     //delete
+    @Transactional(value = "transactionManager")
     public void delete(TransactionPurpose transactionPurpose){
         TransactionPurpose transactionPurpose1 = transactionPurposeRepository.findById(transactionPurpose.getId()).orElseThrow();
         if (transactionPurpose1.getId() == null){

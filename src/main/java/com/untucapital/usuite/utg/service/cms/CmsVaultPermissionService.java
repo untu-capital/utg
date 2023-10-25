@@ -4,39 +4,46 @@ import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.repository.cms.CmsVaultPermissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@javax.transaction.Transactional
 public class CmsVaultPermissionService {
 
     @Autowired
     private CmsVaultPermissionRepository cmsVaultPermissionRepository;
 
+    @Transactional(value = "transactionManager")
     public List<CmsVaultPermission> getAllCmsVaultPermissions() {
         return cmsVaultPermissionRepository.findAll();
     }
 
+    @Transactional(value = "transactionManager")
     public void saveCmsVaultPermission(CmsVaultPermission cmsVaultPermission) {
         cmsVaultPermissionRepository.save(cmsVaultPermission);
     }
 
+    @Transactional(value = "transactionManager")
     public Optional<CmsVaultPermission> getCmsVaultPermissionById(String id) {
         return cmsVaultPermissionRepository.findById(id);
     }
 
+    @Transactional(value = "transactionManager")
     public Optional<CmsVaultPermission> getCmsVaultPermissionByPoNumber(String id) {
         return cmsVaultPermissionRepository.getCmsVaultPermissionById(id);
     }
 
+    @Transactional(value = "transactionManager")
     public List<CmsVaultPermission> getCmsVaultPermissionByUserId(String userId) {
         return cmsVaultPermissionRepository.findCmsVaultPermissionsByUserid(userId);
     }
 
 
+    @Transactional(value = "transactionManager")
     public void deleteCmsVaultPermission(String id) {
         cmsVaultPermissionRepository.deleteById(id);
     }

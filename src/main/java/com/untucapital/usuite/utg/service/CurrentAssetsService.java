@@ -14,14 +14,17 @@ public class CurrentAssetsService {
     @Autowired
     CurrentAssetsRepository currentAssetsRepository;
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void saveCurrentAssets(CurrentAsset currentAsset){
         currentAssetsRepository.save(currentAsset);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public List<CurrentAsset> getCurrentAssets(String loanId){
         return currentAssetsRepository.findCurrentAssetByLoanId(loanId);
     }
 
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
     public void deleteCurrentAsset(String id){
         currentAssetsRepository.deleteById(id);
     }

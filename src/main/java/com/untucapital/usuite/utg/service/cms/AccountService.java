@@ -18,6 +18,7 @@ public class AccountService {
 
     private final AccountsRepository accountsRepository;
 
+    @Transactional(value = "transactionManager")
     public AccountEntity findAccountByAccount(String account) throws AccountNotFoundException {
 
         AccountEntity entity = new AccountEntity();

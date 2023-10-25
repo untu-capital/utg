@@ -11,6 +11,7 @@ import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.repository.DatabaseFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,6 +21,7 @@ public class DatabaseFileService {
     @Autowired
     private DatabaseFileRepository dbFileRepository;
 
+    @Transactional(value = "transactionManager")
     public DatabaseFile storeFile(MultipartFile file, String fileDescription, String userId, String loanId) {
 
         DatabaseFile d = new DatabaseFile();
@@ -45,11 +47,13 @@ public class DatabaseFileService {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public DatabaseFile getFile(String fileId) {
         return dbFileRepository.findById(fileId)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + fileId));
     }
 
+    @Transactional(value = "transactionManager")
     public DatabaseFile getFileById(String fileID) {
         return dbFileRepository.getFileById(fileID);
     }

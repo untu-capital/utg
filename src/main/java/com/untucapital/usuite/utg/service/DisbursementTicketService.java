@@ -6,11 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
-@Transactional
+@javax.transaction.Transactional
 @Service
 public class DisbursementTicketService extends AbstractService<DisbursementTicket> {
 
@@ -21,6 +21,8 @@ public class DisbursementTicketService extends AbstractService<DisbursementTicke
     public DisbursementTicketService(DisbursementTicketRepository disbursementTicketRepository) {
         this.disbursementTicketRepository = disbursementTicketRepository;
     }
+
+    @Transactional(value = "transactionManager")
     public void saveDisbursementTicket(DisbursementTicket disbursementTicket) {
         disbursementTicketRepository.save(disbursementTicket);
     }
@@ -34,6 +36,7 @@ public class DisbursementTicketService extends AbstractService<DisbursementTicke
         return disbursementTicketRepository;
     }
 
+    @Transactional(value = "transactionManager")
         public void deleteDisbursementTicket(String id) {
             disbursementTicketRepository.deleteById(id);
     }

@@ -37,8 +37,8 @@ public class Vault {
 
     private Integer accountLink;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    private Branches branch;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Branches branch;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

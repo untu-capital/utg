@@ -5,6 +5,7 @@ import com.untucapital.usuite.utg.model.Department;
 import com.untucapital.usuite.utg.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,18 +20,22 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     //save department
+    @Transactional(value = "transactionManager")
     public Department saveDepartment(Department department){
         return departmentRepository.save(department);
     }
     //get department by id
+    @Transactional(value = "transactionManager")
     public Department getDepartmentById(Integer departmentId){
         return departmentRepository.findById(departmentId).orElse(null);
     }
     //get all departments
+    @Transactional(value = "transactionManager")
     public List<Department> getAllDepartments(){
         return departmentRepository.findAll();
     }
     //update department
+    @Transactional(value = "transactionManager")
     public Department updateDepartment(Department department){
         Department existingDepartment = departmentRepository.findById(department.getId()).orElse(null);
 
@@ -39,6 +44,7 @@ public class DepartmentService {
         return departmentRepository.save(existingDepartment);
     }
     //delete department
+    @Transactional(value = "transactionManager")
     public String deleteDepartment(Integer departmentId){
         Department exist = departmentRepository.findById(departmentId).orElse(null);
 
