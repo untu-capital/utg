@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -8,8 +9,10 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "zones")
 public class Zones extends AbstractEntity {
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
     public String getName() {

@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -7,13 +8,24 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "BusinessAndPersonalReferenceMicro")
 public class BusinessAndPersonalReference extends AbstractEntity {
-    @NotNull
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(nullable = false)
     private String relation;
+
+    @Column(name = "full_name")
     private String fullName;
+
+    @Column(name = "working_address")
     private String workingAddress;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
     private String comments;
+
 
     public BusinessAndPersonalReference() {
     }

@@ -5,10 +5,16 @@ import javax.persistence.Entity;
 
 @Entity
 public class CurrentAssetsMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "comment")
     private String comment;
+
+    @Column(name = "amount")
     private double amount;
 
     public String getLoanId() {

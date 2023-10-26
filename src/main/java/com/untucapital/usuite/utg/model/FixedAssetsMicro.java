@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -7,17 +8,24 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "FixedAssetsMicro")
 public class FixedAssetsMicro extends AbstractEntity {
-    @NotNull
+
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
-    @NotNull
-    private String  type;
-    @NotNull
-    private String  description;
+
+    @Column(name = "type", nullable = false)
+    private String type;
+
+    @Column(name = "description", nullable = false)
+    private String description;
+
+    @Column(name = "purchase_year")
     private String purchaseYear;
+
+    @Column(name = "purchase_price")
     private String purchasePrice;
+
+    @Column(name = "market_value")
     private String marketValue;
-
-
 
 
     public String getLoanId() {

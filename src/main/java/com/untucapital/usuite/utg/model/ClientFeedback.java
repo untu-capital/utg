@@ -14,16 +14,11 @@ public class ClientFeedback extends AbstractEntity {
     @JoinColumn(name = "user_id")
     private String userId;
 
+    @Column(name = "feedback_category")
     private String feedbackCategory;
 
+    @Column(name = "feedback_description")
     private String feedbackDescription;
-
-
-
-
-
-
-
 
     public String getUserId() {
         return userId;

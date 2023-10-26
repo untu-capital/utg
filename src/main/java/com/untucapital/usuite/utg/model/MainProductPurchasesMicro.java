@@ -5,12 +5,22 @@ import javax.persistence.Entity;
 
 @Entity
 public class MainProductPurchasesMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(name = "product")
     private String product;
+
+    @Column(name = "quantity")
     private double quantity;
+
+    @Column(name = "frequency")
     private double frequency;
+
+    @Column(name = "purchase")
     private double purchase;
+
+    @Column(name = "sale")
     private double sale;
 
     public String getLoanId() {

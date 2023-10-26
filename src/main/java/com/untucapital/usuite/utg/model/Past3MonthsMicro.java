@@ -5,10 +5,17 @@ import javax.persistence.Entity;
 
 @Entity
 public class Past3MonthsMicro extends AbstractEntity {
-    @Column(nullable = false)
+
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(name = "month1")
     private double month1;
+
+    @Column(name = "month2")
     private double month2;
+
+    @Column(name = "month3")
     private double month3;
 
     public String getLoanId() {

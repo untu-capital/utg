@@ -5,10 +5,16 @@ import javax.persistence.Entity;
 
 @Entity
 public class RealEstateMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "market_value")
     private double marketValue;
+
+    @Column(name = "discount")
     private double discount;
 
     public String getLoanId() {

@@ -8,14 +8,20 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "fixedAsset")
 public class FixedAsset extends AbstractEntity{
-    @NotNull
-    @Column(nullable = false)
+
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
-    @NotNull
-    @Column(nullable = false)
+
+    @Column(name = "asset_name", nullable = false)
     private String assetName;
+
+    @Column(name = "date_from")
     private String dateFrom;
+
+    @Column(name = "date_to")
     private String dateTo;
+
+    @Column(name = "value")
     private double value;
 
     public String getLoanId() {

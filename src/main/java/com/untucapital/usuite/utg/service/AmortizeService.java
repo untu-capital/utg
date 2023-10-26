@@ -26,7 +26,6 @@ public class AmortizeService {
 
     private final MusoniService musoniService;
     private final RestClient restClient;
-
     private final AmortizeProcessor amortizeProcessor;
 
     public AmortizeService(MusoniService musoniService, RestClient restClient, AmortizeProcessor amortizeProcessor) {

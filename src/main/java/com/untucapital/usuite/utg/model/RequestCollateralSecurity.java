@@ -14,15 +14,23 @@ import java.time.LocalDateTime;
 @Data
 public class RequestCollateralSecurity extends AbstractEntity {
 
+    @Column(name = "phone_number")
     private String phoneNumber;
+
+    @Column(name = "loan_acc")
     private String loanAcc;
+
+    @Column(name = "client_name")
     private String clientName;
+
+    @Column(name = "collateral_description")
     private String collateralDescription;
 
-    @Column(updatable = false)
+    @Column(updatable = false, name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
     @UpdateTimestamp
+    @Column(updatable = false, name = "updated_at")
     private LocalDateTime updatedAt;
 
     public String getPhoneNumber() {

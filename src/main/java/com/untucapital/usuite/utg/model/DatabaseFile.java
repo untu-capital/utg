@@ -14,15 +14,20 @@ public class DatabaseFile extends AbstractEntity{
 	//@GenericGenerator(name = "uuid", strategy = "uuid2")
 	//private String id;
 
+	@Column(name = "file_name")
 	private String fileName;
+
+	@Column(name = "file_type")
 	private String fileType;
+
+	@Column(name = "file_description")
 	private String fileDescription;
 
 	@NotNull
-	@JoinColumn(nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private String userId;
 
-	@JoinColumn
+	@JoinColumn(name = "loan_id")
 	private String loanId;
 
 	@Lob

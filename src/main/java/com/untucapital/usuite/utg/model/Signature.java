@@ -10,13 +10,13 @@ import javax.persistence.Table;
 @Table( name="employee_signature")
 public class Signature extends AbstractEntity {
 
-    @Column(nullable = false)
+    @Column(nullable = false, name="full_name")
     private String fullName;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "position")
     private String position;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "branch")
     private String branch;
-    @Column(nullable = false)
+    @Column(nullable = false, name = "image_url")
     private String imageUrl;
 
     public Signature() {
