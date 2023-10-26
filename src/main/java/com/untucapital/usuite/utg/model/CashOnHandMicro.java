@@ -8,10 +8,20 @@ public class CashOnHandMicro extends AbstractEntity {
 
     @Column(nullable = false)
     private String loanId;
+
+    @Column(nullable = false)
     private String time;
+
+    @Column(name = "date_of_last_purchase")
     private String dateOfLastPurchase;
+
+    @Column(name = "amount_of_cost_purchase")
     private double amountOfCostPurchase;
+
+    @Column(nullable = false)
     private double cash;
+
+    @Column(name = "average_sales")
     private double averageSales;
 
     public String getLoanId() {

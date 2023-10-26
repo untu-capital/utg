@@ -5,9 +5,14 @@ import javax.persistence.Entity;
 
 @Entity
 public class CostOfSalesMicro extends AbstractEntity {
-    @Column(nullable = false)
+
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
+
+    @Column(name = "comment")
     private String comment;
+
+    @Column(name = "value")
     private double value;
 
     public String getLoanId() {

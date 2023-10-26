@@ -1,16 +1,28 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "SalesPurchaseCogsGrossMarginMicro")
 public class SalesPurchaseCogsGrossMargin extends AbstractEntity {
+
+    @Column(name = "loanId")
     private String loanId;
+
+    @Column(name = "bookExist")
     private String bookExist;
+
+    @Column(name = "basisOfSales")
     private String basisOfSales;
+
+    @Column(name = "salesCalculation")
     private String salesCalculation;
+
+    @Column(name = "purchaseCalculation")
     private String purchaseCalculation;
+
 
     public SalesPurchaseCogsGrossMargin() {
     }

@@ -5,17 +5,37 @@ import javax.persistence.Entity;
 
 @Entity
 public class CapacityAssessmentMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(nullable = false, name = "loan_id")
     private String loanId;
+
+    @Column(name = "business_address")
     private String businessAddress;
+
+    @Column(name = "monthly_sales")
     private double monthlySales;
+
+    @Column(name = "monthly_purchases")
     private double monthlyPurchases;
+
+    @Column(name = "operational_expenses")
     private double operationalExpenses;
+
+    @Column(name = "other_net_income")
     private double otherNetIncome;
+
+    @Column(name = "family_expenses")
     private double familyExpenses;
+
+    @Column(nullable = false, name="cash")
     private double cash;
+
+    @Column(nullable = false, name = "inventory")
     private double inventory;
+
+    @Column(name = "fixed_assets")
     private double fixedAssets;
+
+    @Column(nullable = false, name = "liabilities")
     private double liabilities;
 
     public String getLoanId() {

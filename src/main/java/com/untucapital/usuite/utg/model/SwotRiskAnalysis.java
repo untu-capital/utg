@@ -1,15 +1,25 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="SwotRiskAnalysisMicro")
 public class SwotRiskAnalysis extends AbstractEntity {
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "strength")
     private String strength;
+
+    @Column(name = "weaknesses")
     private String weaknesses;
+
+    @Column(name = "opportunities")
     private String opportunities;
+
+    @Column(name = "threats")
     private String threats;
 
     public SwotRiskAnalysis() {

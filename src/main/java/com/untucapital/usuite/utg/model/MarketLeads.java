@@ -13,20 +13,41 @@ import java.time.LocalDate;
 @Table(name = "MarketLeads")
 public class MarketLeads extends AbstractEntity {
 
+    @Column(name = "campaign_id")
     private String campaignID;
+
+    @Column(name = "loan_officer")
     private String loanOfficer;
-    private String branchName ;
+
+    @Column(name = "branch_name")
+    private String branchName;
+
+    @Column(name = "location")
     private String location;
-    private String  clientName;
-    private String  natureOfBusiness;
-    private String  contactNumber;
-    private String  contactEmail;
-    private String  businessAddress;
-    private String  potentialLoanAmount;
-    private String  interactionComments;
+
+    @Column(name = "client_name")
+    private String clientName;
+
+    @Column(name = "nature_of_business")
+    private String natureOfBusiness;
+
+    @Column(name = "contact_number")
+    private String contactNumber;
+
+    @Column(name = "contact_email")
+    private String contactEmail;
+
+    @Column(name = "business_address")
+    private String businessAddress;
+
+    @Column(name = "potential_loan_amount")
+    private String potentialLoanAmount;
+
+    @Column(name = "interaction_comments")
+    private String interactionComments;
+
+    @Column(name = "follow_up_status")
     private String followUpStatus;
-
-
 
     public String getCampaignID() {
         return campaignID;

@@ -1,17 +1,27 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "LoanOfficerPro")
 public class LoanOfficerProposal extends AbstractEntity {
-    private String loanId;
-    private double amount;
-    private String maturity;
-    private double instalments;
-    private double interestRate;
 
+    @Column(name = "loan_id")
+    private String loanId;
+
+    @Column(name = "amount")
+    private double amount;
+
+    @Column(name = "maturity")
+    private String maturity;
+
+    @Column(name = "instalments")
+    private double instalments;
+
+    @Column(name = "interest_rate")
+    private double interestRate;
     public double getAmount() {
         return amount;
     }

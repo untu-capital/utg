@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -8,8 +9,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "CommentsOnAccountReceivablesMicro")
 public class CommentsOnAccountReceivables extends AbstractEntity {
     @NotNull
+    @Column(name = "loan_id")
     private String loanId;
     @NotNull
+    @Column(name = "description")
     private String description;
 
     public String getLoanId() {

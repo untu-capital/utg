@@ -5,19 +5,43 @@ import javax.persistence.Entity;
 
 @Entity
 public class SeasonalityOfSalesMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(nullable = false, name = "loan_id")
     private String loanId;
+
+    @Column(name = "january")
     private String january;
+
+    @Column(name = "february")
     private String february;
+
+    @Column(name = "march")
     private String march;
+
+    @Column(name = "april")
     private String april;
+
+    @Column(name = "may")
     private String may;
+
+    @Column(name = "june")
     private String june;
+
+    @Column(name = "july")
     private String july;
+
+    @Column(name = "august")
     private String august;
+
+    @Column(name = "september")
     private String september;
+
+    @Column(name = "october")
     private String october;
+
+    @Column(name = "november")
     private String november;
+
+    @Column(name = "december")
     private String december;
 
     public String getLoanId() {

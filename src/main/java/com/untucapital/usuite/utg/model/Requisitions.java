@@ -15,23 +15,27 @@ import java.util.List;
 public class Requisitions extends AbstractEntity {
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "po_number")
     private String poNumber;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "po_name")
     private String poName;
 
+    @Column(name = "po_total")
     private String poTotal;
 
+    @Column(name = "po_count")
     private String poCount;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name = "po_status")
     private String poStatus;
 
+    @Column(name = "notes")
     private String notes;
 
+    @Column(name = "user_id")
     private String userId;
 
     @ElementCollection

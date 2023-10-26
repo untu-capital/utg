@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.model;
+package com.untucapital.usuite.utg.DTO;
 
 import lombok.Data;
 

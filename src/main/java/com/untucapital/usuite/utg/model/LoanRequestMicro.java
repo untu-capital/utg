@@ -5,15 +5,26 @@ import javax.persistence.Entity;
 
 @Entity
 public class LoanRequestMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
-    private double clientInstallments;
-    private double clientInterestRate;
-    private double proposeAmount;
-    private String proposedMaturity;
-    private double proposedInstallments;
-    private double proposedInterestRate;
 
+    @Column(name = "client_installments")
+    private double clientInstallments;
+
+    @Column(name = "client_interest_rate")
+    private double clientInterestRate;
+
+    @Column(name = "propose_amount")
+    private double proposeAmount;
+
+    @Column(name = "proposed_maturity")
+    private String proposedMaturity;
+
+    @Column(name = "proposed_installments")
+    private double proposedInstallments;
+
+    @Column(name = "proposed_interest_rate")
+    private double proposedInterestRate;
     public String getLoanId() {
         return loanId;
     }

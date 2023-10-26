@@ -20,10 +20,9 @@ import java.util.UUID;
 public class AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Id
     @NotNull
-    @Column(length = 36, name = "id")
+    @Column(name = "id", length = 36)
     private String id;
 
     @CreatedDate

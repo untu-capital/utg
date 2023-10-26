@@ -1,15 +1,20 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "ApplicationOffundMicro")
 public class ApplicationOfFunds extends AbstractEntity {
+    @Column(name = "loan_id")
     private String loanId;
-    private String details;
-    private String totalInvestments;
 
+    @Column(name = "details")
+    private String details;
+
+    @Column(name = "total_investments")
+    private String totalInvestments;
     public String getLoanId() {
         return loanId;
     }

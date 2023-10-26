@@ -15,9 +15,10 @@ public class Role extends AbstractEntity {
 
     @Enumerated(EnumType.STRING)
     @NaturalId
-    @Column(length = 60)
+    @Column(length = 60, name = "name")
     private RoleType name;
 
+    @Column(name = "description")
     private String description;
 
     public RoleType getName() {
