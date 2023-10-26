@@ -38,6 +38,7 @@ public class User extends AbstractEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "password")
     private String password;
 
     @Column(name = "reset_token")
@@ -66,10 +67,13 @@ public class User extends AbstractEntity {
 
     private String branch;
 
+    @Column(name = "credit_commit_group")
     private String creditCommitGroup;
 
+    @Column(name = "dirt_of_birth")
     private String dirtOfBirth;
 
+    @Column(name = "marital_status")
     private String maritalStatus;
 
     private String Gender;
@@ -78,12 +82,15 @@ public class User extends AbstractEntity {
 
     private String suburb;
 
+    @Column(name = "street_name")
     private String streetName;
 
+    @Column(name = "street_number")
     private String streetNumber;
 
+    @Column(name = "musoni_client_id")
     private String musoniClientId;
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))

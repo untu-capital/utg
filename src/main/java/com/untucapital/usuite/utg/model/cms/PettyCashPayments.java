@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.model.cms;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 import org.stringtemplate.v4.ST;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -13,45 +14,60 @@ import javax.persistence.UniqueConstraint;
 })
 public class PettyCashPayments extends AbstractEntity {
 
+    @Column(name = "purchase_order_number")
     private String purchaseOrderNumber;
 
-    private  String name;
+    @Column(name = "name")
+    private String name;
 
+    @Column(name = "requesition_name")
     private String requesitionName;
 
-    private  String date;
+    @Column(name = "date")
+    private String date;
 
-    private  String amount;
+    @Column(name = "amount")
+    private String amount;
 
+    @Column(name = "count")
     private String count;
 
+    @Column(name = "from_account")
     private String fromAccount;
 
+    @Column(name = "to_account")
     private String toAccount;
+
+    @Column(name = "trans_type")
     private String transType;
 
+    @Column(name = "first_approver")
     private String firstApprover;
 
+    @Column(name = "second_approver")
     private String secondApprover;
 
-    private String Status;
+    @Column(name = "status")
+    private String status;
 
-    private String Notes;
+    @Column(name = "notes")
+    private String notes;
+
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 
     public String getNotes() {
-        return Notes;
+        return notes;
     }
 
     public void setNotes(String notes) {
-        Notes = notes;
+        this.notes = notes;
     }
 
     public String getRequesitionName() {

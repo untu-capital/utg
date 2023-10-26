@@ -23,19 +23,20 @@ public class AbstractEntity implements Serializable {
 
     @Id
     @NotNull
-    @Column(length = 36)
+    @Column(length = 36, name = "id")
     private String id;
 
     @CreatedDate
     @PastOrPresent
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @PastOrPresent
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
     // GETTER AND SETTERS

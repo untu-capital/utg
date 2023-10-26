@@ -8,14 +8,16 @@ import javax.validation.constraints.NotNull;
 public class XdsFileUpload extends AbstractEntity{
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
 
+    @Column(name = "file_name")
     private String fileName;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private String userId;
+
 
     public String getLoanId() {
         return loanId;

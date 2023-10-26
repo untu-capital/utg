@@ -96,7 +96,7 @@ public class MusoniService {
     }
 
 
-    @Scheduled(cron = "0 0 5 * * ?")
+//    @Scheduled(cron = "0 0 5 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
         Long timestamp = MusoniUtils.getUnixTimeMinus24Hours();
@@ -191,7 +191,7 @@ public class MusoniService {
 
     List<String> timestampedLoanAccs = new ArrayList<>();
 
-    @Scheduled(fixedRate = 300000)
+//    @Scheduled(fixedRate = 300000)
     public String transactionSmsScheduler() throws SQLException {
 
 //        Class.forName("com.mysql.jdbc.Driver");

@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.model.fcb;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,11 +19,14 @@ import static javax.persistence.CascadeType.*;
 @Table(name = "fcb_response")
 public class Response extends AbstractEntity {
 
+    @Column(name = "code")
     private Integer code;
 
+    @Column(name = "individual")
     private String individual;
 
     @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
+    @Column(name = "report")
     @JsonProperty(value = "Report")
     private List<Report> report;
 
@@ -51,8 +55,10 @@ public class Response extends AbstractEntity {
     private List<Employer> employer;
 
     @OneToMany(cascade = {PERSIST, MERGE, REMOVE})
+    @Column(name = "additional_info")
     @JsonProperty(value = "additional_info")
     private List<AdditionalInfo> additionalInfo;
+
 
     public List<Report> getReport() {
         return report;
@@ -88,7 +94,7 @@ public class Response extends AbstractEntity {
 
     public List<Search> getSearches() {
         return searches;
-    } 
+    }
 
     public void setSearches(List<Search> searches) {
         this.searches = searches;
