@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -11,21 +12,47 @@ import javax.persistence.Table;
 @Table( name = "GeneralBusinessInformationMicro")
 public class GeneralBusinessInformation extends AbstractEntity {
 
+    @Column(name = "loan_id")
     private String loanId;
-    private String client;
-    private String name;
-    private String visitDate;
-    private String activity;
-    private String mainLocation;
-    private String locationOfOtherPos;
-    private Long numberOfWorkers;
-    private String clientName;
-    private String legalStatus;
-    private String activitySince;
-    private String businessPremises;
-    private String numberOfWorkingDays;
-    private String businessHistoryAndOrganisation;
 
+    @Column(name = "client")
+    private String client;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "visit_date")
+    private String visitDate;
+
+    @Column(name = "activity")
+    private String activity;
+
+    @Column(name = "main_location")
+    private String mainLocation;
+
+    @Column(name = "location_of_other_pos")
+    private String locationOfOtherPos;
+
+    @Column(name = "number_of_workers")
+    private Long numberOfWorkers;
+
+    @Column(name = "client_name")
+    private String clientName;
+
+    @Column(name = "legal_status")
+    private String legalStatus;
+
+    @Column(name = "activity_since")
+    private String activitySince;
+
+    @Column(name = "business_premises")
+    private String businessPremises;
+
+    @Column(name = "number_of_working_days")
+    private String numberOfWorkingDays;
+
+    @Column(name = "business_history_and_organisation")
+    private String businessHistoryAndOrganisation;
 //    public GeneralBusinessInformation() {
 //    }
 //

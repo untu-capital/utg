@@ -1,16 +1,28 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "FamilyUnitAndPersonalExpensesMicro")
 public class FamilyUnitAndPersonalExpenses extends AbstractEntity {
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "marital_status")
     private String maritalStatus;
+
+    @Column(name = "name_of_spouse")
     private String nameOfSpouse;
+
+    @Column(name = "guarantor")
     private String guarantor;
+
+    @Column(name = "number_of_children")
     private String numberOfChildren;
+
+    @Column(name = "other_dependents")
     private String otherDependents;
 
     public FamilyUnitAndPersonalExpenses() {

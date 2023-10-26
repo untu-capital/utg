@@ -1,16 +1,28 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "AccountsReceivablesMicro")
 public class AccountsReceivable extends AbstractEntity {
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "customer_name")
     private String customerName;
+
+    @Column(name = "due_since")
     private String dueSince;
+
+    @Column(name = "expected_payment")
     private String expectedPayment;
+
+    @Column(name = "payment_probability")
     private String paymentProbability;
+
+    @Column(name = "debt_value")
     private String debtValue;
 
     public AccountsReceivable() {

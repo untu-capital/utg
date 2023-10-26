@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.model;
 import org.stringtemplate.v4.ST;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,22 +12,51 @@ public class clientsDatasets {
 
     @Id
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String nationalId;
-    private String dateOfBirth;
-    private String gender;
-    private String phoneNumber;
-    private String homeAddress;
-    private String businessSector;
-    private String loanAmount;
-    private String loanProduct;
-    private String creditRating;
-    private String branch;
-    private String origin;
-    private String loanOfficer;
-    private String smsSent;
 
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "national_id")
+    private String nationalId;
+
+    @Column(name = "date_of_birth")
+    private String dateOfBirth;
+
+    @Column(name = "gender")
+    private String gender;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "home_address")
+    private String homeAddress;
+
+    @Column(name = "business_sector")
+    private String businessSector;
+
+    @Column(name = "loan_amount")
+    private String loanAmount;
+
+    @Column(name = "loan_product")
+    private String loanProduct;
+
+    @Column(name = "credit_rating")
+    private String creditRating;
+
+    @Column(name = "branch")
+    private String branch;
+
+    @Column(name = "origin")
+    private String origin;
+
+    @Column(name = "loan_officer")
+    private String loanOfficer;
+
+    @Column(name = "sms_sent")
+    private String smsSent;
     public String getOrigin() {
         return origin;
     }

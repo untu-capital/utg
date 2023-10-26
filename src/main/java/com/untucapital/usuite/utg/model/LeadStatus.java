@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -7,8 +8,10 @@ import javax.persistence.Table;
 @Table(name = "lead_status")
 public class LeadStatus extends AbstractEntity {
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
     private String description;
 
     public String getName() {

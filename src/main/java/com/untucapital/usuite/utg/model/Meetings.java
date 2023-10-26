@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Table;
@@ -10,15 +11,17 @@ import javax.validation.constraints.NotNull;
 public class Meetings extends AbstractEntity{
 
     @NotNull
-    @JoinColumn(nullable = false)
+    @Column(name = "user_id", nullable = false)
     private String userId;
 
     @NotNull
-    @JoinColumn(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
 
+    @Column(name = "collateral")
     private String collateral;
 
+    @Column(name = "meeting_finalized_by")
     private String meetingFinalizedBy;
 
     public String getUserId() {

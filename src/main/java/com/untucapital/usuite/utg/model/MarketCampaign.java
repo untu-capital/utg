@@ -12,22 +12,55 @@ import java.time.LocalDate;
 @Table(name = "MarketCampaign")
 public class MarketCampaign extends AbstractEntity {
 //    @Id
+    @Column(name = "campaign_id")
     private Long campaignID;
+
+    @Column(name = "campaign_name")
     private String campaignName;
+
+    @Column(name = "branch_name")
     private String branchName;
+
+    @Column(name = "city")
     private String city;
+
+    @Column(name = "zone_area")
     private String zoneArea;
+
+    @Column(name = "sector")
     private String sector;
+
+    @Column(name = "sub_sector")
     private String subSector;
+
+    @Column(name = "value_chain")
     private String valueChain;
+
+    @Column(name = "resource_need")
     private String resourceNeed;
+
+    @Column(name = "start_date")
     private String startDate;
+
+    @Column(name = "end_date")
     private String endDate;
+
+    @Column(name = "allocated_loan_officer")
     private String AllocatedLoanOfficer;
+
+    @Column(name = "campaign_status")
     private String campaignStatus;
+
+    @Column(name = "venue")
     private String venue;
+
+    @Column(name = "target_audience")
     private String targetAudience;
+
+    @Column(name = "objectives")
     private String objectives;
+
+    @Column(name = "key_performance_indicator")
     private String keyPerformanceIndicator;
 
     public Long getCampaignID() {

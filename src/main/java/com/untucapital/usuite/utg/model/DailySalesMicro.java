@@ -5,13 +5,20 @@ import javax.persistence.Entity;
 
 @Entity
 public class DailySalesMicro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(name = "loan_id", nullable = false)
     private String loanId;
-    private String week;
-    private double badDay;
-    private double normal;
-    private double goodDay;
 
+    @Column(name = "week")
+    private String week;
+
+    @Column(name = "bad_day")
+    private double badDay;
+
+    @Column(name = "normal")
+    private double normal;
+
+    @Column(name = "good_day")
+    private double goodDay;
     public String getLoanId() {
         return loanId;
     }

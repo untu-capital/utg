@@ -5,14 +5,28 @@ import javax.persistence.Entity;
 
 @Entity
 public class CapacityAssessment2Micro extends AbstractEntity {
-    @Column(nullable = false)
+    @Column(nullable = false, name = "loan_id")
     private String loanId;
+
+    @Column(name = "place_of_employment")
     private String placeOfEmployment;
+
+    @Column(nullable = false)
     private String position;
+
+    @Column(nullable = false)
     private String reference;
+
+    @Column(name = "net_income")
     private String netIncome;
+
+    @Column(name = "additional_income")
     private String additionalIncome;
+
+    @Column(nullable = false, name = "since")
     private String since;
+
+    @Column(nullable = false, name="expenses")
     private String expenses;
 
     public String getLoanId() {

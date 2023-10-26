@@ -5,14 +5,28 @@ import javax.persistence.Entity;
 
 @Entity
 public class PurchaseBehaviourMicro extends AbstractEntity {
-    @Column(nullable = false)
+
+    @Column(nullable = false, name = "loan_id")
     private String loanId;
+    @Column(name = "frequency")
     private String frequency;
+
+    @Column(name = "minimum")
     private double minimum;
+
+    @Column(name = "normal")
     private double normal;
+
+    @Column(name = "maximum")
     private double maximum;
+
+    @Column(name = "month_min")
     private double monthMin;
+
+    @Column(name = "month_average")
     private double monthAverage;
+
+    @Column(name = "month_max")
     private double monthMax;
 
     public String getLoanId() {

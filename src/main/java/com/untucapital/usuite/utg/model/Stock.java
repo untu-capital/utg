@@ -11,15 +11,19 @@ import javax.persistence.Table;
 public class Stock extends AbstractEntity{
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, name ="loan_id")
     private String loanId;
 
     @NotNull
     @Column(nullable = false)
     private String stockName;
 
+    @Column(name="quantity")
     private double quantity;
+
+    @Column(name="purchase_price")
     private double purchasePrice;
+    @Column(name="sale_price")
     private double salePrice;
 
     public String getLoanId() {

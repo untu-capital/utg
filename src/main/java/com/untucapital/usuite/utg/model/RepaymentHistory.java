@@ -1,19 +1,38 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "RepaymentHistoryMicro")
 public class RepaymentHistory extends AbstractEntity {
+
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "lending_institution")
     private String lendingInstitution;
+
+    @Column(name = "amount")
     private double amount;
+
+    @Column(name = "date_of_disb")
     private String dateOfDisb;
+
+    @Column(name = "maturity")
     private String maturity;
+
+    @Column(name = "outstanding_installments")
     private String outstandingInstallments;
+
+    @Column(name = "total_days_in_arrears")
     private double totalDaysInArrears;
+
+    @Column(name = "average_days_in_arrears")
     private double averageDaysInArrears;
+
+    @Column(name = "classification")
     private String classification;
 
     public String getLoanId() {

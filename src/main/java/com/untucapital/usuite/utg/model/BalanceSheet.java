@@ -1,14 +1,23 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "BalanceSheetMicro")
 public class BalanceSheet extends AbstractEntity {
+
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "comment")
     private String comment;
+
+    @Column(name = "amount")
     private double amount;
 
     public String getLoanId() {

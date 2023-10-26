@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -10,15 +11,21 @@ import javax.persistence.UniqueConstraint;
 })
 public class Industry extends AbstractEntity {
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "code")
     private int code;
 
+    @Column(name = "sub_sector")
     private String subSector;
 
+    @Column(name = "status")
     private String status;
+
 
     public String getName() {
         return name;

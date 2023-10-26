@@ -1,15 +1,26 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "GuarantorMicro")
 public class Guarantor extends AbstractEntity {
+
+    @Column(name = "loan_id")
     private String loanId;
+
+    @Column(name = "full_name")
     private String fullName;
+
+    @Column(name = "activity")
     private String activity;
+
+    @Column(name = "income")
     private String income;
+
+    @Column(name = "relationship")
     private String relationship;
 
     public Guarantor() {
