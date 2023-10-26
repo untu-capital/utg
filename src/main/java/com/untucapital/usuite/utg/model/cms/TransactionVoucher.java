@@ -26,55 +26,97 @@ public class TransactionVoucher {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "initiator")
     private User initiator;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "application_date")
     private LocalDateTime applicationDate;
+
+    @Column(name = "amount")
     private BigDecimal amount;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "from_vault")
     private Vault fromVault;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "to_vault")
     private Vault toVault;
 
+    @Column(name = "amount_in_words")
     private String amountInWords;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "withdrawal_purpose")
     private TransactionPurpose withdrawalPurpose;
 
+    @Column(name = "currency")
     private String currency;
 
+    @Column(name = "denomination_100")
     private Integer denomination100;
+
+    @Column(name = "denomination_50")
     private Integer denomination50;
+
+    @Column(name = "denomination_20")
     private Integer denomination20;
+
+    @Column(name = "denomination_10")
     private Integer denomination10;
+
+    @Column(name = "denomination_5")
     private Integer denomination5;
+
+    @Column(name = "denomination_2")
     private Integer denomination2;
+
+    @Column(name = "denomination_1")
     private Integer denomination1;
+
+    @Column(name = "denomination_cents")
     private Integer denominationCents;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "first_approver")
     private User firstApprover;
+
+    @Column(name = "first_approved_at")
     private LocalDateTime firstApprovedAt;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "first_approval_status")
     private ApprovalStatus firstApprovalStatus;
+
+    @Column(name = "first_approval_comment")
     private String firstApprovalComment;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Column(name = "second_approver")
     private User secondApprover;
+
+    @Column(name = "second_approved_at")
     private LocalDateTime secondApprovedAt;
+
     @Enumerated(EnumType.STRING)
+    @Column(name = "second_approval_status")
     private ApprovalStatus secondApprovalStatus;
+
+    @Column(name = "second_approval_comment")
     private String secondApprovalComment;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")

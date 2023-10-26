@@ -26,25 +26,39 @@ public class Vault {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
-
+    @Column(name = "account")
     private String account;
+
+    @Column(name = "type")
     private String type;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "max_amount")
     private BigDecimal maxAmount;
+
+    @Column(name = "current_amount")
     private BigDecimal currentAmount;
 
+    @Column(name = "account_link")
     private Integer accountLink;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @Column(name = "branch")
     private Branches branch;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
     public Integer getId() {
         return id;
