@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.List;
 
 
@@ -26,5 +27,17 @@ public class PostGlService {
     public List<PostGl> getAllPostGl(){
         return postGlRepository.findAll();
     }
+
+//    @Transactional(value= "pastelTransactionManager")
+//    public List<PostGl> getAllPostGlByAccountLink(Integer accountLink){
+//
+//        return postGlRepository.findByAccountLink(accountLink);
+//    }
+
+//    @Transactional(value= "pastelTransactionManager")
+//    public List<PostGl> getAllPostGlByTxDate(Date txDate){
+//
+//        return postGlRepository.findByTxDate(txDate);
+//    }
 
 }
