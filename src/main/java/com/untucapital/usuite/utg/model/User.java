@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.model;
 
 import com.untucapital.usuite.utg.model.cms.CmsUser;
+import com.untucapital.usuite.utg.model.po.PoUser;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -48,9 +49,12 @@ public class User extends AbstractEntity {
     private ContactDetail contactDetail;
 
     @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
-//    @NotNull
-    @JoinColumn(name = "cms_user_id", nullable = false)
+    @JoinColumn(name = "cms_user_id")
     private CmsUser cmsUser;
+
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @JoinColumn(name = "po_user_id")
+    private PoUser poUser;
 
     @NotNull
     @Column(nullable = false)
@@ -243,5 +247,13 @@ public class User extends AbstractEntity {
 
     public void setCmsUser(CmsUser cmsUser) {
         this.cmsUser = cmsUser;
+    }
+
+    public PoUser getPoUser() {
+        return poUser;
+    }
+
+    public void setPoUser(PoUser poUser) {
+        this.poUser = poUser;
     }
 }
