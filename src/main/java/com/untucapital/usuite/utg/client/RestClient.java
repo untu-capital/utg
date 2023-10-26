@@ -293,4 +293,21 @@ public class RestClient {
         return loanTransaction;
     }
 
+//    public Client getClient(String clientLoans) {
+//
+//        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+//
+//        String clientAccount = restTemplate.exchange(baseUrl + "clients/" + clientLoans + "/accounts", HttpMethod.GET, entity, String.class).getBody();
+//
+//        log.info("Client Loans :{}", clientAccount);
+//
+//        try {
+//            loanTransaction = objectMapper.readValue(loanTransBody, LoanTransaction.class);
+//        } catch (Exception e) {
+//            log.info("Failed to read loan transaction", e.getMessage());
+//        }
+//
+//        return loanTransaction;
+//    }
+
 }
