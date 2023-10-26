@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -137,6 +138,14 @@ public class MusoniUtils {
             sb.append((char) cp);
         }
         return sb.toString();
+    }
+
+    // Add years to a date in Java
+    public static Date addYears(Date date, int years) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.YEAR, years);
+        return cal.getTime();
     }
 
 //    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {

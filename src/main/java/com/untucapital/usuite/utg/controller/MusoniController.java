@@ -36,7 +36,6 @@ import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
 
 @RestController
 @RequestMapping(value ="musoni", produces="application/json")
-@Component
 @RequiredArgsConstructor
 public class MusoniController {
 
@@ -163,13 +162,6 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "loans/" +loanId + "/transactions/" + transactionId, HttpMethod.GET, entity, String.class).getBody();
     }
 
-    // Add years to a date in Java
-    public Date addYears(Date date, int years) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.add(Calendar.YEAR, years);
-        return cal.getTime();
-    }
 
     //Get All Client Loans By Id
     @GetMapping("clientAccounts/{clientId}")
@@ -271,8 +263,6 @@ public class MusoniController {
 
         return loanBal;
     }
-
-
 
     List<String> loanAccRepay = new ArrayList<>();
     //Get Clients Loans By Client ID

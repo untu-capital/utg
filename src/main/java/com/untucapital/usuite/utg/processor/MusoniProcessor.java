@@ -1,7 +1,13 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.untucapital.usuite.utg.DTO.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.untucapital.usuite.utg.DTO.DisbursedLoan;
+import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
+import com.untucapital.usuite.utg.DTO.DisbursedLoans;
+import com.untucapital.usuite.utg.DTO.Loan;
+import com.untucapital.usuite.utg.DTO.client.Client;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.entity.AccountEntity;
@@ -9,7 +15,6 @@ import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.exception.VaultNotFoundException;
 import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.cms.Vault;
-import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.repository2.AccountsRepository;
 import com.untucapital.usuite.utg.repository2.PostGlRepository;
@@ -18,7 +23,7 @@ import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -122,7 +127,6 @@ public class MusoniProcessor {
 
         return postGlList;
     }
-
 
 
     public List<PostGl> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
@@ -273,36 +277,46 @@ public class MusoniProcessor {
     public List<DisbursedLoanMonth> groupByMonth(List<DisbursedLoan> disbursedLoans) {
 
         List<DisbursedLoanMonth> disbursedLoanMonths = new ArrayList<>();
+        //Group the list of returned loans by month and branch.
+        Map<String, Map<String, List<DisbursedLoan>>> loansByMonthAndBranch = disbursedLoans.stream()
+                .collect(Collectors.groupingBy(DisbursedLoan::getDisbursedMonth,
+                        Collectors.groupingBy(DisbursedLoan::getBranch)));
 
-        Map<String, List<DisbursedLoan>> loansByMonth = disbursedLoans.stream()
-                .collect(Collectors.groupingBy(DisbursedLoan::getDisbursedMonth));
 
-
-        for (Map.Entry<String, List<DisbursedLoan>> entry : loansByMonth.entrySet()) {
+        for (Map.Entry<String, Map<String, List<DisbursedLoan>>> entry : loansByMonthAndBranch.entrySet()) {
             String month = entry.getKey();
-            List<DisbursedLoan> loansOfMonth = entry.getValue();
-            BigDecimal totalPrincipal = loansOfMonth.stream()
-                    .map(DisbursedLoan::getPrincipal)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            int count = loansOfMonth.size();
+            Map<String, List<DisbursedLoan>> loansByBranch = entry.getValue();
+            List<DisbursedLoanMonth.BranchDisbursedLoan> branchDisbursedLoans = new ArrayList<>();
+            //A for loop to return loans per branch to find total principal and number of loans
+            for (Map.Entry<String, List<DisbursedLoan>> branchEntry : loansByBranch.entrySet()) {
+                String branch = branchEntry.getKey();
+                List<DisbursedLoan> loansOfBranch = branchEntry.getValue();
+                BigDecimal totalPrincipal = loansOfBranch.stream()
+                        .map(DisbursedLoan::getPrincipal)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                int count = loansOfBranch.size();
+                DisbursedLoanMonth.BranchDisbursedLoan branchDisbursedLoan = DisbursedLoanMonth.BranchDisbursedLoan.builder()
+                        .branch(branch)
+                        .numberOfDisbursedLoans(count)
+                        .disbursedLoans(loansOfBranch)
+                        .totalPrincipal(totalPrincipal)
+                        .build();
+                branchDisbursedLoans.add(branchDisbursedLoan);
+            }
             DisbursedLoanMonth disbursedLoanMonth = DisbursedLoanMonth.builder()
                     .month(month)
-                    .numberOfDisbursedLoans(count)
-                    .disbursedLoans(loansOfMonth)
-                    .totalPrincipalDisbursed(totalPrincipal)
+                    .branchDisbursedLoans(branchDisbursedLoans)
                     .build();
-
             disbursedLoanMonths.add(disbursedLoanMonth);
-
         }
 
         disbursedLoanMonths.sort(Comparator.comparing(DisbursedLoanMonth::getMonth));
         return disbursedLoanMonths;
     }
 
-    public DisbursedLoans disbursedLoans(List<DisbursedLoanMonth> disbursedLoanMonths){
+    public DisbursedLoans disbursedLoans(List<DisbursedLoanMonth> disbursedLoanMonths) {
         BigDecimal totalPrincipalDisbursed = disbursedLoanMonths.stream()
-                .map(DisbursedLoanMonth::getTotalPrincipalDisbursed)
+                .map(DisbursedLoanMonth::getTotalPrincipal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         return DisbursedLoans.builder()
                 .totalPrincipalDisbursed(totalPrincipalDisbursed)
@@ -319,6 +333,19 @@ public class MusoniProcessor {
                 .collect(Collectors.toList());
 
     }
+
+//    public LoanBalance setloanBalance(){
+//
+//        LoanBalance loanBalance = new LoanBalance();
+//        loanBalance.setAccountNo(accountNo);
+//        loanBalance.setPrincipalDisbursed(principalDisbursed);
+//        loanBalance.setAmountPaid(amountPaid);
+//        loanBalance.setAmountOverdue(amountOverdue);
+//        loanBalance.setDisbursmentDate(disbursmentDate);
+//        loanBalance.setStatus(status);
+//        loanBalance.setNumberOfRepayments(numberOfRepayments);
+//        loanBalance.setMaturityDate(maturityDate);
+//    }
 
 
 }
