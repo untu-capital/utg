@@ -10,7 +10,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "pettyCashPayments", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"purchaseOrderNumber"})
+        @UniqueConstraint(columnNames = {"purchase_order_number"})
 })
 public class PettyCashPayments extends AbstractEntity {
 

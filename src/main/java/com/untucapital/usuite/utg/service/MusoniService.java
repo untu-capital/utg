@@ -7,6 +7,7 @@ import com.untucapital.usuite.utg.DTO.*;
 import com.untucapital.usuite.utg.DTO.client.Client;
 import com.untucapital.usuite.utg.DTO.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.DTO.loans.*;
+import com.untucapital.usuite.utg.DTO.loans.Result;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.MusoniClient;

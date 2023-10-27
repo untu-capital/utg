@@ -30,7 +30,6 @@ public class TransactionVoucher {
     private Integer id;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "initiator")
     private User initiator;
 
     @CreationTimestamp
@@ -44,18 +43,15 @@ public class TransactionVoucher {
     private BigDecimal amount;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "from_vault")
     private Vault fromVault;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "to_vault")
     private Vault toVault;
 
     @Column(name = "amount_in_words")
     private String amountInWords;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "withdrawal_purpose")
     private TransactionPurpose withdrawalPurpose;
 
     @Column(name = "currency")
@@ -86,7 +82,6 @@ public class TransactionVoucher {
     private Integer denominationCents;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "first_approver")
     private User firstApprover;
 
     @Column(name = "first_approved_at")
@@ -100,7 +95,6 @@ public class TransactionVoucher {
     private String firstApprovalComment;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @Column(name = "second_approver")
     private User secondApprover;
 
     @Column(name = "second_approved_at")

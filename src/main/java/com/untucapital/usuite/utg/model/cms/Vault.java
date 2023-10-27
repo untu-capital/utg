@@ -48,7 +48,6 @@ public class Vault {
     private Integer accountLink;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @Column(name = "branch")
     private Branches branch;
 
     @CreationTimestamp
