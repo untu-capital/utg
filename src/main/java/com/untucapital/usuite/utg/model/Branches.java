@@ -6,7 +6,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "branches", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"branchName", "code"})
+        @UniqueConstraint(columnNames = {"branch_name", "code"})
 })
 public class Branches extends AbstractEntity {
 
