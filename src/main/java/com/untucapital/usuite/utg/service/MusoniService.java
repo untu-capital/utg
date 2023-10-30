@@ -8,6 +8,7 @@ import com.untucapital.usuite.utg.DTO.client.Client;
 import com.untucapital.usuite.utg.DTO.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.DTO.loans.*;
 import com.untucapital.usuite.utg.DTO.loans.Result;
+import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.MusoniClient;
@@ -105,8 +106,8 @@ public class MusoniService {
         log.info("Loans from Musoni : {}", loans.toString());
 
         List<Transactions> transactions = new ArrayList<Transactions>();
-        List<PostGl> postGlList = new ArrayList<>();
-        List<PostGl> postGlListLB = new ArrayList<>();
+        List<PostGLRequestDTO> postGlList = new ArrayList<>();
+        List<PostGLRequestDTO> postGlListLB = new ArrayList<>();
 
 
         List<PageItem> pageItemList = loans.getPageItems();

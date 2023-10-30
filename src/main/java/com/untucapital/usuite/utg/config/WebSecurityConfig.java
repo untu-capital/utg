@@ -381,6 +381,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/cms/**")
                 .permitAll()
 
+                .antMatchers("/postGl/**")
+                .permitAll()
+
                 .antMatchers("/swagger-ui/**")
                 .permitAll()
 
