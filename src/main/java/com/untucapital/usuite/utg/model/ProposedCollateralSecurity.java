@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 @Entity
 @Data
-//@RequiredArgsConstructor
 @Table(name = "proposedCollateralSecurity")
 public class ProposedCollateralSecurity extends AbstractEntity {
 

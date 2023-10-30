@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.DisbursedLoans;
 import com.untucapital.usuite.utg.DTO.loans.Result;
+import com.untucapital.usuite.utg.DTO.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.PostGl;
 
 import com.untucapital.usuite.utg.service.MusoniService;
@@ -87,7 +88,7 @@ public class MusoniController {
     }
 
     @GetMapping("postGl")
-    public List<PostGl> getAllPostGl() {
+    public List<PostGLResponseDTO> getAllPostGl() {
 
         return postGlService.getAllPostGl();
     }
