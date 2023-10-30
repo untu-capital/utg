@@ -1,16 +1,15 @@
 package com.untucapital.usuite.utg.model;
 
 import com.sun.istack.NotNull;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 
 @Entity
+@Data
 @Table(name = "requisitions")
 public class Requisitions extends AbstractEntity {
 
@@ -38,80 +37,9 @@ public class Requisitions extends AbstractEntity {
     @Column(name = "user_id")
     private String userId;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> approvers;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     private List<String> attachments;
 
-    public String getPoNumber() {
-        return poNumber;
-    }
-
-    public void setPoNumber(String poNumber) {
-        this.poNumber = poNumber;
-    }
-
-    public String getPoName() {
-        return poName;
-    }
-
-    public void setPoName(String poName) {
-        this.poName = poName;
-    }
-
-    public String getPoTotal() {
-        return poTotal;
-    }
-
-    public void setPoTotal(String poTotal) {
-        this.poTotal = poTotal;
-    }
-
-    public String getPoCount() {
-        return poCount;
-    }
-
-    public void setPoCount(String poCount) {
-        this.poCount = poCount;
-    }
-
-    public String getPoStatus() {
-        return poStatus;
-    }
-
-    public void setPoStatus(String poStatus) {
-        this.poStatus = poStatus;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    public List<String> getApprovers() {
-        return approvers;
-    }
-
-    public void setApprovers(List<String> approvers) {
-        this.approvers = approvers;
-    }
-
-    public List<String> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<String> attachments) {
-        this.attachments = attachments;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
 }

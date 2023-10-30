@@ -14,34 +14,34 @@ import java.util.List;
  */
 
 @RestController
-@RequestMapping(value = "pos")
+@RequestMapping(value = "pos/supplier")
 @RequiredArgsConstructor
 public class SupplierController {
     private final SupplierService supplierService;
 
     //Save Supplier
-    @PostMapping("/supplier/save")
+    @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
     public POSSupplier saveSupplier(@RequestBody POSSupplier posSupplier) {
        return supplierService.saveSupplier(posSupplier);
     }
 
     //Get Supplier By Id
-    @GetMapping("/supplier/{id}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public POSSupplier getSupplierById(@PathVariable Integer id) {
         return supplierService.getSupplierById(id);
     }
 
     //Get all Suppliers
-    @GetMapping("/supplier/all")
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public List<POSSupplier> getAllSuppliers() {
         return supplierService.getAllSuppliers();
     }
 
     //Update Supplier
-    @PutMapping("/supplier/update")
+    @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
     public POSSupplier updateSupplier(@RequestBody POSSupplier posSupplier) {
         System.out.println(posSupplier.toString());
@@ -49,7 +49,7 @@ public class SupplierController {
     }
 
     //Delete Supplier
-    @DeleteMapping("/supplier/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
     public POSSupplier deleteSupplier(@PathVariable Integer id) {
         return supplierService.deleteSupplier(id);

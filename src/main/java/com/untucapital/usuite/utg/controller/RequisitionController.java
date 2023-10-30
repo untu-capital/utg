@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.response.RequisitionResponseDTO;
 import com.untucapital.usuite.utg.model.Business;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.Requisitions;
@@ -29,12 +30,12 @@ public class RequisitionController {
     private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
 
     @GetMapping
-    public List<Requisitions> list() {
+    public List<RequisitionResponseDTO> list() {
         return requisitionService.getAllRequistions();
     }
 
     @PostMapping
-    public void saveRequisitions(@RequestBody Requisitions requisitions) {
+    public void saveRequisitions(@RequestBody RequisitionResponseDTO requisitions) {
         log.info(String.valueOf(requisitions));
         requisitionService.saveRequisition(requisitions);
     }
@@ -45,8 +46,8 @@ public class RequisitionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Requisitions> getRequisitionById(@PathVariable("id") String id) {
-        Optional<Requisitions> requisition = requisitionService.getRequisitionById(id);
+    public ResponseEntity<RequisitionResponseDTO> getRequisitionById(@PathVariable("id") String id) {
+        Optional<RequisitionResponseDTO> requisition = requisitionService.getRequisitionById(id);
 
         if (requisition.isPresent()) {
             return new ResponseEntity<>(requisition.get(), HttpStatus.OK);
@@ -73,13 +74,13 @@ public class RequisitionController {
     public ResponseEntity<String> updateRequisition(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
 
         // Check if the requisition with the given ID exists
-        Optional<Requisitions> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+        Optional<RequisitionResponseDTO> existingRequisitionOptional = requisitionService.getRequisitionById(id);
 
         if (!existingRequisitionOptional.isPresent()) {
             return ResponseEntity.notFound().build(); // Return a 404 response if not found
         }
 
-        Requisitions existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+        RequisitionResponseDTO existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
 
         // Update the existing requisition with the new data
         existingRequisition.setNotes(updatedRequisition.getNotes());
@@ -114,13 +115,13 @@ public class RequisitionController {
             @PathVariable int attachmentIndex) {
 
         // Find the Requisitions entity by ID
-        Optional<Requisitions> requisitionOptional = requisitionService.getRequisitionById(requisitionId);
+        Optional<RequisitionResponseDTO> requisitionOptional = requisitionService.getRequisitionById(requisitionId);
 
         if (!requisitionOptional.isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        Requisitions requisition = requisitionOptional.get();
+        RequisitionResponseDTO requisition = requisitionOptional.get();
 
         // Check if the attachment index is valid
         List<String> attachments = requisition.getAttachments();

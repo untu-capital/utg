@@ -21,6 +21,9 @@ public class Role extends AbstractEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "role_category")
+    private String roleCategory;
+
     public RoleType getName() {
         return name;
     }
@@ -35,5 +38,13 @@ public class Role extends AbstractEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getRoleCategory() {
+        return roleCategory;
+    }
+
+    public void setRoleCategory(String roleCategory) {
+        this.roleCategory = roleCategory;
     }
 }
