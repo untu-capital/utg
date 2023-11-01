@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.FollowUpDiaryRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.FollowUpDiaryResponseDTO;
 import com.untucapital.usuite.utg.model.FollowUpDiary;
 import com.untucapital.usuite.utg.service.FollowUpDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +23,15 @@ public class FollowUpDiaryController {
     }
 
     @PostMapping
-    public ResponseEntity<FollowUpDiary> createFollowUpDiary(@RequestBody FollowUpDiary followUpDiary) {
-        FollowUpDiary createdFollowUpDiary = followUpDiaryService.createFollowUpDiary(followUpDiary);
+    public ResponseEntity<FollowUpDiaryResponseDTO> createFollowUpDiary(@RequestBody FollowUpDiaryRequestDTO followUpDiary) {
+        FollowUpDiaryResponseDTO createdFollowUpDiary = followUpDiaryService.createFollowUpDiary(followUpDiary);
         return new ResponseEntity<>(createdFollowUpDiary, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FollowUpDiary> updateFollowUpDiary(
-            @PathVariable("id") String id, @RequestBody FollowUpDiary followUpDiary) {
-        FollowUpDiary updatedFollowUpDiary = followUpDiaryService.updateFollowUpDiary(id, followUpDiary);
+    public ResponseEntity<FollowUpDiaryResponseDTO> updateFollowUpDiary(
+            @PathVariable("id") String id, @RequestBody FollowUpDiaryRequestDTO followUpDiary) {
+        FollowUpDiaryResponseDTO updatedFollowUpDiary = followUpDiaryService.updateFollowUpDiary(id, followUpDiary);
         if (updatedFollowUpDiary != null) {
             return new ResponseEntity<>(updatedFollowUpDiary, HttpStatus.OK);
         } else {
@@ -38,8 +40,8 @@ public class FollowUpDiaryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FollowUpDiary> getFollowUpDiaryById(@PathVariable("id") String id) {
-        FollowUpDiary followUpDiary = followUpDiaryService.getFollowUpDiaryById(id);
+    public ResponseEntity<FollowUpDiaryResponseDTO> getFollowUpDiaryById(@PathVariable("id") String id) {
+        FollowUpDiaryResponseDTO followUpDiary = followUpDiaryService.getFollowUpDiaryById(id);
         if (followUpDiary != null) {
             return new ResponseEntity<>(followUpDiary, HttpStatus.OK);
         } else {
@@ -47,15 +49,15 @@ public class FollowUpDiaryController {
         }
     }
     @GetMapping("/byClientId/{clientid}")
-    public ResponseEntity<List<FollowUpDiary>> getFollowUpDiaryByClientid(@PathVariable("clientid") String clientid) {
+    public ResponseEntity<List<FollowUpDiaryResponseDTO>> getFollowUpDiaryByClientid(@PathVariable("clientid") String clientid) {
         // FollowUpDiary followUpDiary = (FollowUpDiary) followUpDiaryService.getFollowUpDiaryByClientid(clientid);
-        return new ResponseEntity<List<FollowUpDiary>>(followUpDiaryService.getFollowUpDiaryByClientid(clientid), HttpStatus.OK);
+        return new ResponseEntity<List<FollowUpDiaryResponseDTO>>(followUpDiaryService.getFollowUpDiaryByClientid(clientid), HttpStatus.OK);
 
     }
     
     @GetMapping
-    public ResponseEntity<List<FollowUpDiary>> getAllFollowUpDiaries() {
-        List<FollowUpDiary> followUpDiaryList = followUpDiaryService.getAllFollowUpDiaries();
+    public ResponseEntity<List<FollowUpDiaryResponseDTO>> getAllFollowUpDiaries() {
+        List<FollowUpDiaryResponseDTO> followUpDiaryList = followUpDiaryService.getAllFollowUpDiaries();
         return new ResponseEntity<>(followUpDiaryList, HttpStatus.OK);
     }
 

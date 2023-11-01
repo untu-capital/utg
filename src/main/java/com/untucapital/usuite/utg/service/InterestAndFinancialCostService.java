@@ -1,11 +1,16 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.InterestAndFinancialCostRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.InterestAndFinancialCostResponseDTO;
+import com.untucapital.usuite.utg.controller.InterestAndFinancialCostController;
 import com.untucapital.usuite.utg.model.InterestAndFinancialCost;
 import com.untucapital.usuite.utg.repository.InterestAndFinancialCostRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @javax.transaction.Transactional
@@ -15,12 +20,26 @@ public class InterestAndFinancialCostService {
     InterestAndFinancialCostRepository interestAndFinancialCostRepository;
 
     @Transactional(value = "transactionManager")
-    public List<InterestAndFinancialCost> findByLoanId(String loanId){
-        return interestAndFinancialCostRepository.findInterestAndFinancialCostByLoanId(loanId);
+    public List<InterestAndFinancialCostResponseDTO> findByLoanId(String loanId){
+
+        List<InterestAndFinancialCostResponseDTO> response = new ArrayList<InterestAndFinancialCostResponseDTO>();
+        List<InterestAndFinancialCost> interestAndFinancialCostList= interestAndFinancialCostRepository.findInterestAndFinancialCostByLoanId(loanId);
+
+        for (InterestAndFinancialCost interestAndFinancialCost: interestAndFinancialCostList){
+            InterestAndFinancialCostResponseDTO responseDTO = new InterestAndFinancialCostResponseDTO();
+            BeanUtils.copyProperties(interestAndFinancialCost, responseDTO);
+
+            response.add(responseDTO);
+        }
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public void save(InterestAndFinancialCost interestAndFinancialCost){
+    public void save(InterestAndFinancialCostRequestDTO request){
+
+        InterestAndFinancialCost interestAndFinancialCost = new InterestAndFinancialCost();
+        BeanUtils.copyProperties(request, interestAndFinancialCost);
         interestAndFinancialCostRepository.save(interestAndFinancialCost);
     }
 

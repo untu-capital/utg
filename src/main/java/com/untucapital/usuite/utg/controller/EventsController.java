@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.EventsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.EventsResponseDTO;
 import com.untucapital.usuite.utg.model.Events;
 import com.untucapital.usuite.utg.service.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,22 +19,22 @@ public class EventsController {
     EventsService eventsService;
 
     @GetMapping()
-    public List<Events> list() {
+    public List<EventsResponseDTO> list() {
         return eventsService.getAllZones();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Events> get(@PathVariable String id) {
+    public ResponseEntity<EventsResponseDTO> get(@PathVariable String id) {
         try {
-            Events events = (Events) eventsService.getZoneById(id);
-            return new ResponseEntity<Events>(events, HttpStatus.OK);
+            EventsResponseDTO events = (EventsResponseDTO) eventsService.getZoneById(id);
+            return new ResponseEntity<EventsResponseDTO>(events, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Events>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<EventsResponseDTO>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/addEvents")
-    public void add(@RequestBody Events events) {
+    public void add(@RequestBody EventsRequestDTO events) {
         eventsService.saveZones(events);
     }
 

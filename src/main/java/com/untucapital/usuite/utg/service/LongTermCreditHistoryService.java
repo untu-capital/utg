@@ -1,11 +1,15 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.LongTermCreditHistoryRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LongTermCreditHistoryResponseDTO;
 import com.untucapital.usuite.utg.model.LongTermCreditHistory;
 import com.untucapital.usuite.utg.repository.LongTermCreditHistoryRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -15,13 +19,28 @@ public class LongTermCreditHistoryService {
     LongTermCreditHistoryRepository longTermCreditHistoryRepository;
 
     @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
-    public void saveCreditHistory(LongTermCreditHistory creditHistory){
-        longTermCreditHistoryRepository.save(creditHistory);
+    public void saveCreditHistory(LongTermCreditHistoryRequestDTO request){
+
+        LongTermCreditHistory longTermCreditHistory = new LongTermCreditHistory();
+        BeanUtils.copyProperties(request, longTermCreditHistory);
+        longTermCreditHistoryRepository.save(longTermCreditHistory);
     }
 
     @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
-    public List<LongTermCreditHistory> getCreditHistoryByLoanId(String loanId){
-        return longTermCreditHistoryRepository.findByLoanId(loanId);
+    public List<LongTermCreditHistoryResponseDTO> getCreditHistoryByLoanId(String loanId){
+
+        List<LongTermCreditHistoryResponseDTO> response = new ArrayList<LongTermCreditHistoryResponseDTO>();
+        List<LongTermCreditHistory> longTermCreditHistoryList= longTermCreditHistoryRepository.findByLoanId(loanId);
+
+        for(LongTermCreditHistory longTermCreditHistory : longTermCreditHistoryList){
+
+            LongTermCreditHistoryResponseDTO responseDTO = new LongTermCreditHistoryResponseDTO();
+            BeanUtils.copyProperties(longTermCreditHistory,responseDTO);
+
+            response.add(responseDTO);
+        }
+
+        return response;
     }
 
     @org.springframework.transaction.annotation.Transactional(value = "transactionManager")

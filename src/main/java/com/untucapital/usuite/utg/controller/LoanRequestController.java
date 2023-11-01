@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.LoanRequestRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LoanRequestResponseDTO;
 import com.untucapital.usuite.utg.model.LoanRequest;
 import com.untucapital.usuite.utg.service.LoanRequestService;
 import org.slf4j.Logger;
@@ -20,13 +22,13 @@ public class LoanRequestController {
 
     //Adding Loand Request details
     @PostMapping("/addLoanRequest")
-    public void add(@RequestBody LoanRequest loanRequest) {
+    public void add(@RequestBody LoanRequestRequestDTO loanRequest) {
         loanRequestService.saveLoanRequest(loanRequest);
     }
 
     //get LoanRequest by loan Id
     @GetMapping("/getLoanRequestByLoanId/{id}")
-    public List<LoanRequest> get(@PathVariable("id") String loanId){
+    public List<LoanRequestResponseDTO> get(@PathVariable("id") String loanId){
         return loanRequestService.getByLoanId(loanId);
     }
 

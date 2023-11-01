@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.LongTermCreditHistoryRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LongTermCreditHistoryResponseDTO;
 import com.untucapital.usuite.utg.model.LongTermCreditHistory;
 import com.untucapital.usuite.utg.service.LongTermCreditHistoryService;
 import org.slf4j.Logger;
@@ -19,12 +21,12 @@ public class LongTermCreditHistoryController {
     private static final Logger log = LoggerFactory.getLogger(LongTermCreditHistoryController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<LongTermCreditHistory> getByLoanId(@PathVariable("loanId") String loanId) {
+    public List<LongTermCreditHistoryResponseDTO> getByLoanId(@PathVariable("loanId") String loanId) {
         return creditHistoryService.getCreditHistoryByLoanId(loanId);
     }
 
     @PostMapping("/save")
-    public void add(@RequestBody LongTermCreditHistory creditHistory) {
+    public void add(@RequestBody LongTermCreditHistoryRequestDTO creditHistory) {
         creditHistoryService.saveCreditHistory(creditHistory);
     }
 

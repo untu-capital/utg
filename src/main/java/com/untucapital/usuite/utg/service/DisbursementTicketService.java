@@ -1,9 +1,11 @@
 package com.untucapital.usuite.utg.service;
+import com.untucapital.usuite.utg.DTO.request.DisbursementTicketRequestDTO;
 import com.untucapital.usuite.utg.model.DisbursementTicket;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,10 @@ public class DisbursementTicketService extends AbstractService<DisbursementTicke
     }
 
     @Transactional(value = "transactionManager")
-    public void saveDisbursementTicket(DisbursementTicket disbursementTicket) {
+    public void saveDisbursementTicket(DisbursementTicketRequestDTO requestDTO) {
+
+        DisbursementTicket disbursementTicket = new DisbursementTicket();
+        BeanUtils.copyProperties(requestDTO, disbursementTicket);
         disbursementTicketRepository.save(disbursementTicket);
     }
     @Override

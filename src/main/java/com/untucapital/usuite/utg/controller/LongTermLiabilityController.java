@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.LongTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LongTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.model.LongTermLiability;
 import com.untucapital.usuite.utg.service.LongTermLiabilityService;
 import org.slf4j.Logger;
@@ -18,7 +20,7 @@ public class LongTermLiabilityController {
     private static final Logger log = LoggerFactory.getLogger(LongTermLiabilityController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<LongTermLiability> getAllByLoanId(@PathVariable("loanId") String loanId) {
+    public List<LongTermLiabilityResponseDTO> getAllByLoanId(@PathVariable("loanId") String loanId) {
         return longTermLiabilityService.getLiability(loanId);
     }
     @DeleteMapping("/delete/{id}")
@@ -26,7 +28,7 @@ public class LongTermLiabilityController {
         longTermLiabilityService.deleteLiability(id);
     }
     @PostMapping("/add")
-    public void add(@RequestBody LongTermLiability longTermLiability) {
+    public void add(@RequestBody LongTermLiabilityRequestDTO longTermLiability) {
         longTermLiabilityService.saveLiability(longTermLiability);
     }
 

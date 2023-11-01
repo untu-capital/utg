@@ -1,4 +1,5 @@
 package com.untucapital.usuite.utg.controller;
+import com.untucapital.usuite.utg.DTO.request.DisbursementTicketRequestDTO;
 import com.untucapital.usuite.utg.model.DisbursementTicket;
 import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
@@ -24,7 +25,7 @@ public class DisbursementTicketController extends AbstractController<Disbursemen
 
     //build save branch REST API
     @PostMapping("/adddisbursementTicket")
-    public void add(@RequestBody DisbursementTicket disbursementTicket) {
+    public void add(@RequestBody DisbursementTicketRequestDTO disbursementTicket) {
         disbursementTicketService.saveDisbursementTicket(disbursementTicket);
     }
 

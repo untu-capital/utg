@@ -1,11 +1,15 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.LongTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LongTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.model.LongTermLiability;
 import com.untucapital.usuite.utg.repository.LongTermLiabilityRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,13 +24,27 @@ public class LongTermLiabilityService {
     }
 
     @Transactional(value = "transactionManager")
-    public void saveLiability(LongTermLiability longTermLiability){
+    public void saveLiability(LongTermLiabilityRequestDTO request){
+
+        LongTermLiability longTermLiability = new LongTermLiability();
         longTermLiabilityRepository.save(longTermLiability);
     }
 
     @Transactional(value = "transactionManager")
-    public List<LongTermLiability> getLiability(String loanId){
-        return longTermLiabilityRepository.findLongTermLiabilityByLoanId(loanId);
+    public List<LongTermLiabilityResponseDTO> getLiability(String loanId){
+
+        List<LongTermLiabilityResponseDTO> response = new ArrayList<LongTermLiabilityResponseDTO>();
+        List<LongTermLiability> longTermLiabilityList = longTermLiabilityRepository.findLongTermLiabilityByLoanId(loanId);
+
+        for(LongTermLiability longTermLiability : longTermLiabilityList){
+
+            LongTermLiabilityResponseDTO longTermLiabilityResponse = new LongTermLiabilityResponseDTO();
+            BeanUtils.copyProperties(longTermLiability,longTermLiabilityResponse);
+
+            response.add(longTermLiabilityResponse);
+        }
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")

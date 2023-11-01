@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.LeadStatusRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.LeadStatusResponseDTO;
 import com.untucapital.usuite.utg.model.LeadStatus;
 import com.untucapital.usuite.utg.service.LeadStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +20,22 @@ public class LeadStatusController {
 
 
     @GetMapping()
-    public List<LeadStatus> list() {
+    public List<LeadStatusResponseDTO> list() {
         return leadStatusService.getAllZones();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LeadStatus> get(@PathVariable String id) {
+    public ResponseEntity<LeadStatusResponseDTO> get(@PathVariable String id) {
         try {
-            LeadStatus leadStatus = (LeadStatus) leadStatusService.getZoneById(id);
-            return new ResponseEntity<LeadStatus>(leadStatus, HttpStatus.OK);
+            LeadStatusResponseDTO leadStatus = (LeadStatusResponseDTO) leadStatusService.getZoneById(id);
+            return new ResponseEntity<LeadStatusResponseDTO>(leadStatus, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<LeadStatus>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<LeadStatusResponseDTO>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/addLeadStatus")
-    public void add(@RequestBody LeadStatus leadStatus) {
+    public void add(@RequestBody LeadStatusRequestDTO leadStatus) {
         leadStatusService.saveZones(leadStatus);
     }
 

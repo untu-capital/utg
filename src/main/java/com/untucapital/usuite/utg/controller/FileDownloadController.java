@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.response.DatabaseFileResponseDTO;
 import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.repository.DatabaseFileRepository;
 import com.untucapital.usuite.utg.service.DatabaseFileService;
@@ -31,7 +32,7 @@ public class FileDownloadController {
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
-        DatabaseFile databaseFile = fileStorageService.getFile(fileName);
+        DatabaseFileResponseDTO databaseFile = fileStorageService.getFile(fileName);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(databaseFile.getFileType()))
@@ -41,22 +42,22 @@ public class FileDownloadController {
 
     // select files excluding appraisal ************
     @GetMapping("/downloadFiles/{userId}/{appraisal}/{selfie}/{nationalId}")
-    public ResponseEntity<List<DatabaseFile>> getUploadFilesByUserId(@PathVariable("userId") String userId, @PathVariable("appraisal") String appraisal, @PathVariable("selfie") String selfie, @PathVariable("nationalId") String nationalId) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndFileDescriptionNotContainsAndFileDescriptionNotContainsAndFileDescriptionNotContains(userId, appraisal, selfie, nationalId), HttpStatus.OK);
+    public ResponseEntity<List<DatabaseFileResponseDTO>> getUploadFilesByUserId(@PathVariable("userId") String userId, @PathVariable("appraisal") String appraisal, @PathVariable("selfie") String selfie, @PathVariable("nationalId") String nationalId) {
+        return new ResponseEntity<List<DatabaseFileResponseDTO>>(fileStorageService.getUploadFilesByUserId(userId, appraisal, selfie, nationalId), HttpStatus.OK);
     }
 
 //    @Query(value = "SELECT * FROM files WHERE fielDescription = 'selfie' OR fileDescription = 'nationalId' ")
 
     // select selfie and nationalId files
     @GetMapping("/downloadFiless/{userId}/{loanId}/{appraisal}/{assessmentFile}")
-    public ResponseEntity<List<DatabaseFile>> getLoanFiles(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("appraisal") String appraisal, @PathVariable("assessmentFile") String assessmentFile ) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndLoanIdAndFileDescriptionNotContainsAndFileDescriptionNotContains(userId, loanId, appraisal, assessmentFile), HttpStatus.OK);
+    public ResponseEntity<List<DatabaseFileResponseDTO>> getLoanFiles(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("appraisal") String appraisal, @PathVariable("assessmentFile") String assessmentFile ) {
+        return new ResponseEntity<List<DatabaseFileResponseDTO>>(fileStorageService.getLoanFiles(userId, loanId, appraisal, assessmentFile), HttpStatus.OK);
     }
 
     // Excel appraisal.. select using userid and description = appraisal
     @GetMapping("/appraisal/{userId}/{loanId}/{fileDescription}")
-    public ResponseEntity<List<DatabaseFile>> getUploadFilesByAppraisal(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("fileDescription") String fileDescription) {
-        return new ResponseEntity<List<DatabaseFile>>(databaseFileRepository.findByUserIdAndLoanIdAndFileDescription(userId, loanId, fileDescription), HttpStatus.OK);
+    public ResponseEntity<List<DatabaseFileResponseDTO>> getUploadFilesByAppraisal(@PathVariable("userId") String userId, @PathVariable("loanId") String loanId, @PathVariable("fileDescription") String fileDescription) {
+        return new ResponseEntity<List<DatabaseFileResponseDTO>>(fileStorageService.getUploadFilesByAppraisal(userId, loanId, fileDescription), HttpStatus.OK);
     }
 
 }

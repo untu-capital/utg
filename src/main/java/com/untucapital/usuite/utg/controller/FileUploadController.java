@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.response.DatabaseFileResponseDTO;
 import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.payload.Response;
 import com.untucapital.usuite.utg.service.DatabaseFileService;
@@ -24,7 +25,7 @@ public class FileUploadController {
 
     @PostMapping("/uploadFile")
     public Response uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("description") String description, @RequestParam("userId") String userId, @RequestParam("loanId") String loanId) {
-    	DatabaseFile fileName = fileStorageService.storeFile(file, description, userId, loanId);
+    	DatabaseFileResponseDTO fileName = fileStorageService.storeFile(file, description, userId, loanId);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/downloadFile/")
