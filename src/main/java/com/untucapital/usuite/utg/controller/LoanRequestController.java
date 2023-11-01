@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.LoanRequest;
-import com.untucapital.usuite.utg.model.Meetings;
 import com.untucapital.usuite.utg.service.LoanRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

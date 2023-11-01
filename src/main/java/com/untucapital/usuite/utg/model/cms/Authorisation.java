@@ -5,7 +5,6 @@ import com.untucapital.usuite.utg.model.AbstractEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "authorisation")

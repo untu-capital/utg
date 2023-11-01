@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.InvestmentOutflow;
-import com.untucapital.usuite.utg.service.InvestmentInflowService;
 import com.untucapital.usuite.utg.service.InvestmentOutflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

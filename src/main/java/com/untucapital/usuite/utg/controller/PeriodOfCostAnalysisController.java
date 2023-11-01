@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.OperationalCost;
 import com.untucapital.usuite.utg.model.PeriodOfCostAnalysis;
-import com.untucapital.usuite.utg.service.OperationalCostService;
 import com.untucapital.usuite.utg.service.PeriodOfCostAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

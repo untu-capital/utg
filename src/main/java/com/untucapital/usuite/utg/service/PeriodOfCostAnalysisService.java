@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.OperationalCost;
 import com.untucapital.usuite.utg.model.PeriodOfCostAnalysis;
-import com.untucapital.usuite.utg.repository.OperationalCostRepository;
 import com.untucapital.usuite.utg.repository.PeriodOfCostAnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

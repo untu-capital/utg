@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service.cms;
 
-
 import com.untucapital.usuite.utg.DTO.ApproverRequest;
 import com.untucapital.usuite.utg.DTO.AuditTrailInitiatorRequest;
 import com.untucapital.usuite.utg.DTO.ChangeAmountRequest;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +50,7 @@ public class AuditTrailService {
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
 
-        auditTrail.setFirstApprover(request.getApprover());
+//        auditTrail.setFirstApprover(request.getApprover());
         auditTrail.setFirstApprovedAt(LocalDateTime.now());
         return auditTrailRepository.save(auditTrail);
     }
@@ -64,7 +62,7 @@ public class AuditTrailService {
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
 
-        auditTrail.setSecondApprover(request.getApprover());
+//        auditTrail.setSecondApprover(request.getApprover());
         auditTrail.setSecondApprovedAt(LocalDateTime.now());
 
         return auditTrailRepository.save(auditTrail);

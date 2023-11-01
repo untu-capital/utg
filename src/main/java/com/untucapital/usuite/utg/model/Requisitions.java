@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
 import com.sun.istack.NotNull;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;

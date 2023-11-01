@@ -1,9 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.untucapital.usuite.utg.model.DatabaseFile;
 import com.untucapital.usuite.utg.payload.Response;
 import com.untucapital.usuite.utg.service.DatabaseFileService;
@@ -14,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "credit_application")

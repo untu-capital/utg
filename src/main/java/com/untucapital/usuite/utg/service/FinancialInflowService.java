@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.FinancialInflow;
-import com.untucapital.usuite.utg.model.FixedAsset;
 import com.untucapital.usuite.utg.repository.FinancialInflowRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

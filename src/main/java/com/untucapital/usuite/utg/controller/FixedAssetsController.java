@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.CurrentAsset;
 import com.untucapital.usuite.utg.model.FixedAsset;
 import com.untucapital.usuite.utg.service.FixedAssetService;
 import org.slf4j.Logger;

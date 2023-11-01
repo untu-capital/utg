@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.LeadStatus;
-import com.untucapital.usuite.utg.model.Zones;
 import com.untucapital.usuite.utg.service.LeadStatusService;
-import com.untucapital.usuite.utg.service.ZonesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

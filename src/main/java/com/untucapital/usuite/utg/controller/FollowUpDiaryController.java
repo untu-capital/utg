@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.FollowUpDiary;
-import com.untucapital.usuite.utg.repository.FollowUpDiaryRepository;
 import com.untucapital.usuite.utg.service.FollowUpDiaryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

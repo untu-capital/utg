@@ -4,7 +4,6 @@ import com.untucapital.usuite.utg.model.Branches;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.LongTermCreditHistory;
 import com.untucapital.usuite.utg.model.MitigatingRisk;
 import com.untucapital.usuite.utg.service.MitigatingRiskService;
 import org.slf4j.Logger;

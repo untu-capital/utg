@@ -3,7 +3,6 @@ package com.untucapital.usuite.utg.controller;
 import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.service.DirectCostService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

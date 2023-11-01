@@ -31,11 +31,11 @@ public class Incomes extends AbstractEntity {
         this.employer = employer;
     }
 
-    public java.lang.String getIndustry() {
+    public String getIndustry() {
         return industry;
     }
 
-    public void setIndustry(java.lang.String industry) {
+    public void setIndustry(String industry) {
         this.industry = industry;
     }
 
@@ -47,11 +47,11 @@ public class Incomes extends AbstractEntity {
         this.salaryRange = salaryRange;
     }
 
-    public java.lang.String getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(java.lang.String position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 }

@@ -1,13 +1,11 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.DisbursedLoan;
 import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.DTO.DisbursedLoans;
 import com.untucapital.usuite.utg.DTO.Loan;
-import com.untucapital.usuite.utg.DTO.client.Client;
+import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.entity.AccountEntity;
@@ -23,8 +21,6 @@ import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -52,10 +48,11 @@ public class MusoniProcessor {
     private final AccountService accountService;
 
 
-    public List<PostGl> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+    public List<PostGLRequestDTO> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
 
-        List<PostGl> postGlList = new ArrayList<>();
+
+        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
         java.util.Date utilDate = new java.util.Date();
         Date sqlDate = new Date(utilDate.getTime());
 
@@ -71,7 +68,8 @@ public class MusoniProcessor {
                 log.info("Formatted date: {}", formattedDate);
 
                 String typeValue = transaction.getType().getValue();
-                AccountEntity entity = getAccountLink(transaction);
+                String submittedUsername = transaction.getSubmittedByUsername();
+                AccountEntity entity = getAccountLink(submittedUsername);
                 float creditAmount = 0.0f;
                 float debitAmount = 0.0f;
                 String reference = "";
@@ -84,7 +82,7 @@ public class MusoniProcessor {
                     debitAmount = (float) transaction.getAmount();
                 }
 
-                PostGl postGl = new PostGl();
+                PostGLRequestDTO postGl = new PostGLRequestDTO();
                 postGl.setTxDate(date);
                 postGl.setDTStamp(sqlDate);
                 postGl.setId("JL");
@@ -121,18 +119,18 @@ public class MusoniProcessor {
                 postGl.setDebit(debitAmount);
                 postGl.setAccountLink(entity.getAccountLink());
 
-                postGlList.add(postGl);
+                postGlRequestDTOs.add(postGl);
             }
         }
 
-        return postGlList;
+        return postGlRequestDTOs;
     }
 
 
-    public List<PostGl> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+    public List<PostGLRequestDTO> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
 
 
-        List<PostGl> postGlList = new ArrayList<>();
+        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
 
         for (Transactions transaction : transactions) {
 
@@ -147,7 +145,7 @@ public class MusoniProcessor {
 
                 Date date = Date.valueOf(formattedDate);
 
-                PostGl postGl = new PostGl();
+                PostGLRequestDTO postGl = new PostGLRequestDTO();
                 PostGl postGlLoanBook = new PostGl();
 
                 postGl.setTxDate(date);
@@ -186,7 +184,9 @@ public class MusoniProcessor {
                 postGl.setIMajorIndustryCodeID(0);
                 postGl.setFForeignTax(0F);
 
-                AccountEntity entity = getAccountLink(transaction);
+                String submittedUsername = transaction.getSubmittedByUsername();
+
+                AccountEntity entity = getAccountLink(submittedUsername);
 
                 if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
 
@@ -204,12 +204,12 @@ public class MusoniProcessor {
 
                 }
 
-                postGlList.add(postGl);
+                postGlRequestDTOs.add(postGl);
             }
 
         }
 
-        return postGlList;
+        return postGlRequestDTOs;
     }
 
 
@@ -217,9 +217,8 @@ public class MusoniProcessor {
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
      */
 
-    public AccountEntity getAccountLink(Transactions transaction) throws JsonProcessingException, AccountNotFoundException {
+    public AccountEntity getAccountLink(String submittedUsername) throws AccountNotFoundException {
         List<Employee> employees = restClient.getAllUsers();
-        String submittedUsername = transaction.getSubmittedByUsername();
 
         // Filter out the employee who initiated the transaction
         Optional<Employee> initiator = employees.stream()

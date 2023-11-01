@@ -1,8 +1,5 @@
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.Meetings;
-import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.MeetingsRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.MeetingsService;
@@ -14,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path = "meetings")

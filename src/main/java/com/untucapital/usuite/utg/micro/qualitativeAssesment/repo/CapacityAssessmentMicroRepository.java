@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.repository;
+package com.untucapital.usuite.utg.micro.qualitativeAssesment.repo;
 
 import com.untucapital.usuite.utg.model.CapacityAssessmentMicro;
 import org.springframework.data.jpa.repository.JpaRepository;

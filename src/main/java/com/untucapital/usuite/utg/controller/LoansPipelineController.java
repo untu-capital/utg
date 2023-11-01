@@ -1,12 +1,11 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.model.LoansPipeline;
+import com.untucapital.usuite.utg.repository.LoansPipelineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.untucapital.usuite.utg.repository.LoansPipelineRepository;
-import com.untucapital.usuite.utg.model.LoansPipeline;
 
 @RestController
 @RequestMapping(path = "credit_application_pipeline")

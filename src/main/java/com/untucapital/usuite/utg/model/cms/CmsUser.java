@@ -13,7 +13,6 @@ public class CmsUser extends AbstractEntity {
     @Column(name = "role")
     private String role;
 
-
     @Column(name = "teller_vault")
     private String teller_vault;
 

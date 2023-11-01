@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service;
 import com.untucapital.usuite.utg.model.LeadStatus;
-import com.untucapital.usuite.utg.model.Zones;
 import com.untucapital.usuite.utg.repository.LeadStatusRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

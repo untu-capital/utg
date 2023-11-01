@@ -1,43 +1,79 @@
 package com.untucapital.usuite.utg.pos.service;
 
+import com.untucapital.usuite.utg.DTO.request.DepartmentRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.DepartmentResponseDTO;
 import com.untucapital.usuite.utg.pos.model.Department;
-import com.untucapital.usuite.utg.pos.reposiotory.DepartmentRepository;
+import com.untucapital.usuite.utg.pos.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author tjchidanika
  * @created 7/9/2023
  */
-
 @Service
 @RequiredArgsConstructor
 public class DepartmentService {
     private final DepartmentRepository departmentRepository;
 
     //save department
-    public Department saveDepartment(Department department){
-        return departmentRepository.save(department);
+    @Transactional(value = "transactionManager")
+    public DepartmentResponseDTO saveDepartment(DepartmentRequestDTO request){
+
+        Department department = new Department();
+        DepartmentResponseDTO responseDTO = new DepartmentResponseDTO();
+        BeanUtils.copyProperties(request, department);
+        Department department1 = departmentRepository.save(department);
+        BeanUtils.copyProperties(department1, responseDTO);
+
+        return responseDTO;
     }
     //get department by id
-    public Department getDepartmentById(Integer departmentId){
-        return departmentRepository.findById(departmentId).orElse(null);
+    @Transactional(value = "transactionManager")
+    public DepartmentResponseDTO getDepartmentById(Integer departmentId){
+
+        DepartmentResponseDTO response= new DepartmentResponseDTO();
+        Department department = departmentRepository.findById(departmentId).orElse(null);
+        BeanUtils.copyProperties(department,response);
+
+        return response;
     }
     //get all departments
-    public List<Department> getAllDepartments(){
-        return departmentRepository.findAll();
+    @Transactional(value = "transactionManager")
+    public List<DepartmentResponseDTO> getAllDepartments(){
+
+        List<DepartmentResponseDTO> response = new ArrayList<DepartmentResponseDTO>();
+        List<Department> departmentList = departmentRepository.findAll();
+
+        for(Department department : departmentList){
+            DepartmentResponseDTO departmentResponseDTO = new DepartmentResponseDTO();
+            BeanUtils.copyProperties(department, departmentResponseDTO);
+
+            response.add(departmentResponseDTO);
+        }
+
+        return response;
     }
     //update department
-    public Department updateDepartment(Department department){
-        Department existingDepartment = departmentRepository.findById(department.getId()).orElse(null);
+    @Transactional(value = "transactionManager")
+    public DepartmentResponseDTO updateDepartment(DepartmentRequestDTO requestDTO){
+        Department existingDepartment = departmentRepository.findById(requestDTO.getId()).orElse(null);
+        DepartmentResponseDTO response = new DepartmentResponseDTO();
 
         assert existingDepartment != null;
-        existingDepartment.setName(department.getName());
-        return departmentRepository.save(existingDepartment);
+        existingDepartment.setName(requestDTO.getName());
+        Department department = departmentRepository.save(existingDepartment);
+        BeanUtils.copyProperties(department, response);
+
+        return response;
     }
     //delete department
+    @Transactional(value = "transactionManager")
     public String deleteDepartment(Integer departmentId){
         Department exist = departmentRepository.findById(departmentId).orElse(null);
 

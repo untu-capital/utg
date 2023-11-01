@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.pos.controller;
 
-import com.untucapital.usuite.utg.pos.model.Department;
+import com.untucapital.usuite.utg.DTO.request.DepartmentRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.DepartmentResponseDTO;
 import com.untucapital.usuite.utg.pos.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import java.util.List;
  * @author tjchidanika
  * @created 7/9/2023
  */
+
 @RestController
 @RequestMapping("/pos/department")
 @RequiredArgsConstructor
@@ -21,27 +23,29 @@ public class DepartmentController {
     //save department
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public Department saveDepartment(@RequestBody  Department department){
+    public DepartmentResponseDTO saveDepartment(@RequestBody DepartmentRequestDTO department){
         return departmentService.saveDepartment(department);
     }
     //get department by id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Department getDepartmentById(@PathVariable Integer id){
+    public DepartmentResponseDTO getDepartmentById(@PathVariable Integer id){
         return departmentService.getDepartmentById(id);
     }
     //get all departments
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<Department> getAllDepartments(){
+    public List<DepartmentResponseDTO> getAllDepartments(){
+
         return departmentService.getAllDepartments();
     }
     //update department
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Department updateDepartment(@RequestBody Department department){
+    public DepartmentResponseDTO updateDepartment(@RequestBody DepartmentRequestDTO department){
         return departmentService.updateDepartment(department);
     }
+
     //delete department
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)

@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.controller.AbstractController;
-import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Authorisation;
-import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
 import com.untucapital.usuite.utg.service.cms.AuthorisationService;
@@ -29,7 +27,6 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     public AuthorisationController(AuthorisationService authorisationService) {
         this.authorisationService = authorisationService;
     }
-
 
     //build save branch REST API
     @PostMapping("/addAuthorisation")
@@ -69,6 +66,7 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     public void delete(@PathVariable String id) {
         authorisationService.deleteAuthorisation(id);
     }
+
 
     @Override
     protected AbstractService<Authorisation> getService() {

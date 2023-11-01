@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.model.Stock;
-import com.untucapital.usuite.utg.service.DirectCostService;
 import com.untucapital.usuite.utg.service.StockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

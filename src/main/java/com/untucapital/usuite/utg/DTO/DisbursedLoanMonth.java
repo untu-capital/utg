@@ -16,7 +16,18 @@ public class DisbursedLoanMonth {
 
     private String month;
     private int numberOfDisbursedLoans;
-    private List<DisbursedLoan> disbursedLoans;
-    private BigDecimal totalPrincipalDisbursed;
+    private List<BranchDisbursedLoan> branchDisbursedLoans;
+    private BigDecimal totalPrincipal;
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class BranchDisbursedLoan {
+        private String branch;
+        private int numberOfDisbursedLoans;
+        private List<DisbursedLoan> disbursedLoans;
+        private BigDecimal totalPrincipal;
+    }
 
 }

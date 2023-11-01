@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
-import com.untucapital.usuite.utg.model.Requisitions;
 import com.untucapital.usuite.utg.service.PurchaseOrderTransactionsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

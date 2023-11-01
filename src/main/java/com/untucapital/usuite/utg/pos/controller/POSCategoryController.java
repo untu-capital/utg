@@ -21,7 +21,7 @@ public class POSCategoryController {
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
     public POSCategory saveCategory(@RequestBody POSCategory posCategory) {
-       return posCategoryService.saveCategory(posCategory);
+        return posCategoryService.saveCategory(posCategory);
     }
     //Get Category By Id
     @GetMapping("/{id}")

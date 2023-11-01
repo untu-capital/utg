@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.FixedAsset;
 import com.untucapital.usuite.utg.model.ShortTermLiability;
 import com.untucapital.usuite.utg.service.ShortTermLiabilityService;
 import org.slf4j.Logger;

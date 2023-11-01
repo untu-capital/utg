@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.LongTermLiability;
-import com.untucapital.usuite.utg.model.ShortTermLiability;
 import com.untucapital.usuite.utg.service.LongTermLiabilityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

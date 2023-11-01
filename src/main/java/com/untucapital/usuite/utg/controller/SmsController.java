@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
-import com.untucapital.usuite.utg.DTO.PhoneNumbers;
 import com.untucapital.usuite.utg.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,17 +16,17 @@ public class SmsController {
     private final SmsService smsService;
 
     @GetMapping("single/{destination}/{messageText}")
-    public String sendSingle(@PathVariable String destination, @PathVariable String messageText){
+    public String sendSingle(@PathVariable String destination, @PathVariable String messageText) {
         return smsService.sendSingle(destination, messageText);
     }
 
     @PostMapping("bulk")
-    public String sendBulk(@RequestBody BulkSMSDTO bulkSMSDTO){
+    public String sendBulk(@RequestBody BulkSMSDTO bulkSMSDTO) {
         return smsService.sendBulkSMS(bulkSMSDTO);
     }
 
     @GetMapping("balance")
-    public String getBalance(){
+    public String getBalance() {
         return smsService.getBalance();
     }
 

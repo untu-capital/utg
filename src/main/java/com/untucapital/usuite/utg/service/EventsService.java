@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service;
 import com.untucapital.usuite.utg.model.Events;
-import com.untucapital.usuite.utg.model.Events;
 import com.untucapital.usuite.utg.repository.EventsRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

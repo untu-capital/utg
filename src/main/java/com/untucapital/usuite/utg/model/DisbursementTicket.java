@@ -1,7 +1,8 @@
 package com.untucapital.usuite.utg.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "disbursement_tickets")

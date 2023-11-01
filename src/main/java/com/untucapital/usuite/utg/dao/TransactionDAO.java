@@ -1,4 +1,4 @@
-//package com.untucapital.usuite.utg.dao;
+package com.untucapital.usuite.utg.dao;//package com.untucapital.usuite.utg.dao;
 //
 //import com.untucapital.usuite.utg.entity.PostGl;
 //import org.springframework.beans.factory.annotation.Autowired;

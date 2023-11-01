@@ -6,7 +6,6 @@ import com.sun.istack.NotNull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
 @Table(name = "PeriodOfAnalysis")

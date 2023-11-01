@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.model.cms;
 
 import com.untucapital.usuite.utg.model.AbstractEntity;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

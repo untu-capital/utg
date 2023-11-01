@@ -1,7 +1,5 @@
 package com.untucapital.usuite.utg.model;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 

@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service.cms;
 
-import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.Authorisation;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
@@ -10,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 

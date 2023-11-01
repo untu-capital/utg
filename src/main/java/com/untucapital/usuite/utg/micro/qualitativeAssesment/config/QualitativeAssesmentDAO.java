@@ -1,4 +1,4 @@
-//package com.untucapital.usuite.utg.micro.qualitativeAssesment.config;
+package com.untucapital.usuite.utg.micro.qualitativeAssesment.config;//package com.untucapital.usuite.utg.micro.qualitativeAssesment.config;
 //
 //import org.springframework.beans.factory.annotation.Qualifier;
 //import org.springframework.beans.factory.annotation.Value;

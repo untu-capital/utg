@@ -1,20 +1,12 @@
 package com.untucapital.usuite.utg.service.cms;
 
 
-import com.untucapital.usuite.utg.DTO.ApproverRequest;
-import com.untucapital.usuite.utg.DTO.AuditTrailInitiatorRequest;
-import com.untucapital.usuite.utg.DTO.ChangeAmountRequest;
-import com.untucapital.usuite.utg.model.FollowUpDiary;
-import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.model.cms.PettyCashPayments;
-import com.untucapital.usuite.utg.repository.cms.AuditTrailRepository;
 import com.untucapital.usuite.utg.repository.cms.PettyCashPaymentsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

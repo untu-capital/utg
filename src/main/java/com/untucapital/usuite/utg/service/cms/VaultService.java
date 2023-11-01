@@ -28,8 +28,6 @@ public class VaultService {
 
     private final VaultRepository vaultRepository;
     private final BranchRepository branchRepository;
-
-
     //Add
     @Transactional(value = "transactionManager")
     public Vault addVault(VaultRequest vaultRequest) {
@@ -40,6 +38,7 @@ public class VaultService {
                 .account(vaultRequest.getAccount())
                 .type(vaultRequest.getType())
                 .name(vaultRequest.getName())
+                .branch(branch)
                 .build();
         return vaultRepository.save(vault);
     }
@@ -72,8 +71,7 @@ public class VaultService {
 
         return vaultRepository.save(existingVault);
     }
-
-   // Delete
+    //Delete
     @Transactional(value = "transactionManager")
     public String deleteVault(Integer vaultId) {
 
@@ -83,22 +81,19 @@ public class VaultService {
 
         return String.format("Vault with id %d deleted successfully", vaultId);
     }
-
     //Get
     @Transactional(value = "transactionManager")
     public Vault getVault(Integer vaultId) {
         return vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
     }
-
     //Get All
     @Transactional(value = "transactionManager")
     public List<Vault> getAllVaults() {
         return vaultRepository.findAll();
     }
 
-  //  Update Vault Amount
-    @Transactional(value = "transactionManager")
+    //Update Vault Amount
     public Vault updateVaultAmount(Integer vaultId, BigDecimal amount) {
 
         Vault existingVault = vaultRepository.findById(vaultId)
@@ -120,9 +115,11 @@ public class VaultService {
     }
 
     @Transactional(value = "transactionManager")
-    public Vault getVaultsByBranchAndType(String branch, String type) {
+    public Vault getVaultByBranchAndType(String branch, String type) {
         log.info("Branch and Type:{}", branch + type);
-        Optional<Vault> vault = vaultRepository.findVaultByNameAndType(branch, type);
+        Optional<Vault> vault =vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
+
+        //FIXME: this is a bypass for testing
         if(vault.isEmpty()) {
             Vault vault1 = new Vault();
             vault1.setAccount("8422/000/HRE/FCA/MV");
@@ -134,10 +131,14 @@ public class VaultService {
 
     @Transactional(value = "transactionManager")
     public List<Vault> getVaultsByBranch(String branch) {
-        List<Vault> vaultList = vaultRepository.findVaultByBranch_BranchName(branch);
-
-        log.info("Vault list:{}", vaultList.toString());
-
-        return  vaultList;
+        return vaultRepository.findVaultByBranch_BranchName(branch);
     }
+    //Vaults By Branch
+    public List<Vault> getAllVaultsByBranch(String branchId) {
+        Branches branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+        return vaultRepository.findByBranch(branch);
+    }
+
+
 }

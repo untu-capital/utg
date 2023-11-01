@@ -1,9 +1,10 @@
 package com.untucapital.usuite.utg.pos.service;
 
 import com.untucapital.usuite.utg.pos.model.POSSupplier;
-import com.untucapital.usuite.utg.pos.reposiotory.SupplierRepository;
+import com.untucapital.usuite.utg.pos.repository.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,18 +19,24 @@ public class SupplierService {
     private final SupplierRepository supplierRepository;
 
     //Save Supplier
-    public POSSupplier  saveSupplier(POSSupplier posSupplier) {
+    @Transactional(value = "transactionManager")
+    public POSSupplier saveSupplier(POSSupplier posSupplier) {
        return supplierRepository.save(posSupplier);
     }
+
     //Get Supplier By Id
+    @Transactional(value = "transactionManager")
     public POSSupplier getSupplierById(Integer id) {
         return supplierRepository.findById(id).orElse(null);
     }
     //Get All Suppliers
+    @Transactional(value = "transactionManager")
     public List<POSSupplier> getAllSuppliers() {
         return supplierRepository.findAll();
     }
+
     //Update Supplier
+    @Transactional(value = "transactionManager")
     public POSSupplier updateSupplier(POSSupplier posSupplier) {
         POSSupplier existingSupplier = supplierRepository.findById(posSupplier.getId()).orElse(null);
 
@@ -42,6 +49,7 @@ public class SupplierService {
         return supplierRepository.save(existingSupplier);
     }
     //Delete Supplier
+    @Transactional(value = "transactionManager")
     public POSSupplier deleteSupplier(Integer id) {
         POSSupplier supplier = supplierRepository.findById(id).orElse(null);
         supplierRepository.deleteById(id);

@@ -1,12 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.Cities;
 import com.untucapital.usuite.utg.model.Meetings;
 import com.untucapital.usuite.utg.model.User;
-import com.untucapital.usuite.utg.repository.CitiesRepository;
 import com.untucapital.usuite.utg.repository.MeetingsRepository;
-import com.untucapital.usuite.utg.repository.RoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;

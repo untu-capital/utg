@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.AllLoans;
-import com.untucapital.usuite.utg.DTO.Loan;
 import com.untucapital.usuite.utg.DTO.client.Client;
 import com.untucapital.usuite.utg.DTO.loans.LoanTransaction;
 import com.untucapital.usuite.utg.DTO.loans.RepaymentScheduleLoan;

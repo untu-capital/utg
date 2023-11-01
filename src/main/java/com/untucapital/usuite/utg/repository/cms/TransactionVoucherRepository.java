@@ -1,9 +1,9 @@
 package com.untucapital.usuite.utg.repository.cms;
 
-import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
-import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

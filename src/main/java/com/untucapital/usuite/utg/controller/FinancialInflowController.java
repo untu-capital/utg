@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.CurrentAsset;
 import com.untucapital.usuite.utg.model.FinancialInflow;
-import com.untucapital.usuite.utg.service.CurrentAssetsService;
 import com.untucapital.usuite.utg.service.FinancialInflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

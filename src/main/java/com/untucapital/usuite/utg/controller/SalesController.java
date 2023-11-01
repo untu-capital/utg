@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.BusinessUnit;
 import com.untucapital.usuite.utg.model.Sales;
-
 import com.untucapital.usuite.utg.service.SalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

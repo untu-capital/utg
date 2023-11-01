@@ -1,4 +1,4 @@
-//package com.untucapital.usuite.utg.untu_capital.configs;
+package com.untucapital.usuite.utg.untu_capital.configs;//package com.untucapital.usuite.utg.untu_capital.configs;
 //
 //
 //import org.springframework.beans.factory.annotation.Qualifier;

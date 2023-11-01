@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.pos.controller;
 
-import com.untucapital.usuite.utg.pos.model.Budget;
+import com.untucapital.usuite.utg.DTO.request.BudgetRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.BudgetResponseDTO;
 import com.untucapital.usuite.utg.pos.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
  * @created 5/9/2023
  */
 
+
 @RestController
 @RequestMapping(value = "pos/budget")
 @RequiredArgsConstructor
@@ -22,32 +24,36 @@ public class BudgetController {
     //Save Budget
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public Budget saveBudget(@RequestBody Budget budget) {
-       return budgetService.createBudget(budget);
+    public BudgetResponseDTO saveBudget(@RequestBody BudgetRequestDTO budget) {
+        return budgetService.createBudget(budget);
     }
+
     //Get Budget By Id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Budget getBudgetById(@PathVariable Integer id) {
+    public BudgetResponseDTO getBudgetById(@PathVariable Integer id) {
         return budgetService.getBudgetById(id);
     }
+
     //Get all Budgets
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<Budget> getAllBudgets() {
+    public List<BudgetResponseDTO> getAllBudgets() {
         return budgetService.getAllBudgets();
     }
+
     //Update Budget
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Budget updateBudget(@RequestBody Budget budget) {
+    public BudgetResponseDTO updateBudget(@RequestBody BudgetRequestDTO budget) {
         return budgetService.updateBudget(budget);
     }
 
     //Delete Budget
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Budget deleteBudget(@PathVariable Integer id) {
+    public BudgetResponseDTO deleteBudget(@PathVariable Integer id) {
         return budgetService.deleteBudget(id);
     }
 }
+

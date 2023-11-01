@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.micro.qualitativeAssesment.service;
 
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.repo.BalanceSheetRepository;
 import com.untucapital.usuite.utg.model.BalanceSheet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

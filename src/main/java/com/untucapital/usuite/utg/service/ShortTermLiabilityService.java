@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.FixedAsset;
 import com.untucapital.usuite.utg.model.ShortTermLiability;
 import com.untucapital.usuite.utg.repository.ShortTermLiabilityRepository;
 import org.springframework.beans.factory.annotation.Autowired;

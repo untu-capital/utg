@@ -7,7 +7,10 @@ import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
-import com.untucapital.usuite.utg.model.*;
+import com.untucapital.usuite.utg.model.ConfirmationToken;
+import com.untucapital.usuite.utg.model.ContactDetail;
+import com.untucapital.usuite.utg.model.Role;
+import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.model.enums.RoleType;
 import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
@@ -21,8 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,11 +31,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-//import javax.transaction.Transactional;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -46,7 +43,7 @@ import java.util.stream.Collectors;
  * @author Chirinda Nyasha Dell 22/11/2021
  */
 
-@Transactional
+@javax.transaction.Transactional
 @Service
 public class UserService extends AbstractService<User> {
 
@@ -85,6 +82,7 @@ public class UserService extends AbstractService<User> {
     }
 
     @Override
+    @Transactional(value = "transactionManager")
     public List<User> getUserByRole(String name) {
         return null;
     }
@@ -108,6 +106,7 @@ public class UserService extends AbstractService<User> {
 //        }
 //        return loginRespOptional;
 //    }
+
 
     public Optional<LoginResp> authenticateUser(LoginReq loginReq) {
         log.debug("User Authentication Request - {}", FormatterUtil.toJson(loginReq));
@@ -149,9 +148,6 @@ public class UserService extends AbstractService<User> {
     }
 
 
-
-
-
     private void validateUserStatus(String username) throws SecurityException {
 
         String failedValidationMsg = "Login failed : Invalid Username or Password!";
@@ -176,6 +172,7 @@ public class UserService extends AbstractService<User> {
         log.debug("User Status validation complete for User: {}", user.getId());
     }
 
+    @Transactional(value = "transactionManager")
     public Optional<String> registerUser(SignUpRequest signUpRequest) {
         log.debug("User Registration Request - {}", FormatterUtil.toJson(signUpRequest));
 
@@ -320,6 +317,7 @@ public class UserService extends AbstractService<User> {
         return sb.toString();
     }
 
+    @Transactional(value = "transactionManager")
     public boolean confirmUserAccount(String username, String verificationCode) {
         log.debug("User Confirmation Request username: {}, verificationCode: {}", username, verificationCode);
 
@@ -351,18 +349,21 @@ public class UserService extends AbstractService<User> {
         return true;
     }
 
+    @Transactional(value = "transactionManager")
     public boolean checkUserEmail(String email) {
         log.debug("Check User Email Request email: {}", email);
 
         return userRepository.existsByContactDetail_EmailAddress(email);
     }
 
+    @Transactional(value = "transactionManager")
     public boolean checkUserMobile(long mobile) {
         log.debug("Check User Mobile Request mobile: {}", mobile);
 
         return userRepository.existsByContactDetailMobileNumber(mobile);
     }
 
+    @Transactional(value = "transactionManager")
     public void updateResetPasswordToken(String token, String email) throws ResourceNotFoundException {
         User user = userRepository.findByContactDetail_EmailAddress(email);
         if (user != null) {
@@ -373,6 +374,7 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public void updateResetPasswordTokenMobile(String token, long mobile) throws ResourceNotFoundException {
         User user = userRepository.findByContactDetail_MobileNumber(mobile);
         if (user != null) {
@@ -383,6 +385,7 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public User getByResetPasswordToken(String token) {
         return userRepository.findByResetPasswordToken(token);
     }
@@ -396,6 +399,7 @@ public class UserService extends AbstractService<User> {
         userRepository.save(user);
     }
 
+    @Transactional(value = "transactionManager")
     public List<User> getUsersByRole(String roleName) {
         List<User> users = userRepository.findAll();
         List<User> usersByRole = users.stream()
@@ -406,6 +410,7 @@ public class UserService extends AbstractService<User> {
         return usersByRole;
     }
 
+    @Transactional(value = "transactionManager")
     public Optional<User> findUserByUsernameOrMobileNumber(String username) {
         try {
             Long mobileNumber = Long.parseLong(username);
@@ -416,12 +421,14 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+    @Transactional(value = "transactionManager")
     public String deleteUserById(String id){
         confirmationTokenRepository.deleteByUser(id);
         userRepository.deleteById(id);
         return "Deleted Successfully";
     }
 
+    @Transactional(value = "transactionManager")
     public void resetTokenExpired(long mobile) throws ResourceNotFoundException {
         User updateExpiredToken = userRepository.findByContactDetail_MobileNumber(mobile);
         if (updateExpiredToken != null) {
@@ -442,9 +449,11 @@ public class UserService extends AbstractService<User> {
     }
 
 
+    @Transactional(value = "transactionManager")
     public void saveUser(UserPrincipal updatedUserRole) {
     }
 
+    @Transactional(value = "transactionManager")
     public User updateUserCmsUser(String userId, CmsUser defaultCmsUser) {
         Optional<User> userOptional = userRepository.findById(userId);
 
@@ -464,6 +473,12 @@ public class UserService extends AbstractService<User> {
         }
     }
 
+
+    //Find All User By
+    @Transactional(value = "transactionManager")
+    public List<User> findAllById(List<String> userIds){
+        return userRepository.findAllById(userIds);
+    }
 
 
 }

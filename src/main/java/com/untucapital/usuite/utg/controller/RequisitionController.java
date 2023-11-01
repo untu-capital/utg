@@ -1,22 +1,15 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.Requisitions;
-import com.untucapital.usuite.utg.repository.RequisitionRepository;
 import com.untucapital.usuite.utg.service.RequisitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
