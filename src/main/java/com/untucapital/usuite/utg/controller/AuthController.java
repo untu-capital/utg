@@ -1,6 +1,9 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.controller.payload.*;
+import com.untucapital.usuite.utg.controller.payload.LoginReq;
+import com.untucapital.usuite.utg.controller.payload.LoginResp;
+import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
+import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.UserRepository;

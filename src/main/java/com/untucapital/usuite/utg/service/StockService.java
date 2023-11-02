@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.model.Stock;
-import com.untucapital.usuite.utg.repository.DirectCostRepository;
 import com.untucapital.usuite.utg.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

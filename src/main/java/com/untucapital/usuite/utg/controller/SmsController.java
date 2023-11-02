@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
-import com.untucapital.usuite.utg.DTO.PhoneNumbers;
 import com.untucapital.usuite.utg.service.SmsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

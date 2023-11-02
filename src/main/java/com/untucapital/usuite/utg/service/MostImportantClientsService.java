@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.MostImportantClients;
-import com.untucapital.usuite.utg.model.OwnershipDetails;
 import com.untucapital.usuite.utg.repository.MostImportantClientsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -2,15 +2,12 @@ package com.untucapital.usuite.utg.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.untucapital.usuite.utg.DTO.*;
-import com.untucapital.usuite.utg.DTO.sms.BulkMessage;
-import com.untucapital.usuite.utg.model.Sms;
 import com.untucapital.usuite.utg.DTO.Bulk;
 import com.untucapital.usuite.utg.DTO.BulkSMS;
 import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
 import com.untucapital.usuite.utg.DTO.SMSDto;
+import com.untucapital.usuite.utg.DTO.sms.BulkMessage;
 import com.untucapital.usuite.utg.repository.SMSRepo;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +16,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 

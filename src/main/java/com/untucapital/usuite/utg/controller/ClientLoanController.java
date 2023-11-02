@@ -38,6 +38,8 @@ public class ClientLoanController {
     }
 
 
+
+
     //build save loan REST API
     @PostMapping
     @Operation(summary = "Create a new client loan application")
@@ -51,6 +53,7 @@ public class ClientLoanController {
     @Operation(summary = "Get all client loan applications")
     public List<ClientLoan> getAllClientLoanApplication() {
         return clientLoanApplication.getAllClientLoanApplication();
+
     }
 
     //build get clientLoan by ID REST API

@@ -1,6 +1,9 @@
 package com.untucapital.usuite.utg.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
@@ -23,13 +26,13 @@ public class PostGl {
 
     @Column(name = "TxDate")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date TxDate;
+    private Date txDate;
 
     @Column(name = "Id", length = 5)
     private String Id;
 
     @Column(name = "AccountLink")
-    private Integer AccountLink;
+    private Integer accountLink;
 
     @Column(name = "TrCodeID")
     private Integer TrCodeID;

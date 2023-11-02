@@ -1,8 +1,10 @@
 package com.untucapital.usuite.utg.service;
 
 
-import com.untucapital.usuite.utg.model.Department;
-import com.untucapital.usuite.utg.repository.DepartmentRepository;
+//import com.untucapital.usuite.utg.model.Department;
+//import com.untucapital.usuite.utg.repository.DepartmentRepository;
+import com.untucapital.usuite.utg.model.Staff;
+import com.untucapital.usuite.utg.repository.cms.DepartmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,23 +23,23 @@ public class DepartmentService {
 
     //save department
     @Transactional(value = "transactionManager")
-    public Department saveDepartment(Department department){
+    public Staff.Department saveDepartment(Staff.Department department){
         return departmentRepository.save(department);
     }
     //get department by id
     @Transactional(value = "transactionManager")
-    public Department getDepartmentById(Integer departmentId){
+    public Staff.Department getDepartmentById(Integer departmentId){
         return departmentRepository.findById(departmentId).orElse(null);
     }
     //get all departments
     @Transactional(value = "transactionManager")
-    public List<Department> getAllDepartments(){
+    public List<Staff.Department> getAllDepartments(){
         return departmentRepository.findAll();
     }
     //update department
     @Transactional(value = "transactionManager")
-    public Department updateDepartment(Department department){
-        Department existingDepartment = departmentRepository.findById(department.getId()).orElse(null);
+    public Staff.Department updateDepartment(Staff.Department department){
+        Staff.Department existingDepartment = departmentRepository.findById(department.getId()).orElse(null);
 
         assert existingDepartment != null;
         existingDepartment.setName(department.getName());
@@ -46,7 +48,7 @@ public class DepartmentService {
     //delete department
     @Transactional(value = "transactionManager")
     public String deleteDepartment(Integer departmentId){
-        Department exist = departmentRepository.findById(departmentId).orElse(null);
+        Staff.Department exist = departmentRepository.findById(departmentId).orElse(null);
 
         if(exist == null){
             return "Department does not exist";

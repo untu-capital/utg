@@ -1,4 +1,4 @@
-//package com.untucapital.usuite.utg.DTO.loanObjects;
+package com.untucapital.usuite.utg.DTO.loanObjects;//package com.untucapital.usuite.utg.DTO.loanObjects;
 //
 //import lombok.*;
 //

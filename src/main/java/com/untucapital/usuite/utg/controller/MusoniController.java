@@ -7,12 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.DisbursedLoans;
 import com.untucapital.usuite.utg.DTO.loans.Result;
 import com.untucapital.usuite.utg.DTO.response.PostGLResponseDTO;
-import com.untucapital.usuite.utg.entity.PostGl;
-
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.QueryHints;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 

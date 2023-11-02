@@ -21,77 +21,6 @@ public class PostGlProcessor {
 
     private final AccountService accountService;
 
-//
-//    public List<TransactionInfo> createPastelPostGlTransaction(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
-//
-//        log.info("Transactions:{}", transactions.toString());
-//
-//        List<TransactionInfo> transactionInfoList = new ArrayList<>();
-//
-//        for (Transactions transaction : transactions) {
-//
-//            int[] dateArray = transaction.getSubmittedOnDate();
-//            log.info("Date Array: {}", dateArray.toString());
-//
-//            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
-//
-//            if (isTransactionRequired) {
-//
-//                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-//
-//
-//                log.info("Formatted date:{}", formattedDate.toString());
-//
-//                TransactionInfo transactionInfo = new TransactionInfo();
-//
-//                transactionInfo.setAmount((float) transaction.getAmount());
-//                transactionInfo.setTransactionDate(formattedDate);
-//                if (transaction.getCurrency().getCode().equalsIgnoreCase("USD")) {
-//
-//                    transactionInfo.setCurrency(AppConstants.CURRENCY);
-//
-//                }
-//                transactionInfo.setDescription(transaction.getType().getValue());
-//
-//                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-//
-//
-//                    transactionInfo.setTransactionType(AppConstants.DISBURSEMENT);
-//                    transactionInfo.setReference("DIS-" + transaction.getId());
-//
-//                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-//
-//                    transactionInfo.setTransactionType(AppConstants.REPAYMENT);
-//                    transactionInfo.setReference("REP-" + transaction.getId());
-//                }
-//
-//                transactionInfo.setExchangeRate(1);
-//
-//                //TODO put the actual dto and from account
-//                String submittedUsername = transaction.getSubmittedByUsername();
-//
-//                AccountEntity accountEntity = musoniProcessor.getAccountLink(submittedUsername);
-//
-//                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-//
-//                    transactionInfo.setFromAccount(accountEntity.getAccountLink());
-//                    transactionInfo.setToAccount(AppConstants.LOAN_BOOK);
-//
-//                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-//
-//                    transactionInfo.setFromAccount(AppConstants.LOAN_BOOK);
-//                    transactionInfo.setToAccount(accountEntity.getAccountLink());
-//                }
-//
-//
-//                transactionInfoList.add(transactionInfo);
-//            }
-//
-//        }
-//
-//        return transactionInfoList;
-//    }
-
     public PostGl createFromAccountRequest(TransactionInfo transactionInfo) {
 
         PostGl postGl = new PostGl();
@@ -135,10 +64,9 @@ public class PostGlProcessor {
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
 
-    log.info("postgl account: {}", transactionInfo.getFromAccount());
 
         AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
-        log.info("accountEntity: {}", accountEntity);
+
 
         request.setCredit(transactionInfo.getAmount());
         request.setDebit(0f);

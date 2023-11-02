@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.model.cms;
 
-import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;

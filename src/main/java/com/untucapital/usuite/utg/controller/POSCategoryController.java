@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 
-import com.untucapital.usuite.utg.model.POSCategory;
+import com.untucapital.usuite.utg.model.Staff;
 import com.untucapital.usuite.utg.service.POSCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,25 +21,25 @@ public class POSCategoryController {
     //Save Category
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public POSCategory saveCategory(@RequestBody POSCategory posCategory) {
+    public Staff.POSCategory saveCategory(@RequestBody Staff.POSCategory posCategory) {
        return posCategoryService.saveCategory(posCategory);
     }
     //Get Category By Id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public POSCategory getCategoryById(@PathVariable Integer id) {
+    public Staff.POSCategory getCategoryById(@PathVariable Integer id) {
         return posCategoryService.getCategoryById(id);
     }
     //Get all Categories
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public Iterable<POSCategory> getAllCategories() {
+    public Iterable<Staff.POSCategory> getAllCategories() {
         return posCategoryService.getAllCategories();
     }
     //Update Category
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public POSCategory updateCategory(@RequestBody POSCategory posCategory) {
+    public Staff.POSCategory updateCategory(@RequestBody Staff.POSCategory posCategory) {
         return posCategoryService.updateCategory(posCategory);
     }
     //Delete Category

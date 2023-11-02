@@ -1,13 +1,10 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.DTO.DisbursedLoan;
 import com.untucapital.usuite.utg.DTO.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.DTO.DisbursedLoans;
 import com.untucapital.usuite.utg.DTO.Loan;
-import com.untucapital.usuite.utg.DTO.client.Client;
 import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
@@ -24,8 +21,6 @@ import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 

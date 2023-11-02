@@ -1,14 +1,11 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.CollateralSecurity;
 import com.untucapital.usuite.utg.model.RequestCollateralSecurity;
-import com.untucapital.usuite.utg.repository.CollateraiSecurityRepository;
 import com.untucapital.usuite.utg.repository.RequestCollateraiSecurityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 @Service

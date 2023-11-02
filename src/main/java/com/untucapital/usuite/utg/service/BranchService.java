@@ -1,14 +1,18 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.BranchesRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.BranchesResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @javax.transaction.Transactional
@@ -24,13 +28,17 @@ public class BranchService extends AbstractService<Branches> {
     }
 
     @Transactional(value = "transactionManager")
-    public void saveBranches(Branches branches) {
+    public void saveBranches(BranchesRequestDTO requestDTO) {
+        Branches branches = new Branches();
+        BeanUtils.copyProperties(requestDTO, branches);
         branchRepository.save(branches);
     }
 
     @Override
     @Transactional(value = "transactionManager")
     public JpaRepository<Branches, String> getRepository() {
+
+
         return branchRepository;
     }
 
@@ -46,17 +54,40 @@ public class BranchService extends AbstractService<Branches> {
     }
 
     @Transactional(value = "transactionManager")
-    public List<Branches> getAllBranches() {
-        return branchRepository.findAll();
+    public List<BranchesResponseDTO> getAllBranches() {
+
+        List<BranchesResponseDTO> responseDTOList = new ArrayList<BranchesResponseDTO>();
+        List<Branches> branchesList = branchRepository.findAll();
+
+        for (Branches branches : branchesList) {
+            BranchesResponseDTO branchesResponseDTO = new BranchesResponseDTO();
+            BeanUtils.copyProperties(branches, branchesResponseDTO);
+
+            responseDTOList.add(branchesResponseDTO);
+        }
+
+        return responseDTOList;
     }
 
     @Transactional(value = "transactionManager")
-    public Branches getBranchesById(String id) {
-        return branchRepository.findBranchesById(id);
+    public BranchesResponseDTO getBranchesById(String id) {
+        BranchesResponseDTO responseDTO = new BranchesResponseDTO();
+
+        Branches branches = branchRepository.findBranchesById(id);
+        BeanUtils.copyProperties(branches, responseDTO);
+
+        return responseDTO;
+
     }
 
     @Transactional(value = "transactionManager")
-    public Branches getBranchByName(String name) {
-        return branchRepository.findBranchesByBranchName(name);
+    public BranchesResponseDTO getBranchByName(String name) {
+
+        BranchesResponseDTO responseDTO = new BranchesResponseDTO();
+
+        Branches branches = branchRepository.findBranchesByBranchName(name);
+        BeanUtils.copyProperties(branches, responseDTO);
+
+        return responseDTO;
     }
 }

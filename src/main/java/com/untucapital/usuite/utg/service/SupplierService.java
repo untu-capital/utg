@@ -1,7 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.POSSupplier;
-import com.untucapital.usuite.utg.repository.SupplierRepository;
+
+import com.untucapital.usuite.utg.model.Staff;
+import com.untucapital.usuite.utg.repository.cms.SupplierRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,23 +21,23 @@ public class SupplierService {
 
     //Save Supplier
     @Transactional(value = "transactionManager")
-    public POSSupplier  saveSupplier(POSSupplier posSupplier) {
+    public Staff.POSSupplier saveSupplier(Staff.POSSupplier posSupplier) {
        return supplierRepository.save(posSupplier);
     }
     //Get Supplier By Id
     @Transactional(value = "transactionManager")
-    public POSSupplier getSupplierById(Integer id) {
+    public Staff.POSSupplier getSupplierById(Integer id) {
         return supplierRepository.findById(id).orElse(null);
     }
     //Get All Suppliers
     @Transactional(value = "transactionManager")
-    public List<POSSupplier> getAllSuppliers() {
+    public List<Staff.POSSupplier> getAllSuppliers() {
         return supplierRepository.findAll();
     }
     //Update Supplier
     @Transactional(value = "transactionManager")
-    public POSSupplier updateSupplier(POSSupplier posSupplier) {
-        POSSupplier existingSupplier = supplierRepository.findById(posSupplier.getId()).orElse(null);
+    public Staff.POSSupplier updateSupplier(Staff.POSSupplier posSupplier) {
+        Staff.POSSupplier existingSupplier = supplierRepository.findById(posSupplier.getId()).orElse(null);
 
         assert existingSupplier != null;
         existingSupplier.setName(posSupplier.getName());
@@ -48,8 +49,8 @@ public class SupplierService {
     }
     //Delete Supplier
     @Transactional(value = "transactionManager")
-    public POSSupplier deleteSupplier(Integer id) {
-        POSSupplier supplier = supplierRepository.findById(id).orElse(null);
+    public Staff.POSSupplier deleteSupplier(Integer id) {
+        Staff.POSSupplier supplier = supplierRepository.findById(id).orElse(null);
         supplierRepository.deleteById(id);
         return supplier;
     }

@@ -1,4 +1,4 @@
-//package com.untucapital.usuite.utg.model;
+package com.untucapital.usuite.utg.model;//package com.untucapital.usuite.utg.model;
 //
 //import com.untucapital.usuite.utg.micro.qualitativeAssesment.service.ClientRequestService;
 //import org.springframework.beans.factory.annotation.Autowired;

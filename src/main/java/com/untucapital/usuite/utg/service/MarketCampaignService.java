@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.MarketCampaign;
-import com.untucapital.usuite.utg.model.MarketLeads;
 import com.untucapital.usuite.utg.repository.MarketCampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

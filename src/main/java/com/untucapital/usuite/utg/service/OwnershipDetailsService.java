@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.OwnershipDetails;
-import com.untucapital.usuite.utg.model.SourceOfFunds;
 import com.untucapital.usuite.utg.repository.OwnerShipDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

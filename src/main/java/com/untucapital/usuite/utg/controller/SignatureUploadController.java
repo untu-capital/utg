@@ -1,7 +1,5 @@
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.model.Business;
 import com.untucapital.usuite.utg.model.SignatureUpload;
-import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.SignatureUploadRepository;
 import com.untucapital.usuite.utg.service.SignatureUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/signatures")

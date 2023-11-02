@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.CurrentAsset;
+import com.untucapital.usuite.utg.DTO.request.FixedAssetRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.FixedAssetResponseDTO;
 import com.untucapital.usuite.utg.model.FixedAsset;
 import com.untucapital.usuite.utg.service.FixedAssetService;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ public class FixedAssetsController {
     private static final Logger log = LoggerFactory.getLogger(FixedAssetsController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<FixedAsset> getAllByLoanId(@PathVariable("loanId") String loanId) {
+    public List<FixedAssetResponseDTO> getAllByLoanId(@PathVariable("loanId") String loanId) {
         return fixedAssetService.getFixedAssets(loanId);
     }
 
@@ -29,7 +30,7 @@ public class FixedAssetsController {
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody FixedAsset fixedAsset) {
+    public void add(@RequestBody FixedAssetRequestDTO fixedAsset) {
         fixedAssetService.saveFixedAssets(fixedAsset);
     }
 

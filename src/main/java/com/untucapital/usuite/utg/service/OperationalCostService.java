@@ -1,12 +1,10 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.model.OperationalCost;
 import com.untucapital.usuite.utg.repository.OperationalCostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 

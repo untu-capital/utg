@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.Budget;
+//import com.untucapital.usuite.utg.model.Budget;
+import com.untucapital.usuite.utg.model.Stock;
 import com.untucapital.usuite.utg.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,32 +23,32 @@ public class BudgetController {
     //Save Budget
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public Budget saveBudget(@RequestBody Budget budget) {
+    public Stock.Budget saveBudget(@RequestBody Stock.Budget budget) {
        return budgetService.createBudget(budget);
     }
     //Get Budget By Id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Budget getBudgetById(@PathVariable Integer id) {
+    public Stock.Budget getBudgetById(@PathVariable Integer id) {
         return budgetService.getBudgetById(id);
     }
     //Get all Budgets
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<Budget> getAllBudgets() {
+    public List<Stock.Budget> getAllBudgets() {
         return budgetService.getAllBudgets();
     }
     //Update Budget
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Budget updateBudget(@RequestBody Budget budget) {
+    public Stock.Budget updateBudget(@RequestBody Stock.Budget budget) {
         return budgetService.updateBudget(budget);
     }
 
     //Delete Budget
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Budget deleteBudget(@PathVariable Integer id) {
+    public Stock.Budget deleteBudget(@PathVariable Integer id) {
         return budgetService.deleteBudget(id);
     }
 }

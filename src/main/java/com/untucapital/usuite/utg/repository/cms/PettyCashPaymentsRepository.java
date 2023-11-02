@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.repository.cms;
 
-import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.model.cms.PettyCashPayments;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

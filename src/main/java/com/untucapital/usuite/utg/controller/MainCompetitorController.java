@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.MainCompetitor;
-import com.untucapital.usuite.utg.model.MostImportantClients;
 import com.untucapital.usuite.utg.service.MainCompetitorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

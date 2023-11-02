@@ -1,12 +1,10 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.MostImportantSuppliers;
-import com.untucapital.usuite.utg.model.OwnershipDetails;
 import com.untucapital.usuite.utg.repository.MostImportantSuppliersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.util.List;
 

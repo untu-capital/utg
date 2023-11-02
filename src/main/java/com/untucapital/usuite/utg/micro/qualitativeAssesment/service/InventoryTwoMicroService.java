@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.micro.qualitativeAssesment.service;
 
-import com.untucapital.usuite.utg.model.InventoryTwoMicro;
 import com.untucapital.usuite.utg.micro.qualitativeAssesment.repo.InventoryTwoMicroRepository;
+import com.untucapital.usuite.utg.model.InventoryTwoMicro;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

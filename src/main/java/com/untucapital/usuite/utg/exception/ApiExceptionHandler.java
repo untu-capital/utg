@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.exception;
 
 import com.untucapital.usuite.utg.controller.payload.UsuiteApiErrorResp;
-import com.untucapital.usuite.utg.controller.payload.UsuiteApiResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ public class ApiExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
     @ResponseBody
-    @ExceptionHandler(value = javax.validation.ValidationException.class)
+    @ExceptionHandler(value = ValidationException.class)
     public ResponseEntity<UsuiteApiErrorResp> handleValidationException(ValidationException ve) {
         log.error("Validation Exception occurred - {}", ve.getMessage(), ve);
         return ResponseEntity.badRequest()

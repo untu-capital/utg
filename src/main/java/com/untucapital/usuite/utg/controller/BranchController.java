@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.BranchesRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.BranchesResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
@@ -29,13 +31,13 @@ public class BranchController extends AbstractController<Branches> {
 
     //build save branch REST API
     @PostMapping("/addBranch")
-    public void add(@RequestBody Branches branches) {
-        branchService.saveBranches(branches);
+    public void add(@RequestBody BranchesRequestDTO requestDTO) {
+        branchService.saveBranches(requestDTO);
     }
 
     @GetMapping("getBranchById/{id}")
-    public ResponseEntity<Branches> getBranches(@PathVariable("id") String id) {
-        Branches branch = branchService.getBranchesById(id);
+    public ResponseEntity<BranchesResponseDTO> getBranches(@PathVariable("id") String id) {
+        BranchesResponseDTO branch = branchService.getBranchesById(id);
         if (branch != null) {
             return new ResponseEntity<>(branch, HttpStatus.OK);
         } else {
@@ -44,8 +46,8 @@ public class BranchController extends AbstractController<Branches> {
     }
 
     @GetMapping("byName/{name}")
-    public Branches getBranchByName(@PathVariable("name") String name) {
-       return branchService.getBranchByName(name);
+    public BranchesResponseDTO getBranchByName(@PathVariable("name") String name) {
+        return branchService.getBranchByName(name);
 
     }
 
@@ -96,7 +98,7 @@ public class BranchController extends AbstractController<Branches> {
     }
 
     @GetMapping("/getAllBranches")
-    public List<Branches> getAllBranches() {
+    public List<BranchesResponseDTO> getAllBranches() {
         return branchService.getAllBranches();
     }
 

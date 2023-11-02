@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.AppraisalLoanRequest;
-import com.untucapital.usuite.utg.model.Business;
 import com.untucapital.usuite.utg.repository.AppraisalLoanRequestRepository;
-import com.untucapital.usuite.utg.repository.BusinessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

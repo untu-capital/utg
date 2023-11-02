@@ -1,7 +1,4 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.model.Bank;
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.Cities;
 import com.untucapital.usuite.utg.model.Zones;
 import com.untucapital.usuite.utg.repository.ZonesRepository;
 import lombok.Getter;

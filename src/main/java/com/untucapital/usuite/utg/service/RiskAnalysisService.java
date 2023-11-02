@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.model.LongTermCreditHistory;
 import com.untucapital.usuite.utg.model.RiskAnalysis;
 import com.untucapital.usuite.utg.repository.RiskAnalysisRepository;
 import org.springframework.beans.factory.annotation.Autowired;

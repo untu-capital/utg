@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.FinancialInflow;
+import com.untucapital.usuite.utg.DTO.request.FinancialOutFlowRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.FinancialOutFlowResponseDTO;
 import com.untucapital.usuite.utg.model.FinancialOutFlow;
 import com.untucapital.usuite.utg.service.FinancialOutFlowService;
 import org.slf4j.Logger;
@@ -19,12 +20,12 @@ public class FinancialOutflowController {
     private static final Logger log = LoggerFactory.getLogger(FinancialOutflowController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<FinancialOutFlow> getAllByLoanId(@PathVariable("loanId") String loanId) {
+    public List<FinancialOutFlowResponseDTO> getAllByLoanId(@PathVariable("loanId") String loanId) {
         return financialOutFlowService.getOutflow(loanId);
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody FinancialOutFlow financialOutFlow) {
+    public void add(@RequestBody FinancialOutFlowRequestDTO financialOutFlow) {
         financialOutFlowService.addOutflow(financialOutFlow);
     }
 }
