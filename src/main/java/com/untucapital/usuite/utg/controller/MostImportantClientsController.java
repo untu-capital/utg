@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.MostImportantClientsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.MostImportantClientsResponseDTO;
 import com.untucapital.usuite.utg.model.MostImportantClients;
 import com.untucapital.usuite.utg.service.MostImportantClientsService;
 import org.slf4j.Logger;
@@ -18,12 +20,12 @@ public class MostImportantClientsController {
     private static final Logger log = LoggerFactory.getLogger(OwnershipDetailsController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<MostImportantClients> getByLoanId(@PathVariable("loanId") String loanId) {
+    public List<MostImportantClientsResponseDTO> getByLoanId(@PathVariable("loanId") String loanId) {
         return mostImportantaClientsService.getMostImportantClientsByLoanId(loanId);
     }
 
     @PostMapping("/most_importanta_clients")
-    public void add(@RequestBody MostImportantClients mostImportantClients) {
+    public void add(@RequestBody MostImportantClientsRequestDTO mostImportantClients) {
         mostImportantaClientsService.saveMostImportantClients(mostImportantClients);
     }
 

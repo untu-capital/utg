@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.PurchaseOrderTransactionsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.PurchaseOrderTransactionsResponseDTO;
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
 import com.untucapital.usuite.utg.service.PurchaseOrderTransactionsService;
 import org.slf4j.Logger;
@@ -22,12 +24,12 @@ public class PurchaseOrderTransactionsController {
     private static final Logger log = LoggerFactory.getLogger(PurchaseOrderTransactionsController.class);
 
     @GetMapping
-    public List<PurchaseOrderTransactions> list() {
+    public List<PurchaseOrderTransactionsResponseDTO> list() {
         return purchaseOrderTransactionsService.getAllPurchaseOrderTransactions();
     }
 
     @PostMapping
-    public void saveRequisitions(@RequestBody PurchaseOrderTransactions purchaseOrderTransactions) {
+    public void saveRequisitions(@RequestBody PurchaseOrderTransactionsRequestDTO purchaseOrderTransactions) {
         log.info(String.valueOf(purchaseOrderTransactions));
         purchaseOrderTransactionsService.savePurchaseOrderTransaction(purchaseOrderTransactions);
     }
@@ -38,11 +40,11 @@ public class PurchaseOrderTransactionsController {
     }
 
     @GetMapping("getById/{id}")
-    public ResponseEntity<PurchaseOrderTransactions> getPurchaseOrderTransactionById(@PathVariable("id") String id) {
-        Optional<PurchaseOrderTransactions> purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionById(id);
+    public ResponseEntity<PurchaseOrderTransactionsResponseDTO> getPurchaseOrderTransactionById(@PathVariable("id") String id) {
+        PurchaseOrderTransactionsResponseDTO purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionById(id);
 
-        if (purchaseOrderTransactions.isPresent()) {
-            return new ResponseEntity<>(purchaseOrderTransactions.get(), HttpStatus.OK);
+        if (purchaseOrderTransactions != null) {
+            return new ResponseEntity<>(purchaseOrderTransactions, HttpStatus.OK);
         } else {
             // Handle the case when the Requisitions object is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -50,8 +52,8 @@ public class PurchaseOrderTransactionsController {
     }
 
     @GetMapping("getByRequisitionId/{id}")
-    public ResponseEntity<List<PurchaseOrderTransactions>> getPurchaseOrderTransactionsByRequisitionId(@PathVariable("id") String id) {
-        List<PurchaseOrderTransactions> purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionsByRequisitionId(id);
+    public ResponseEntity<List<PurchaseOrderTransactionsResponseDTO>> getPurchaseOrderTransactionsByRequisitionId(@PathVariable("id") String id) {
+        List<PurchaseOrderTransactionsResponseDTO> purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionsByRequisitionId(id);
 
         if (!purchaseOrderTransactions.isEmpty()) {
             return new ResponseEntity<>(purchaseOrderTransactions, HttpStatus.OK);

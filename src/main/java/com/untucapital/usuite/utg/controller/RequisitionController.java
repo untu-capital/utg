@@ -1,9 +1,12 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.RequisitionsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.RequisitionsResponseDTO;
 import com.untucapital.usuite.utg.model.Requisitions;
 import com.untucapital.usuite.utg.service.RequisitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +25,12 @@ public class RequisitionController {
     private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
 
     @GetMapping
-    public List<Requisitions> list() {
+    public List<RequisitionsResponseDTO> list() {
         return requisitionService.getAllRequistions();
     }
 
     @PostMapping
-    public void saveRequisitions(@RequestBody Requisitions requisitions) {
+    public void saveRequisitions(@RequestBody RequisitionsRequestDTO requisitions) {
         log.info(String.valueOf(requisitions));
         requisitionService.saveRequisition(requisitions);
     }
@@ -38,11 +41,11 @@ public class RequisitionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Requisitions> getRequisitionById(@PathVariable("id") String id) {
-        Optional<Requisitions> requisition = requisitionService.getRequisitionById(id);
+    public ResponseEntity<RequisitionsResponseDTO> getRequisitionById(@PathVariable("id") String id) {
+        RequisitionsResponseDTO requisition = requisitionService.getRequisitionById(id);
 
-        if (requisition.isPresent()) {
-            return new ResponseEntity<>(requisition.get(), HttpStatus.OK);
+        if (requisition!=null) {
+            return new ResponseEntity<>(requisition, HttpStatus.OK);
         } else {
             // Handle the case when the Requisitions object is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -51,11 +54,11 @@ public class RequisitionController {
 
 
     @GetMapping("getByPoNumber/{poNumber}")
-    public ResponseEntity<Requisitions> getRequisitionByPoNumber(@PathVariable("poNumber") String poNumber) {
-        Optional<Requisitions> requisitions = requisitionService.getRequisitionByPoNumber(poNumber);
+    public ResponseEntity<RequisitionsResponseDTO> getRequisitionByPoNumber(@PathVariable("poNumber") String poNumber) {
+        RequisitionsResponseDTO requisitions = requisitionService.getRequisitionByPoNumber(poNumber);
 
-        if (requisitions.isPresent()) {
-            return new ResponseEntity<>(requisitions.get(), HttpStatus.OK);
+        if (requisitions !=null) {
+            return new ResponseEntity<>(requisitions, HttpStatus.OK);
         } else {
             // Handle the case when no Requisitions objects are found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -63,16 +66,20 @@ public class RequisitionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateRequisition(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+    public ResponseEntity<String> updateRequisition(@PathVariable("id") String id, @RequestBody RequisitionsRequestDTO updatedRequisition) {
+
+        RequisitionsRequestDTO requisitionsRequest = new RequisitionsRequestDTO();
 
         // Check if the requisition with the given ID exists
-        Optional<Requisitions> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+        RequisitionsResponseDTO existingRequisitionOptional = requisitionService.getRequisitionById(id);
 
-        if (!existingRequisitionOptional.isPresent()) {
+        if (existingRequisitionOptional==null) {
             return ResponseEntity.notFound().build(); // Return a 404 response if not found
         }
 
-        Requisitions existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+        RequisitionsResponseDTO existingRequisition = existingRequisitionOptional; // Extract the actual object
+
+
 
         // Update the existing requisition with the new data
         existingRequisition.setNotes(updatedRequisition.getNotes());
@@ -94,8 +101,10 @@ public class RequisitionController {
         }
         existingRequisition.setAttachments(existingAttachments);
 
+        BeanUtils.copyProperties(existingRequisition, requisitionsRequest);
+
         // Save the updated requisition
-        requisitionService.saveRequisition(existingRequisition);
+        requisitionService.saveRequisition(requisitionsRequest);
 
         return ResponseEntity.ok("Requisition updated successfully"); // Return a success response
     }
@@ -107,22 +116,24 @@ public class RequisitionController {
             @PathVariable int attachmentIndex) {
 
         // Find the Requisitions entity by ID
-        Optional<Requisitions> requisitionOptional = requisitionService.getRequisitionById(requisitionId);
+        RequisitionsResponseDTO requisitionOptional = requisitionService.getRequisitionById(requisitionId);
 
-        if (!requisitionOptional.isPresent()) {
+        if (requisitionOptional ==null) {
             return ResponseEntity.notFound().build();
         }
 
-        Requisitions requisition = requisitionOptional.get();
+
 
         // Check if the attachment index is valid
-        List<String> attachments = requisition.getAttachments();
+        List<String> attachments = requisitionOptional.getAttachments();
         if (attachmentIndex >= 0 && attachmentIndex < attachments.size()) {
             // Remove the attachment from the list
             attachments.remove(attachmentIndex);
 
+            RequisitionsRequestDTO request = new RequisitionsRequestDTO();
+            BeanUtils.copyProperties(requisitionOptional, request);
             // Update the Requisitions entity
-            requisitionService.saveRequisition(requisition);
+            requisitionService.saveRequisition(request);
 
             return ResponseEntity.ok("Attachment deleted successfully");
         } else {

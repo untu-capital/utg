@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.StockRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.StockResponseDTO;
 import com.untucapital.usuite.utg.model.Stock;
 import com.untucapital.usuite.utg.service.StockService;
 import org.slf4j.Logger;
@@ -19,12 +21,12 @@ public class StockController {
     private static final Logger log = LoggerFactory.getLogger(StockController.class);
 
     @PostMapping("/addstock")
-    public void add(@RequestBody Stock stock) {
+    public void add(@RequestBody StockRequestDTO stock) {
         stockService.saveStock(stock);
     }
 
     @GetMapping("/get_stock/{loanId}")
-    public List<Stock> getStockByLoanId(@PathVariable("loanId") String loanId) {
+    public List<StockResponseDTO> getStockByLoanId(@PathVariable("loanId") String loanId) {
         return stockService.getStockByLoanId(loanId);
     }
     @DeleteMapping("/deleteStock/{id}")

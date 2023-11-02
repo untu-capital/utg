@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.RiskAnalysisRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.RiskAnalysisResponseDTO;
 import com.untucapital.usuite.utg.model.RiskAnalysis;
 import com.untucapital.usuite.utg.service.RiskAnalysisService;
 import org.slf4j.Logger;
@@ -18,12 +20,12 @@ public class RiskAnalysisController {
     private static final Logger log = LoggerFactory.getLogger(RiskAnalysisController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<RiskAnalysis> getByLoanId(@PathVariable("loanId") String loanId) {
+    public List<RiskAnalysisResponseDTO> getByLoanId(@PathVariable("loanId") String loanId) {
         return riskAnalysisService.getRiskAnalysisByLoanId(loanId);
     }
 
     @PostMapping("/save")
-    public void add(@RequestBody RiskAnalysis riskAnalysis) {
+    public void add(@RequestBody RiskAnalysisRequestDTO riskAnalysis) {
         riskAnalysisService.saveRiskAnalysis(riskAnalysis);
     }
 

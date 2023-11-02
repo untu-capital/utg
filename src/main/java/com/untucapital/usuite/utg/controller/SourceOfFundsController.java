@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.SourceOfFundsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.SourceOfFundsResponseDTO;
 import com.untucapital.usuite.utg.model.SourceOfFunds;
 import com.untucapital.usuite.utg.service.SourceOfFundsService;
 import org.slf4j.Logger;
@@ -20,12 +22,12 @@ public class SourceOfFundsController {
     private static final Logger log = LoggerFactory.getLogger(SourceOfFundsController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<SourceOfFunds> getByLoanId(@PathVariable("loanId") String loanId) {
+    public List<SourceOfFundsResponseDTO> getByLoanId(@PathVariable("loanId") String loanId) {
         return sourceOfFundsService.getSourceOfFundsByLoanId(loanId);
     }
 
     @PostMapping("/add")
-    public void add(@RequestBody SourceOfFunds sourceOfFunds) {
+    public void add(@RequestBody SourceOfFundsRequestDTO sourceOfFunds) {
         sourceOfFundsService.saveSourceOfFunds(sourceOfFunds);
     }
 

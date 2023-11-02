@@ -1,14 +1,22 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.MeetingsRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.MeetingsResponseDTO;
 import com.untucapital.usuite.utg.model.Meetings;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.MeetingsRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Transactional
@@ -25,8 +33,40 @@ public class MeetingsService extends AbstractService<Meetings>{
     }
 
     @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
-    public void saveMeetings(Meetings meetings) {
+    public void saveMeetings(MeetingsRequestDTO request) {
+
+        Meetings meetings = new Meetings();
+        BeanUtils.copyProperties(request,meetings);
         meetingsRepository.save(meetings);
+    }
+
+    //Get collateral by Id
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
+    public MeetingsResponseDTO getCollateralById( String id) {
+
+        MeetingsResponseDTO result = new MeetingsResponseDTO();
+        Meetings meetings =meetingsRepository.findMeetingsById(id);
+        BeanUtils.copyProperties(meetings, result);
+
+        return result;
+    }
+
+    //Get collateral by loanId
+    @org.springframework.transaction.annotation.Transactional(value = "transactionManager")
+    public List<MeetingsResponseDTO> getCollateralByLoanId(String loanId) {
+
+        List<MeetingsResponseDTO> responseDTOs = new ArrayList<>();
+        List<Meetings> meetingsList = meetingsRepository.findMeetingsByLoanId(loanId);
+
+        for (Meetings meetings : meetingsList){
+
+            MeetingsResponseDTO report = new MeetingsResponseDTO();
+            BeanUtils.copyProperties(meetings, report);
+
+            responseDTOs.add(report);
+        }
+
+        return responseDTOs;
     }
 
 

@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.response.SignatureResponseDTO;
 import com.untucapital.usuite.utg.model.Signature;
 import com.untucapital.usuite.utg.repository.SignatureRepository;
 import com.untucapital.usuite.utg.response.SignatureResponse;
@@ -16,8 +17,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping(path = "signature")
 public class SignatureController {
-    @Autowired
-    SignatureRepository signatureRepository;
 
     @Autowired
     private final SignatureService signatureService;
@@ -39,12 +38,12 @@ public class SignatureController {
     }
 
     @GetMapping("/signatures")
-    public List<Signature> getSignature(){
+    public List<SignatureResponseDTO> getSignature(){
         return  signatureService.getSignature();
     }
 
     @GetMapping("/signature/{id}")
-    public Optional<Signature> getSignature(@PathVariable("id") String id){
+    public SignatureResponseDTO getSignature(@PathVariable("id") String id){
         return signatureService.getSignature(id);
     }
 
@@ -56,16 +55,12 @@ public class SignatureController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updateSignature(
-
             @PathVariable("id") String id,
             @RequestParam("position") String position,
             @RequestParam("branch") String branch){
 
-        Signature updateSignature  = signatureRepository.getSignatureById(id);
-        updateSignature.setPosition(position);
-        updateSignature.setBranch(branch);
+        signatureService.updateSignature(id, position, branch);
 
-        signatureRepository.save(updateSignature);
         return  new ResponseEntity<String>("Signature Updated", HttpStatus.OK);
     }
 

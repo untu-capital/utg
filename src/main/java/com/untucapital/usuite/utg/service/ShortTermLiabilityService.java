@@ -1,11 +1,15 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.DTO.request.ShortTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.ShortTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.model.ShortTermLiability;
 import com.untucapital.usuite.utg.repository.ShortTermLiabilityRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -15,13 +19,26 @@ public class ShortTermLiabilityService {
     ShortTermLiabilityRepository shortTermLiabilityRepository;
 
     @Transactional(value = "transactionManager")
-    public void saveLiability(ShortTermLiability shortTermLiability){
+    public void saveLiability(ShortTermLiabilityRequestDTO request){
+
+        ShortTermLiability shortTermLiability = new ShortTermLiability();
+        BeanUtils.copyProperties(request, shortTermLiability);
         shortTermLiabilityRepository.save(shortTermLiability);
     }
 
     @Transactional(value = "transactionManager")
-    public List<ShortTermLiability> getLiability(String loanId){
-        return shortTermLiabilityRepository.findShortTermLiabilityByLoanId(loanId);
+    public List<ShortTermLiabilityResponseDTO> getLiability(String loanId){
+
+        List<ShortTermLiabilityResponseDTO> response = new ArrayList<>();
+        List<ShortTermLiability> shortTermLiabilityList = shortTermLiabilityRepository.findShortTermLiabilityByLoanId(loanId);
+
+        for (ShortTermLiability shortTermLiability : shortTermLiabilityList) {
+            ShortTermLiabilityResponseDTO responseDTO = new ShortTermLiabilityResponseDTO();
+            BeanUtils.copyProperties(shortTermLiability, responseDTO);
+            response.add(responseDTO);
+        }
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")

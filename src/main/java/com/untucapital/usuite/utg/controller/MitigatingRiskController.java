@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.DTO.request.MitigatingRiskRequestDTO;
+import com.untucapital.usuite.utg.DTO.response.MitigatingRiskResponseDTO;
 import com.untucapital.usuite.utg.model.MitigatingRisk;
 import com.untucapital.usuite.utg.service.MitigatingRiskService;
 import org.slf4j.Logger;
@@ -18,12 +20,12 @@ public class MitigatingRiskController {
     private static final Logger log = LoggerFactory.getLogger(MitigatingRiskController.class);
 
     @GetMapping("/get/{loanId}")
-    public List<MitigatingRisk> getByLoanId(@PathVariable("loanId") String loanId) {
+    public List<MitigatingRiskResponseDTO> getByLoanId(@PathVariable("loanId") String loanId) {
         return mitigatingRiskService.getMitigatingRiskByLoanId(loanId);
     }
 
     @PostMapping("/save")
-    public void add(@RequestBody MitigatingRisk mitigatingRisk) {
+    public void add(@RequestBody MitigatingRiskRequestDTO mitigatingRisk) {
         mitigatingRiskService.saveMitigatingRisk(mitigatingRisk);
     }
 
