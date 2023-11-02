@@ -1,6 +1,7 @@
-package com.untucapital.usuite.utg.model;
+package com.untucapital.usuite.utg.model.po;
 
 import com.sun.istack.NotNull;
+import com.untucapital.usuite.utg.model.AbstractEntity;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,5 +42,17 @@ public class Requisitions extends AbstractEntity {
     private List<String> approvers;
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> attachments;
+
+    @Column(name = "po_approver")
+    private String poApprover;
+
+    @Column(name = "cms_approver")
+    private String cmsApprover;
+
+    @Column(name = "from_account")
+    private String fromAccount;
+
+    @Column(name = "to_account")
+    private String toAccount;
 
 }

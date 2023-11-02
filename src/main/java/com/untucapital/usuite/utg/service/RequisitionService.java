@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.DTO.response.RequisitionResponseDTO;
-import com.untucapital.usuite.utg.model.Requisitions;
+import com.untucapital.usuite.utg.model.po.Requisitions;
 import com.untucapital.usuite.utg.repository.RequisitionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -55,6 +56,41 @@ public class RequisitionService {
         }
         log.info("RequisitionsDTO: {}", requisitionResponseDTO);
         return Optional.of(requisitionResponseDTO);
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<RequisitionResponseDTO> getRequisitionByUserId(String id) {
+        List<RequisitionResponseDTO> requisitionResponseDTO = new ArrayList<>();
+
+        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByUserId(id);
+        for (Requisitions requisition: requisitions){
+            RequisitionResponseDTO requisitionResponseDTO1 = new RequisitionResponseDTO();
+            BeanUtils.copyProperties(requisition, requisitionResponseDTO1);
+            requisitionResponseDTO.add(requisitionResponseDTO1);
+        }
+        return requisitionResponseDTO;
+    }
+
+    public List<RequisitionResponseDTO> findRequisitionsByApproverId(String approverId) {
+        return requisitionRepository.findAll().stream()
+                .filter(requisition -> requisition.getApprovers() != null && requisition.getApprovers().contains(approverId))
+                .map(requisition -> {
+                    RequisitionResponseDTO requisitionResponseDTO = new RequisitionResponseDTO();
+                    BeanUtils.copyProperties(requisition, requisitionResponseDTO);
+                    return requisitionResponseDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<RequisitionResponseDTO> findRequisitionsWithPoApprover() {
+        return requisitionRepository.findRequisitionsByPoApproverIsNotNullAndPoApproverIsNotLike("")
+                .stream()
+                .map(requisition -> {
+                    RequisitionResponseDTO requisitionResponseDTO = new RequisitionResponseDTO();
+                    BeanUtils.copyProperties(requisition, requisitionResponseDTO);
+                    return requisitionResponseDTO;
+                })
+                .collect(Collectors.toList());
     }
 
 

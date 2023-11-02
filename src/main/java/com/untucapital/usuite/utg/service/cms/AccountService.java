@@ -23,6 +23,7 @@ public class AccountService {
 
         AccountEntity entity = new AccountEntity();
         Optional<AccountEntity> accountEntity = accountsRepository.findByAccount(account);
+        log.info("accountEntity {}", accountEntity);
         if(accountEntity.isPresent()) {
             log.info("Account : {}", accountEntity.toString());
             entity = accountEntity.get();

@@ -135,9 +135,10 @@ public class PostGlProcessor {
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
 
+    log.info("postgl account: {}", transactionInfo.getFromAccount());
 
         AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
-
+        log.info("accountEntity: {}", accountEntity);
 
         request.setCredit(transactionInfo.getAmount());
         request.setDebit(0f);

@@ -27,4 +27,10 @@ public class RequisitionResponseDTO extends AbstractEntityDTO {
     private String userId;
     private List<String> approvers;
     private List<String> attachments;
+
+    private String poApprover;
+    private String cmsApprover;
+
+    private String fromAccount;
+    private String toAccount;
 }

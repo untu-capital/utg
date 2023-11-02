@@ -32,6 +32,14 @@ public class RequisitionsResponseDTO extends AbstractEntityDTO {
 
     private List<String> attachments;
 
+    private String poApprover;
+
+    private String cmsApprover;
+
+    private String fromAccount;
+
+    private String toAccount;
+
     public String getPoNumber() {
         return poNumber;
     }
@@ -102,5 +110,37 @@ public class RequisitionsResponseDTO extends AbstractEntityDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getPoApprover() {
+        return poApprover;
+    }
+
+    public void setPoApprover(String poApprover) {
+        this.poApprover = poApprover;
+    }
+
+    public String getCmsApprover() {
+        return cmsApprover;
+    }
+
+    public void setCmsApprover(String cmsApprover) {
+        this.cmsApprover = cmsApprover;
+    }
+
+    public String getFromAccount() {
+        return fromAccount;
+    }
+
+    public void setFromAccount(String fromAccount) {
+        this.fromAccount = fromAccount;
+    }
+
+    public String getToAccount() {
+        return toAccount;
+    }
+
+    public void setToAccount(String toAccount) {
+        this.toAccount = toAccount;
     }
 }

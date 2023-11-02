@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
-import com.untucapital.usuite.utg.model.Requisitions;
 import com.untucapital.usuite.utg.repository.PurchaseOrderTransactionsRepository;
-import com.untucapital.usuite.utg.repository.RequisitionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

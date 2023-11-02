@@ -1,23 +1,16 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.DTO.response.RequisitionResponseDTO;
-import com.untucapital.usuite.utg.model.Business;
-import com.untucapital.usuite.utg.model.ClientLoan;
-import com.untucapital.usuite.utg.model.Requisitions;
-import com.untucapital.usuite.utg.repository.RequisitionRepository;
+import com.untucapital.usuite.utg.model.po.Requisitions;
 import com.untucapital.usuite.utg.service.RequisitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.NoResultException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -57,6 +50,28 @@ public class RequisitionController {
         }
     }
 
+    @GetMapping("userId/{id}")
+    public ResponseEntity<List<RequisitionResponseDTO>> getRequisitionByUserId(@PathVariable("id") String id) {
+        List<RequisitionResponseDTO> requisition = requisitionService.getRequisitionByUserId(id);
+
+        return new ResponseEntity<>(requisition, HttpStatus.OK);
+    }
+
+    @GetMapping("approverId/{id}")
+    public ResponseEntity<List<RequisitionResponseDTO>> getRequisitionsByApproverId(@PathVariable("id") String id) {
+        List<RequisitionResponseDTO> requisition = requisitionService.findRequisitionsByApproverId(id);
+
+        return new ResponseEntity<>(requisition, HttpStatus.OK);
+    }
+
+    @GetMapping("getByApproverIdNull")
+    public ResponseEntity<List<RequisitionResponseDTO>> getRequisitionsByApproverId() {
+        List<RequisitionResponseDTO> requisition = requisitionService.findRequisitionsWithPoApprover();
+
+        return new ResponseEntity<>(requisition, HttpStatus.OK);
+    }
+
+
 
     @GetMapping("getByPoNumber/{poNumber}")
     public ResponseEntity<Requisitions> getRequisitionByPoNumber(@PathVariable("poNumber") String poNumber) {
@@ -89,8 +104,7 @@ public class RequisitionController {
         // Update the existing approvers with the new approvers
         existingRequisition.setApprovers(updatedRequisition.getApprovers());
 
-//        // Update the existing approvers with the new approvers
-//        existingRequisition.setAttachments(updatedRequisition.getAttachments());
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
 
         // Append the new attachments to the existing ones
         List<String> existingAttachments = existingRequisition.getAttachments();
@@ -106,6 +120,50 @@ public class RequisitionController {
         requisitionService.saveRequisition(existingRequisition);
 
         return ResponseEntity.ok("Requisition updated successfully"); // Return a success response
+    }
+
+    @PutMapping("/poApproveRequest/{id}")
+    public ResponseEntity<String> poApproveRequest(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+
+        // Check if the requisition with the given ID exists
+        Optional<RequisitionResponseDTO> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+
+        if (!existingRequisitionOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+
+        RequisitionResponseDTO existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
+
+        existingRequisition.setPoApprover(updatedRequisition.getPoApprover());
+
+        // Save the updated requisition
+        requisitionService.saveRequisition(existingRequisition);
+
+        return ResponseEntity.ok("Requisition submitted for approval"); // Return a success response
+    }
+
+    @PutMapping("cmsApproveRequest/{id}")
+    public ResponseEntity<String> cmApproveRequest(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+
+        // Check if the requisition with the given ID exists
+        Optional<RequisitionResponseDTO> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+
+        if (!existingRequisitionOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+
+        RequisitionResponseDTO existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
+
+        existingRequisition.setCmsApprover(updatedRequisition.getCmsApprover());
+
+        // Save the updated requisition
+        requisitionService.saveRequisition(existingRequisition);
+
+        return ResponseEntity.ok("Requisition submitted for approval"); // Return a success response
     }
 
 
@@ -137,9 +195,6 @@ public class RequisitionController {
             return ResponseEntity.badRequest().body("Invalid attachment index");
         }
     }
-
-
-
 
 
 }

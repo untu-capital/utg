@@ -24,7 +24,6 @@ import java.time.Year;
 @Data
 public class Budget {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

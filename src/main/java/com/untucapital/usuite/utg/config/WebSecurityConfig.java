@@ -393,7 +393,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated();
 
-
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }
