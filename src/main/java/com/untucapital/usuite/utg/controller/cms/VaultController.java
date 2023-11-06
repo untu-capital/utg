@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -94,4 +95,13 @@ public class VaultController {
         return ResponseEntity.ok(vaultService.getAllVaultsByBranch(branchId));
     }
 
+    @GetMapping("/get/total-voults-balance")
+    public ResponseEntity<BigDecimal> getAllVaultsBalanceByAccount() {
+        return ResponseEntity.ok(vaultService.getAllVaultsBalance());
+    }
+
+    @GetMapping("/get/vault-balance/{account}")
+    public ResponseEntity<BigDecimal> getAllVaultsBalanceByAccount(@PathVariable String account) {
+        return ResponseEntity.ok(vaultService.getVaultBalanceByAccount(account));
+    }
 }

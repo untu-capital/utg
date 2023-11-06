@@ -28,6 +28,8 @@ public class VaultService {
 
     private final VaultRepository vaultRepository;
     private final BranchRepository branchRepository;
+
+
     //Add
     @Transactional(value = "transactionManager")
     public Vault addVault(VaultRequest vaultRequest) {
@@ -71,6 +73,7 @@ public class VaultService {
 
         return vaultRepository.save(existingVault);
     }
+
     //Delete
     @Transactional(value = "transactionManager")
     public String deleteVault(Integer vaultId) {
@@ -81,12 +84,14 @@ public class VaultService {
 
         return String.format("Vault with id %d deleted successfully", vaultId);
     }
+
     //Get
     @Transactional(value = "transactionManager")
     public Vault getVault(Integer vaultId) {
         return vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
     }
+
     //Get All
     @Transactional(value = "transactionManager")
     public List<Vault> getAllVaults() {
@@ -117,10 +122,10 @@ public class VaultService {
     @Transactional(value = "transactionManager")
     public Vault getVaultByBranchAndType(String branch, String type) {
         log.info("Branch and Type:{}", branch + type);
-        Optional<Vault> vault =vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
+        Optional<Vault> vault = vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
 
         //FIXME: this is a bypass for testing
-        if(vault.isEmpty()) {
+        if (vault.isEmpty()) {
             Vault vault1 = new Vault();
             vault1.setAccount("8422/000/HRE/FCA/MV");
             return vault1;
@@ -133,12 +138,45 @@ public class VaultService {
     public List<Vault> getVaultsByBranch(String branch) {
         return vaultRepository.findVaultByBranch_BranchName(branch);
     }
+
     //Vaults By Branch
+    @Transactional(value = "transactionManager")
     public List<Vault> getAllVaultsByBranch(String branchId) {
         Branches branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
         return vaultRepository.findByBranch(branch);
     }
 
+    @Transactional(value = "transactionManager")
+    public BigDecimal getAllVaultsBalance() {
+
+        BigDecimal vaultBalance = vaultRepository.findTotalAccountBalances();
+
+        return vaultBalance;
+    }
+
+    @Transactional(value = "transactionManager")
+    public Vault updateVaultBalance(BigDecimal balance, String account) {
+
+        Optional<Vault> vault = vaultRepository.findByAccount(account);
+
+        if(vault.isPresent()) {
+            Vault current = vault.get();
+            current.setCurrentAmount(balance);
+            vaultRepository.save(current);
+
+            return current;
+        }else {
+            return null;
+        }
+    }
+
+    @Transactional(value = "transactionManager")
+    public BigDecimal getVaultBalanceByAccount(String account) {
+
+        BigDecimal vaultBalance = vaultRepository.findAccountBalanceByAccount(account);
+
+        return vaultBalance;
+    }
 
 }

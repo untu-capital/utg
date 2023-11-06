@@ -4,19 +4,26 @@ import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.DTO.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.AccountEntity;
 import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.processor.PostGlProcessor;
+import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import com.untucapital.usuite.utg.repository2.PostGlRepository;
 import com.untucapital.usuite.utg.service.cms.AccountService;
+import com.untucapital.usuite.utg.service.cms.VaultService;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,8 +33,10 @@ public class PostGlService {
 
     private final PostGlRepository postGlRepository;
     private final PostGlProcessor postGlProcessor;
-
     private final AccountService accountService;
+    private final VaultRepository vaultRepository;
+    private final VaultService vaultService;
+    private final UserService userService;
 
     @Transactional(value= "pastelTransactionManager")
     public PostGLResponseDTO savePostGl(PostGLRequestDTO request){
@@ -44,11 +53,19 @@ public class PostGlService {
     @Transactional(value= "pastelTransactionManager")
     public void savePostGlFromCMS(TransactionInfo request)  {
 
-        PostGl request1 = postGlProcessor.createFromAccountRequest(request);
-        PostGl request2 = postGlProcessor.createToAccountRequest(request);
+        List<User> user = userService.findAll();
 
-        postGlRepository.save(request1);
-        postGlRepository.save(request2);
+        Float currentBalanceFromAccount = getVaultAccountBalance(request.getFromAccount());
+
+        Float currentBalanceToAccount = getVaultAccountBalance(request.getToAccount());
+
+        PostGl transaction1 = postGlProcessor.createFromAccountRequest(request);
+        PostGl transaction2 = postGlProcessor.createToAccountRequest(request);
+
+        postGlProcessor.checkLimits(request, currentBalanceFromAccount, currentBalanceToAccount, user);
+
+        postGlRepository.save(transaction1);
+        postGlRepository.save(transaction2);
 
     }
 
@@ -106,12 +123,10 @@ public class PostGlService {
         AccountEntity accountEntity = accountService.findAccountByAccount(account);
         Integer accountLink = accountEntity.getAccountLink();
 
-        log.info("AccountLink:{}",accountLink);
         Float postGlBalances = postGlRepository.findAccountBalanceByAccountLink(accountLink);
-
-        log.info("PostGlBalances:{}",postGlBalances);
-
 
         return postGlBalances;
     }
+
+
 }

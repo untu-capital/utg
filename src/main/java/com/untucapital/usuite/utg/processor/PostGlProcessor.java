@@ -3,14 +3,23 @@ package com.untucapital.usuite.utg.processor;
 import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.entity.AccountEntity;
 import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
+import com.untucapital.usuite.utg.repository.cms.VaultRepository;
+import com.untucapital.usuite.utg.service.PostGlService;
+import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.service.cms.AccountService;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @Component
@@ -20,6 +29,8 @@ public class PostGlProcessor {
 
 
     private final AccountService accountService;
+    private final VaultRepository vaultRepository;
+    private final EmailSender emailSender;
 
     public PostGl createFromAccountRequest(TransactionInfo transactionInfo) {
 
@@ -129,5 +140,63 @@ public class PostGlProcessor {
         BeanUtils.copyProperties(request, postGl);
 
         return postGl;
+    }
+
+    public void checkLimits(TransactionInfo request, Float currentBalanceFromAccount, Float currentBalanceToAccount, List<User> user ){
+
+
+
+        if (currentBalanceFromAccount != null) {
+            Optional<Vault> optionalVault = vaultRepository.findByAccount(request.getFromAccount());
+
+            if(optionalVault.isPresent()) {
+                Vault vault = optionalVault.get();
+
+                BigDecimal vaultBalance = BigDecimal.valueOf(currentBalanceFromAccount).subtract(BigDecimal.valueOf(request.getAmount()));
+                vault.setCurrentAmount(vaultBalance);
+
+                vaultRepository.save(vault);
+            }
+        }
+
+        if(currentBalanceToAccount != null) {
+
+            Optional<Vault> optionalVault = vaultRepository.findByAccount(request.getFromAccount());
+
+            if(optionalVault.isPresent()) {
+
+                Vault vault = optionalVault.get();
+                BigDecimal vaultBalance = BigDecimal.valueOf(currentBalanceToAccount).add(BigDecimal.valueOf(request.getAmount()));
+
+                int value = BigDecimal.valueOf(currentBalanceToAccount).compareTo(vault.getMaxAmount());
+                if(value<=0) {
+
+                    int result = vault.getMaxAmount().compareTo(vaultBalance);
+                    if (result < 0) {
+                        //TODO Send email
+
+                        sendEmail(
+                                "Panashe" + " " + "Rutimhu",
+                                "panasherutimhu0@gmail.com",
+                                "Limit Exceeded",
+                                "The balance of this Vault : (" + vault.getAccount() + ") has exceeded the limit.",
+                                "Panashe" + " " + "Rutimhu"
+                        );
+                    } else {
+                        vault.setCurrentAmount(vaultBalance);
+                        vaultRepository.save(vault);
+                    }
+                }else {
+                    vault.setCurrentAmount(vaultBalance);
+                    vaultRepository.save(vault);
+                }
+            }
+        }
+    }
+
+
+    private void sendEmail(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName) {
+        String emailText = emailSender.limitExceeded(recipientName, recipientMessage, senderName);
+        emailSender.send(recipientEmail, recipientSubject, emailText);
     }
 }
