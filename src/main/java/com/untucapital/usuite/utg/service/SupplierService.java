@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 
+import com.untucapital.usuite.utg.model.POSSupplier;
 import com.untucapital.usuite.utg.model.Staff;
 import com.untucapital.usuite.utg.repository.cms.SupplierRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,23 +22,23 @@ public class SupplierService {
 
     //Save Supplier
     @Transactional(value = "transactionManager")
-    public Staff.POSSupplier saveSupplier(Staff.POSSupplier posSupplier) {
+    public POSSupplier saveSupplier(POSSupplier posSupplier) {
        return supplierRepository.save(posSupplier);
     }
     //Get Supplier By Id
     @Transactional(value = "transactionManager")
-    public Staff.POSSupplier getSupplierById(Integer id) {
+    public POSSupplier getSupplierById(Integer id) {
         return supplierRepository.findById(id).orElse(null);
     }
     //Get All Suppliers
     @Transactional(value = "transactionManager")
-    public List<Staff.POSSupplier> getAllSuppliers() {
+    public List<POSSupplier> getAllSuppliers() {
         return supplierRepository.findAll();
     }
     //Update Supplier
     @Transactional(value = "transactionManager")
-    public Staff.POSSupplier updateSupplier(Staff.POSSupplier posSupplier) {
-        Staff.POSSupplier existingSupplier = supplierRepository.findById(posSupplier.getId()).orElse(null);
+    public POSSupplier updateSupplier(POSSupplier posSupplier) {
+        POSSupplier existingSupplier = supplierRepository.findById(posSupplier.getId()).orElse(null);
 
         assert existingSupplier != null;
         existingSupplier.setName(posSupplier.getName());
@@ -49,8 +50,8 @@ public class SupplierService {
     }
     //Delete Supplier
     @Transactional(value = "transactionManager")
-    public Staff.POSSupplier deleteSupplier(Integer id) {
-        Staff.POSSupplier supplier = supplierRepository.findById(id).orElse(null);
+    public POSSupplier deleteSupplier(Integer id) {
+        POSSupplier supplier = supplierRepository.findById(id).orElse(null);
         supplierRepository.deleteById(id);
         return supplier;
     }

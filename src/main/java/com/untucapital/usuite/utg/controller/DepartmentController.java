@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 //import com.untucapital.usuite.utg.model.Department;
+import com.untucapital.usuite.utg.model.Department;
 import com.untucapital.usuite.utg.model.Staff;
 import com.untucapital.usuite.utg.service.DepartmentService;
 import lombok.RequiredArgsConstructor;
@@ -22,25 +23,25 @@ public class DepartmentController {
     //save department
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public Staff.Department saveDepartment(@RequestBody Staff.Department department){
+    public Department saveDepartment(@RequestBody Department department){
         return departmentService.saveDepartment(department);
     }
     //get department by id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Staff.Department getDepartmentById(@PathVariable Integer id){
+    public Department getDepartmentById(@PathVariable Integer id){
         return departmentService.getDepartmentById(id);
     }
     //get all departments
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<Staff.Department> getAllDepartments(){
+    public List<Department> getAllDepartments(){
         return departmentService.getAllDepartments();
     }
     //update department
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.OK)
-    public Staff.Department updateDepartment(@RequestBody Staff.Department department){
+    public Department updateDepartment(@RequestBody Department department){
         return departmentService.updateDepartment(department);
     }
     //delete department

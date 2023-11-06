@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.repository.cms;
 
+import com.untucapital.usuite.utg.model.POSSupplier;
 import com.untucapital.usuite.utg.model.Staff;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface SupplierRepository extends JpaRepository<Staff.POSSupplier, Integer> {
+public interface SupplierRepository extends JpaRepository<POSSupplier, Integer> {
+
+    POSSupplier findPOSSupplierById(String id);
 }
