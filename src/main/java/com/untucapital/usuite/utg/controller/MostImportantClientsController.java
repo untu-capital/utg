@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.MostImportantClientsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MostImportantClientsResponseDTO;
-import com.untucapital.usuite.utg.model.MostImportantClients;
+import com.untucapital.usuite.utg.dto.request.MostImportantClientsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MostImportantClientsResponseDTO;
 import com.untucapital.usuite.utg.service.MostImportantClientsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

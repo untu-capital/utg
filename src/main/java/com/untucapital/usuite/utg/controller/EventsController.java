@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.EventsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.EventsResponseDTO;
-import com.untucapital.usuite.utg.model.Events;
+import com.untucapital.usuite.utg.dto.request.EventsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.EventsResponseDTO;
 import com.untucapital.usuite.utg.service.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

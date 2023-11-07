@@ -1,8 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.response.SignatureResponseDTO;
-import com.untucapital.usuite.utg.model.Signature;
-import com.untucapital.usuite.utg.repository.SignatureRepository;
+import com.untucapital.usuite.utg.dto.response.SignatureResponseDTO;
 import com.untucapital.usuite.utg.response.SignatureResponse;
 import com.untucapital.usuite.utg.service.SignatureService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "signature")

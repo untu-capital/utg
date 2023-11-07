@@ -1,12 +1,11 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.PurchaseOrderTransactionsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.PurchaseOrderTransactionsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.PurchaseOrderTransactionsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponseDTO;
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
 import com.untucapital.usuite.utg.repository.PurchaseOrderTransactionsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

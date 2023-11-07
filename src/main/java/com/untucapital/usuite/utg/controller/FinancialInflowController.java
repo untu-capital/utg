@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.FinancialInflowRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.FinancialInflowResponseDTO;
-import com.untucapital.usuite.utg.model.FinancialInflow;
+import com.untucapital.usuite.utg.dto.request.FinancialInflowRequestDTO;
+import com.untucapital.usuite.utg.dto.response.FinancialInflowResponseDTO;
 import com.untucapital.usuite.utg.service.FinancialInflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

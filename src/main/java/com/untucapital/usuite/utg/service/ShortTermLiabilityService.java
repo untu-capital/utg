@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.ShortTermLiabilityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ShortTermLiabilityResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ShortTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ShortTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.model.ShortTermLiability;
 import com.untucapital.usuite.utg.repository.ShortTermLiabilityRepository;
 import org.springframework.beans.BeanUtils;

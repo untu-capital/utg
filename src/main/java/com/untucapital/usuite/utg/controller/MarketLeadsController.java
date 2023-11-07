@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.MarketLeadsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MarketLeadsResponseDTO;
-import com.untucapital.usuite.utg.model.MarketLeads;
+import com.untucapital.usuite.utg.dto.request.MarketLeadsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketLeadsResponseDTO;
 import com.untucapital.usuite.utg.repository.MarketLeadsRepository;
 import com.untucapital.usuite.utg.service.MarketLeadsService;
 import org.springframework.beans.factory.annotation.Autowired;

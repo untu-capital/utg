@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.AppraisalFileUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.AppraisalFileUploadResponseDTO;
-import com.untucapital.usuite.utg.model.AppraisalFileUpload;
+import com.untucapital.usuite.utg.dto.request.AppraisalFileUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.AppraisalFileUploadResponseDTO;
 import com.untucapital.usuite.utg.repository.AppraisalFileUploadRepository;
 import com.untucapital.usuite.utg.service.AppraisalFileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;

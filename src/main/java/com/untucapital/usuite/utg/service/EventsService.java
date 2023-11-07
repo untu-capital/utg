@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.DTO.request.EventsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.EventsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.EventsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.EventsResponseDTO;
 import com.untucapital.usuite.utg.model.Events;
 import com.untucapital.usuite.utg.repository.EventsRepository;
 import lombok.Getter;

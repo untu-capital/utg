@@ -1,9 +1,9 @@
 package com.untucapital.usuite.utg.controller.cms;
 
-import com.untucapital.usuite.utg.DTO.cms.ApproverRequest;
-import com.untucapital.usuite.utg.DTO.cms.TransactionVoucherInitiatorRequest;
-import com.untucapital.usuite.utg.DTO.cms.TransactionVoucherResponse;
-import com.untucapital.usuite.utg.DTO.cms.TransactionVoucherUpdateRequest;
+import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
+import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
+import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
+import com.untucapital.usuite.utg.dto.cms.TransactionVoucherUpdateRequest;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.Authorisation;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;

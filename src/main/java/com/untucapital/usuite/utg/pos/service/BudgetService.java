@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.pos.service;
 
-import com.untucapital.usuite.utg.DTO.request.BudgetRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BudgetResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BudgetRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;

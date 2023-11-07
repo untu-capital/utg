@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.MarketCampaignRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MarketCampaignResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MarketCampaignRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketCampaignResponseDTO;
 import com.untucapital.usuite.utg.model.MarketCampaign;
 import com.untucapital.usuite.utg.repository.MarketCampaignRepository;
 import org.springframework.beans.BeanUtils;

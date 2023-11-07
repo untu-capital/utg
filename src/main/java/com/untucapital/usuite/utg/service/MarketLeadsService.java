@@ -1,17 +1,13 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.MarketLeadsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MarketLeadsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MarketLeadsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketLeadsResponseDTO;
 import com.untucapital.usuite.utg.model.MarketLeads;
 import com.untucapital.usuite.utg.repository.MarketLeadsRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.ArrayList;
 import java.util.List;

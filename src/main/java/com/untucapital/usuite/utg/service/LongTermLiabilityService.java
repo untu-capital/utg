@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.LongTermLiabilityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.LongTermLiabilityResponseDTO;
+import com.untucapital.usuite.utg.dto.request.LongTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LongTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.model.LongTermLiability;
 import com.untucapital.usuite.utg.repository.LongTermLiabilityRepository;
 import org.springframework.beans.BeanUtils;

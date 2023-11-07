@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.SourceOfFundsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.SourceOfFundsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.SourceOfFundsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.SourceOfFundsResponseDTO;
 import com.untucapital.usuite.utg.model.SourceOfFunds;
 import com.untucapital.usuite.utg.repository.SourceOfFundsRepository;
 import org.springframework.beans.BeanUtils;

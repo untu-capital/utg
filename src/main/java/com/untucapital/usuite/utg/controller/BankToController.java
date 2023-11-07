@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.BankToRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BankToResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BankToRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BankToResponseDTO;
 import com.untucapital.usuite.utg.service.BankToService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

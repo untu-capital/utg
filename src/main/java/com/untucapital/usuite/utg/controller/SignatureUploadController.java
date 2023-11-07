@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.DTO.request.SignatureUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.SignatureUploadResponseDTO;
+import com.untucapital.usuite.utg.dto.request.SignatureUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.SignatureUploadResponseDTO;
 import com.untucapital.usuite.utg.model.SignatureUpload;
 import com.untucapital.usuite.utg.repository.SignatureUploadRepository;
 import com.untucapital.usuite.utg.service.SignatureUploadService;

@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.OperationalCostRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.OperationalCostResponseDTO;
-import com.untucapital.usuite.utg.model.OperationalCost;
+import com.untucapital.usuite.utg.dto.request.OperationalCostRequestDTO;
+import com.untucapital.usuite.utg.dto.response.OperationalCostResponseDTO;
 import com.untucapital.usuite.utg.service.OperationalCostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

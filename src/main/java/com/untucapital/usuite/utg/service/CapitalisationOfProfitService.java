@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.CapitalisationOfProfitRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CapitalisationOfProfitResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CapitalisationOfProfitRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CapitalisationOfProfitResponseDTO;
 import com.untucapital.usuite.utg.model.CapitalisationOfProfit;
 import com.untucapital.usuite.utg.repository.CapitalisationOfProfitRepository;
 import org.springframework.beans.BeanUtils;

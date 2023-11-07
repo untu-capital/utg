@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.MostImportantClientsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MostImportantClientsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MostImportantClientsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MostImportantClientsResponseDTO;
 import com.untucapital.usuite.utg.model.MostImportantClients;
 import com.untucapital.usuite.utg.repository.MostImportantClientsRepository;
 import org.springframework.beans.BeanUtils;

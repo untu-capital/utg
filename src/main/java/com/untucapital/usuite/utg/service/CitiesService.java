@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.CitiesRequestDTO;
+import com.untucapital.usuite.utg.dto.request.CitiesRequestDTO;
 import com.untucapital.usuite.utg.model.Cities;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.CitiesRepository;

@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.BankToRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BankToResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BankToRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BankToResponseDTO;
 import com.untucapital.usuite.utg.model.BankTo;
 import com.untucapital.usuite.utg.repository.BankToRepository;
 import org.springframework.beans.BeanUtils;

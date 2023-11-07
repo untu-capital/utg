@@ -1,14 +1,12 @@
 package com.untucapital.usuite.utg.processor;
 
-import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
-import com.untucapital.usuite.utg.entity.AccountEntity;
-import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
+import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
+import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
-import com.untucapital.usuite.utg.service.PostGlService;
-import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.service.cms.AccountService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.AllArgsConstructor;
@@ -32,9 +30,9 @@ public class PostGlProcessor {
     private final VaultRepository vaultRepository;
     private final EmailSender emailSender;
 
-    public PostGl createFromAccountRequest(TransactionInfo transactionInfo) {
+    public PostGlResponseDTO createFromAccountRequest(TransactionInfo transactionInfo) {
 
-        PostGl postGl = new PostGl();
+        PostGlResponseDTO postGl = new PostGlResponseDTO();
         PostGLRequestDTO request = new PostGLRequestDTO();
         request.setTxDate(Date.valueOf(transactionInfo.getTransactionDate()));
         request.setReference(transactionInfo.getReference());
@@ -76,7 +74,7 @@ public class PostGlProcessor {
         request.setFForeignTax(0F);
 
 
-        AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
 
 
         request.setCredit(transactionInfo.getAmount());
@@ -87,9 +85,9 @@ public class PostGlProcessor {
         return postGl;
     }
 
-    public PostGl createToAccountRequest(TransactionInfo transactionInfo) {
+    public PostGlResponseDTO createToAccountRequest(TransactionInfo transactionInfo) {
 
-        PostGl postGl = new PostGl();
+        PostGlResponseDTO postGl = new PostGlResponseDTO();
         PostGLRequestDTO request = new PostGLRequestDTO();
         request.setTxDate(Date.valueOf(transactionInfo.getTransactionDate()));
         request.setReference(transactionInfo.getReference());
@@ -131,7 +129,7 @@ public class PostGlProcessor {
         request.setFForeignTax(0F);
 
 
-        AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getToAccount());
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getToAccount());
 
         request.setCredit(0f);
         request.setDebit(transactionInfo.getAmount());

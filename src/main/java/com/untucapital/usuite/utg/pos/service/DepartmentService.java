@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.pos.service;
 
-import com.untucapital.usuite.utg.DTO.request.DepartmentRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.DepartmentResponseDTO;
+import com.untucapital.usuite.utg.dto.request.DepartmentRequestDTO;
+import com.untucapital.usuite.utg.dto.response.DepartmentResponseDTO;
 import com.untucapital.usuite.utg.pos.model.Department;
 import com.untucapital.usuite.utg.pos.repository.DepartmentRepository;
 import lombok.RequiredArgsConstructor;

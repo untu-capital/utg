@@ -1,17 +1,13 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.AppraisalFileUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.AppraisalFileUploadResponseDTO;
+import com.untucapital.usuite.utg.dto.request.AppraisalFileUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.AppraisalFileUploadResponseDTO;
 import com.untucapital.usuite.utg.model.AppraisalFileUpload;
 import com.untucapital.usuite.utg.repository.AppraisalFileUploadRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;

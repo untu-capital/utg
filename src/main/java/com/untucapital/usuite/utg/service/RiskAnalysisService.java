@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.RiskAnalysisRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.RiskAnalysisResponseDTO;
+import com.untucapital.usuite.utg.dto.request.RiskAnalysisRequestDTO;
+import com.untucapital.usuite.utg.dto.response.RiskAnalysisResponseDTO;
 import com.untucapital.usuite.utg.model.RiskAnalysis;
 import com.untucapital.usuite.utg.repository.RiskAnalysisRepository;
 import org.springframework.beans.BeanUtils;

@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.ShortTermLiabilityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ShortTermLiabilityResponseDTO;
-import com.untucapital.usuite.utg.model.ShortTermLiability;
+import com.untucapital.usuite.utg.dto.request.ShortTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ShortTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.service.ShortTermLiabilityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

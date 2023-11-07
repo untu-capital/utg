@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.repository2;
 
 import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +13,9 @@ import java.util.List;
 
 @Repository
 public interface PostGlRepository extends JpaRepository<PostGl, BigInteger> {
-    List<PostGl> findByTxDate(Date txDate);
+    List<PostGlResponseDTO> findByTxDate(Date txDate);
 
-    List<PostGl> findByAccountLink(Integer AccountLink);
+    List<PostGlResponseDTO> findByAccountLink(Integer AccountLink);
 
     @Query("SELECT SUM(p.Debit) - SUM(p.Credit) " +
             "FROM PostGl p " +

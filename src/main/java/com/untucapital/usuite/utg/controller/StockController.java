@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.StockRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.StockResponseDTO;
-import com.untucapital.usuite.utg.model.Stock;
+import com.untucapital.usuite.utg.dto.request.StockRequestDTO;
+import com.untucapital.usuite.utg.dto.response.StockResponseDTO;
 import com.untucapital.usuite.utg.service.StockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.MarketCampaignRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MarketCampaignResponseDTO;
-import com.untucapital.usuite.utg.model.MarketCampaign;
+import com.untucapital.usuite.utg.dto.request.MarketCampaignRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketCampaignResponseDTO;
 import com.untucapital.usuite.utg.service.MarketCampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

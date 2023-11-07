@@ -1,8 +1,9 @@
 package com.untucapital.usuite.utg.controller.cms;
 
-import com.untucapital.usuite.utg.DTO.ApproverRequest;
-import com.untucapital.usuite.utg.DTO.AuditTrailInitiatorRequest;
-import com.untucapital.usuite.utg.DTO.ChangeAmountRequest;
+import com.untucapital.usuite.utg.dto.ApproverRequest;
+import com.untucapital.usuite.utg.dto.AuditTrailInitiatorRequest;
+import com.untucapital.usuite.utg.dto.ChangeAmountRequest;
+import com.untucapital.usuite.utg.dto.cms.res.AuditTrailResponseDTO;
 import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.service.cms.AuditTrailService;
 import lombok.RequiredArgsConstructor;
@@ -22,30 +23,30 @@ public class AuditTrailController {
     private final AuditTrailService auditTrailService;
 
     @GetMapping("/all")
-    public ResponseEntity<Iterable<AuditTrail>> getAllAuditTrails() {
+    public ResponseEntity<Iterable<AuditTrailResponseDTO>> getAllAuditTrails() {
         return ResponseEntity.ok(auditTrailService.getAllAuditTrails());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuditTrail> getAuditTrailById(@PathVariable Integer id) {
+    public ResponseEntity<AuditTrailResponseDTO> getAuditTrailById(@PathVariable Integer id) {
         return ResponseEntity.ok(auditTrailService.getAuditTrailById(id));
     }
 
     //Add Initiator
     @PostMapping("/add-initiator")
-    public ResponseEntity<AuditTrail> addInitiator(@RequestBody AuditTrailInitiatorRequest request) {
+    public ResponseEntity<AuditTrailResponseDTO> addInitiator(@RequestBody AuditTrailInitiatorRequest request) {
         return ResponseEntity.ok(auditTrailService.addInitiator(request));
     }
 
     //Add First Approver
     @PutMapping("/add-first-approver")
-    public ResponseEntity<AuditTrail> addFirstApprover(@RequestBody ApproverRequest request) {
+    public ResponseEntity<AuditTrailResponseDTO> addFirstApprover(@RequestBody ApproverRequest request) {
         return ResponseEntity.ok(auditTrailService.addFirstApprover(request));
     }
 
     //Add Second Approver
     @PutMapping("/add-second-approver")
-    public ResponseEntity<AuditTrail> addSecondApprover(@RequestBody ApproverRequest request) {
+    public ResponseEntity<AuditTrailResponseDTO> addSecondApprover(@RequestBody ApproverRequest request) {
         return ResponseEntity.ok(auditTrailService.addSecondApprover(request));
     }
 
@@ -58,7 +59,7 @@ public class AuditTrailController {
 
     //Update Audit Trail
     @PutMapping("/update")
-    public ResponseEntity<AuditTrail> updateAuditTrail(@RequestBody ChangeAmountRequest request) {
+    public ResponseEntity<AuditTrailResponseDTO> updateAuditTrail(@RequestBody ChangeAmountRequest request) {
         return ResponseEntity.ok(auditTrailService.updateAmount(request));
     }
 

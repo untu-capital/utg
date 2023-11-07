@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.XdsFileUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.XdsFileUploadResponseDTO;
-import com.untucapital.usuite.utg.model.XdsFileUpload;
+import com.untucapital.usuite.utg.dto.request.XdsFileUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.XdsFileUploadResponseDTO;
 import com.untucapital.usuite.utg.repository.XdsFileUploadRepository;
 import com.untucapital.usuite.utg.service.XdsFileUploadService;
 import org.slf4j.Logger;

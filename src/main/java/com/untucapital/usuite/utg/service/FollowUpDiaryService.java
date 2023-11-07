@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.FollowUpDiaryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.FollowUpDiaryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.FollowUpDiaryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.FollowUpDiaryResponseDTO;
 import com.untucapital.usuite.utg.model.FollowUpDiary;
 import com.untucapital.usuite.utg.repository.FollowUpDiaryRepository;
 import org.springframework.beans.BeanUtils;

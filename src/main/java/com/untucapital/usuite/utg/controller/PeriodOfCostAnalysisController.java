@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.PeriodOfCostAnalysisRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.PeriodOfCostAnalysisResponseDTO;
-import com.untucapital.usuite.utg.model.PeriodOfCostAnalysis;
+import com.untucapital.usuite.utg.dto.request.PeriodOfCostAnalysisRequestDTO;
+import com.untucapital.usuite.utg.dto.response.PeriodOfCostAnalysisResponseDTO;
 import com.untucapital.usuite.utg.service.PeriodOfCostAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

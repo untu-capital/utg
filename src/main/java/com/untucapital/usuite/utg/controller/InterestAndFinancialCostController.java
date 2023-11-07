@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.InterestAndFinancialCostRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.InterestAndFinancialCostResponseDTO;
-import com.untucapital.usuite.utg.model.InterestAndFinancialCost;
+import com.untucapital.usuite.utg.dto.request.InterestAndFinancialCostRequestDTO;
+import com.untucapital.usuite.utg.dto.response.InterestAndFinancialCostResponseDTO;
 import com.untucapital.usuite.utg.service.InterestAndFinancialCostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

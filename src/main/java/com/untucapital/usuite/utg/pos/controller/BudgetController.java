@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.pos.controller;
 
-import com.untucapital.usuite.utg.DTO.request.BudgetRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BudgetResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BudgetRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
 import com.untucapital.usuite.utg.pos.service.BudgetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

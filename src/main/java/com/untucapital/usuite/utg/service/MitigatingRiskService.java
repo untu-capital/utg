@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.MitigatingRiskRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MitigatingRiskResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MitigatingRiskRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MitigatingRiskResponseDTO;
 import com.untucapital.usuite.utg.model.MitigatingRisk;
 import com.untucapital.usuite.utg.repository.MitigatingRiskRepository;
 import org.springframework.beans.BeanUtils;

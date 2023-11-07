@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.MainCompetitorRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MainCompetitorResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MainCompetitorRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MainCompetitorResponseDTO;
 import com.untucapital.usuite.utg.model.MainCompetitor;
 import com.untucapital.usuite.utg.repository.MainCompetitorRepository;
 import org.springframework.beans.BeanUtils;

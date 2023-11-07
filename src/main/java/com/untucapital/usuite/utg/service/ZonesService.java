@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.service;
-import com.fasterxml.jackson.databind.util.BeanUtil;
-import com.untucapital.usuite.utg.DTO.request.ZonesRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ZonesResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ZonesRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ZonesResponseDTO;
 import com.untucapital.usuite.utg.model.Zones;
 import com.untucapital.usuite.utg.repository.ZonesRepository;
 import lombok.Getter;

@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.OperationalCostRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.OperationalCostResponseDTO;
+import com.untucapital.usuite.utg.dto.request.OperationalCostRequestDTO;
+import com.untucapital.usuite.utg.dto.response.OperationalCostResponseDTO;
 import com.untucapital.usuite.utg.model.OperationalCost;
 import com.untucapital.usuite.utg.repository.OperationalCostRepository;
 import org.springframework.beans.BeanUtils;

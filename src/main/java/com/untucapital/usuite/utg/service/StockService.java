@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.StockRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.StockResponseDTO;
+import com.untucapital.usuite.utg.dto.request.StockRequestDTO;
+import com.untucapital.usuite.utg.dto.response.StockResponseDTO;
 import com.untucapital.usuite.utg.model.Stock;
 import com.untucapital.usuite.utg.repository.StockRepository;
 import org.springframework.beans.BeanUtils;

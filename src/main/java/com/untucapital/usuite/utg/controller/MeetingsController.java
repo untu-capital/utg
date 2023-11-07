@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.DTO.request.MeetingsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.MeetingsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.MeetingsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MeetingsResponseDTO;
 import com.untucapital.usuite.utg.model.Meetings;
 import com.untucapital.usuite.utg.repository.MeetingsRepository;
 import com.untucapital.usuite.utg.service.AbstractService;

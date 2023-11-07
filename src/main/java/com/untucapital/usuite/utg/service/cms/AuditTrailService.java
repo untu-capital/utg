@@ -1,15 +1,18 @@
 package com.untucapital.usuite.utg.service.cms;
 
-import com.untucapital.usuite.utg.DTO.ApproverRequest;
-import com.untucapital.usuite.utg.DTO.AuditTrailInitiatorRequest;
-import com.untucapital.usuite.utg.DTO.ChangeAmountRequest;
+import com.untucapital.usuite.utg.dto.ApproverRequest;
+import com.untucapital.usuite.utg.dto.AuditTrailInitiatorRequest;
+import com.untucapital.usuite.utg.dto.ChangeAmountRequest;
+import com.untucapital.usuite.utg.dto.cms.res.AuditTrailResponseDTO;
 import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.repository.cms.AuditTrailRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,16 +27,37 @@ public class AuditTrailService {
 
     //Get All
     @Transactional(value = "transactionManager")
-    public List<AuditTrail> getAllAuditTrails(){
-        return auditTrailRepository.findAll();
+    public List<AuditTrailResponseDTO> getAllAuditTrails(){
+
+        List<AuditTrailResponseDTO> response = new ArrayList<>();
+        List<AuditTrail> auditTrailList = auditTrailRepository.findAll();
+
+        for (AuditTrail trail : auditTrailList ){
+
+            AuditTrailResponseDTO responseDTO = new AuditTrailResponseDTO();
+            BeanUtils.copyProperties(trail, responseDTO);
+
+            response.add(responseDTO);
+
+        }
+
+        return response;
     }
     //Get By Id
-    public AuditTrail getAuditTrailById(Integer id){
-        return auditTrailRepository.findById(id)
+    public AuditTrailResponseDTO getAuditTrailById(Integer id){
+
+        AuditTrailResponseDTO responseDTO = new AuditTrailResponseDTO();
+        AuditTrail auditTrail = auditTrailRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
+
+        BeanUtils.copyProperties(auditTrail, responseDTO);
+
+        return responseDTO;
     }
     //Add Initiator
-    public AuditTrail addInitiator(AuditTrailInitiatorRequest request){
+    public AuditTrailResponseDTO addInitiator(AuditTrailInitiatorRequest request){
+
+        AuditTrailResponseDTO responseDTO = new AuditTrailResponseDTO();
         AuditTrail auditTrail = AuditTrail.builder()
                 .initiator(request.getInitiator())
                 .amount(request.getAmount())
@@ -41,31 +65,45 @@ public class AuditTrailService {
                 .toVault(request.getToVault())
                 .initiatedAt(LocalDateTime.now())
                 .build();
-        return auditTrailRepository.save(auditTrail);
+
+        AuditTrail trail= auditTrailRepository.save(auditTrail);
+        BeanUtils.copyProperties(trail, responseDTO);
+
+        return  responseDTO;
     }
 
     //Add First Approver
     @Transactional(value = "transactionManager")
-    public AuditTrail addFirstApprover(ApproverRequest request){
+    public AuditTrailResponseDTO addFirstApprover(ApproverRequest request){
+
+        AuditTrailResponseDTO response = new AuditTrailResponseDTO();
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
 
 //        auditTrail.setFirstApprover(request.getApprover());
         auditTrail.setFirstApprovedAt(LocalDateTime.now());
-        return auditTrailRepository.save(auditTrail);
+        AuditTrail trail = auditTrailRepository.save(auditTrail);
+
+        BeanUtils.copyProperties(trail, response);
+
+        return response;
     }
 
     //Add Second Approver
     @Transactional(value = "transactionManager")
-    public AuditTrail addSecondApprover(ApproverRequest request){
+    public AuditTrailResponseDTO addSecondApprover(ApproverRequest request){
 
+        AuditTrailResponseDTO response = new AuditTrailResponseDTO();
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
 
 //        auditTrail.setSecondApprover(request.getApprover());
         auditTrail.setSecondApprovedAt(LocalDateTime.now());
 
-        return auditTrailRepository.save(auditTrail);
+        AuditTrail trail = auditTrailRepository.save(auditTrail);
+        BeanUtils.copyProperties(trail,response);
+
+        return response;
     }
 
     //Delete Audit Trail
@@ -81,20 +119,26 @@ public class AuditTrailService {
 
     //Update Audit Trail
     @Transactional(value = "transactionManager")
-    public AuditTrail updateAmount(ChangeAmountRequest request){
+    public AuditTrailResponseDTO updateAmount(ChangeAmountRequest request){
+
+        AuditTrailResponseDTO response = new AuditTrailResponseDTO();
         AuditTrail auditTrail = auditTrailRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("Audit Trail not found"));
 
         if(auditTrail.getFirstApprover() == null){
             if (request.getAmount() != null && !request.getAmount().equals(auditTrail.getAmount())){
                 auditTrail.setAmount(request.getAmount());
-                return auditTrailRepository.save(auditTrail);
+                AuditTrail auditTrail1= auditTrailRepository.save(auditTrail);
+                BeanUtils.copyProperties(auditTrail1,response);
+
+                return response;
             }
         }
         else {
             throw new RuntimeException("Audit Trail has been approved");
         }
 
-        return auditTrail;
+        BeanUtils.copyProperties(auditTrail,response);
+        return response;
     }
 }

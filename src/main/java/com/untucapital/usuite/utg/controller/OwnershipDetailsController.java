@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.OwnershipDetailsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.OwnershipDetailsResponseDTO;
-import com.untucapital.usuite.utg.model.OwnershipDetails;
+import com.untucapital.usuite.utg.dto.request.OwnershipDetailsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.OwnershipDetailsResponseDTO;
 import com.untucapital.usuite.utg.service.OwnershipDetailsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

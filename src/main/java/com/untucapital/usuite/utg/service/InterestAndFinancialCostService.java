@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.InterestAndFinancialCostRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.InterestAndFinancialCostResponseDTO;
-import com.untucapital.usuite.utg.controller.InterestAndFinancialCostController;
+import com.untucapital.usuite.utg.dto.request.InterestAndFinancialCostRequestDTO;
+import com.untucapital.usuite.utg.dto.response.InterestAndFinancialCostResponseDTO;
 import com.untucapital.usuite.utg.model.InterestAndFinancialCost;
 import com.untucapital.usuite.utg.repository.InterestAndFinancialCostRepository;
 import org.springframework.beans.BeanUtils;

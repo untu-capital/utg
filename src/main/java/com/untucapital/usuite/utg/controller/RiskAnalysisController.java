@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.RiskAnalysisRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.RiskAnalysisResponseDTO;
-import com.untucapital.usuite.utg.model.RiskAnalysis;
+import com.untucapital.usuite.utg.dto.request.RiskAnalysisRequestDTO;
+import com.untucapital.usuite.utg.dto.response.RiskAnalysisResponseDTO;
 import com.untucapital.usuite.utg.service.RiskAnalysisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
