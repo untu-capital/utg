@@ -21,14 +21,26 @@ public class RequisitionService {
         return requisitionRepository.findAll();
     }
 
+//    @Transactional(value = "transactionManager")
+//    public void saveRequisition(Requisitions requisitions) {
+//        requisitionRepository.save(requisitions);
+//    }
+
     @Transactional(value = "transactionManager")
-    public void saveRequisition(Requisitions requisitions) {
-        requisitionRepository.save(requisitions);
+    public Requisitions saveRequisition(Requisitions requisitions) {
+        Requisitions savedRequisition = requisitionRepository.save(requisitions);
+        return savedRequisition;
     }
+
 
     @Transactional(value = "transactionManager")
     public Optional<Requisitions> getRequisitionById(String id) {
         return requisitionRepository.findById(id);
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<Requisitions> getRequisitionByUserId(String userid) {
+        return requisitionRepository.findRequisitionsByUserId(userid);
     }
 
     @Transactional(value = "transactionManager")

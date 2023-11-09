@@ -26,10 +26,19 @@ public class RequisitionController {
         return requisitionService.getAllRequistions();
     }
 
+
+    @GetMapping("userid/{id}")
+    public List<Requisitions> getRequisitionByUserId(@PathVariable("id") String id) {
+        List<Requisitions> requisition = requisitionService.getRequisitionByUserId(id);
+        return requisition;
+    }
+
     @PostMapping
-    public void saveRequisitions(@RequestBody Requisitions requisitions) {
+    public Requisitions saveRequisitions(@RequestBody Requisitions requisitions) {
         log.info(String.valueOf(requisitions));
-        requisitionService.saveRequisition(requisitions);
+        Requisitions savedRequisitionId = requisitionService.saveRequisition(requisitions);
+        return savedRequisitionId;
+
     }
 
     @DeleteMapping("/{id}")

@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
+import com.untucapital.usuite.utg.model.po.Requisitions;
 import com.untucapital.usuite.utg.service.PurchaseOrderTransactionsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,31 @@ public class PurchaseOrderTransactionsController {
         log.info(String.valueOf(purchaseOrderTransactions));
         purchaseOrderTransactionsService.savePurchaseOrderTransaction(purchaseOrderTransactions);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateRequisition(@PathVariable("id") String id, @RequestBody PurchaseOrderTransactions purchaseOrderTransactions) {
+
+        // Check if the requisition with the given ID exists
+        Optional<PurchaseOrderTransactions> purchaseOrderTransactionsOptional = purchaseOrderTransactionsService.getPurchaseOrderTransactionById(id);
+
+        if (!purchaseOrderTransactionsOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+
+        PurchaseOrderTransactions existingPurchaseOrder = purchaseOrderTransactionsOptional.get(); // Extract the actual object
+
+        existingPurchaseOrder.setPoItem(purchaseOrderTransactions.getPoItem());
+        existingPurchaseOrder.setPoSupplier(purchaseOrderTransactions.getPoSupplier());
+        existingPurchaseOrder.setPoCategory(purchaseOrderTransactions.getPoCategory());
+        existingPurchaseOrder.setPoQuantity(purchaseOrderTransactions.getPoQuantity());
+        existingPurchaseOrder.setPoCurrency(purchaseOrderTransactions.getPoCurrency());
+        existingPurchaseOrder.setPoAmount(purchaseOrderTransactions.getPoAmount());
+
+        purchaseOrderTransactionsService.savePurchaseOrderTransaction(existingPurchaseOrder);
+
+        return ResponseEntity.ok("Po Transaction updated successfully"); // Return a success response
+    }
+
 
     @DeleteMapping("/deletePurchaseOrderTransaction/{id}")
     public void delete(@PathVariable String id) {
