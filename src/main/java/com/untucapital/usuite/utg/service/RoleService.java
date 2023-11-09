@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.Role;
+import com.untucapital.usuite.utg.model.Sales;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import org.slf4j.Logger;

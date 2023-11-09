@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.dto.client;
 
 import com.untucapital.usuite.utg.dto.Timeline;
 import com.untucapital.usuite.utg.model.transactions.AuditData;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
