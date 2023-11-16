@@ -87,5 +87,17 @@ public class PurchaseOrderTransactionsController {
         }
     }
 
+    @GetMapping("getByCategory/{category}")
+    public ResponseEntity<List<PurchaseOrderTransactions>> getPurchaseOrderTransactionByCategory(@PathVariable("category") String category) {
+        List<PurchaseOrderTransactions> purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionsByCategory(category);
+
+        if (!purchaseOrderTransactions.isEmpty()) {
+            return new ResponseEntity<>(purchaseOrderTransactions, HttpStatus.OK);
+        } else {
+            // Handle the case when no PurchaseOrderTransactions objects are found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }

@@ -37,6 +37,11 @@ public class PurchaseOrderTransactionsService {
     }
 
     @Transactional(value = "transactionManager")
+    public List<PurchaseOrderTransactions> getPurchaseOrderTransactionsByCategory(String category) {
+        return purchaseOrderTransactionsRepository.findPurchaseOrderTransactionsByPoCategory(category);
+    }
+
+    @Transactional(value = "transactionManager")
     public void deletePurchaseOrderTransaction(String id) {
         purchaseOrderTransactionsRepository.deleteById(id);
     }

@@ -40,4 +40,8 @@ public class PurchaseOrderTransactions extends AbstractEntity{
     @NotNull
     private String poRequisitionId;
 
+    @Column(name = "po_status")
+    @NotNull
+    private String poStatus;
+
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface PurchaseOrderTransactionsRepository extends JpaRepository<PurchaseOrderTransactions, String> {
 
     List<PurchaseOrderTransactions> getPurchaseOrderTransactionsByPoRequisitionId(String id);
+
+    List<PurchaseOrderTransactions> findPurchaseOrderTransactionsByPoCategory(String category);
 }

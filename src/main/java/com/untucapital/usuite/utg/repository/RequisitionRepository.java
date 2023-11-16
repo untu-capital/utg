@@ -14,4 +14,6 @@ public interface RequisitionRepository extends JpaRepository<Requisitions, Strin
     List<Requisitions> findRequisitionsByUserId(String userId);
 
     List<Requisitions> findRequisitionsByPoApproverIsNotNullAndPoApproverIsNotLike(String emptyString);
+
+//    List<Requisitions> findRequisitionsBy
 }

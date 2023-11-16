@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.controller;
 
 import com.google.gson.Gson;
 import com.untucapital.usuite.utg.DTO.BulkEmail;
+import com.untucapital.usuite.utg.DTO.Email;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
@@ -489,6 +490,13 @@ public class ClientLoanController {
         String recipientEmail = emailSender.sendBulkEmail(bulkEmail.getRecipients(), bulkEmail.getSubject(), bulkEmail.getMessage());
         emailSender.sendBulk(bulkEmail.getRecipients(), bulkEmail.getSubject(), recipientEmail);
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(Arrays.toString(bulkEmail.getRecipients()), bulkEmail.getSubject()), HttpStatus.OK);
+    }
+
+    @PostMapping("sendEmail")
+    public ResponseEntity<ClientLoan> sendEmail(@RequestBody Email email) {
+//        String recipientEmail = emailSender.send(email.getRecipient(), email.getSubject(), email.getMessage());
+        emailSender.send(email.getRecipient(), email.getSubject(), email.getMessage());
+        return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(email.getRecipient(), email.getSubject()), HttpStatus.OK);
     }
 
 
