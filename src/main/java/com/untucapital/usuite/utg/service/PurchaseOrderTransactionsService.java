@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.dto.request.PurchaseOrderTransactionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponseDTO;
+import com.untucapital.usuite.utg.exception.DuplicateEntryException;
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
 import com.untucapital.usuite.utg.repository.PurchaseOrderTransactionsRepository;
 import org.springframework.beans.BeanUtils;
@@ -39,8 +40,16 @@ public class PurchaseOrderTransactionsService {
     public void savePurchaseOrderTransaction(PurchaseOrderTransactionsRequestDTO request) {
 
         PurchaseOrderTransactions purchaseOrderTransactions = new PurchaseOrderTransactions();
-        BeanUtils.copyProperties(request, purchaseOrderTransactions);
-        purchaseOrderTransactionsRepository.save(purchaseOrderTransactions);
+        if (!purchaseOrderTransactionsRepository.existsByPoItemAndPoSupplierAndPoCategoryAndPoQuantityAndPoAmountAndPoRequisitionId(
+                request.getPoItem(), request.getPoSupplier(), request.getPoCategory(),
+                request.getPoQuantity(), request.getPoAmount(), request.getPoRequisitionId())) {
+
+            BeanUtils.copyProperties(request, purchaseOrderTransactions);
+            purchaseOrderTransactionsRepository.save(purchaseOrderTransactions);
+        }
+        else {
+            throw new DuplicateEntryException("Duplicate entry for PurchaseOrderTransactions");
+        }
     }
 
     @Transactional(value = "transactionManager")

@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.pos.service;
 
 import com.untucapital.usuite.utg.dto.request.BudgetRequestDTO;
 import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
+import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -38,7 +40,7 @@ public class BudgetService {
 
     //2. get budget by id
     @Transactional(value = "transactionManager")
-    public BudgetResponseDTO getBudgetById(Integer id) {
+    public BudgetResponseDTO getBudgetById(String id) {
 
         BudgetResponseDTO response = new BudgetResponseDTO();
         Budget budget = budgetRepository.findById(id).orElse(null);
@@ -73,18 +75,19 @@ public class BudgetService {
         assert existingBudget != null;
         existingBudget.setCategory(budget.getCategory());
         existingBudget.setYear(budget.getYear());
-        existingBudget.setJanuary(budget.getJanuary());
-        existingBudget.setFebruary(budget.getFebruary());
-        existingBudget.setMarch(budget.getMarch());
-        existingBudget.setApril(budget.getApril());
-        existingBudget.setMay(budget.getMay());
-        existingBudget.setJune(budget.getJune());
-        existingBudget.setJuly(budget.getJuly());
-        existingBudget.setAugust(budget.getAugust());
-        existingBudget.setSeptember(budget.getSeptember());
-        existingBudget.setOctober(budget.getOctober());
-        existingBudget.setNovember(budget.getNovember());
-        existingBudget.setDecember(budget.getDecember());
+        existingBudget.setMonth(budget.getMonth());
+//        existingBudget.setJanuary(budget.getJanuary());
+//        existingBudget.setFebruary(budget.getFebruary());
+//        existingBudget.setMarch(budget.getMarch());
+//        existingBudget.setApril(budget.getApril());
+//        existingBudget.setMay(budget.getMay());
+//        existingBudget.setJune(budget.getJune());
+//        existingBudget.setJuly(budget.getJuly());
+//        existingBudget.setAugust(budget.getAugust());
+//        existingBudget.setSeptember(budget.getSeptember());
+//        existingBudget.setOctober(budget.getOctober());
+//        existingBudget.setNovember(budget.getNovember());
+//        existingBudget.setDecember(budget.getDecember());
 
         budgetRepository.save(existingBudget);
         BeanUtils.copyProperties(existingBudget, response);
@@ -92,9 +95,18 @@ public class BudgetService {
         return response;
     }
 
+    @Transactional(value = "transactionManager")
+    public List<Budget> getBudgetByYear(Integer year) {
+
+        BudgetResponseDTO budgetResponse = new BudgetResponseDTO();
+        List<Budget> budget = budgetRepository.findByYear(year);
+
+        return budget;
+    }
+
     //5. delete budget
     @Transactional(value = "transactionManager")
-    public BudgetResponseDTO deleteBudget(Integer id) {
+    public BudgetResponseDTO deleteBudget(String id) {
 
         BudgetResponseDTO budgetResponse = new BudgetResponseDTO();
         Budget budget = budgetRepository.findById(id).orElse(null);

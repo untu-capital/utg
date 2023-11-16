@@ -31,7 +31,7 @@ public class BudgetController {
     //Get Budget By Id
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BudgetResponseDTO getBudgetById(@PathVariable Integer id) {
+    public BudgetResponseDTO getBudgetById(@PathVariable String id) {
         return budgetService.getBudgetById(id);
     }
 
@@ -49,10 +49,17 @@ public class BudgetController {
         return budgetService.updateBudget(budget);
     }
 
+//    @GetMapping("/getComparison/{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public BudgetResponseDTO compareBudgets(@PathVariable("id")Integer budget) {
+//        return budgetService.(budget);
+//    }
+
+
     //Delete Budget
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public BudgetResponseDTO deleteBudget(@PathVariable Integer id) {
+    public BudgetResponseDTO deleteBudget(@PathVariable String id) {
         return budgetService.deleteBudget(id);
     }
 }

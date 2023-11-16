@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.pos.model;
 
+import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author tjchidanika
@@ -37,6 +39,13 @@ public class POSSupplier {
 
     @Column(name = "comment")
     private String comment;
+
+    @Column(name = "status")
+    @Enumerated
+    private ApprovalStatus status;
+
+    @OneToMany(mappedBy = "supplier", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<POSSuplierFileUploads> supplierFiles;
 
     @CreationTimestamp
     @Column(name = "created_at")

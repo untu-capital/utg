@@ -9,4 +9,7 @@ import java.util.List;
 public interface PurchaseOrderTransactionsRepository extends JpaRepository<PurchaseOrderTransactions, String> {
     
     List<PurchaseOrderTransactions> getPurchaseOrderTransactionsByPoRequisitionId(String id);
+
+    boolean existsByPoItemAndPoSupplierAndPoCategoryAndPoQuantityAndPoAmountAndPoRequisitionId(
+            String poItem, String poSupplier, String poCategory, String poQuantity, String poAmount, String poRequisitionId);
 }

@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.pos.controller;
 
+import com.untucapital.usuite.utg.pos.dto.POSSupplierDto;
 import com.untucapital.usuite.utg.pos.model.POSSupplier;
 import com.untucapital.usuite.utg.pos.service.SupplierService;
 import lombok.RequiredArgsConstructor;
@@ -22,36 +23,38 @@ public class SupplierController {
     //Save Supplier
     @PostMapping("/supplier/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public POSSupplier saveSupplier(@RequestBody POSSupplier posSupplier) {
+    public POSSupplierDto saveSupplier(@RequestBody POSSupplierDto posSupplier) {
        return supplierService.saveSupplier(posSupplier);
     }
 
     //Get Supplier By Id
     @GetMapping("/supplier/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public POSSupplier getSupplierById(@PathVariable Integer id) {
+    public POSSupplierDto getSupplierById(@PathVariable Integer id) {
         return supplierService.getSupplierById(id);
     }
 
     //Get all Suppliers
     @GetMapping("/supplier/all")
     @ResponseStatus(HttpStatus.OK)
-    public List<POSSupplier> getAllSuppliers() {
+    public List<POSSupplierDto> getAllSuppliers() {
         return supplierService.getAllSuppliers();
     }
 
     //Update Supplier
     @PutMapping("/supplier/update")
     @ResponseStatus(HttpStatus.OK)
-    public POSSupplier updateSupplier(@RequestBody POSSupplier posSupplier) {
+    public POSSupplierDto updateSupplier(@RequestBody POSSupplierDto posSupplier) {
         System.out.println(posSupplier.toString());
         return supplierService.updateSupplier(posSupplier);
     }
 
+
     //Delete Supplier
     @DeleteMapping("/supplier/delete/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public POSSupplier deleteSupplier(@PathVariable Integer id) {
+    public POSSupplierDto deleteSupplier(@PathVariable Integer id) {
+
         return supplierService.deleteSupplier(id);
     }
 }

@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.dto.request.RequisitionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
+import com.untucapital.usuite.utg.model.Requisitions;
 import com.untucapital.usuite.utg.service.RequisitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,27 @@ public class RequisitionController {
         requisitionService.deleteRequisition(id);
     }
 
+//    @GetMapping("/{id}")
+//    public ResponseEntity<RequisitionsResponseDTO> getRequisitionById(@PathVariable("id") String id) {
+//
+//        RequisitionsResponseDTO requisition = requisitionService.getRequisitionById(id);
+//
+//        log.info("Requisition:{}", requisition);
+//
+//        if (requisition!=null) {
+//            return new ResponseEntity<>(requisition, HttpStatus.OK);
+//        } else {
+//            // Handle the case when the Requisitions object is not found
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
+
     @GetMapping("/{id}")
     public ResponseEntity<RequisitionsResponseDTO> getRequisitionById(@PathVariable("id") String id) {
+
         RequisitionsResponseDTO requisition = requisitionService.getRequisitionById(id);
+
+        log.info("Requisition:{}", requisition);
 
         if (requisition!=null) {
             return new ResponseEntity<>(requisition, HttpStatus.OK);
@@ -139,7 +158,7 @@ public class RequisitionController {
         }
     }
 
-
+//
 
 
 
