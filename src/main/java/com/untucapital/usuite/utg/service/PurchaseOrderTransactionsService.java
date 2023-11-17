@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,15 +74,20 @@ public class PurchaseOrderTransactionsService {
     public List<PurchaseOrderTransactionsResponseDTO> getPurchaseOrderTransactionsByRequisitionId(String id) {
 
         List<PurchaseOrderTransactionsResponseDTO> response = new ArrayList<>();
-        List<PurchaseOrderTransactions> purchaseOrderTransactionsList= purchaseOrderTransactionsRepository.getPurchaseOrderTransactionsByPoRequisitionId(id);
+        Optional<List<PurchaseOrderTransactions>> purchaseOrderTransactionsList= purchaseOrderTransactionsRepository.getPurchaseOrderTransactionsByPoRequisitionId(id);
 
-        for (PurchaseOrderTransactions purchaseOrderTransaction : purchaseOrderTransactionsList) {
-            PurchaseOrderTransactionsResponseDTO responseDTO = new PurchaseOrderTransactionsResponseDTO();
-            BeanUtils.copyProperties(purchaseOrderTransaction, responseDTO);
-            response.add(responseDTO);
+        if(purchaseOrderTransactionsList.isPresent()) {
+            List<PurchaseOrderTransactions> purchaseOrderTransactionsList1 = purchaseOrderTransactionsList.get();
+            for (PurchaseOrderTransactions purchaseOrderTransaction : purchaseOrderTransactionsList1) {
+                PurchaseOrderTransactionsResponseDTO responseDTO = new PurchaseOrderTransactionsResponseDTO();
+                BeanUtils.copyProperties(purchaseOrderTransaction, responseDTO);
+                response.add(responseDTO);
+            }
+        } else {
+           return Collections.emptyList();
         }
 
-        return response;
+            return response;
     }
 
     @Transactional(value = "transactionManager")

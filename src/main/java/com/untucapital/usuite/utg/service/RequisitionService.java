@@ -10,6 +10,7 @@ import com.untucapital.usuite.utg.pos.model.Expenditure;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
 import com.untucapital.usuite.utg.repository.RequisitionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class RequisitionService {
 
         List<RequisitionsResponseDTO> response = new ArrayList<>();
         List<Requisitions> requisitionsList= requisitionRepository.findAll();
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
         for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
