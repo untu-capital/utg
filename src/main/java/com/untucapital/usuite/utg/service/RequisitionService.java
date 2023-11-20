@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.dto.AbstractEntityDTO;
 import com.untucapital.usuite.utg.dto.request.RequisitionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponseDTO;
 import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
