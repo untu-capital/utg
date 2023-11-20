@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.model.transactions;
 
-import com.untucapital.usuite.utg.DTO.loans.RepaymentSchedule;
+import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

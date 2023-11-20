@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.DTO.request.LeadStatusRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.LeadStatusResponseDTO;
+import com.untucapital.usuite.utg.dto.request.LeadStatusRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LeadStatusResponseDTO;
 import com.untucapital.usuite.utg.model.LeadStatus;
 import com.untucapital.usuite.utg.repository.LeadStatusRepository;
 import lombok.Getter;

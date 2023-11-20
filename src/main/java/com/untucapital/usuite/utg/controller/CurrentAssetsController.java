@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.CurrentAssetRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CurrentAssetResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CurrentAssetRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CurrentAssetResponseDTO;
 import com.untucapital.usuite.utg.service.CurrentAssetsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

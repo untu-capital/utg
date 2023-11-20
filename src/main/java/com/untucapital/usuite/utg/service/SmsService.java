@@ -2,11 +2,11 @@ package com.untucapital.usuite.utg.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.untucapital.usuite.utg.DTO.Bulk;
-import com.untucapital.usuite.utg.DTO.BulkSMS;
-import com.untucapital.usuite.utg.DTO.BulkSMSDTO;
-import com.untucapital.usuite.utg.DTO.SMSDto;
-import com.untucapital.usuite.utg.DTO.sms.BulkMessage;
+import com.untucapital.usuite.utg.dto.Bulk;
+import com.untucapital.usuite.utg.dto.BulkSMS;
+import com.untucapital.usuite.utg.dto.BulkSMSDTO;
+import com.untucapital.usuite.utg.dto.SMSDto;
+import com.untucapital.usuite.utg.dto.sms.BulkMessage;
 import com.untucapital.usuite.utg.repository.SMSRepo;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.dto.request.ZonesRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ZonesResponseDTO;
 import com.untucapital.usuite.utg.model.Zones;
 import com.untucapital.usuite.utg.service.ZonesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +24,17 @@ public class ZonesController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Zones> get(@PathVariable String id) {
+    public ResponseEntity<ZonesResponseDTO> get(@PathVariable String id) {
         try {
-            Zones zones = (Zones) zonesService.getZoneById(id);
-            return new ResponseEntity<Zones>(zones, HttpStatus.OK);
+            List<ZonesResponseDTO> zones = zonesService.getZoneById(id);
+            return new ResponseEntity<ZonesResponseDTO>((ZonesResponseDTO) zones, HttpStatus.OK);
         } catch (NoSuchElementException e) {
-            return new ResponseEntity<Zones>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<ZonesResponseDTO>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping("/addZones")
-    public void add(@RequestBody Zones zones) {
+    public void add(@RequestBody ZonesRequestDTO zones) {
         zonesService.saveZones(zones);
     }
 

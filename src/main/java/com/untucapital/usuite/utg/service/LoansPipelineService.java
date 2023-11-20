@@ -1,13 +1,11 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.LoansPipelineRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.LoansPipelineResponseDTO;
+import com.untucapital.usuite.utg.dto.request.LoansPipelineRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LoansPipelineResponseDTO;
 import com.untucapital.usuite.utg.model.LoansPipeline;
 import com.untucapital.usuite.utg.repository.LoansPipelineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

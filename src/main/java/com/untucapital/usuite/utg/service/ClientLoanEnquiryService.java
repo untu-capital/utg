@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.ClientLoanEnquiryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientLoanEnquiryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientLoanEnquiryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientLoanEnquiryResponseDTO;
 import com.untucapital.usuite.utg.model.ClientLoanEnquiry;
 import com.untucapital.usuite.utg.repository.ClientLoanEnquiryRepository;
 import org.springframework.beans.BeanUtils;

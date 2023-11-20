@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.LongTermLiabilityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.LongTermLiabilityResponseDTO;
-import com.untucapital.usuite.utg.model.LongTermLiability;
+import com.untucapital.usuite.utg.dto.request.LongTermLiabilityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LongTermLiabilityResponseDTO;
 import com.untucapital.usuite.utg.service.LongTermLiabilityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

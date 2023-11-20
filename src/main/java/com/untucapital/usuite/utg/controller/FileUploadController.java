@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.response.DatabaseFileResponseDTO;
-import com.untucapital.usuite.utg.model.DatabaseFile;
+import com.untucapital.usuite.utg.dto.response.DatabaseFileResponseDTO;
 import com.untucapital.usuite.utg.payload.Response;
 import com.untucapital.usuite.utg.service.DatabaseFileService;
 import org.springframework.beans.factory.annotation.Autowired;

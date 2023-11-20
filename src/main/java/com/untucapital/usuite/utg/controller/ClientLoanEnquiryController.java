@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.ClientLoanEnquiryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientLoanEnquiryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientLoanEnquiryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientLoanEnquiryResponseDTO;
 import com.untucapital.usuite.utg.repository.ClientLoanEnquiryRepository;
 import com.untucapital.usuite.utg.service.ClientLoanEnquiryService;
 import org.slf4j.Logger;

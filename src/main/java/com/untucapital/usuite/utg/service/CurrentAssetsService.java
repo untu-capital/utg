@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.CurrentAssetRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CurrentAssetResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CurrentAssetRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CurrentAssetResponseDTO;
 import com.untucapital.usuite.utg.model.CurrentAsset;
 import com.untucapital.usuite.utg.repository.CurrentAssetsRepository;
 import org.springframework.beans.BeanUtils;

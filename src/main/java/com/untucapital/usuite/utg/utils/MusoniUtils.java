@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.utils;
 
-import com.untucapital.usuite.utg.DTO.loans.LoanTransaction;
+import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.exception.InvalidDateFormatExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

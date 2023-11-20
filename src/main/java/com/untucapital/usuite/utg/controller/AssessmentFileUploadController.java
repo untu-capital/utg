@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.AssessmentFileUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.AssessmentFileUploadResponseDTO;
+import com.untucapital.usuite.utg.dto.request.AssessmentFileUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.AssessmentFileUploadResponseDTO;
 import com.untucapital.usuite.utg.service.AssessmentFileUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

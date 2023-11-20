@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.AccountBalance;
-import com.untucapital.usuite.utg.DTO.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.dto.AccountBalance;
+import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.service.PostGlService;
 import lombok.RequiredArgsConstructor;

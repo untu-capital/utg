@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.InvestmentInfowRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.InvestmentInfowResponseDTO;
+import com.untucapital.usuite.utg.dto.request.InvestmentInfowRequestDTO;
+import com.untucapital.usuite.utg.dto.response.InvestmentInfowResponseDTO;
 import com.untucapital.usuite.utg.model.InvestmentInfow;
 import com.untucapital.usuite.utg.repository.InvestmentInfowRepository;
 import org.springframework.beans.BeanUtils;

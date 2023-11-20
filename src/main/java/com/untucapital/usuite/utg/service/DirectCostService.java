@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.DirectCostRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.DirectCostResponseDTO;
+import com.untucapital.usuite.utg.dto.request.DirectCostRequestDTO;
+import com.untucapital.usuite.utg.dto.response.DirectCostResponseDTO;
 import com.untucapital.usuite.utg.model.DirectCost;
 import com.untucapital.usuite.utg.repository.DirectCostRepository;
 import org.springframework.beans.BeanUtils;

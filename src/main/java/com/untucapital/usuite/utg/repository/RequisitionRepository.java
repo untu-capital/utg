@@ -1,9 +1,12 @@
 package com.untucapital.usuite.utg.repository;
 
+import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
 import com.untucapital.usuite.utg.model.po.Requisitions;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,9 +14,21 @@ public interface RequisitionRepository extends JpaRepository<Requisitions, Strin
 
     Optional<Requisitions> getRequisitionsByPoNumber(String poNumber);
 
-    List<Requisitions> findRequisitionsByUserId(String userId);
+    // Example query method using the "Requisitions.approvers" entity graph
+    @EntityGraph(value = "Requisitions.approvers", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Requisitions r WHERE r.poStatus = :poStatus")
+    List<Requisitions> findByPoStatusWithApprovers(@Param("poStatus") String poStatus);
 
-    List<Requisitions> findRequisitionsByPoApproverIsNotNullAndPoApproverIsNotLike(String emptyString);
+    // Example query method using the "Requisitions.attachments" entity graph
+    @EntityGraph(value = "Requisitions.attachments", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Requisitions r WHERE r.userId = :userId")
+    List<Requisitions> findByUserIdWithAttachments(@Param("userId") String userId);
 
-//    List<Requisitions> findRequisitionsBy
+    @EntityGraph(value = "Requisitions.withApproversAndAttachments", type = EntityGraph.EntityGraphType.LOAD)
+    @Query("SELECT r FROM Requisitions r")
+    List<Requisitions> findAllWithApproversAndAttachments();
+
+    @EntityGraph(attributePaths = {"approvers", "attachments"})
+    Optional<Requisitions> findById(String id);
+
 }

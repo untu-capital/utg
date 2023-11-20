@@ -1,11 +1,11 @@
 package com.untucapital.usuite.utg.client;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.untucapital.usuite.utg.DTO.AllLoans;
-import com.untucapital.usuite.utg.DTO.client.Client;
-import com.untucapital.usuite.utg.DTO.loans.LoanTransaction;
-import com.untucapital.usuite.utg.DTO.loans.RepaymentScheduleLoan;
-import com.untucapital.usuite.utg.DTO.loans.SingleLoan;
+import com.untucapital.usuite.utg.dto.AllLoans;
+import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
+import com.untucapital.usuite.utg.dto.loans.RepaymentScheduleLoan;
+import com.untucapital.usuite.utg.dto.loans.SingleLoan;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.transactions.Loans;
@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @author Panashe Rutimhu Dell 8/10/2023
+ */
 @Service
 @Slf4j
 public class RestClient {

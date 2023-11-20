@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.CollateralSecurityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CollateralSecurityResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CollateralSecurityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CollateralSecurityResponseDTO;
 import com.untucapital.usuite.utg.service.CollateralSecurityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

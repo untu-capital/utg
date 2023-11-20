@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
 
-import com.untucapital.usuite.utg.DTO.request.CommentsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CommentsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CommentsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CommentsResponseDTO;
 import com.untucapital.usuite.utg.model.Comments;
 import com.untucapital.usuite.utg.repository.CommentsRepository;
 import org.springframework.beans.BeanUtils;

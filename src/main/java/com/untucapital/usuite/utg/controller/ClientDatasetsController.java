@@ -2,8 +2,8 @@ package com.untucapital.usuite.utg.controller;
 
 // import com.untucapital.usuite.utg.model.ClientFeedback;
 
-import com.untucapital.usuite.utg.DTO.request.ClientsDatasetsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientsDatasetsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientsDatasetsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientsDatasetsResponseDTO;
 import com.untucapital.usuite.utg.repository.ClientDatasetsRepository;
 import com.untucapital.usuite.utg.service.ClientDatasetsService;
 import org.slf4j.Logger;

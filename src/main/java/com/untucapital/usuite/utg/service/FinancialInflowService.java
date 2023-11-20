@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.FinancialInflowRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.FinancialInflowResponseDTO;
+import com.untucapital.usuite.utg.dto.request.FinancialInflowRequestDTO;
+import com.untucapital.usuite.utg.dto.response.FinancialInflowResponseDTO;
 import com.untucapital.usuite.utg.model.FinancialInflow;
 import com.untucapital.usuite.utg.repository.FinancialInflowRepository;
 import org.springframework.beans.BeanUtils;

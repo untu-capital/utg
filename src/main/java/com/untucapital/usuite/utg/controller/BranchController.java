@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.BranchesRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BranchesResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BranchesRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BranchesResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.service.AbstractService;

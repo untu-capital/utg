@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.ClientFileUploadRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientFileUploadResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientFileUploadRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientFileUploadResponseDTO;
 import com.untucapital.usuite.utg.model.ClientFileUpload;
 import com.untucapital.usuite.utg.repository.ClientFileUploadRepository;
 import org.springframework.beans.BeanUtils;

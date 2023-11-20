@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.dto.BulkEmail;
 import com.google.gson.Gson;
-import com.untucapital.usuite.utg.DTO.BulkEmail;
-import com.untucapital.usuite.utg.DTO.Email;
+import com.untucapital.usuite.utg.dto.Email;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
@@ -39,8 +39,6 @@ public class ClientLoanController {
     }
 
 
-
-
     //build save loan REST API
     @PostMapping
     @Operation(summary = "Create a new client loan application")
@@ -54,7 +52,6 @@ public class ClientLoanController {
     @Operation(summary = "Get all client loan applications")
     public List<ClientLoan> getAllClientLoanApplication() {
         return clientLoanApplication.getAllClientLoanApplication();
-
     }
 
     //build get clientLoan by ID REST API
