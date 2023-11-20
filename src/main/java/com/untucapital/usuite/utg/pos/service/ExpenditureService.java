@@ -8,6 +8,7 @@ import com.untucapital.usuite.utg.pos.dto.POSBalanceSheetDto;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.model.Expenditure;
 import com.untucapital.usuite.utg.pos.model.POSBalanceSheet;
+import com.untucapital.usuite.utg.pos.processor.ExpenditureProcessor;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class ExpenditureService {
 
     private final ExpenditureRepository expenditureRepository;
     private final BudgetService budgetService;
+    private final ExpenditureProcessor expenditureProcessor;
 
     @Transactional(value = "transactionManager")
     public ExpenditureDto getExpenditureById(Integer id) {
@@ -48,94 +50,66 @@ public class ExpenditureService {
     }
 
     @Transactional(value = "transactionManager")
-    public Float getExpenditureByCategoryAndPeriod(String category, LocalDateTime dateFrom, LocalDateTime dateTor) {
+    public List<ExpenditureResponseDto> getExpenditureByCategoryAndPeriod(String category, LocalDateTime dateFrom, LocalDateTime dateTor) {
 
-        List<ExpenditureDto> response = new ArrayList<>();
-        float total = 0f;
 
         List<Expenditure> expenditureList = expenditureRepository.findByCategoryAndCreatedAtAndCreatedAt(category, dateFrom, dateTor);
 
-        for (Expenditure expenditure : expenditureList) {
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
-            total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
-
-        }
-
-        return total;
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public Float getTotalExpenditureByYearAndMonth(String month, int year) {
+    public List<ExpenditureResponseDto> getTotalExpenditureByYearAndMonth(String month, int year) {
 
-        List<ExpenditureDto> response = new ArrayList<>();
-        float total = 0f;
 
         List<Expenditure> expenditureList = expenditureRepository.findByMonthAndYear(month, year);
 
-        for (Expenditure expenditure : expenditureList) {
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
-            total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
-
-        }
-
-        return total;
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public List<ExpenditureDto> getExpenditureByYear( int year) {
+    public List<ExpenditureResponseDto> getExpenditureByYear( int year) {
 
-        List<ExpenditureDto> response = new ArrayList<>();
-        Float total = 0f;
+
 
         List<Expenditure> expenditureList = expenditureRepository.findByYear( year);
 
-        for (Expenditure expenditure : expenditureList) {
-            ExpenditureDto expenditureDto = new ExpenditureDto();
-            BeanUtils.copyProperties(expenditure, expenditureDto);
-            response.add(expenditureDto);
-            total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
-
-        }
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
         return response;
     }
 
     @Transactional(value = "transactionManager")
-    public ExpenditureResponseDto getExpenditureByCategoryAndMonthAndYear(String category, String month,int year) {
+    public List<ExpenditureResponseDto> getExpenditureByMonthAndCategory( int year) {
 
-        float total = 0f;
+        List<Expenditure> expenditureList = expenditureRepository.findByYear( year);
 
-        ExpenditureResponseDto response = new ExpenditureResponseDto();
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
+
+        return response;
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<ExpenditureResponseDto> getExpenditureByCategoryAndMonthAndYear(String category, String month,int year) {
+
         List<Expenditure> expenditureList = expenditureRepository.findByCategoryAndMonthAndYear(category,month, year);
 
-        for (Expenditure expenditure : expenditureList) {
-            response.setCategory(expenditure.getCategory());
-            response.setMonth(expenditure.getMonth());
-            response.setYear(expenditure.getYear());
-
-            total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
-            response.setAmount(total);
-        }
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
         return response;
     }
 
     @Transactional(value = "transactionManager")
-    public ExpenditureResponseDto getExpenditureByPeriod(LocalDateTime dateFrom, LocalDateTime dateTo) {
+    public List<ExpenditureResponseDto> getExpenditureByPeriod(LocalDateTime dateFrom, LocalDateTime dateTo) {
 
-        ExpenditureResponseDto response = new ExpenditureResponseDto();
-        float total = 0f;
 
         List<Expenditure> expenditureList = expenditureRepository.findByCreatedAtBetween(dateFrom, dateTo);
-        for (Expenditure expenditure : expenditureList) {
 
-            total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
-
-        }
-        response.setAmount(total);
-        response.setYear(0);
-        response.setMonth("Period");
-        response.setCategory("Period");
+        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
         return response;
     }
@@ -152,124 +126,9 @@ public class ExpenditureService {
         List<Object[]> expenditureDtoList = getExpenditureSumsByMonth(year);
         List<Budget> budgetList = budgetService.getBudgetByYear(year);
 
-        for (Object[] result : expenditureDtoList) {
-
-            POSBalanceSheetDto posBalanceSheetDto = new POSBalanceSheetDto();
-
-            log.info("result: {}", expenditureDtoList);
-            POSBalanceSheet posBalanceSheet = new POSBalanceSheet();
-
-
-            String monthString = (String) result[0];
-            int month = Integer.parseInt(monthString);
-            BigDecimal sumAmountBig = (BigDecimal) result[1];
-            float sumAmount = sumAmountBig.floatValue();
-
-
-            Budget budget = budgetList.stream()
-                    .filter(b -> b.getMonth() == month)
-                    .findFirst()
-                    .orElse(null);
-
-            log.info("Month: {}", month);
-
-            if (budget != null) {
-                switch (month) {
-                    case 1:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("January");
-
-                        break;
-                    case 2:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("February");
-
-                        break;
-                    case 3:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("March");
-
-
-                        break;
-                    case 4:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("April");
-
-                        break;
-                    case 5:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("May");
-
-                        break;
-                    case 6:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("June");
-
-                        break;
-                    case 7:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("July");
-
-                        break;
-                    case 8:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("August");
-
-                        break;
-                    case 9:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("September");
-
-                        break;
-                    case 10:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("October");
-
-                        break;
-                    case 11:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("November");
-
-                        break;
-                    case 12:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("December");
-
-                        break;
-                }
-            }else {
-                throw  new RuntimeException("Budget not found");
-            }
-            posBalanceSheet.setYear(year);
-            BeanUtils.copyProperties(posBalanceSheet, posBalanceSheetDto);
-            posBalanceSheetList.add(posBalanceSheetDto);
-            log.info("PosBalanceSheetList: {}", posBalanceSheetList);
-        }
+        posBalanceSheetList = expenditureProcessor.setBalanceSheetResponse(budgetList, expenditureDtoList, year);
 
         return posBalanceSheetList;
     }
+
 }

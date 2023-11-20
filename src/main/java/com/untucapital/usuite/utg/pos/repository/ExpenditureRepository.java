@@ -14,6 +14,8 @@ import java.util.List;
 public interface ExpenditureRepository extends JpaRepository<Expenditure, Integer> {
     List<Expenditure> findByMonthAndYear(String month, int year);
 
+    List<Expenditure> findByMonthAndCategory(String month, String category);
+
     List<Expenditure> findByYear(int year);
 
     List<Expenditure> findByCategoryAndCreatedAtAndCreatedAt(String category, LocalDateTime createdAt, LocalDateTime createdAt1);

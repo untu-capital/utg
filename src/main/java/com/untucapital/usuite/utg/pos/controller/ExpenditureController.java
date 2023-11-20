@@ -31,23 +31,23 @@ public class ExpenditureController {
         return expenditureService.getExpenditureById(id);
     }
 
-//    @GetMapping("getByMonthAndYear/{month}/{year}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ExpenditureDto getExpenditureByMonthAndYear(@PathVariable int id, @PathVariable int year) {
-//
-//        return expenditureService.getExpenditureById(id);
-//    }
+    @GetMapping("getByMonthAndYear/{month}/{year}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ExpenditureResponseDto> getExpenditureByYear( @PathVariable int year) {
+
+        return expenditureService.getExpenditureByYear(year);
+    }
 
     @GetMapping("/getByCategoryMonthAndYear/{category}/{month}/{year}")
     @ResponseStatus(HttpStatus.OK)
-    public ExpenditureResponseDto getExpenditureByCategoryAndMonthAndYear(@PathVariable String category, @PathVariable String month, @PathVariable int year) {
+    public List<ExpenditureResponseDto> getExpenditureByCategoryAndMonthAndYear(@PathVariable String category, @PathVariable String month, @PathVariable int year) {
 
         return expenditureService.getExpenditureByCategoryAndMonthAndYear(category, month, year);
     }
 
     @GetMapping("/getByPeriod/{dateFrom}/{dateTo}")
     @ResponseStatus(HttpStatus.OK)
-    public ExpenditureResponseDto getExpenditureByPeriod(@PathVariable String dateFrom, @PathVariable String dateTo) {
+    public List<ExpenditureResponseDto> getExpenditureByPeriod(@PathVariable String dateFrom, @PathVariable String dateTo) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime startDateTime = LocalDateTime.parse(dateFrom, formatter);
