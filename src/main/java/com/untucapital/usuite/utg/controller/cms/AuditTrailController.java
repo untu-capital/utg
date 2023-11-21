@@ -4,7 +4,6 @@ import com.untucapital.usuite.utg.dto.ApproverRequest;
 import com.untucapital.usuite.utg.dto.AuditTrailInitiatorRequest;
 import com.untucapital.usuite.utg.dto.ChangeAmountRequest;
 import com.untucapital.usuite.utg.dto.cms.res.AuditTrailResponseDTO;
-import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.service.cms.AuditTrailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

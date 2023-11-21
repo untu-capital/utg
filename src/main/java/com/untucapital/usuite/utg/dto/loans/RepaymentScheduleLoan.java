@@ -6,7 +6,6 @@ import com.untucapital.usuite.utg.dto.TermPeriodFrequencyType;
 import com.untucapital.usuite.utg.model.transactions.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

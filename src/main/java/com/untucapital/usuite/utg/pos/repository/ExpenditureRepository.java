@@ -18,7 +18,10 @@ public interface ExpenditureRepository extends JpaRepository<Expenditure, Intege
 
     List<Expenditure> findByYear(int year);
 
-    List<Expenditure> findByCategoryAndCreatedAtAndCreatedAt(String category, LocalDateTime createdAt, LocalDateTime createdAt1);
+    @Query("SELECT e FROM Expenditure e WHERE e.category = :category AND e.createdAt BETWEEN :fromDate AND :toDate")
+    List<Expenditure> findByCategoryAndCreatedAtBetween(@Param("category") String category,
+                                                        @Param("fromDate") LocalDateTime fromDate,
+                                                        @Param("toDate") LocalDateTime toDate);
 
 
 

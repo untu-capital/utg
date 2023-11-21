@@ -1,6 +1,5 @@
 package com.untucapital.usuite.utg.repository;
 
-import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
 import com.untucapital.usuite.utg.model.Requisitions;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;

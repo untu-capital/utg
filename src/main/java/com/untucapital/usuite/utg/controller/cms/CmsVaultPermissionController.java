@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.dto.cms.req.CmsVaultPermissionRequestDTO;
 import com.untucapital.usuite.utg.dto.cms.res.CmsVaultPermissionResponseDTO;
-import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.service.cms.CmsVaultPermissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("cms/cms_vault_permission")

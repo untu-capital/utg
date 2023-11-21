@@ -13,6 +13,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author panashe rutimhu
+ * @created 20/11/2023
+ */
+
 @Component
 @Slf4j
 public class ExpenditureProcessor {
@@ -30,7 +35,7 @@ public class ExpenditureProcessor {
             response.setCategory(expenditure.getCategory());
             response.setMonth(expenditure.getMonth());
             response.setYear(expenditure.getYear());
-
+            response.setAmount(expenditure.getAmount());
             total = total + Float.parseFloat(String.valueOf(expenditure.getAmount()));
             response.setTotalAmount(total);
 

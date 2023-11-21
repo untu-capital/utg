@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.dto.request.RequisitionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
-import com.untucapital.usuite.utg.model.Requisitions;
 import com.untucapital.usuite.utg.service.RequisitionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +158,5 @@ public class RequisitionController {
     }
 
 //
-
-
 
 }

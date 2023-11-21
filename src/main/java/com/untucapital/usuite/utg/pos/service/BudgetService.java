@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.pos.service;
 
 import com.untucapital.usuite.utg.dto.request.BudgetRequestDTO;
 import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
-import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.repository.BudgetRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 /**

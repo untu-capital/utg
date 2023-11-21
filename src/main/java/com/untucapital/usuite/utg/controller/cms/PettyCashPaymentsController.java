@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.dto.cms.req.PettyCashPaymentsRequestDTO;
 import com.untucapital.usuite.utg.dto.cms.res.PettyCashPaymentsResponseDTO;
-import com.untucapital.usuite.utg.model.cms.PettyCashPayments;
 import com.untucapital.usuite.utg.service.cms.PettyCashPaymentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

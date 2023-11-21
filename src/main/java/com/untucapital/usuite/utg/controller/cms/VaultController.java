@@ -3,9 +3,7 @@ package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.dto.cms.UpdateVaultRequest;
 import com.untucapital.usuite.utg.dto.cms.VaultRequest;
-import com.untucapital.usuite.utg.dto.cms.req.VaultRequestDTO;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
-import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

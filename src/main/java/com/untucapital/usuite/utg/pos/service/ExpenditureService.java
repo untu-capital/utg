@@ -1,13 +1,11 @@
 package com.untucapital.usuite.utg.pos.service;
 
 
-import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
 import com.untucapital.usuite.utg.pos.dto.ExpenditureDto;
 import com.untucapital.usuite.utg.pos.dto.ExpenditureResponseDto;
 import com.untucapital.usuite.utg.pos.dto.POSBalanceSheetDto;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.model.Expenditure;
-import com.untucapital.usuite.utg.pos.model.POSBalanceSheet;
 import com.untucapital.usuite.utg.pos.processor.ExpenditureProcessor;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +49,17 @@ public class ExpenditureService {
     @Transactional(value = "transactionManager")
     public List<ExpenditureResponseDto> getExpenditureByCategoryAndPeriod(String category, LocalDateTime dateFrom, LocalDateTime dateTor) {
 
+        log.info("dateFrom: {}", dateFrom);
+        List<Expenditure> expenditureList = expenditureRepository.findByCategoryAndCreatedAtBetween(category, dateFrom, dateTor);
 
-        List<Expenditure> expenditureList = expenditureRepository.findByCategoryAndCreatedAtAndCreatedAt(category, dateFrom, dateTor);
-
+        log.info("Expenditure List: {}", expenditureList);
         List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
         return response;
     }
 
     @Transactional(value = "transactionManager")
-    public List<ExpenditureResponseDto> getTotalExpenditureByYearAndMonth(String month, int year) {
+    public List<ExpenditureResponseDto> getTotalExpenditureByYearAndMonth(int year, String month) {
 
 
         List<Expenditure> expenditureList = expenditureRepository.findByMonthAndYear(month, year);
@@ -83,15 +81,15 @@ public class ExpenditureService {
         return response;
     }
 
-    @Transactional(value = "transactionManager")
-    public List<ExpenditureResponseDto> getExpenditureByMonthAndCategory( int year) {
-
-        List<Expenditure> expenditureList = expenditureRepository.findByYear( year);
-
-        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
-
-        return response;
-    }
+//    @Transactional(value = "transactionManager")
+//    public List<ExpenditureResponseDto> getExpenditureByMonthAndCategory( int year) {
+//
+//        List<Expenditure> expenditureList = expenditureRepository.findByYear( year);
+//
+//        List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
+//
+//        return response;
+//    }
 
     @Transactional(value = "transactionManager")
     public List<ExpenditureResponseDto> getExpenditureByCategoryAndMonthAndYear(String category, String month,int year) {

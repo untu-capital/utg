@@ -5,8 +5,6 @@ import com.untucapital.usuite.utg.model.transactions.*;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Data
 @RequiredArgsConstructor
 public class SingleLoan {
