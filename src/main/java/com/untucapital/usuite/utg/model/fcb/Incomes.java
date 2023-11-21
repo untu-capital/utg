@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.model.fcb;
 
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -9,13 +10,18 @@ import javax.persistence.Table;
 @Table(name = "incomes")
 public class Incomes extends AbstractEntity {
 
+    @Column(name = "employer")
     private String employer;
 
+    @Column(name = "industry")
     private String industry;
 
-    private String salary_range;
+    @Column(name = "salary_range")
+    private String salaryRange;
 
+    @Column(name = "position")
     private String position;
+
 
     public String getEmployer() {
         return employer;
@@ -25,27 +31,27 @@ public class Incomes extends AbstractEntity {
         this.employer = employer;
     }
 
-    public java.lang.String getIndustry() {
+    public String getIndustry() {
         return industry;
     }
 
-    public void setIndustry(java.lang.String industry) {
+    public void setIndustry(String industry) {
         this.industry = industry;
     }
 
-    public java.lang.String getSalary_range() {
-        return salary_range;
+    public String getSalaryRange() {
+        return salaryRange;
     }
 
-    public void setSalary_range(java.lang.String salary_range) {
-        this.salary_range = salary_range;
+    public void setSalaryRange(String salaryRange) {
+        this.salaryRange = salaryRange;
     }
 
-    public java.lang.String getPosition() {
+    public String getPosition() {
         return position;
     }
 
-    public void setPosition(java.lang.String position) {
+    public void setPosition(String position) {
         this.position = position;
     }
 }

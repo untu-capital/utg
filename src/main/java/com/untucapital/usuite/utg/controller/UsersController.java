@@ -7,10 +7,12 @@ import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
+import com.untucapital.usuite.utg.model.po.PoUser;
 import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
+import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import org.slf4j.Logger;
@@ -84,6 +86,11 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<List<User>>(userRepository.findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(""), HttpStatus.OK);
     }
 
+    @GetMapping("/poUser")
+    public ResponseEntity<List<User>> getUsersByPoUser() {
+        return new ResponseEntity<List<User>>(userRepository.findUsersByPoUser_RoleIsNotNullAndPoUser_RoleNotLike(""), HttpStatus.OK);
+    }
+
     // Get list of all users with a certain Branch Name
     @GetMapping("/creditCommitGroup/{creditCommitGroupName}")
     public ResponseEntity<List<User>> getUsersByCreditCommitGroupName(@PathVariable("creditCommitGroupName") String creditCommitGroupName) {
@@ -119,27 +126,101 @@ public class UsersController extends AbstractController<User> {
         userRepository.save(updatedUserRole);
         return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
     }
-
     @PutMapping("/updateCmsUserRole/{id}")
     public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
+        // Log the received ID for debugging
+        System.out.println("Received ID: " + id);
+
         // Retrieve the User entity by ID
-        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<User> optionalUser = userRepository.findUserById(id);
 
         if (optionalUser.isPresent()) {
             User existingUser = optionalUser.get();
-
-            // Update the role of the existing user's CmsUser
+            // Update the role of the existing user's CmsUser or create a new one if it's null
             CmsUser cmsUser = existingUser.getCmsUser();
+
+            if (cmsUser == null) {
+                cmsUser = new CmsUser();
+            }
+
             cmsUser.setRole(updatedCmsUser.getRole());
+
+            // Set the updated CmsUser back to the User entity
+            existingUser.setCmsUser(cmsUser);
 
             // Save the updated user
             userRepository.save(existingUser);
 
-            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
         } else {
-            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/updatePoUserRole/{id}")
+    public ResponseEntity<String> updatePoUserRole(@PathVariable String id, @RequestBody PoUser updatedPoUser) {
+        // Log the received ID for debugging
+        System.out.println("Received ID: " + id);
+
+        // Retrieve the User entity by ID
+        Optional<User> optionalUser = userRepository.findUserById(id);
+
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            // Update the role of the existing user's CmsUser or create a new one if it's null
+            PoUser poUser = existingUser.getPoUser();
+
+            if (poUser == null) {
+                poUser = new PoUser();
+            }
+
+            poUser.setRole(updatedPoUser.getRole());
+
+            // Set the updated CmsUser back to the User entity
+            existingUser.setPoUser(poUser);
+
+            // Save the updated user
+            userRepository.save(existingUser);
+
+            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
+//    @PutMapping("/updateCmsUserRole/{userId}")
+//    public ResponseEntity<User> updateCmsUser(@PathVariable String userId, @RequestBody CmsUser updatedCmsUser) {
+//        // Create a default CmsUser here with your desired values
+//        CmsUser defaultCmsUser = new CmsUser();
+//        defaultCmsUser.setRole(updatedCmsUser.getRole()); // Set your default values here
+//        User updatedUser = userService.updateUserCmsUser(userId, defaultCmsUser);
+//        return ResponseEntity.ok(updatedUser);
+//    }
+
+
+
+//    @PutMapping("/updateCmsUserRole/{id}")
+//    public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
+//        // Retrieve the User entity by ID
+//        Optional<User> optionalUser = userRepository.findById(id);
+//
+//        if (optionalUser.isPresent()) {
+//            User existingUser = optionalUser.get();
+//
+//            // Update the role of the existing user's CmsUser
+//            CmsUser cmsUser = existingUser.getCmsUser();
+//            cmsUser.setRole(updatedCmsUser.getRole());
+//
+//            // Save the updated user
+//            userRepository.save(existingUser);
+//
+//            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+//        }
+//    }
 
 
 

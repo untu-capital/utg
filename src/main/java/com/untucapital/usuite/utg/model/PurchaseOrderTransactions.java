@@ -9,25 +9,30 @@ import javax.validation.constraints.NotNull;
 @Table(name = "purchaseOrderTransactions")
 public class PurchaseOrderTransactions extends AbstractEntity{
 
+    @Column(name = "po_item", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poItem;
 
+    @Column(name = "po_supplier", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poSupplier;
+
+    @Column(name = "po_category", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poCategory;
+
+    @Column(name = "po_quantity", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poQuantity;
+
+    @Column(name = "po_amount", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poAmount;
+
+    @Column(name = "po_requisition_id", nullable = false)
     @NotNull
-    @Column(nullable = false)
     private String poRequisitionId;
+
 
     public String getPoItem() {
         return poItem;

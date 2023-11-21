@@ -6,7 +6,6 @@ import com.untucapital.usuite.utg.auth.UserPrincipalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.BeanIds;
@@ -17,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -95,6 +93,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/webjars/**")
+                .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
                 .antMatchers("/direct_cost/**")
@@ -111,7 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/credit_app/**")
                 .permitAll()
-
+                .antMatchers("/cms_authorisation/**")
+                .permitAll()
                 .antMatchers("/industries/**")
                 .permitAll()
                 .antMatchers("/uploadFile/**")
@@ -141,6 +148,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/roles/**")
                 .permitAll()
                 .antMatchers("/disbursementTickets/**")
+                .permitAll()
+                .antMatchers("/disbursed-by-range/**")
                 .permitAll()
                 .antMatchers("/appraisalLoanRequest/**")
                 .permitAll()
@@ -323,7 +332,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/amortize/**")
                 .permitAll()
-
                 .antMatchers("/requestCollateralSecurity/**")
                 .permitAll()
 
@@ -372,9 +380,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/cms/**")
                 .permitAll()
 
+                .antMatchers("/postGl/**")
+                .permitAll()
+
+                .antMatchers("/swagger-ui/**")
+                .permitAll()
+
+                .antMatchers("/v3/**")
+                .permitAll()
+
                 .anyRequest()
                 .authenticated();
 
+
         httpSecurity.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
+//    @Bean
+//    public FormattingConversionService mvcConversionService() {
+//        DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
+//        conversionService.addConverter((Converter<String, MyCustomType>) new StringToYourTypeConverter()); // Customize this converter
+//
+//        return conversionService;
+//    }
 }

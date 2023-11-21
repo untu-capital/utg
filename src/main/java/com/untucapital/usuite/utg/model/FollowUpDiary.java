@@ -1,28 +1,41 @@
 package com.untucapital.usuite.utg.model;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 
 
 @Entity
 @Table(name = "FollowUpDiary")
 public class FollowUpDiary extends AbstractEntity  {
+
+    @Column(name = "client_id")
     private String clientID;
+
+    @Column(name = "client_name")
     private String clientName;
+
+    @Column(name = "client_contact_number")
     private String clientContactNumber;
+
+    @Column(name = "client_contact_email")
     private String clientContactEmail;
+
+    @Column(name = "client_business_address")
     private String clientBusinessAddress;
+
+    @Column(name = "follow_up_comments")
     private String followUpComments;
+
+    @Column(name = "contacted")
     private String contacted;
+
+    @Column(name = "follow_up_status")
     private String followUpStatus;
 
+    @Column(name = "loan_officer_name")
     private String loanOfficerName;
-
 
 
     public String getClientID() {

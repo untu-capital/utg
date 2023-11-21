@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 
 @SpringBootApplication
-//@EnableScheduling
 public class UntuTransactionGatewayApplication {
 
     @Value("${musoni.url}")

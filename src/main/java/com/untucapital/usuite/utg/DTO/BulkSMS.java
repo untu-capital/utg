@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.DTO;
+package com.untucapital.usuite.utg.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

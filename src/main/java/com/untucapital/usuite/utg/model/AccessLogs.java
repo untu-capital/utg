@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.model;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-
 import javax.persistence.Table;
 
 
@@ -10,11 +10,22 @@ import javax.persistence.Table;
 @Table(name = "access_logs")
 public class AccessLogs extends AbstractEntity  {
 
+    @Column(name = "userid")
     private String userid;
+
+    @Column(name = "branch")
     private String branch;
+
+    @Column(name = "role")
     private String role;
+
+    @Column(name = "activity")
     private String activity;
+
+    @Column(name = "device_info")
     private String deviceInfo;
+
+    @Column(name = "ip_address")
     private String ipAddress;
 
     public String getUserid() {

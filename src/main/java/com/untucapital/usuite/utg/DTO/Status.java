@@ -23,4 +23,5 @@ public class Status {
     private boolean closedRescheduled;
     private boolean closed;
     private boolean overpaid;
+
 }

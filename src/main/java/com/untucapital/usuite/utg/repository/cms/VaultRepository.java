@@ -1,10 +1,15 @@
 package com.untucapital.usuite.utg.repository.cms;
 
+import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author tjchidanika
@@ -14,7 +19,20 @@ import java.util.List;
 @Repository
 public interface VaultRepository extends JpaRepository<Vault, Integer> {
 
-    List<Vault> findVaultByBranch_BranchNameAndType(String branchName, String type);
+    Optional<Vault> findVaultByBranch_BranchNameAndType(String branchName, String type);
+
+    Optional<Vault> findByAccount(String account);
+
+
 
     List<Vault> findVaultByBranch_BranchName(String branch);
+    List<Vault> findByBranch(Branches branch);
+
+    @Query("SELECT SUM(v.currentAmount) " +
+            "FROM Vault v " +
+            "WHERE v.account = :account")
+    BigDecimal findAccountBalanceByAccount(@Param("account") String account);
+
+    @Query("SELECT SUM(v.currentAmount) " + "FROM Vault v " )
+    BigDecimal findTotalAccountBalances();
 }

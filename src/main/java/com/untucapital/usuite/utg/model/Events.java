@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -7,13 +8,25 @@ import javax.persistence.Table;
 @Table(name = "events")
 public class Events extends AbstractEntity {
 
+    @Column(name = "name")
     private String name;
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "attendees")
     private String attendees;
+
+    @Column(name = "location")
     private String location;
+
+    @Column(name = "date")
     private String date;
+
+    @Column(name = "status")
     private String status;
 
+    @Column(name = "user_id")
     private String userId;
 
     public String getName() {

@@ -1,39 +1,38 @@
 package com.untucapital.usuite.utg.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.untucapital.usuite.utg.dto.request.LoansPipelineRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LoansPipelineResponseDTO;
+import com.untucapital.usuite.utg.service.LoansPipelineService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.untucapital.usuite.utg.repository.LoansPipelineRepository;
-import com.untucapital.usuite.utg.model.LoansPipeline;
+
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "credit_application_pipeline")
 public class LoansPipelineController {
 
-    private final LoansPipelineRepository loansPipelineRepository;
+    private final LoansPipelineService loansPipelineService;
 
-    @Autowired
-    public LoansPipelineController(LoansPipelineRepository loansPipelineRepository) {
-        this.loansPipelineRepository = loansPipelineRepository;
-    }
 
     @PostMapping("/loans")
-    public ResponseEntity<LoansPipeline> createLoan(@RequestBody LoansPipeline loansPipeline) {
-        LoansPipeline savedLoan = loansPipelineRepository.save(loansPipeline);
+    public ResponseEntity<LoansPipelineResponseDTO> createLoan(@RequestBody LoansPipelineRequestDTO loansPipeline) {
+        LoansPipelineResponseDTO savedLoan = loansPipelineService.createLoan(loansPipeline);
         return new ResponseEntity<>(savedLoan, HttpStatus.CREATED);
     }
 
     @GetMapping("/loans")
-    public ResponseEntity<Iterable<LoansPipeline>> getAllLoans() {
-        Iterable<LoansPipeline> loans = loansPipelineRepository.findAll();
+    public ResponseEntity<List<LoansPipelineResponseDTO>> getAllLoans() {
+        List<LoansPipelineResponseDTO> loans = loansPipelineService.getAllLoans();
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
     @GetMapping("/loans/count/{loanOfficer}")
     public ResponseEntity<Integer> getCountByLoanOfficer(@PathVariable("loanOfficer") String loanOfficer) {
-        int count = loansPipelineRepository.countByLoanOfficerAndLoanStatus(loanOfficer, "Disbursed");
+        Integer count = loansPipelineService.getCountByLoanOfficer(loanOfficer);
         return new ResponseEntity<>(count, HttpStatus.OK);
     }
 

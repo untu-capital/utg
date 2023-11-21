@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.model.fcb;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -14,22 +15,30 @@ import javax.persistence.Table;
 @Table(name = "fcb_inactive_searches")
 public class Inactive extends AbstractEntity {
 
+    @Column(name = "counterparty")
     private String counterparty;
 
+    @Column(name = "branch")
     private String branch;
 
+    @Column(name = "amount")
     private String amount;
 
+    @Column(name = "event_type")
     @JsonProperty(value = "event_type")
     private String eventType;
 
+    @Column(name = "currency")
     private String currency;
 
+    @Column(name = "comment")
     private String comment;
 
-    private String court_ref;
+    @Column(name = "court_ref")
+    private String courtRef;
 
-    private String event_date;
+    @Column(name = "event_date")
+    private String eventDate;
 
     public String getCounterparty() {
         return counterparty;
@@ -79,19 +88,19 @@ public class Inactive extends AbstractEntity {
         this.comment = comment;
     }
 
-    public java.lang.String getCourt_ref() {
-        return court_ref;
+    public String getCourtRef() {
+        return courtRef;
     }
 
-    public void setCourt_ref(java.lang.String court_ref) {
-        this.court_ref = court_ref;
+    public void setCourtRef(String courtRef) {
+        this.courtRef = courtRef;
     }
 
-    public String getEvent_date() {
-        return event_date;
+    public String getEventDate() {
+        return eventDate;
     }
 
-    public void setEvent_date(String event_date) {
-        this.event_date = event_date;
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
     }
 }

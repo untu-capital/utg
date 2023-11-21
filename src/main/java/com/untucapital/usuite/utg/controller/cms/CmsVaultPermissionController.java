@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller.cms;
 
+import com.untucapital.usuite.utg.dto.cms.req.CmsVaultPermissionRequestDTO;
+import com.untucapital.usuite.utg.dto.cms.res.CmsVaultPermissionResponseDTO;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.service.cms.CmsVaultPermissionService;
 import org.slf4j.Logger;
@@ -16,18 +18,17 @@ import java.util.Optional;
 @RequestMapping("cms/cms_vault_permission")
 public class CmsVaultPermissionController {
 
+    private static final Logger log = LoggerFactory.getLogger(CmsVaultPermissionController.class);
     @Autowired
     CmsVaultPermissionService cmsVaultPermissionService;
 
-    private static final Logger log = LoggerFactory.getLogger(CmsVaultPermissionController.class);
-
     @GetMapping
-    public List<CmsVaultPermission> list() {
+    public List<CmsVaultPermissionResponseDTO> list() {
         return cmsVaultPermissionService.getAllCmsVaultPermissions();
     }
 
     @PostMapping
-    public void saveCmsVaultPermission(@RequestBody CmsVaultPermission cmsVaultPermission) {
+    public void saveCmsVaultPermission(@RequestBody CmsVaultPermissionRequestDTO cmsVaultPermission) {
         log.info(String.valueOf(cmsVaultPermission));
         cmsVaultPermissionService.saveCmsVaultPermission(cmsVaultPermission);
     }
@@ -38,15 +39,20 @@ public class CmsVaultPermissionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CmsVaultPermission> getCmsVaultPermissionById(@PathVariable("id") String id) {
-        Optional<CmsVaultPermission> cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionById(id);
+    public ResponseEntity<CmsVaultPermissionResponseDTO> getCmsVaultPermissionById(@PathVariable("id") String id) {
+        CmsVaultPermissionResponseDTO cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionById(id);
 
-        if (cmsVaultPermission.isPresent()) {
-            return new ResponseEntity<>(cmsVaultPermission.get(), HttpStatus.OK);
+        if (cmsVaultPermission !=null) {
+            return new ResponseEntity<>(cmsVaultPermission, HttpStatus.OK);
         } else {
             // Handle the case when the CmsVaultPermissions object is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("user/{userId}")
+    public List<CmsVaultPermissionResponseDTO> getCmsVaultPermissionByUserId(@PathVariable String userId) {
+        return cmsVaultPermissionService.getCmsVaultPermissionByUserId(userId);
     }
 
 //    @GetMapping("/getByVaultAccCode/{vaultAccCode}")
@@ -63,15 +69,4 @@ public class CmsVaultPermissionController {
 
 
 
-//    @GetMapping("getByPoNumber/{poNumber}")
-//    public ResponseEntity<CmsVaultPermission> getCmsVaultPermissionByPoNumber(@PathVariable("poNumber") String poNumber) {
-//        Optional<CmsVaultPermission> cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionByPoNumber(poNumber);
-//
-//        if (cmsVaultPermission.isPresent()) {
-//            return new ResponseEntity<>(cmsVaultPermission.get(), HttpStatus.OK);
-//        } else {
-//            // Handle the case when no CmsVaultPermissions objects are found
-//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//        }
-//    }
 }

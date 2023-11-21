@@ -9,8 +9,8 @@ import com.untucapital.usuite.utg.repository.FCBResponseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,6 +32,7 @@ public class CreditCheckService {
         this.fcbResponseRepository = fcbResponseRepository;
     }
 
+    @Transactional(value = "transactionManager")
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
         log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
 
@@ -56,15 +57,16 @@ public class CreditCheckService {
         clientLoan.setFcbScore(creditScore);
 
         //if (creditStatus.equals("GREEN") || creditStatus.equals("GOOD")) {
-          //  clientLoan.setLoanStatus("ACCEPTED");
+        //  clientLoan.setLoanStatus("ACCEPTED");
         //} else if (creditStatus.equals("FAIR") || creditStatus.equals("ADVERSE") || creditStatus.equals("PEP")) {
-            //clientLoan.setLoanStatus("REJECTED");
-       // }
+        //clientLoan.setLoanStatus("REJECTED");
+        // }
         return clientLoan;
     }
 
-//    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
-    protected void pollCreditChecks() {
+    //    @Scheduled(initialDelayString = "${fixed-delay.ms}", fixedDelayString = "${fixed-delay.ms}")
+    @Transactional(value = "transactionManager")
+    public void pollCreditChecks() {
         log.debug("Polling Inconclusive Credit Checks");
         long startTime = System.currentTimeMillis();
 

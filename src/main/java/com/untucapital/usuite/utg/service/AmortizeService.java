@@ -3,66 +3,76 @@ package com.untucapital.usuite.utg.service;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import com.untucapital.usuite.utg.dto.amortize.AmortizationTable;
+import com.untucapital.usuite.utg.dto.amortize.LoanObject;
+import com.untucapital.usuite.utg.dto.amortize.PeriodObj;
+import com.untucapital.usuite.utg.dto.amortize.ResultObject;
+import com.untucapital.usuite.utg.dto.loans.SingleLoan;
+import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.processor.AmortizeProcessor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
-@Transactional
+
 @Service
+@Slf4j
 public class AmortizeService {
 
     private final MusoniService musoniService;
+    private final RestClient restClient;
+    private final AmortizeProcessor amortizeProcessor;
 
-    public AmortizeService(MusoniService musoniService) {
+    public AmortizeService(MusoniService musoniService, RestClient restClient, AmortizeProcessor amortizeProcessor) {
         this.musoniService = musoniService;
+        this.restClient = restClient;
+        this.amortizeProcessor = amortizeProcessor;
     }
 
-    public String getTable(String loanId, String periodRange) throws JSONException {
+    @Transactional(value = "transactionManager")
+    public String getTable(String loanId, String periodRange) {
 
-        System.out.println("LOAN ID IS: "+loanId);
+        log.info("LOAN ID IS: " + loanId);
 
-        String loan = musoniService.getLoanId(loanId);
+        SingleLoan loan = restClient.getLoanId(loanId);
 
-        JSONObject jsonObject = new JSONObject(loan);
+        String accountNo = loan.getAccountNo();
+        int clientId = loan.getClientId();
+        String clientName = loan.getClientName();
+        String loanProductName = loan.getLoanProductName();
+        String loanOfficerName = loan.getLoanOfficerName();
+        double principal = Double.parseDouble(String.valueOf(loan.getPrincipal()));
+        int numberOfRepayments = loan.getNumberOfRepayments();
+        double interestRatePerPeriod = loan.getInterestRatePerPeriod();
 
-        String accountNo = jsonObject.getString("accountNo");
-        int clientId = jsonObject.getInt("clientId");
-        String clientName = jsonObject.getString("clientName");
-        String loanProductName = jsonObject.getString("loanProductName");
-        String loanOfficerName = jsonObject.getString("loanOfficerName");
-        double principal = jsonObject.getDouble("principal");
-        int numberOfRepayments = jsonObject.getInt("numberOfRepayments");
-        double interestRatePerPeriod = jsonObject.getDouble("interestRatePerPeriod");
 
-        JSONArray actualDisbursementDateArray = jsonObject.getJSONObject("timeline").getJSONArray("actualDisbursementDate");
-        int actualDisbursementYear = actualDisbursementDateArray.getInt(0);
-        int actualDisbursementMonth = actualDisbursementDateArray.getInt(1);
-        int actualDisbursementDay = actualDisbursementDateArray.getInt(2);
+        int[] actualDisbursementDateArray = loan.getTimeline().getActualDisbursementDate();
+        int actualDisbursementYear = actualDisbursementDateArray[0];
+        int actualDisbursementMonth = actualDisbursementDateArray[1];
+        int actualDisbursementDay = actualDisbursementDateArray[2];
         LocalDate actualDisbursementDate = LocalDate.of(actualDisbursementYear, actualDisbursementMonth, actualDisbursementDay);
 
-        JSONArray expectedMaturityDateArray = jsonObject.getJSONObject("timeline").getJSONArray("expectedMaturityDate");
-        int expectedMaturityYear = expectedMaturityDateArray.getInt(0);
-        int expectedMaturityMonth = expectedMaturityDateArray.getInt(1);
-        int expectedMaturityDay = expectedMaturityDateArray.getInt(2);
+        int[] expectedMaturityDateArray = loan.getTimeline().getExpectedMaturityDate();
+        int expectedMaturityYear = expectedMaturityDateArray[0];
+        int expectedMaturityMonth = expectedMaturityDateArray[1];
+        int expectedMaturityDay = expectedMaturityDateArray[2];
         LocalDate expectedMaturityDate = LocalDate.of(expectedMaturityYear, expectedMaturityMonth, expectedMaturityDay);
 
-        System.out.println("Account Number: " + accountNo);
-        System.out.println("Client ID: " + clientId);
-        System.out.println("Client Name: " + clientName);
-        System.out.println("Loan Product Name: " + loanProductName);
-        System.out.println("Loan Officer Name: " + loanOfficerName);
-        System.out.println("Principal: " + principal);
-        System.out.println("Number of Repayments: " + numberOfRepayments);
-        System.out.println("Interest Rate per Period: " + interestRatePerPeriod);
-        System.out.println("Actual Disbursement Date: " + actualDisbursementDate);
-        System.out.println("Expected Maturity Date: " + expectedMaturityDate);
+        log.info("Account Number: " + accountNo);
+        log.info("Client ID: " + clientId);
+        log.info("Client Name: " + clientName);
+        log.info("Loan Product Name: " + loanProductName);
+        log.info("Loan Officer Name: " + loanOfficerName);
+        log.info("Principal: " + principal);
+        log.info("Number of Repayments: " + numberOfRepayments);
+        log.info("Interest Rate per Period: " + interestRatePerPeriod);
+        log.info("Actual Disbursement Date: " + actualDisbursementDate);
+        log.info("Expected Maturity Date: " + expectedMaturityDate);
 
 //        COLLECT VALUES FROM LOAN..
 
@@ -77,108 +87,76 @@ public class AmortizeService {
 
         JsonArray tableArray = new JsonArray();
 
+        AmortizationTable amortizationTable = new AmortizationTable();
+
 
         LocalDate nextMonthDate = actualDisbursementDate.plusMonths(1);
         int qw = 24;
         double interest = 0.0;
+        List<PeriodObj> periodObjList = new ArrayList<PeriodObj>();
         for (int period = 1; period <= n; period++) {
             interest = remainingBalance * (i / 100);
             principal = pmt - interest;
             remainingBalance -= principal;
             totalInterest += interest;
 
+//            JsonObject periodObject = new JsonObject();
+            PeriodObj periodObj = new PeriodObj();
+            periodObj.setPeriod(period);
+            periodObj.setMonth(nextMonthDate.toString());
+            periodObj.setMonth_int(qw);
+            periodObj.setPV(pv);
+            periodObj.setPMT(pmt);
+            periodObj.setInterest(interest);
+            periodObj.setFV(fv);
 
-            JsonObject periodObject = new JsonObject();
-            periodObject.addProperty("Period", period);
-            periodObject.addProperty("month", nextMonthDate.toString());
-            periodObject.addProperty("month_int", qw);
-            periodObject.addProperty("PV", pv);
-            periodObject.addProperty("PMT", pmt);
-            periodObject.addProperty("Interest", interest);
-            periodObject.addProperty("FV", fv);
 
-            tableArray.add(periodObject);
+            periodObjList.add(periodObj);
+
+            log.info("PeriodObjList:{}", periodObj);
 
             pv = remainingBalance;
             nextMonthDate = nextMonthDate.plusMonths(1);
             qw++;
-            System.out.println(nextMonthDate);
+            log.info(String.valueOf(nextMonthDate));
         }
+        amortizationTable.setAmortizationTable(periodObjList);
 
-        JsonObject resultObject = new JsonObject();
-        resultObject.add("AmortizationTable", tableArray);
-        resultObject.addProperty("TotalInterest", totalInterest);
-        resultObject.addProperty("PeriodInterest1", installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
+        ResultObject resultObject = new ResultObject();
+        resultObject.setAmortizationTable(amortizationTable);
+        resultObject.setTotalInterest(totalInterest);
+        resultObject.setPeriodInterest1(amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
 
         Gson gson = new Gson();
         String json = gson.toJson(resultObject);
 
-        System.out.println(installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
+        log.info(String.valueOf(amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest)));
 
         return json;
     }
 
 
-    public double installmentCalc(String nextMonthDate, String periodRange, double principal, double interest) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate disbursementDate = LocalDate.parse(nextMonthDate, formatter);
-        LocalDate currentDate = LocalDate.now();
-
-        double balanceToBeCleared = 0.0;
-        if (LocalDate.parse(periodRange, formatter).isAfter(disbursementDate) ||
-                LocalDate.parse(periodRange, formatter).isEqual(disbursementDate)) {
-            long numOfDaysDifference = ChronoUnit.DAYS.between(disbursementDate, currentDate);
-
-            double interestForNextInstalment = interest;
-            double numOfDaysFromSystem = 30.417;
-            double interestPerDay = interestForNextInstalment / numOfDaysFromSystem;
-            double accruedInterest = numOfDaysDifference * interestPerDay;
-            double principalBalance = principal;
-            double totalDueAsOfToday = accruedInterest + principalBalance;
-            double settlementAccountBalance = 0.0; // Assuming no value is available
-            balanceToBeCleared = totalDueAsOfToday;
-
-            System.out.println("Abel");
-            System.out.println("A\tInterest for Next Instalment\t" + interestForNextInstalment);
-            System.out.println("B\t# of Days (from System)\t" + numOfDaysFromSystem);
-            System.out.println("C\tInterest per Day\t" + interestPerDay);
-            System.out.println("D\t# of Days to TODAY\t" + numOfDaysDifference);
-            System.out.println("E\tAccrued Interest\t" + accruedInterest);
-            System.out.println("F\tPrincipal Balance\t" + principalBalance);
-            System.out.println("G\tTotal Due as at today\t" + totalDueAsOfToday);
-            System.out.println("H\tSettlement Account Balance\t" + settlementAccountBalance);
-            System.out.println("I\tBALANCE TO BE CLEARED\t" + balanceToBeCleared);
-
-            return balanceToBeCleared;
-        }  else {
-            return balanceToBeCleared;
-        }
-
-    }
-
+    @Transactional(value = "transactionManager")
     public String getLoanInterest(String rangeStart, String rangeEnd, String periodRange) {
         JsonArray resultArray = new JsonArray();
 
         for (int i = Integer.parseInt(rangeStart); i <= Integer.parseInt(rangeEnd); i++) {
-            com.google.gson.JsonObject loanObject = new com.google.gson.JsonObject();
+            LoanObject loanObject = new LoanObject();
 
             try {
-                String loan = musoniService.getLoanId(String.valueOf(i));
+                SingleLoan loan = restClient.getLoanId(String.valueOf(i));
 
-                org.springframework.boot.configurationprocessor.json.JSONObject jsonObject = new org.springframework.boot.configurationprocessor.json.JSONObject(loan);
-
-                org.springframework.boot.configurationprocessor.json.JSONArray actualDisbursementDateArray = jsonObject.getJSONObject("timeline").getJSONArray("actualDisbursementDate");
-                int actualDisbursementYear = actualDisbursementDateArray.getInt(0);
-                int actualDisbursementMonth = actualDisbursementDateArray.getInt(1);
-                int actualDisbursementDay = actualDisbursementDateArray.getInt(2);
+                int[] actualDisbursementDateArray = loan.getTimeline().getActualDisbursementDate();
+                int actualDisbursementYear = actualDisbursementDateArray[0];
+                int actualDisbursementMonth = actualDisbursementDateArray[1];
+                int actualDisbursementDay = actualDisbursementDateArray[2];
                 LocalDate actualDisbursementDate = LocalDate.of(actualDisbursementYear, actualDisbursementMonth, actualDisbursementDay);
 
-                org.springframework.boot.configurationprocessor.json.JSONArray expectedMaturityDateArray = jsonObject.getJSONObject("timeline").getJSONArray("expectedMaturityDate");
-                int expectedMaturityYear = expectedMaturityDateArray.getInt(0);
-                int expectedMaturityMonth = expectedMaturityDateArray.getInt(1);
-                int expectedMaturityDay = expectedMaturityDateArray.getInt(2);
+                int[] expectedMaturityDateArray = loan.getTimeline().getExpectedMaturityDate();
+                int expectedMaturityYear = expectedMaturityDateArray[0];
+                int expectedMaturityMonth = expectedMaturityDateArray[1];
+                int expectedMaturityDay = expectedMaturityDateArray[2];
                 LocalDate expectedMaturityDate = LocalDate.of(expectedMaturityYear, expectedMaturityMonth, expectedMaturityDay);
-
 
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -186,70 +164,78 @@ public class AmortizeService {
                 if (LocalDate.parse(periodRange, formatter).isAfter(actualDisbursementDate.plusMonths(1)) ||
                         LocalDate.parse(periodRange, formatter).isEqual(actualDisbursementDate.plusMonths(1))) {
                     // Extracting the required values
-                    loanObject.addProperty("accountNo", jsonObject.getString("accountNo"));
-                    loanObject.addProperty("status", jsonObject.getJSONObject("status").getString("active"));
-                    loanObject.addProperty("clientId", jsonObject.getInt("clientId"));
-                    loanObject.addProperty("clientName", jsonObject.getString("clientName"));
-                    loanObject.addProperty("loanProductName", jsonObject.getString("loanProductName"));
-                    loanObject.addProperty("loanOfficerName", jsonObject.getString("loanOfficerName"));
-                    loanObject.addProperty("principal", jsonObject.getDouble("principal"));
-                    loanObject.addProperty("numberOfRepayments", jsonObject.getInt("numberOfRepayments"));
-                    loanObject.addProperty("interestRatePerPeriod", jsonObject.getDouble("interestRatePerPeriod"));
-                    loanObject.addProperty("actualDisbursementDate", actualDisbursementDate.toString());
-                    loanObject.addProperty("expectedMaturityDate", expectedMaturityDate.toString());
+                    // Set the properties of the LoanObject using the POJO properties
+                    loanObject.setAccountNo(loan.getAccountNo());
+                    loanObject.setStatus(String.valueOf(loan.getStatus().isActive()));
+                    loanObject.setClientId(loan.getClientId());
+                    loanObject.setClientName(loan.getClientName());
+                    loanObject.setLoanProductName(loan.getLoanProductName());
+                    loanObject.setLoanOfficerName(loan.getLoanOfficerName());
+                    loanObject.setPrincipal(loan.getPrincipal());
+                    loanObject.setNumberOfRepayments(loan.getNumberOfRepayments());
+                    loanObject.setInterestRatePerPeriod(loan.getInterestRatePerPeriod());
+                    loanObject.setActualDisbursementDate(actualDisbursementDate.toString());
+                    loanObject.setExpectedMaturityDate(expectedMaturityDate.toString());
 
-                    int n = jsonObject.getInt("numberOfRepayments"); // Number of periods
-                    double in = jsonObject.getDouble("interestRatePerPeriod"); // Interest per year
-                    double pv = jsonObject.getDouble("principal"); // Present Value
+                    int n = loan.getNumberOfRepayments(); // Number of periods
+                    double in = loan.getInterestRatePerPeriod(); // Interest per year
+                    double pv = loan.getPrincipal(); // Present Value
                     double fv = 0; // Future Value
                     double pmt = pv * (in / 100) / (1 - Math.pow(1 + (in / 100), -n));
                     double remainingBalance = pv;
                     double totalInterest = 0;
-                    JsonArray tableArray = new JsonArray();
+
+                    List<PeriodObj> periods = new ArrayList<>();
 
                     LocalDate nextMonthDate = actualDisbursementDate.plusMonths(1);
                     double interest = 0.0;
                     double principal = 0.0;
+                    double lastNonZeroPeriodInterest = 0.0;
+
+                    double periodInterest2 = 0;
                     for (int period = 1; period <= n; period++) {
                         interest = remainingBalance * (in / 100);
                         principal = pmt - interest;
                         remainingBalance -= principal;
                         totalInterest += interest;
 
-                        JsonObject periodObject = new JsonObject();
-                        periodObject.addProperty("Period", period);
-                        periodObject.addProperty("month", nextMonthDate.toString());
-                        periodObject.addProperty("PV", pv);
-                        periodObject.addProperty("PMT", pmt);
-                        periodObject.addProperty("Interest", interest);
-                        periodObject.addProperty("FV", fv);
-                        tableArray.add(periodObject);
-                        pv = remainingBalance;
+                        PeriodObj periodObject = new PeriodObj();
+                        periodObject.setPeriod(period);
+                        periodObject.setMonth(nextMonthDate.toString());
+                        periodObject.setPV(pv);
+                        periodObject.setPMT(pmt);
+                        periodObject.setInterest(interest);
+                        periodObject.setFV(fv);
+                        periodInterest2 = amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest);
+                        periodObject.setPeriodInterest2(periodInterest2);
 
+                        periods.add(periodObject);
+                        pv = remainingBalance;
                         nextMonthDate = nextMonthDate.plusMonths(1);
                         System.out.println(nextMonthDate);
                     }
-                    JsonObject resultObject = new JsonObject();
-                    loanObject.add("AmortizationTable", tableArray);
-                    loanObject.addProperty("TotalInterest", totalInterest);
-                    loanObject.addProperty("PeriodInterest2", installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
 
-                    System.out.println(installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
+                    //FIXME check-point
+                    AmortizationTable amortizationTable = new AmortizationTable();
+                    amortizationTable.setAmortizationTable(periods);
 
-                    resultArray.add(loanObject);
+                    loanObject.setAmortizationTable(amortizationTable);
+                    loanObject.setTotalInterest(totalInterest);
+                    loanObject.setPeriodInterest2(periodInterest2);
+
+                    log.info("Installments: {}",amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
+
+                    resultArray.add(String.valueOf(loanObject));
 
                 }
 
 
-
-
-
-
-            } catch (org.springframework.boot.configurationprocessor.json.JSONException e) {
+            } catch (Exception e) {
+                log.info("Failed to get the interest: {}", e.getMessage());
                 // Handle exception if needed
             }
         }
-        System.out.println("\n##################################################################\n"+resultArray);
+        log.info("\n##################################################################\n" + resultArray);
 
         JsonObject resultObject = new JsonObject();
         resultObject.add("InterestsTable", resultArray);
@@ -260,114 +246,116 @@ public class AmortizeService {
         return json;
     }
 
-    public String getLoansDisbursedByDate(String rangeStart, String rangeEnd, String periodRange) throws JSONException {
+    @Transactional(value = "transactionManager")
+    public String getLoansDisbursedByDate(String rangeStart, String rangeEnd, String periodRange) {
         JsonArray resultArray = new JsonArray();
 
         List<Integer> range = musoniService.disbursedLoansByDate(rangeStart, rangeEnd);
 
         for (int i : range) {
-            com.google.gson.JsonObject loanObject = new com.google.gson.JsonObject();
+            LoanObject loanObject = new LoanObject();
 
-            try {
-                String loan = musoniService.getLoanId(String.valueOf(i));
+            SingleLoan loan = restClient.getLoanId(String.valueOf(i));
 
-                org.springframework.boot.configurationprocessor.json.JSONObject jsonObject = new org.springframework.boot.configurationprocessor.json.JSONObject(loan);
+            int[] actualDisbursementDateArray = loan.getTimeline().getActualDisbursementDate();
+            //FIXME What should happen when the actualDisbursementDateArray is null
+            if(actualDisbursementDateArray==null){
+                continue;
+            }
+            int actualDisbursementYear = actualDisbursementDateArray[0];
+            int actualDisbursementMonth = actualDisbursementDateArray[1];
+            int actualDisbursementDay = actualDisbursementDateArray[2];
+            LocalDate actualDisbursementDate = LocalDate.of(actualDisbursementYear, actualDisbursementMonth, actualDisbursementDay);
 
-                org.springframework.boot.configurationprocessor.json.JSONArray actualDisbursementDateArray = jsonObject.getJSONObject("timeline").getJSONArray("actualDisbursementDate");
-                int actualDisbursementYear = actualDisbursementDateArray.getInt(0);
-                int actualDisbursementMonth = actualDisbursementDateArray.getInt(1);
-                int actualDisbursementDay = actualDisbursementDateArray.getInt(2);
-                LocalDate actualDisbursementDate = LocalDate.of(actualDisbursementYear, actualDisbursementMonth, actualDisbursementDay);
+            int[] expectedMaturityDateArray = loan.getTimeline().getExpectedMaturityDate();
+            int expectedMaturityYear = expectedMaturityDateArray[0];
+            int expectedMaturityMonth = expectedMaturityDateArray[1];
+            int expectedMaturityDay = expectedMaturityDateArray[2];
+            LocalDate expectedMaturityDate = LocalDate.of(expectedMaturityYear, expectedMaturityMonth, expectedMaturityDay);
 
-                org.springframework.boot.configurationprocessor.json.JSONArray expectedMaturityDateArray = jsonObject.getJSONObject("timeline").getJSONArray("expectedMaturityDate");
-                int expectedMaturityYear = expectedMaturityDateArray.getInt(0);
-                int expectedMaturityMonth = expectedMaturityDateArray.getInt(1);
-                int expectedMaturityDay = expectedMaturityDateArray.getInt(2);
-                LocalDate expectedMaturityDate = LocalDate.of(expectedMaturityYear, expectedMaturityMonth, expectedMaturityDay);
+            // Extracting the required values
+            double periodInter = 0.0;
+            if (loan.getStatus().isActive()) {
 
-                // Extracting the required values
-                double periodInter = 0.0;
-                if (jsonObject.getJSONObject("status").getString("active") == "true") {
-                        loanObject.addProperty("accountNo", jsonObject.getString("accountNo"));
-                        loanObject.addProperty("status", jsonObject.getJSONObject("status").getString("active"));
-                        loanObject.addProperty("clientId", jsonObject.getInt("clientId"));
-                        loanObject.addProperty("clientName", jsonObject.getString("clientName"));
-                        loanObject.addProperty("loanProductName", jsonObject.getString("loanProductName"));
-                        loanObject.addProperty("loanOfficerName", jsonObject.getString("loanOfficerName"));
-                        loanObject.addProperty("principal", jsonObject.getDouble("principal"));
-                        loanObject.addProperty("numberOfRepayments", jsonObject.getInt("numberOfRepayments"));
-                        loanObject.addProperty("interestRatePerPeriod", jsonObject.getDouble("interestRatePerPeriod"));
-                        loanObject.addProperty("actualDisbursementDate", actualDisbursementDate.toString());
-                        loanObject.addProperty("expectedMaturityDate", expectedMaturityDate.toString());
+                // Set the properties of the LoanObject using the POJO properties
+                loanObject.setAccountNo(loan.getAccountNo());
+                loanObject.setStatus(String.valueOf(loan.getStatus().isActive()));
+                loanObject.setClientId(loan.getClientId());
+                loanObject.setClientName(loan.getClientName());
+                loanObject.setLoanProductName(loan.getLoanProductName());
+                loanObject.setLoanOfficerName(loan.getLoanOfficerName());
+                loanObject.setPrincipal(loan.getPrincipal());
+                loanObject.setNumberOfRepayments(loan.getNumberOfRepayments());
+                loanObject.setInterestRatePerPeriod(loan.getInterestRatePerPeriod());
+                loanObject.setActualDisbursementDate(actualDisbursementDate.toString());
+                loanObject.setExpectedMaturityDate(expectedMaturityDate.toString());
 
-                        int n = jsonObject.getInt("numberOfRepayments"); // Number of periods
-                        double in = jsonObject.getDouble("interestRatePerPeriod"); // Interest per year
-                        double pv = jsonObject.getDouble("principal"); // Present Value
-                        double fv = 0; // Future Value
-                        double pmt = pv * (in / 100) / (1 - Math.pow(1 + (in / 100), -n));
-                        double remainingBalance = pv;
-                        double totalInterest = 0;
-                        JsonArray tableArray = new JsonArray();
 
-                        LocalDate nextMonthDate = actualDisbursementDate.plusMonths(1);
-                        double interest = 0.0;
-                        double principal = 0.0;
+                int n = loan.getNumberOfRepayments(); // Number of periods
+                double in = loan.getInterestRatePerPeriod(); // Interest per year
+                double pv = loan.getPrincipal(); // Present Value
+                double fv = 0; // Future Value
+                double pmt = pv * (in / 100) / (1 - Math.pow(1 + (in / 100), -n));
+                double remainingBalance = pv;
+                double totalInterest = 0;
 
-                        double lastNonZeroPeriodInterest = 0.0;
-                        for (int period = 1; period <= n; period++) {
-                            interest = remainingBalance * (in / 100);
-                            principal = pmt - interest;
-                            remainingBalance -= principal;
-                            totalInterest += interest;
+                List<PeriodObj> periods = new ArrayList<>();
 
-                            JsonObject periodObject = new JsonObject();
-                            periodObject.addProperty("Period", period);
-                            periodObject.addProperty("month", nextMonthDate.toString());
-                            periodObject.addProperty("PV", pv);
-                            periodObject.addProperty("PMT", pmt);
-                            periodObject.addProperty("Interest", interest);
-                            periodObject.addProperty("FV", fv);
-                            double periodInterest3 = installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest);
-                            periodObject.addProperty("PeriodInterest3", periodInterest3);
-                            tableArray.add(periodObject);
-                            pv = remainingBalance;
+                LocalDate nextMonthDate = actualDisbursementDate.plusMonths(1);
+                double interest = 0.0;
+                double principal = 0.0;
+                double lastNonZeroPeriodInterest = 0.0;
 
-                            if (periodInterest3 != 0.0) {
-                                lastNonZeroPeriodInterest = periodInterest3;
-                            }
+                for (int period = 1; period <= n; period++) {
+                    interest = remainingBalance * (in / 100);
+                    principal = pmt - interest;
+                    remainingBalance -= principal;
+                    totalInterest += interest;
 
-                            nextMonthDate = nextMonthDate.plusMonths(1);
-                        }
+                    PeriodObj periodObject = new PeriodObj();
+                    periodObject.setPeriod(period);
+                    periodObject.setMonth(nextMonthDate.toString());
+                    periodObject.setPV(pv);
+                    periodObject.setPMT(pmt);
+                    periodObject.setInterest(interest);
+                    periodObject.setFV(fv);
 
-                        loanObject.add("AmortizationTable", tableArray);
-                        loanObject.addProperty("TotalInterest", totalInterest);
+                    double periodInterest3 = amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest);
+                    periodObject.setPeriodInterest3(periodInterest3);
 
-                        loanObject.add("AmortizationTable", tableArray);
-                        loanObject.addProperty("TotalInterest", totalInterest);
-                        loanObject.addProperty("PeriodInterest4", lastNonZeroPeriodInterest);
-
-                        System.out.println(lastNonZeroPeriodInterest);
-
-                        System.out.println("####### ************** ############### ************* $$$$$$$$$$$$$$$");
-                        System.out.println(installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
-                        resultArray.add(loanObject);
+                    if (periodInterest3 != 0.0) {
+                        lastNonZeroPeriodInterest = periodInterest3;
                     }
 
-            } catch (org.springframework.boot.configurationprocessor.json.JSONException e) {
-                // Handle exception if needed
+                    periods.add(periodObject);
+                    pv = remainingBalance;
+                    nextMonthDate = nextMonthDate.plusMonths(1);
+                }
+
+                AmortizationTable amortizationTable= new AmortizationTable();
+                amortizationTable.setAmortizationTable(periods);
+
+                loanObject.setAmortizationTable(amortizationTable);
+                loanObject.setTotalInterest(totalInterest);
+                loanObject.setPeriodInterest4(lastNonZeroPeriodInterest);
+
+
+                log.info("LastNonZeroPeriodInterest: {}", lastNonZeroPeriodInterest);
+                log.info("####### ************** ############### ************* $$$$$$$$$$$$$$$");
+                log.info("Installment: {}",amortizeProcessor.installmentCalc(String.valueOf(nextMonthDate), periodRange, principal, interest));
+
+                resultArray.add(String.valueOf(loanObject));
             }
+
         }
 
-        System.out.println("\n##################################################################\n"+range);
-
+        log.info("\n##################################################################\n" + range);
+//FIXME Replace the json object with pojos
         JsonObject resultObject = new JsonObject();
         resultObject.add("InterestsTable", resultArray);
 
         Gson gson = new Gson();
         String json = gson.toJson(resultObject);
-
-
-
 
 
         return json;

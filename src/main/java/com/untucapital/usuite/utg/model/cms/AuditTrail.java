@@ -26,26 +26,45 @@ public class AuditTrail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
+    @Column(name = "initiator")
     private String initiator;
+
+    @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "from_vault")
     private String fromVault;
+
+    @Column(name = "to_vault")
     private String toVault;
+
+    @Column(name = "initiated_at")
     private LocalDateTime initiatedAt;
 
+    @Column(name = "first_approver")
     private String firstApprover;
+
+    @Column(name = "first_approved_at")
     private LocalDateTime firstApprovedAt;
 
+    @Column(name = "second_approver")
     private String secondApprover;
+
+    @Column(name = "second_approved_at")
     private LocalDateTime secondApprovedAt;
 
     @JsonIgnore
     @CreationTimestamp
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @JsonIgnore
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
 
 }

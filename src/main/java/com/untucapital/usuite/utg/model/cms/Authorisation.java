@@ -2,16 +2,22 @@ package com.untucapital.usuite.utg.model.cms;
 
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "authorisation")
 public class Authorisation extends AbstractEntity {
-    private  String branchId;
-    private  String authLevel;
-    private  String userId;
+    @Column(name = "branch_id")
+    private String branchId;
+
+    @Column(name = "auth_level")
+    private String authLevel;
+
+    @Column(name = "user_id")
+    private String userId;
+
 
     public String getBranchId() {
         return branchId;

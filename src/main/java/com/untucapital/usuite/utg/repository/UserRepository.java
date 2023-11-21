@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.User;
-import com.untucapital.usuite.utg.model.cms.CmsUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +34,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User findByResetPasswordToken(String token);
 
-    User getUserById (String userId);
+    User getUserById(String userId);
 
-    User findUsersById (String userId);
+    Optional<User> findUserById(String userId);
 
     User getUserByContactDetail_MobileNumber(long mobileNumber);
 
@@ -47,9 +46,12 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(String role);
 
+    List<User> findUsersByPoUser_RoleIsNotNullAndPoUser_RoleNotLike(String role);
+
     List<User> findUsersByBranchNotNull();
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
 
     List<User> findUsersByBranchIsNull();
+
 }

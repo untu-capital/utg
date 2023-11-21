@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.model.MarketLeads;
+import com.untucapital.usuite.utg.dto.request.MarketLeadsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketLeadsResponseDTO;
 import com.untucapital.usuite.utg.repository.MarketLeadsRepository;
 import com.untucapital.usuite.utg.service.MarketLeadsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,31 +26,31 @@ public class MarketLeadsController {
     }
 
     @GetMapping
-    public ResponseEntity<List<MarketLeads>> getAllMarketLeads() {
-        List<MarketLeads> marketLeadsList = marketLeadsService.getAllMarketLeads();
+    public ResponseEntity<List<MarketLeadsResponseDTO>> getAllMarketLeads() {
+        List<MarketLeadsResponseDTO> marketLeadsList = marketLeadsService.getAllMarketLeads();
         return new ResponseEntity<>(marketLeadsList, HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<MarketLeads> createMarketLead(@RequestBody MarketLeads marketLeads) {
-        MarketLeads createdMarketLeads = marketLeadsService.createMarketLeads(marketLeads);
+    public ResponseEntity<MarketLeadsResponseDTO> createMarketLead(@RequestBody MarketLeadsRequestDTO marketLeads) {
+        MarketLeadsResponseDTO createdMarketLeads = marketLeadsService.createMarketLeads(marketLeads);
         return new ResponseEntity<>(createdMarketLeads, HttpStatus.CREATED);
     }
 
     @GetMapping("/branch/{branch}")
-    public ResponseEntity<List<MarketLeads>> getMarketLeadsByBranch(@PathVariable String branch) {
-        List<MarketLeads> marketLeadsList = marketLeadsRepository.findMarketLeadsByBranchName(branch);
+    public ResponseEntity<List<MarketLeadsResponseDTO>> getMarketLeadsByBranch(@PathVariable String branch) {
+        List<MarketLeadsResponseDTO> marketLeadsList = marketLeadsService.getMarketLeadsByBranch(branch);
         return new ResponseEntity<>(marketLeadsList, HttpStatus.OK);
     }
 
     @GetMapping("/loanOfficer/{loanOfficer}")
-    public ResponseEntity<List<MarketLeads>> getMarketLeadsByLoanOfficer(@PathVariable String loanOfficer) {
-        List<MarketLeads> marketLeadsList = marketLeadsRepository.findMarketLeadsByLoanOfficer(loanOfficer);
+    public ResponseEntity<List<MarketLeadsResponseDTO>> getMarketLeadsByLoanOfficer(@PathVariable String loanOfficer) {
+        List<MarketLeadsResponseDTO> marketLeadsList = marketLeadsService.getMarketLeadsByLoanOfficer(loanOfficer);
         return new ResponseEntity<>(marketLeadsList, HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<MarketLeads> updateMarketLead(
-            @PathVariable("id") String id, @RequestBody MarketLeads marketLeads) {
-        MarketLeads updatedMarketLeads = marketLeadsService.updateMarketLeads(id, marketLeads);
+    public ResponseEntity<MarketLeadsResponseDTO> updateMarketLead(
+            @PathVariable("id") String id, @RequestBody MarketLeadsRequestDTO marketLeads) {
+        MarketLeadsResponseDTO updatedMarketLeads = marketLeadsService.updateMarketLeads(id, marketLeads);
         if (updatedMarketLeads != null) {
             return new ResponseEntity<>(updatedMarketLeads, HttpStatus.OK);
         } else {
@@ -57,9 +58,9 @@ public class MarketLeadsController {
         }
     }
     @PutMapping("status/{id}")
-    public ResponseEntity<MarketLeads> updateMarketLeadStatus(
-            @PathVariable("id") String id, @RequestBody MarketLeads marketLeads) {
-        MarketLeads updatedMarketLeadStatus = marketLeadsService.updateMarketLeadsStatus(id, marketLeads);
+    public ResponseEntity<MarketLeadsResponseDTO> updateMarketLeadStatus(
+            @PathVariable("id") String id, @RequestBody MarketLeadsRequestDTO marketLeads) {
+        MarketLeadsResponseDTO updatedMarketLeadStatus = marketLeadsService.updateMarketLeadsStatus(id, marketLeads);
         if (updatedMarketLeadStatus != null) {
             return new ResponseEntity<>(updatedMarketLeadStatus, HttpStatus.OK);
         } else {
@@ -67,8 +68,8 @@ public class MarketLeadsController {
         }
     }
     @GetMapping("/{id}")
-    public ResponseEntity<MarketLeads> getMarketLeadById(@PathVariable("id") String id) {
-        MarketLeads marketLeads = marketLeadsService.getMarketLeadsById(id);
+    public ResponseEntity<MarketLeadsResponseDTO> getMarketLeadById(@PathVariable("id") String id) {
+        MarketLeadsResponseDTO marketLeads = marketLeadsService.getMarketLeadsById(id);
         if (marketLeads != null) {
             return new ResponseEntity<>(marketLeads, HttpStatus.OK);
         } else {

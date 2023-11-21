@@ -5,11 +5,10 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Builder
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class DisbursedLoans {
     private BigDecimal totalPrincipalDisbursed;
     private List<DisbursedLoanMonth> disbursedLoanMonths;

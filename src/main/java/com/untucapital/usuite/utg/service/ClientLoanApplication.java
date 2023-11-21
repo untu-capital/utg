@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 
-import java.text.ParseException;
 import java.util.List;
 
 public interface ClientLoanApplication {
@@ -32,5 +30,5 @@ public interface ClientLoanApplication {
 
     List<ClientLoan> getClientLoanApplicationByBranchName(String branchName);
 
-    List<ClientLoan> getAllClientLoansData() throws JSONException;
+    List<ClientLoan> getAllClientLoansData();
 }
