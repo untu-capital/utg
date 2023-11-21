@@ -1,14 +1,14 @@
 package com.untucapital.usuite.utg.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.untucapital.usuite.utg.DTO.Currency;
-import com.untucapital.usuite.utg.DTO.DisbursedLoans;
-import com.untucapital.usuite.utg.DTO.*;
-import com.untucapital.usuite.utg.DTO.client.Client;
-import com.untucapital.usuite.utg.DTO.loans.RepaymentSchedule;
-import com.untucapital.usuite.utg.DTO.loans.Result;
-import com.untucapital.usuite.utg.DTO.loans.*;
-import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
+import com.untucapital.usuite.utg.dto.Currency;
+import com.untucapital.usuite.utg.dto.DisbursedLoans;
+import com.untucapital.usuite.utg.dto.*;
+import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
+import com.untucapital.usuite.utg.dto.loans.Result;
+import com.untucapital.usuite.utg.dto.loans.*;
+import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.transactions.Loans;
@@ -517,8 +517,8 @@ public class MusoniService {
         Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);
         List<PageItem> pageItems = loans.getPageItems();
 
-        List<com.untucapital.usuite.utg.DTO.loans.DisbursedLoans> disbursedLoansList =
-                new ArrayList<com.untucapital.usuite.utg.DTO.loans.DisbursedLoans>();
+        List<com.untucapital.usuite.utg.dto.loans.DisbursedLoans> disbursedLoansList =
+                new ArrayList<com.untucapital.usuite.utg.dto.loans.DisbursedLoans>();
 
         // Store the total principals for each month
         Map<String, Double> monthlyTotals = new HashMap<>();
@@ -526,7 +526,7 @@ public class MusoniService {
         for (int i = 0; i < pageItems.size(); i++) {
             PageItem page = pageItems.get(i);
 
-            com.untucapital.usuite.utg.DTO.loans.DisbursedLoans disbursedLoans = new com.untucapital.usuite.utg.DTO.loans.DisbursedLoans();
+            com.untucapital.usuite.utg.dto.loans.DisbursedLoans disbursedLoans = new com.untucapital.usuite.utg.dto.loans.DisbursedLoans();
 
             // Your existing code...
             // Check if Loan_id exists

@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.FollowUpDiaryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.FollowUpDiaryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.FollowUpDiaryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.FollowUpDiaryResponseDTO;
 import com.untucapital.usuite.utg.model.FollowUpDiary;
 import com.untucapital.usuite.utg.repository.FollowUpDiaryRepository;
 import org.springframework.beans.BeanUtils;
@@ -62,10 +62,10 @@ public class FollowUpDiaryService {
 
     @Transactional(value = "transactionManager")
     public FollowUpDiaryResponseDTO getFollowUpDiaryById(String id) {
-        
+
         FollowUpDiaryResponseDTO response = new FollowUpDiaryResponseDTO();
         Optional<FollowUpDiary> optionalFollowUpDiary = followUpDiaryRepository.findById(id);
-        
+
         if(optionalFollowUpDiary.isPresent()) {
             FollowUpDiary followUpDiary= optionalFollowUpDiary.get();
             BeanUtils.copyProperties(followUpDiary, response);

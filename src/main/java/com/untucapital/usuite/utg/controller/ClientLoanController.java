@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.google.gson.Gson;
-import com.untucapital.usuite.utg.DTO.BulkEmail;
-import com.untucapital.usuite.utg.DTO.Email;
+import com.untucapital.usuite.utg.dto.BulkEmail;
+import com.untucapital.usuite.utg.dto.Email;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;

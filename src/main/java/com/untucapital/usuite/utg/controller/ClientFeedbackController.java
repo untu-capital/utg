@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.ClientFeedbackRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientFeedbackResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientFeedbackRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientFeedbackResponseDTO;
 import com.untucapital.usuite.utg.repository.ClientFeedbackRepository;
 import com.untucapital.usuite.utg.service.ClientFeedbackService;
 import org.slf4j.Logger;

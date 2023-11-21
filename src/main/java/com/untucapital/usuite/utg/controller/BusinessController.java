@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.BusinessRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BusinessResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BusinessRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BusinessResponseDTO;
 import com.untucapital.usuite.utg.service.BusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

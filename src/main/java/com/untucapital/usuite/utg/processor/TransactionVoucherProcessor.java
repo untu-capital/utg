@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.processor;
 
-import com.untucapital.usuite.utg.DTO.cms.*;
+import com.untucapital.usuite.utg.dto.cms.*;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.TransactionPurpose;

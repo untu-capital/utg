@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.LeadStatusRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.LeadStatusResponseDTO;
-import com.untucapital.usuite.utg.model.LeadStatus;
+import com.untucapital.usuite.utg.dto.request.LeadStatusRequestDTO;
+import com.untucapital.usuite.utg.dto.response.LeadStatusResponseDTO;
 import com.untucapital.usuite.utg.service.LeadStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

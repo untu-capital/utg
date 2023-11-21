@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.CollateralSecurityRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CollateralSecurityResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CollateralSecurityRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CollateralSecurityResponseDTO;
 import com.untucapital.usuite.utg.model.CollateralSecurity;
 import com.untucapital.usuite.utg.repository.CollateraiSecurityRepository;
 import org.springframework.beans.BeanUtils;

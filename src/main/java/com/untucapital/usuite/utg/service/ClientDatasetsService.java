@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
 
-import com.untucapital.usuite.utg.DTO.request.ClientsDatasetsRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.ClientsDatasetsResponseDTO;
+import com.untucapital.usuite.utg.dto.request.ClientsDatasetsRequestDTO;
+import com.untucapital.usuite.utg.dto.response.ClientsDatasetsResponseDTO;
 import com.untucapital.usuite.utg.model.ClientsDatasets;
 import com.untucapital.usuite.utg.repository.ClientDatasetsRepository;
 import org.springframework.beans.BeanUtils;

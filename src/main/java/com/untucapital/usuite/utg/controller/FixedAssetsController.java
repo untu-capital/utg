@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.FixedAssetRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.FixedAssetResponseDTO;
-import com.untucapital.usuite.utg.model.FixedAsset;
+import com.untucapital.usuite.utg.dto.request.FixedAssetRequestDTO;
+import com.untucapital.usuite.utg.dto.response.FixedAssetResponseDTO;
 import com.untucapital.usuite.utg.service.FixedAssetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

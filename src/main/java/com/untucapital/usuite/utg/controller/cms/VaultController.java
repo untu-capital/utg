@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.controller.cms;
 
 
-import com.untucapital.usuite.utg.DTO.UpdateVaultRequest;
-import com.untucapital.usuite.utg.DTO.VaultRequest;
+import com.untucapital.usuite.utg.dto.UpdateVaultRequest;
+import com.untucapital.usuite.utg.dto.VaultRequest;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.RequiredArgsConstructor;

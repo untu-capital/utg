@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.BankRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BankResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BankRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BankResponseDTO;
 import com.untucapital.usuite.utg.service.BankService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

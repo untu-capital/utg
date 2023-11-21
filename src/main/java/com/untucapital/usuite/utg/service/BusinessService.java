@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.BusinessRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.BusinessResponseDTO;
+import com.untucapital.usuite.utg.dto.request.BusinessRequestDTO;
+import com.untucapital.usuite.utg.dto.response.BusinessResponseDTO;
 import com.untucapital.usuite.utg.model.Business;
 import com.untucapital.usuite.utg.repository.BusinessRepository;
 import org.springframework.beans.BeanUtils;

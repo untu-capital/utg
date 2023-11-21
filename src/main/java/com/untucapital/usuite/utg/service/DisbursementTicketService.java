@@ -1,5 +1,5 @@
 package com.untucapital.usuite.utg.service;
-import com.untucapital.usuite.utg.DTO.request.DisbursementTicketRequestDTO;
+import com.untucapital.usuite.utg.dto.request.DisbursementTicketRequestDTO;
 import com.untucapital.usuite.utg.model.DisbursementTicket;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;

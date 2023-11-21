@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
-import com.untucapital.usuite.utg.DTO.request.CreditHistoryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CreditHistoryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CreditHistoryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CreditHistoryResponseDTO;
 import com.untucapital.usuite.utg.service.CreditHistoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

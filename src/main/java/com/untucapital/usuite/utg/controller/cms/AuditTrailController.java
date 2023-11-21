@@ -1,8 +1,8 @@
 package com.untucapital.usuite.utg.controller.cms;
 
-import com.untucapital.usuite.utg.DTO.ApproverRequest;
-import com.untucapital.usuite.utg.DTO.AuditTrailInitiatorRequest;
-import com.untucapital.usuite.utg.DTO.ChangeAmountRequest;
+import com.untucapital.usuite.utg.dto.ApproverRequest;
+import com.untucapital.usuite.utg.dto.AuditTrailInitiatorRequest;
+import com.untucapital.usuite.utg.dto.ChangeAmountRequest;
 import com.untucapital.usuite.utg.model.cms.AuditTrail;
 import com.untucapital.usuite.utg.service.cms.AuditTrailService;
 import lombok.RequiredArgsConstructor;

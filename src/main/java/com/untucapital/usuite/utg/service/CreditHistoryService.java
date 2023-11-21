@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.CreditHistoryRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.CreditHistoryResponseDTO;
+import com.untucapital.usuite.utg.dto.request.CreditHistoryRequestDTO;
+import com.untucapital.usuite.utg.dto.response.CreditHistoryResponseDTO;
 import com.untucapital.usuite.utg.model.CreditHistory;
 import com.untucapital.usuite.utg.repository.CreditHistoryRepository;
 import org.springframework.beans.BeanUtils;

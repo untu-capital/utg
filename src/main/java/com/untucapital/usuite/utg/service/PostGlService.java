@@ -1,7 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
-import com.untucapital.usuite.utg.DTO.request.PostGLRequestDTO;
-import com.untucapital.usuite.utg.DTO.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
+import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.AccountEntity;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;

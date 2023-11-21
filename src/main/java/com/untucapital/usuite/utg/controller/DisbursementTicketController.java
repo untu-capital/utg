@@ -1,5 +1,5 @@
 package com.untucapital.usuite.utg.controller;
-import com.untucapital.usuite.utg.DTO.request.DisbursementTicketRequestDTO;
+import com.untucapital.usuite.utg.dto.request.DisbursementTicketRequestDTO;
 import com.untucapital.usuite.utg.model.DisbursementTicket;
 import com.untucapital.usuite.utg.repository.DisbursementTicketRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
@@ -34,7 +34,7 @@ public class DisbursementTicketController extends AbstractController<Disbursemen
 
         disbursementTicketService.deleteDisbursementTicket(id);
     }
-  
+
     @Override
     protected AbstractService<DisbursementTicket> getService() {
         return disbursementTicketService;
