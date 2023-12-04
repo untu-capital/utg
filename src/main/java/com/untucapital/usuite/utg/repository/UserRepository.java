@@ -46,6 +46,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(String role);
 
+    List<User> findUsersByCmsUser_Role(String role);
+
     List<User> findUsersByPoUser_RoleIsNotNullAndPoUser_RoleNotLike(String role);
 
     List<User> findUsersByBranchNotNull();

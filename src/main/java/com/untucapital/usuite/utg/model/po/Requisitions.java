@@ -55,4 +55,7 @@ public class Requisitions extends AbstractEntity {
     @Column(name = "to_account")
     private String toAccount;
 
+    @Column(name = "teller")
+    private String teller;
+
 }

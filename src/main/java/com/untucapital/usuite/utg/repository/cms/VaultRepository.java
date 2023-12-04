@@ -22,4 +22,8 @@ public interface VaultRepository extends JpaRepository<Vault, Integer> {
 
     List<Vault> findVaultByBranch_BranchName(String branch);
     List<Vault> findByBranch(Branches branch);
+
+    Optional<Vault> findByType(String type);
+
+
 }

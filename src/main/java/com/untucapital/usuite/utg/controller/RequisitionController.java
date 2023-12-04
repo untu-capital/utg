@@ -33,6 +33,12 @@ public class RequisitionController {
         return requisition;
     }
 
+    @GetMapping("approverId/{userid}")
+    public List<Requisitions> getRequisitionByApproverId(@PathVariable("userid") String userId) {
+        List<Requisitions> requisition = requisitionService.getRequisitionByApproverId(userId);
+        return requisition;
+    }
+
     @PostMapping
     public Requisitions saveRequisitions(@RequestBody Requisitions requisitions) {
         log.info(String.valueOf(requisitions));
@@ -56,6 +62,24 @@ public class RequisitionController {
             // Handle the case when the Requisitions object is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("financeApproval")
+    public List<Requisitions> getRequisitionsToBeAprrovedByFinance() {
+        List<Requisitions> requisition = requisitionService.getRequisitionsToBeApprovedByFinance();
+        return requisition;
+    }
+
+    @GetMapping("approvedByFinance")
+    public List<Requisitions> getRequisitionsApprovedByFinance() {
+        List<Requisitions> requisition = requisitionService.getRequisitionsApprovedByFinance();
+        return requisition;
+    }
+
+    @GetMapping("getByTeller/{tellerId}")
+    public List<Requisitions> getRequisitionsByTellerId(@PathVariable("tellerId") String tellerId) {
+        List<Requisitions> requisition = requisitionService.getRequisitionsByTellerId(tellerId);
+        return requisition;
     }
 
 
@@ -107,6 +131,66 @@ public class RequisitionController {
         requisitionService.saveRequisition(existingRequisition);
 
         return ResponseEntity.ok("Requisition updated successfully"); // Return a success response
+    }
+
+    @PutMapping("poApproveRequest/{id}")
+    public ResponseEntity<String> updateRequisitionApproveRequest(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+        // Check if the requisition with the given ID exists
+        Optional<Requisitions> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+
+        if (!existingRequisitionOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+        Requisitions existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+
+        // Update the existing requisition with the new data
+        existingRequisition.setPoApprover(updatedRequisition.getPoApprover());
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
+
+        // Save the updated requisition
+        requisitionService.saveRequisition(existingRequisition);
+
+        return ResponseEntity.ok("Requisition approved successfully"); // Return a success response
+    }
+
+    @PutMapping("cmsApproveRequest/{id}")
+    public ResponseEntity<String> updateRequisitionCmsApproveRequest(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+        // Check if the requisition with the given ID exists
+        Optional<Requisitions> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+
+        if (!existingRequisitionOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+        Requisitions existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+
+        // Update the existing requisition with the new data
+        existingRequisition.setCmsApprover(updatedRequisition.getCmsApprover());
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
+        existingRequisition.setTeller(updatedRequisition.getTeller());
+
+        // Save the updated requisition
+        requisitionService.saveRequisition(existingRequisition);
+
+        return ResponseEntity.ok("Requisition approved successfully"); // Return a success response
+    }
+
+    @PutMapping("paidRequisition/{id}")
+    public ResponseEntity<String> updateRequisitionPaidStatus(@PathVariable("id") String id, @RequestBody Requisitions updatedRequisition) {
+        // Check if the requisition with the given ID exists
+        Optional<Requisitions> existingRequisitionOptional = requisitionService.getRequisitionById(id);
+
+        if (!existingRequisitionOptional.isPresent()) {
+            return ResponseEntity.notFound().build(); // Return a 404 response if not found
+        }
+        Requisitions existingRequisition = existingRequisitionOptional.get(); // Extract the actual object
+
+        // Update the existing requisition with the new data
+        existingRequisition.setPoStatus(updatedRequisition.getPoStatus());
+
+        // Save the updated requisition
+        requisitionService.saveRequisition(existingRequisition);
+
+        return ResponseEntity.ok("Requisition paid successfully"); // Return a success response
     }
 
 

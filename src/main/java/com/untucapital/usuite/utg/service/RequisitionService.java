@@ -44,6 +44,26 @@ public class RequisitionService {
     }
 
     @Transactional(value = "transactionManager")
+    public List<Requisitions> getRequisitionByApproverId(String userId) {
+        return requisitionRepository.findRequisitionByApprovers(userId);
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<Requisitions> getRequisitionsToBeApprovedByFinance() {
+        return requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNull();
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<Requisitions> getRequisitionsApprovedByFinance() {
+        return requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNotNull();
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<Requisitions> getRequisitionsByTellerId(String tellerId) {
+        return requisitionRepository.findRequisitionsByTeller(tellerId);
+    }
+
+    @Transactional(value = "transactionManager")
     public Optional<Requisitions> getRequisitionByPoNumber(String poNumber) {
         return requisitionRepository.getRequisitionsByPoNumber(poNumber);
     }
@@ -52,4 +72,6 @@ public class RequisitionService {
     public void deleteRequisition(String id) {
         requisitionRepository.deleteById(id);
     }
+
+
 }

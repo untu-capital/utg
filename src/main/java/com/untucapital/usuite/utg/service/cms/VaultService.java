@@ -130,6 +130,18 @@ public class VaultService {
     }
 
     @Transactional(value = "transactionManager")
+    public String getVaultByType(String type) {
+        log.info("Type:{}", type);
+        Optional<Vault> vault =vaultRepository.findByType(type);
+        if (vault.isPresent()){
+            Vault vault1 = vault.get();
+            return vault1.getAccount();
+        } else {
+            return null;
+        }
+    }
+
+    @Transactional(value = "transactionManager")
     public List<Vault> getVaultsByBranch(String branch) {
         return vaultRepository.findVaultByBranch_BranchName(branch);
     }

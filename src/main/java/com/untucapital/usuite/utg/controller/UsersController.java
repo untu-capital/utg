@@ -276,6 +276,17 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<List<User>>(userRepository.findUsersByBranchNotNull(), HttpStatus.OK);
     }
 
+    @GetMapping("/getUsersByCmsUserRole/{role}")
+    public ResponseEntity<List<User>> getUsersByCmsUserRole(@PathVariable("role") String role) {
+        try {
+            List<User> users = userRepository.findUsersByCmsUser_Role(role);
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error retrieving users by CMS user role: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //    change expired token
     @PutMapping("/updateExpiredToken/{mobile}")
     public ResponseEntity<String> updateExpiredToken(@PathVariable long mobile, @RequestBody User user){

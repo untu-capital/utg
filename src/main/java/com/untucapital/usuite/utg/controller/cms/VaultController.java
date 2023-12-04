@@ -76,6 +76,13 @@ public class VaultController {
         return ResponseEntity.ok(vault);
     }
 
+    @GetMapping("/get/byType/{type}")
+    public ResponseEntity<String> getVaultByType(@PathVariable String type) {
+        String vault = vaultService.getVaultByType(type);
+
+        return ResponseEntity.ok(vault);
+    }
+
 
     @GetMapping("/get/byBranch/{branch}")
     public ResponseEntity<List<Vault>> getVaultsByBranch(@PathVariable String branch) {

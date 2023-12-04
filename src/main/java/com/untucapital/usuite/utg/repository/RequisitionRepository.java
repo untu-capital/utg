@@ -13,7 +13,13 @@ public interface RequisitionRepository extends JpaRepository<Requisitions, Strin
 
     List<Requisitions> findRequisitionsByUserId(String userId);
 
-    List<Requisitions> findRequisitionsByPoApproverIsNotNullAndPoApproverIsNotLike(String emptyString);
+    List<Requisitions> findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNotNull();
+
+    List<Requisitions> findRequisitionByApprovers(String userId);
+
+    List<Requisitions> findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNull();
+
+    List<Requisitions> findRequisitionsByTeller(String tellerId);
 
 //    List<Requisitions> findRequisitionsBy
 }

@@ -53,6 +53,12 @@ public class CmsVaultPermissionController {
         return cmsVaultPermissionService.getCmsVaultPermissionByUserId(userId);
     }
 
+    @GetMapping("byUserIdAndVaultType/{userId}/{vaultType}")
+    public String getCmsVaultPermissionByUserIdAndVaultType(@PathVariable("userId") String userId, @PathVariable("vaultType") String vaultType) {
+        return cmsVaultPermissionService.getCmsVaultPermissionByUserIdAndVaultType(userId, vaultType);
+    }
+
+
 //    @GetMapping("/getByVaultAccCode/{vaultAccCode}")
 //    public ResponseEntity<List<CmsVaultPermission>> getCmsVaultPermissionByVaultAccCode(@PathVariable("vaultAccCode") String vaultAccCode) {
 //        List<CmsVaultPermission> cmsVaultPermissions = cmsVaultPermissionService.getCmsVaultPermissionByVaultAccCode(vaultAccCode);
