@@ -1,6 +1,6 @@
 package com.untucapital.usuite.utg.repository.cms;
 
-import com.untucapital.usuite.utg.model.cms.AuditTrail;
+import com.untucapital.usuite.utg.model.cms.CmsAuditTrail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 
 @Repository
-public interface AuditTrailRepository extends JpaRepository<AuditTrail, Integer>{
+public interface CmsAuditTrailRepository extends JpaRepository<CmsAuditTrail, String>{
 }
