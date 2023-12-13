@@ -49,6 +49,7 @@ public class MusoniProcessor {
 
 
     public List<PostGLRequestDTO> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+
         log.info("Transactions: {}", transactions);
 
 
@@ -60,69 +61,70 @@ public class MusoniProcessor {
             int[] dateArray = transaction.getSubmittedOnDate();
             log.info("Date Array: {}", Arrays.toString(dateArray));
 
-            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
+//            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
 
-            if (isTransactionRequired) {
-                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-                Date date = Date.valueOf(formattedDate);
-                log.info("Formatted date: {}", formattedDate);
+            LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
+            Date date = Date.valueOf(formattedDate);
+            log.info("Formatted date: {}", formattedDate);
 
-                String typeValue = transaction.getType().getValue();
-                String submittedUsername = transaction.getSubmittedByUsername();
-                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
-                float creditAmount = 0.0f;
-                float debitAmount = 0.0f;
-                String reference = "";
+            String typeValue = transaction.getType().getValue();
+            String submittedUsername = transaction.getSubmittedByUsername();
+            AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
+            float creditAmount = 0.0f;
+            float debitAmount = 0.0f;
+            String reference = "";
 
-                if ("disbursement".equalsIgnoreCase(typeValue)) {
-                    reference = "DIS-" + transaction.getId();
-                    creditAmount = (float) transaction.getAmount();
-                } else if ("repayment".equalsIgnoreCase(typeValue)) {
-                    reference = "REP-" + transaction.getId();
-                    debitAmount = (float) transaction.getAmount();
-                }
-
-                PostGLRequestDTO postGl = new PostGLRequestDTO();
-                postGl.setTxDate(date);
-                postGl.setDTStamp(sqlDate);
-                postGl.setId("JL");
-                postGl.setICurrencyID(1);
-                postGl.setFExchangeRate(1.0f);
-                postGl.setDescription(typeValue);
-                postGl.setBIsJCDocLine(false);
-                postGl.setBIsSTGLDocLine(false);
-                postGl.setBPrintCheque(false);
-                postGl.setIInvLineID(0L);
-                postGl.setBPBTPaid(false);
-                postGl.setBReconciled(false);
-                postGl.setUserName(transaction.getSubmittedByUsername());
-                postGl.setFExchangeRate(0.0f);
-                postGl.setFForeignDebit(0.0f);
-                postGl.setFForeignCredit(0.0f);
-                postGl.setTaxTypeID(0);
-                postGl.setTax_Amount(0.0f);
-                postGl.setProject(0);
-                postGl.setDrCrAccount(0);
-                postGl.setJobCodeLink(0);
-                postGl.setRepID(0);
-                postGl.setFJCRepCost(0.0f);
-                postGl.setIMFPID(0);
-                postGl.setITxBranchID(0);
-                postGl.setIGLTaxAccountID(0);
-                postGl.setPostGL_iBranchID(0);
-                postGl.setIImportDeclarationID(0);
-                postGl.setIMajorIndustryCodeID(0);
-                postGl.setFForeignTax(0.0f);
-
-                postGl.setReference(reference);
-                postGl.setCredit(creditAmount);
-                postGl.setDebit(debitAmount);
-                postGl.setAccountLink(entity.getAccountLink());
-
-                postGlRequestDTOs.add(postGl);
+            if ("disbursement".equalsIgnoreCase(typeValue)) {
+                reference = "DIS-" + transaction.getId();
+                creditAmount = (float) transaction.getAmount();
+            } else if ("repayment".equalsIgnoreCase(typeValue)) {
+                reference = "REP-" + transaction.getId();
+                debitAmount = (float) transaction.getAmount();
             }
+
+            PostGLRequestDTO postGl = new PostGLRequestDTO();
+            postGl.setTxDate(date);
+            postGl.setDTStamp(sqlDate);
+            postGl.setId("JL");
+            postGl.setICurrencyID(1);
+            postGl.setFExchangeRate(1.0f);
+            postGl.setDescription(typeValue);
+            postGl.setBIsJCDocLine(false);
+            postGl.setBIsSTGLDocLine(false);
+            postGl.setBPrintCheque(false);
+            postGl.setIInvLineID(0L);
+            postGl.setBPBTPaid(false);
+            postGl.setBReconciled(false);
+            postGl.setUserName(transaction.getSubmittedByUsername());
+            postGl.setFExchangeRate(0.0f);
+            postGl.setFForeignDebit(0.0f);
+            postGl.setFForeignCredit(0.0f);
+            postGl.setTaxTypeID(0);
+            postGl.setTax_Amount(0.0f);
+            postGl.setProject(0);
+            postGl.setDrCrAccount(0);
+            postGl.setJobCodeLink(0);
+            postGl.setRepID(0);
+            postGl.setFJCRepCost(0.0f);
+            postGl.setIMFPID(0);
+            postGl.setITxBranchID(0);
+            postGl.setIGLTaxAccountID(0);
+            postGl.setPostGL_iBranchID(0);
+            postGl.setIImportDeclarationID(0);
+            postGl.setIMajorIndustryCodeID(0);
+            postGl.setFForeignTax(0.0f);
+
+            postGl.setReference(reference);
+            postGl.setCredit(creditAmount);
+            postGl.setDebit(debitAmount);
+            postGl.setAccountLink(entity.getAccountLink());
+
+            log.info("PosGL Request: {}", postGl);
+
+            postGlRequestDTOs.add(postGl);
         }
 
+        log.info("PosGL Request: {}", postGlRequestDTOs);
         return postGlRequestDTOs;
     }
 

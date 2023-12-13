@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,14 +58,45 @@ public class MusoniUtils {
         return timestamps;
     }
 
+    public static Boolean compareDates(Long timestamp, LocalDate transDate) {
+        // Assume you have a Timestamp object
+        Timestamp timestamp1 = new Timestamp(timestamp);
+
+        // Convert Timestamp to LocalDateTime
+        LocalDateTime localDateTime = timestamp1.toLocalDateTime();
+
+        // Extract LocalDate from LocalDateTime
+        LocalDate searchDate = localDateTime.toLocalDate();
+
+        if (transDate.isAfter(searchDate)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static Long getUnixTimeMinus24Hours() {
 
-        // Get the current Unix time in milliseconds
-        long currentTimeMillis = System.currentTimeMillis();
+        // Get the current Unix time in seconds (Java 8 or later)
+        long currentUnixTime = Instant.now().getEpochSecond();
 
-        long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000);
+        // Calculate the number of seconds in 24 hours
+        long secondsIn24Hours = 2 * 7 * 24 * 3600;
 
-        return currentTimeMillis - millisecondsIn2_5Weeks;
+        // Subtract the calculated seconds from the current time
+        return currentUnixTime - secondsIn24Hours;
+    }
+
+    public static Long getUnixTimeMinus1Hour() {
+
+        // Get the current Unix time in seconds (Java 8 or later)
+        long currentUnixTime = Instant.now().getEpochSecond();
+
+        // Calculate the number of seconds in 24 hours
+        long secondsIn1Hour = 3600;
+
+        // Subtract the calculated seconds from the current time
+        return currentUnixTime - secondsIn1Hour;
     }
 
     public static Boolean isValidDate(int[] dateArray) throws ParseException {

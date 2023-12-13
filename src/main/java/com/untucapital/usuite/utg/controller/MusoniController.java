@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
@@ -21,9 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.QueryHint;
+import javax.security.auth.login.AccountNotFoundException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -117,12 +120,12 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "loans?modifiedSinceTimestamp="+timeStamp, HttpMethod.GET, entity, String.class).getBody();
     }
 
-//    @GetMapping("loans/transactions/")
-//    public ResponseEntity<List<PostGl>> getTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
-//       List<PostGl> transactionList = musoniService.getLoansByTimestamp();
-//
-//       return new ResponseEntity<>(transactionList,HttpStatus.OK);
-//    }
+    @GetMapping("loans/transactions/getTransactionsByTimestamp/")
+    public ResponseEntity<Void> getTransactionsByTimestamp() throws JsonProcessingException, AccountNotFoundException, ParseException {
+
+         musoniService.getLoansByTimestamp();
+       return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     public static String[] getDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
