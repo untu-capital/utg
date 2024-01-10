@@ -1,6 +1,8 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.untucapital.usuite.utg.dto.cms.*;
+import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
+import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
@@ -12,6 +14,7 @@ import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -29,15 +32,22 @@ public class TransactionVoucherProcessor {
 
 
     public TransactionVoucher processTransactionVoucher(TransactionVoucherInitiatorRequest request){
+
+        Vault fromVault = new Vault();
+        Vault toVault = new Vault();
         User user = userService.find(request.getInitiator()).orElseThrow();
 
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
-        Vault fromVault = vaultService.getVault(Integer.valueOf(request.getFromVault()));
-        Vault toVault = vaultService.getVault(Integer.valueOf(request.getToVault()));
+        VaultResponseDTO vaultFrom = vaultService.getVault(Integer.valueOf(request.getFromVault()));
+        BeanUtils.copyProperties(vaultFrom, fromVault);
+        VaultResponseDTO vaultTo = vaultService.getVault(Integer.valueOf(request.getToVault()));
+        BeanUtils.copyProperties(vaultTo, toVault);
 
-        TransactionPurpose transactionPurpose = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
+        TransactionPurpose transactionPurpose = new TransactionPurpose();
+        TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
+        BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
         Branches branch = fromVault.getBranch();
 
@@ -68,6 +78,9 @@ public class TransactionVoucherProcessor {
 
     public TransactionVoucher processUpdatedTransactionVoucher(TransactionVoucher transactionVoucher,TransactionVoucherUpdateRequest request){
 
+        Vault fromVault = new Vault();
+        Vault toVault = new Vault();
+
         Integer fromVaultOldId = transactionVoucher.getFromVault().getId();
         Integer toVaultOldId = transactionVoucher.getToVault().getId();
         Integer oldTransactionId = transactionVoucher.getWithdrawalPurpose().getId();
@@ -84,9 +97,14 @@ public class TransactionVoucherProcessor {
             oldTransactionId = request.getWithdrawalPurpose();
         }
 
-        Vault fromVault = vaultService.getVault(fromVaultOldId);
-        Vault toVault = vaultService.getVault(toVaultOldId);
-        TransactionPurpose transactionPurpose = transactionPurposeService.getById(oldTransactionId);
+        VaultResponseDTO vaultFrom = vaultService.getVault(fromVaultOldId);
+        BeanUtils.copyProperties(vaultFrom, fromVault);
+        VaultResponseDTO vaultTo = vaultService.getVault(toVaultOldId);
+        BeanUtils.copyProperties(vaultTo, toVault);
+
+        TransactionPurpose transactionPurpose = new TransactionPurpose();
+        TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(oldTransactionId);
+        BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
         if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.APPROVED) {
             throw new RuntimeException("Transaction already Approved.");

@@ -5,14 +5,14 @@ import com.untucapital.usuite.utg.dto.DisbursedLoan;
 import com.untucapital.usuite.utg.dto.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.Loan;
+import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
-import com.untucapital.usuite.utg.entity.AccountEntity;
-import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
+import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.exception.VaultNotFoundException;
 import com.untucapital.usuite.utg.model.Employee;
-import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.repository2.AccountsRepository;
 import com.untucapital.usuite.utg.repository2.PostGlRepository;
@@ -69,7 +69,7 @@ public class MusoniProcessor {
 
                 String typeValue = transaction.getType().getValue();
                 String submittedUsername = transaction.getSubmittedByUsername();
-                AccountEntity entity = getAccountLink(submittedUsername);
+                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
                 float creditAmount = 0.0f;
                 float debitAmount = 0.0f;
                 String reference = "";
@@ -146,7 +146,7 @@ public class MusoniProcessor {
                 Date date = Date.valueOf(formattedDate);
 
                 PostGLRequestDTO postGl = new PostGLRequestDTO();
-                PostGl postGlLoanBook = new PostGl();
+                PostGlResponseDTO postGlLoanBook = new PostGlResponseDTO();
 
                 postGl.setTxDate(date);
                 // Get the current date and time
@@ -186,7 +186,7 @@ public class MusoniProcessor {
 
                 String submittedUsername = transaction.getSubmittedByUsername();
 
-                AccountEntity entity = getAccountLink(submittedUsername);
+                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
 
                 if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
 
@@ -217,7 +217,7 @@ public class MusoniProcessor {
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
      */
 
-    public AccountEntity getAccountLink(String submittedUsername) throws AccountNotFoundException {
+    public AccountEntityResponseDTO getAccountLink(String submittedUsername) throws AccountNotFoundException {
         List<Employee> employees = restClient.getAllUsers();
 
         // Filter out the employee who initiated the transaction
@@ -237,14 +237,14 @@ public class MusoniProcessor {
             officeName += subString;
         }
 
-        Vault vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
+        VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
 
         if (vault == null) {
             throw new VaultNotFoundException("Vault not found");
         }
 
         String accountName = vault.getAccount();
-        AccountEntity accountEntity = accountService.findAccountByAccount(accountName);
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(accountName);
 
         if (accountEntity == null) {
             throw new AccountNotFoundException("Account not found");

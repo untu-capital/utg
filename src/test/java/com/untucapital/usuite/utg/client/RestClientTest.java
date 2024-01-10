@@ -1,7 +1,7 @@
 //package com.untucapital.usuite.utg.client;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.untucapital.usuite.utg.DTO.loans.SingleLoan;
+//import com.untucapital.usuite.utg.dto.loans.SingleLoan;
 //import org.junit.Before;
 //import org.junit.jupiter.api.Assertions;
 //import org.junit.jupiter.api.Test;

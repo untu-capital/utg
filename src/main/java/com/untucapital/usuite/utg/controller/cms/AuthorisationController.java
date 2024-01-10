@@ -1,6 +1,8 @@
 package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.controller.AbstractController;
+import com.untucapital.usuite.utg.dto.cms.req.AuthorisationRequestDTO;
+import com.untucapital.usuite.utg.dto.cms.res.AuthorisationResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Authorisation;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
@@ -32,13 +34,13 @@ public class AuthorisationController extends AbstractController<Authorisation> {
 
     //build save branch REST API
     @PostMapping("/addAuthorisation")
-    public void add(@RequestBody Authorisation authorisation) {
+    public void add(@RequestBody AuthorisationRequestDTO authorisation) {
         authorisationService.saveAuthorisation(authorisation);
     }
 
     @GetMapping("getAuthorisationById/{id}")
-    public ResponseEntity<Authorisation> getAuthorisation(@PathVariable("id") String id) {
-        Authorisation authorisation = authorisationService.getAuthorisationById(id);
+    public ResponseEntity<AuthorisationResponseDTO> getAuthorisation(@PathVariable("id") String id) {
+        AuthorisationResponseDTO authorisation = authorisationService.getAuthorisationById(id);
         if (authorisation != null) {
             return new ResponseEntity<>(authorisation, HttpStatus.OK);
         } else {
@@ -76,12 +78,12 @@ public class AuthorisationController extends AbstractController<Authorisation> {
     }
 
     @GetMapping("branch/{id}")
-    public List<Authorisation> getAuthorisationByBranchId(@PathVariable String id) {
+    public List<AuthorisationResponseDTO> getAuthorisationByBranchId(@PathVariable String id) {
         return authorisationService.getAuthorisationByBranchId(id);
     }
 
     @GetMapping("authLevel/{branch}/{authLevel}")
-    public List<Authorisation> getAuthorisationByBranchIdAndAuthLevel(@PathVariable String branch, @PathVariable String authLevel) {
+    public List<AuthorisationResponseDTO> getAuthorisationByBranchIdAndAuthLevel(@PathVariable String branch, @PathVariable String authLevel) {
         return authorisationService.getAuthorisationByBranchIdAndAuthLevel(branch, authLevel);
     }
 }

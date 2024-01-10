@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller.cms;
 
+import com.untucapital.usuite.utg.dto.cms.req.CmsVaultPermissionRequestDTO;
+import com.untucapital.usuite.utg.dto.cms.res.CmsVaultPermissionResponseDTO;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.service.cms.CmsVaultPermissionService;
 import org.slf4j.Logger;
@@ -21,12 +23,12 @@ public class CmsVaultPermissionController {
     CmsVaultPermissionService cmsVaultPermissionService;
 
     @GetMapping
-    public List<CmsVaultPermission> list() {
+    public List<CmsVaultPermissionResponseDTO> list() {
         return cmsVaultPermissionService.getAllCmsVaultPermissions();
     }
 
     @PostMapping
-    public void saveCmsVaultPermission(@RequestBody CmsVaultPermission cmsVaultPermission) {
+    public void saveCmsVaultPermission(@RequestBody CmsVaultPermissionRequestDTO cmsVaultPermission) {
         log.info(String.valueOf(cmsVaultPermission));
         cmsVaultPermissionService.saveCmsVaultPermission(cmsVaultPermission);
     }
@@ -37,11 +39,11 @@ public class CmsVaultPermissionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CmsVaultPermission> getCmsVaultPermissionById(@PathVariable("id") String id) {
-        Optional<CmsVaultPermission> cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionById(id);
+    public ResponseEntity<CmsVaultPermissionResponseDTO> getCmsVaultPermissionById(@PathVariable("id") String id) {
+        CmsVaultPermissionResponseDTO cmsVaultPermission = cmsVaultPermissionService.getCmsVaultPermissionById(id);
 
-        if (cmsVaultPermission.isPresent()) {
-            return new ResponseEntity<>(cmsVaultPermission.get(), HttpStatus.OK);
+        if (cmsVaultPermission !=null) {
+            return new ResponseEntity<>(cmsVaultPermission, HttpStatus.OK);
         } else {
             // Handle the case when the CmsVaultPermissions object is not found
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -49,7 +51,7 @@ public class CmsVaultPermissionController {
     }
 
     @GetMapping("user/{userId}")
-    public List<CmsVaultPermission> getCmsVaultPermissionByUserId(@PathVariable String userId) {
+    public List<CmsVaultPermissionResponseDTO> getCmsVaultPermissionByUserId(@PathVariable String userId) {
         return cmsVaultPermissionService.getCmsVaultPermissionByUserId(userId);
     }
 

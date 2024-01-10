@@ -4,6 +4,7 @@ import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherUpdateRequest;
+import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
@@ -20,6 +21,7 @@ import com.untucapital.usuite.utg.repository.cms.TransactionVoucherRepository;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -167,7 +169,9 @@ public class TransactionVoucherService {
     //Get All Transactions By Vault
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByVault(Integer vaultId) {
-        Vault vault = vaultService.getVault(vaultId);
+        Vault vault = new Vault();
+        VaultResponseDTO vaultResponse = vaultService.getVault(vaultId);
+        BeanUtils.copyProperties(vaultResponse, vault);
         List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByFromVaultOrToVault(vault, vault);
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }

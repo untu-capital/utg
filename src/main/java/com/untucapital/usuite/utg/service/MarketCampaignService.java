@@ -1,11 +1,15 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.dto.request.MarketCampaignRequestDTO;
+import com.untucapital.usuite.utg.dto.response.MarketCampaignResponseDTO;
 import com.untucapital.usuite.utg.model.MarketCampaign;
 import com.untucapital.usuite.utg.repository.MarketCampaignRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,29 +23,63 @@ public class MarketCampaignService {
     }
 
     @Transactional(value = "transactionManager")
-    public List<MarketCampaign> getAllMarketCampaigns() {
-        return marketCampaignRepository.findAll();
+    public List<MarketCampaignResponseDTO> getAllMarketCampaigns() {
+
+        List<MarketCampaignResponseDTO> response = new ArrayList<MarketCampaignResponseDTO>();
+        List<MarketCampaign> marketCampaignList= marketCampaignRepository.findAll();
+
+        for(MarketCampaign marketCampaign: marketCampaignList){
+            MarketCampaignResponseDTO responseDTO = new MarketCampaignResponseDTO();
+            BeanUtils.copyProperties(marketCampaign, responseDTO);
+
+            response.add(responseDTO);
+        }
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public MarketCampaign getMarketCampaignById(String id) {
-        return marketCampaignRepository.findById(id)
+    public MarketCampaignResponseDTO getMarketCampaignById(String id) {
+
+        MarketCampaignResponseDTO response = new MarketCampaignResponseDTO();
+        MarketCampaign marketCampaign= marketCampaignRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid  ID"));
+        BeanUtils.copyProperties(marketCampaign,response);
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public List< MarketCampaign> getMarketCampaignByStatus(String campaignStatus) {
-        return marketCampaignRepository.findMarketCampaignByCampaignStatus(campaignStatus);
+    public List< MarketCampaignResponseDTO> getMarketCampaignByStatus(String campaignStatus) {
+
+        List<MarketCampaignResponseDTO> response = new ArrayList<MarketCampaignResponseDTO>();
+        List<MarketCampaign> marketCampaignList= marketCampaignRepository.findMarketCampaignByCampaignStatus(campaignStatus);
 //                .orElseThrow(() -> new IllegalArgumentException("Invalid  campaignStatus"));
+
+        for(MarketCampaign marketCampaign: marketCampaignList){
+            MarketCampaignResponseDTO responseDTO = new MarketCampaignResponseDTO();
+            BeanUtils.copyProperties(marketCampaign, responseDTO);
+
+            response.add(responseDTO);
+        }
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public MarketCampaign createMarketCampaign(MarketCampaign marketCampaign) {
-        return marketCampaignRepository.save(marketCampaign);
+    public MarketCampaignResponseDTO createMarketCampaign(MarketCampaignRequestDTO request) {
+
+        MarketCampaignResponseDTO response = new MarketCampaignResponseDTO();
+        MarketCampaign marketCampaign = new MarketCampaign();
+        BeanUtils.copyProperties(request, marketCampaign);
+        MarketCampaign marketCampaign1 = marketCampaignRepository.save(marketCampaign);
+        BeanUtils.copyProperties(marketCampaign1,response);
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public MarketCampaign updateMarketCampaign(String id, MarketCampaign marketCampaign) {
+    public MarketCampaignResponseDTO updateMarketCampaign(String id, MarketCampaignRequestDTO marketCampaign) {
+
+        MarketCampaignResponseDTO response = new MarketCampaignResponseDTO();
         MarketCampaign existingCampaign = marketCampaignRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid  ID"));
 
@@ -51,21 +89,27 @@ public class MarketCampaignService {
         // Set other fields as needed
 
         existingCampaign.setCampaignStatus(marketCampaign.getCampaignStatus());
+        MarketCampaign marketCampaign1= marketCampaignRepository.save(existingCampaign);
+        BeanUtils.copyProperties(marketCampaign1,response);
 
-        return marketCampaignRepository.save(existingCampaign);
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public MarketCampaign updateMarketCampaignStatus(String id, MarketCampaign marketCampaign) {
+    public MarketCampaignResponseDTO updateMarketCampaignStatus(String id, MarketCampaignRequestDTO marketCampaign) {
+
+        MarketCampaignResponseDTO response = new MarketCampaignResponseDTO();
         Optional<MarketCampaign> optionalMarketCampaign = marketCampaignRepository.findById(id);
         if (optionalMarketCampaign.isPresent()) {
             MarketCampaign existingMarketCampaign = optionalMarketCampaign.get();
 
             existingMarketCampaign.setCampaignStatus(marketCampaign.getCampaignStatus());
-            return marketCampaignRepository.save(existingMarketCampaign);
+            MarketCampaign marketCampaign1= marketCampaignRepository.save(existingMarketCampaign);
+            BeanUtils.copyProperties(marketCampaign1, response);
         } else {
             return null;
         }
+        return response;
     }
 
 

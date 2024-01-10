@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionInfo {
+
     private String toAccount;
     private String transactionType;
     private int exchangeRate;

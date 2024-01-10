@@ -1,5 +1,7 @@
 package com.untucapital.usuite.utg.controller.cms;
 
+import com.untucapital.usuite.utg.dto.cms.req.TransactionPurposeRequestDTO;
+import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
 import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
 import lombok.RequiredArgsConstructor;
@@ -20,31 +22,31 @@ public class TransactionPurposeController {
 
     //SAVE
     @PostMapping("/save")
-    public ResponseEntity<TransactionPurpose> saveTransactionVoucher(@RequestBody TransactionPurpose request) {
+    public ResponseEntity<TransactionPurposeResponseDTO> saveTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
         return ResponseEntity.ok(transactionVoucherService.save(request));
     }
 
     @PutMapping("/update")
     //UPDATE
-    public ResponseEntity<TransactionPurpose> updateTransactionVoucher(@RequestBody TransactionPurpose request) {
+    public ResponseEntity<TransactionPurposeResponseDTO> updateTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
         return ResponseEntity.ok(transactionVoucherService.update(request));
     }
 
     //GET ALL
     @GetMapping("/all")
-    public ResponseEntity<List<TransactionPurpose>> getAllTransactionVoucher() {
+    public ResponseEntity<List<TransactionPurposeResponseDTO>> getAllTransactionVoucher() {
         return ResponseEntity.ok(transactionVoucherService.getAll());
     }
 
     //GET BY ID
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionPurpose> getTransactionVoucherById(@PathVariable Integer id) {
+    public ResponseEntity<TransactionPurposeResponseDTO> getTransactionVoucherById(@PathVariable Integer id) {
         return ResponseEntity.ok(transactionVoucherService.getById(id));
     }
 
     //DELETE
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteTransactionVoucher(@RequestBody TransactionPurpose request) {
+    public ResponseEntity<String> deleteTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
         transactionVoucherService.delete(request);
         return ResponseEntity.ok("Transaction Purpose Deleted Successfully");
     }

@@ -1,12 +1,16 @@
 package com.untucapital.usuite.utg.service.cms;
 
 
+import com.untucapital.usuite.utg.dto.cms.req.PettyCashPaymentsRequestDTO;
+import com.untucapital.usuite.utg.dto.cms.res.PettyCashPaymentsResponseDTO;
 import com.untucapital.usuite.utg.model.cms.PettyCashPayments;
 import com.untucapital.usuite.utg.repository.cms.PettyCashPaymentsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,18 +27,37 @@ public class PettyCashPaymentsService {
 
     //Get All
     @Transactional(value = "transactionManager")
-    public List<PettyCashPayments> getAllPettyCashPayments(){
-        return pettyCashPaymentsRepository.findAll();
+    public List<PettyCashPaymentsResponseDTO> getAllPettyCashPayments(){
+
+        List<PettyCashPaymentsResponseDTO> result = new ArrayList<PettyCashPaymentsResponseDTO>();
+        List<PettyCashPayments> pettyCashPaymentsList= pettyCashPaymentsRepository.findAll();
+
+        for(PettyCashPayments payments: pettyCashPaymentsList){
+
+            PettyCashPaymentsResponseDTO responseDTO = new PettyCashPaymentsResponseDTO();
+            BeanUtils.copyProperties(payments, responseDTO);
+
+            result.add(responseDTO);
+        }
+
+        return result;
     }
     //Get By Id
     @Transactional(value = "transactionManager")
-    public PettyCashPayments getPettyCashPaymentsById(String id){
-        return pettyCashPaymentsRepository.findById(id)
+    public PettyCashPaymentsResponseDTO getPettyCashPaymentsById(String id){
+
+        PettyCashPaymentsResponseDTO pettyCashPaymentsResponse = new PettyCashPaymentsResponseDTO();
+        PettyCashPayments pettyCashPayments = pettyCashPaymentsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Petty Cash Payment not found"));
+        BeanUtils.copyProperties(pettyCashPayments, pettyCashPaymentsResponse);
+
+        return pettyCashPaymentsResponse;
     }
 
     @Transactional(value = "transactionManager")
-    public PettyCashPayments updatePettyCashPayments(String id, PettyCashPayments pettyCashPayments) {
+    public PettyCashPaymentsResponseDTO updatePettyCashPayments(String id, PettyCashPaymentsRequestDTO pettyCashPayments) {
+
+        PettyCashPaymentsResponseDTO response = new PettyCashPaymentsResponseDTO();
         Optional<PettyCashPayments> optionalPettyCashPayments = pettyCashPaymentsRepository.findById(id);
         if (optionalPettyCashPayments.isPresent()) {
             PettyCashPayments existingPettyCashPayment = optionalPettyCashPayments.get();
@@ -53,7 +76,11 @@ public class PettyCashPaymentsService {
             existingPettyCashPayment.setStatus(pettyCashPayments.getStatus());
 
 
-            return pettyCashPaymentsRepository.save(existingPettyCashPayment);
+            PettyCashPayments payments = pettyCashPaymentsRepository.save(existingPettyCashPayment);
+            BeanUtils.copyProperties(payments, response);
+
+            return  response;
+
         } else {
             return null;
         }

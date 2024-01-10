@@ -1,18 +1,21 @@
 package com.untucapital.usuite.utg.service.cms;
 
 
-import com.untucapital.usuite.utg.dto.UpdateVaultRequest;
-import com.untucapital.usuite.utg.dto.VaultRequest;
+import com.untucapital.usuite.utg.dto.cms.UpdateVaultRequest;
+import com.untucapital.usuite.utg.dto.cms.VaultRequest;
+import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,10 +31,13 @@ public class VaultService {
 
     private final VaultRepository vaultRepository;
     private final BranchRepository branchRepository;
+
+
     //Add
     @Transactional(value = "transactionManager")
-    public Vault addVault(VaultRequest vaultRequest) {
+    public VaultResponseDTO addVault(VaultRequest vaultRequest) {
 
+        VaultResponseDTO vaultResponse = new VaultResponseDTO();
         Branches branch = branchRepository.findById(vaultRequest.getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
         Vault vault = Vault.builder()
@@ -40,13 +46,17 @@ public class VaultService {
                 .name(vaultRequest.getName())
                 .branch(branch)
                 .build();
-        return vaultRepository.save(vault);
+        Vault vault1= vaultRepository.save(vault);
+        BeanUtils.copyProperties(vault1, vaultResponse);
+
+        return vaultResponse;
     }
 
     //Update
     @Transactional(value = "transactionManager")
-    public Vault updateVault(UpdateVaultRequest vault) {
+    public VaultResponseDTO updateVault(UpdateVaultRequest vault) {
 
+        VaultResponseDTO vaultResponse = new VaultResponseDTO();
         Vault existingVault = vaultRepository.findById(vault.getId())
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
 
@@ -69,8 +79,12 @@ public class VaultService {
             existingVault.setBranch(branch);
         }
 
-        return vaultRepository.save(existingVault);
+        Vault vault1 = vaultRepository.save(existingVault);
+        BeanUtils.copyProperties(vault1, vaultResponse);
+
+        return vaultResponse;
     }
+
     //Delete
     @Transactional(value = "transactionManager")
     public String deleteVault(Integer vaultId) {
@@ -81,52 +95,91 @@ public class VaultService {
 
         return String.format("Vault with id %d deleted successfully", vaultId);
     }
+
     //Get
     @Transactional(value = "transactionManager")
-    public Vault getVault(Integer vaultId) {
-        return vaultRepository.findById(vaultId)
+    public VaultResponseDTO getVault(Integer vaultId) {
+
+        VaultResponseDTO vaultResponseDTO = new VaultResponseDTO();
+
+        Vault vault = vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
+
+        BeanUtils.copyProperties(vault,vaultResponseDTO);
+
+        return vaultResponseDTO;
     }
+
     //Get All
     @Transactional(value = "transactionManager")
-    public List<Vault> getAllVaults() {
-        return vaultRepository.findAll();
+    public List<VaultResponseDTO> getAllVaults() {
+
+        List<VaultResponseDTO> response = new ArrayList<>();
+        List<Vault> vaultList = vaultRepository.findAll();
+
+        for(Vault vault : vaultList){
+
+            VaultResponseDTO vaultResponseDTO = new VaultResponseDTO();
+            BeanUtils.copyProperties(vault, vaultResponseDTO);
+
+            response.add(vaultResponseDTO);
+        }
+
+        return response;
     }
 
     //Update Vault Amount
-    public Vault updateVaultAmount(Integer vaultId, BigDecimal amount) {
+    public VaultResponseDTO updateVaultAmount(Integer vaultId, BigDecimal amount) {
+
+        VaultResponseDTO response = new VaultResponseDTO();
 
         Vault existingVault = vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
         existingVault.setCurrentAmount(existingVault.getCurrentAmount().add(amount));
-        return vaultRepository.save(existingVault);
+        Vault vault = vaultRepository.save(existingVault);
+        BeanUtils.copyProperties(vault, response);
+
+        return response;
     }
 
     //Update Maximum Amount
     @Transactional(value = "transactionManager")
-    public Vault updateVaultMaxAmount(Integer vaultId, BigDecimal amount) {
+    public VaultResponseDTO updateVaultMaxAmount(Integer vaultId, BigDecimal amount) {
+
+        VaultResponseDTO response = new VaultResponseDTO();
 
         Vault existingVault = vaultRepository.findById(vaultId)
                 .orElseThrow(() -> new RuntimeException("Vault not found"));
 
         existingVault.setMaxAmount(amount);
 
-        return vaultRepository.save(existingVault);
+        Vault vault =vaultRepository.save(existingVault);
+        BeanUtils.copyProperties(vault, response);
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")
-    public Vault getVaultByBranchAndType(String branch, String type) {
+    public VaultResponseDTO getVaultByBranchAndType(String branch, String type) {
+
         log.info("Branch and Type:{}", branch + type);
-        Optional<Vault> vault =vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
+
+        VaultResponseDTO response = new VaultResponseDTO();
+
+        Optional<Vault> vault = vaultRepository.findVaultByBranch_BranchNameAndType(branch, type);
 
         //FIXME: this is a bypass for testing
-        if(vault.isEmpty()) {
+        if (vault.isEmpty()) {
             Vault vault1 = new Vault();
             vault1.setAccount("8422/000/HRE/FCA/MV");
-            return vault1;
+            BeanUtils.copyProperties(vault1, response);
+            return response;
         }
 
-        return vault.get();
+        Vault vault1= vault.get();
+        BeanUtils.copyProperties(vault1, response);
+
+        return response;
     }
 
     @Transactional(value = "transactionManager")
@@ -142,13 +195,72 @@ public class VaultService {
     }
 
     @Transactional(value = "transactionManager")
-    public List<Vault> getVaultsByBranch(String branch) {
-        return vaultRepository.findVaultByBranch_BranchName(branch);
+    public List<VaultResponseDTO> getVaultsByBranch(String branch) {
+
+        List<VaultResponseDTO> responseList = new ArrayList<VaultResponseDTO>();
+        List<Vault> vaultList= vaultRepository.findVaultByBranch_BranchName(branch);
+
+        for(Vault vault : vaultList){
+            VaultResponseDTO response = new VaultResponseDTO();
+            BeanUtils.copyProperties( vault, response);
+
+            responseList.add(response);
+        }
+
+        return responseList;
     }
+
     //Vaults By Branch
-    public List<Vault> getAllVaultsByBranch(String branchId) {
+    @Transactional(value = "transactionManager")
+    public List<VaultResponseDTO> getAllVaultsByBranch(String branchId) {
+
+        List<VaultResponseDTO> response = new ArrayList<>();
+
         Branches branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-        return vaultRepository.findByBranch(branch);
+        List<Vault> vaultList= vaultRepository.findByBranch(branch);
+
+        for(Vault vault : vaultList){
+            VaultResponseDTO responseDTO = new VaultResponseDTO();
+            BeanUtils.copyProperties( vault, responseDTO);
+
+            response.add(responseDTO);
+        }
+
+        return response;
     }
+
+    @Transactional(value = "transactionManager")
+    public BigDecimal getAllVaultsBalance() {
+
+        BigDecimal vaultBalance = vaultRepository.findTotalAccountBalances();
+
+        return vaultBalance;
+    }
+
+    @Transactional(value = "transactionManager")
+    public VaultResponseDTO updateVaultBalance(BigDecimal balance, String account) {
+
+        VaultResponseDTO vaultResponse = new VaultResponseDTO();
+        Optional<Vault> vault = vaultRepository.findByAccount(account);
+
+        if(vault.isPresent()) {
+            Vault current = vault.get();
+            current.setCurrentAmount(balance);
+            vaultRepository.save(current);
+            BeanUtils.copyProperties(current, vaultResponse);
+            return vaultResponse;
+        }else {
+            return null;
+        }
+    }
+
+    @Transactional(value = "transactionManager")
+    public BigDecimal getVaultBalanceByAccount(String account) {
+
+        BigDecimal vaultBalance = vaultRepository.findAccountBalanceByAccount(account);
+
+        return vaultBalance;
+    }
+
 }

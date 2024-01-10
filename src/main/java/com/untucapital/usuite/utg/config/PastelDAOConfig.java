@@ -20,6 +20,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.HashMap;
 
+/**
+ * @author Panashe Rutimhu Dell 11/10/2023
+ */
 @Component
 @Configuration
 @EnableTransactionManagement

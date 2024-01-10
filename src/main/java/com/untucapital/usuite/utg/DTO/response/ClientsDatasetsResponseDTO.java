@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.DTO.response;
+package com.untucapital.usuite.utg.dto.response;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

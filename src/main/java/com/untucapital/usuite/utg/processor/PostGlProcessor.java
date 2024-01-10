@@ -1,16 +1,25 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
-import com.untucapital.usuite.utg.entity.AccountEntity;
-import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
+import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
+import com.untucapital.usuite.utg.model.User;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
+import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import com.untucapital.usuite.utg.service.cms.AccountService;
+import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
+import java.util.Optional;
 
 
 @Component
@@ -20,10 +29,12 @@ public class PostGlProcessor {
 
 
     private final AccountService accountService;
+    private final VaultRepository vaultRepository;
+    private final EmailSender emailSender;
 
-    public PostGl createFromAccountRequest(TransactionInfo transactionInfo) {
+    public PostGlResponseDTO createFromAccountRequest(TransactionInfo transactionInfo) {
 
-        PostGl postGl = new PostGl();
+        PostGlResponseDTO postGl = new PostGlResponseDTO();
         PostGLRequestDTO request = new PostGLRequestDTO();
         request.setTxDate(Date.valueOf(transactionInfo.getTransactionDate()));
         request.setReference(transactionInfo.getReference());
@@ -63,9 +74,10 @@ public class PostGlProcessor {
         request.setIImportDeclarationID(0);
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
+        request.setPeriod(calculatePeriod());
 
 
-        AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
 
 
         request.setCredit(transactionInfo.getAmount());
@@ -76,9 +88,9 @@ public class PostGlProcessor {
         return postGl;
     }
 
-    public PostGl createToAccountRequest(TransactionInfo transactionInfo) {
+    public PostGlResponseDTO createToAccountRequest(TransactionInfo transactionInfo) {
 
-        PostGl postGl = new PostGl();
+        PostGlResponseDTO postGl = new PostGlResponseDTO();
         PostGLRequestDTO request = new PostGLRequestDTO();
         request.setTxDate(Date.valueOf(transactionInfo.getTransactionDate()));
         request.setReference(transactionInfo.getReference());
@@ -118,9 +130,10 @@ public class PostGlProcessor {
         request.setIImportDeclarationID(0);
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
+        request.setPeriod(calculatePeriod());
 
 
-        AccountEntity accountEntity = accountService.findAccountByAccount(transactionInfo.getToAccount());
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getToAccount());
 
         request.setCredit(0f);
         request.setDebit(transactionInfo.getAmount());
@@ -129,5 +142,77 @@ public class PostGlProcessor {
         BeanUtils.copyProperties(request, postGl);
 
         return postGl;
+    }
+
+    public void checkLimits(TransactionInfo request, Float currentBalanceFromAccount, Float currentBalanceToAccount, List<User> user ){
+
+
+
+        if (currentBalanceFromAccount != null) {
+            Optional<Vault> optionalVault = vaultRepository.findByAccount(request.getFromAccount());
+
+            if(optionalVault.isPresent()) {
+                Vault vault = optionalVault.get();
+
+                BigDecimal vaultBalance = BigDecimal.valueOf(currentBalanceFromAccount).subtract(BigDecimal.valueOf(request.getAmount()));
+                vault.setCurrentAmount(vaultBalance);
+
+                vaultRepository.save(vault);
+            }
+        }
+
+        if(currentBalanceToAccount != null) {
+
+            Optional<Vault> optionalVault = vaultRepository.findByAccount(request.getFromAccount());
+
+            if(optionalVault.isPresent()) {
+
+                Vault vault = optionalVault.get();
+                BigDecimal vaultBalance = BigDecimal.valueOf(currentBalanceToAccount).add(BigDecimal.valueOf(request.getAmount()));
+
+                int value = BigDecimal.valueOf(currentBalanceToAccount).compareTo(vault.getMaxAmount());
+                if(value<=0) {
+
+                    int result = vault.getMaxAmount().compareTo(vaultBalance);
+                    if (result < 0) {
+                        //TODO Send email
+
+                        sendEmail(
+                                "Panashe" + " " + "Rutimhu",
+                                "panasherutimhu0@gmail.com",
+                                "Limit Exceeded",
+                                "The balance of this Vault : (" + vault.getAccount() + ") has exceeded the limit.",
+                                "Panashe" + " " + "Rutimhu"
+                        );
+                    } else {
+                        vault.setCurrentAmount(vaultBalance);
+                        vaultRepository.save(vault);
+                    }
+                }else {
+                    vault.setCurrentAmount(vaultBalance);
+                    vaultRepository.save(vault);
+                }
+            }
+        }
+    }
+
+
+    private void sendEmail(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName) {
+        String emailText = emailSender.limitExceeded(recipientName, recipientMessage, senderName);
+        emailSender.send(recipientEmail, recipientSubject, emailText);
+    }
+
+    public int calculatePeriod() {
+        // Define the starting point (January 2020)
+        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 1);
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate the number of months between the start date and the current date
+        int months = (int) startDate.until(currentDate, java.time.temporal.ChronoUnit.MONTHS);
+
+        // Add 1 to make the period 1-based
+        return months + 1;
     }
 }
