@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.Loan;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
+import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
@@ -19,8 +20,8 @@ import com.untucapital.usuite.utg.repository2.PostGlRepository;
 import com.untucapital.usuite.utg.service.cms.AccountService;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,6 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@AllArgsConstructor
 public class MusoniProcessor {
 
     private final PostGlRepository postGlRepository;
@@ -47,6 +47,25 @@ public class MusoniProcessor {
 
     private final AccountService accountService;
 
+    @Value("${pastel.password}")
+    private String apiPassword;
+
+    @Value("${pastel.username}")
+    private String apiUsername;
+
+    public MusoniProcessor(PostGlRepository postGlRepository, AccountsRepository accountsRepository, RestClient restClient, VaultService vaultService, AccountService accountService) {
+        this.postGlRepository = postGlRepository;
+        this.accountsRepository = accountsRepository;
+        this.restClient = restClient;
+        this.vaultService = vaultService;
+        this.accountService = accountService;
+    }
+
+//    public MusoniProcessor(RestClient restClient, VaultService vaultService, AccountService accountService) {
+//        this.restClient = restClient;
+//        this.vaultService = vaultService;
+//        this.accountService = accountService;
+//    }
 
     public List<PostGLRequestDTO> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
@@ -212,6 +231,68 @@ public class MusoniProcessor {
         return postGlRequestDTOs;
     }
 
+    public List<PastelTransReq> setPastelFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+        log.info("Transactions: {}", transactions);
+
+
+        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
+        List<PastelTransReq>  pastelTransReqList = new ArrayList<>();
+        java.util.Date utilDate = new java.util.Date();
+        Date sqlDate = new Date(utilDate.getTime());
+
+        for (Transactions transaction : transactions) {
+            int[] dateArray = transaction.getSubmittedOnDate();
+            log.info("Date Array: {}", Arrays.toString(dateArray));
+
+            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
+
+            if (isTransactionRequired) {
+                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
+                Date date = Date.valueOf(formattedDate);
+                log.info("Formatted date: {}", formattedDate);
+
+                String typeValue = transaction.getType().getValue();
+                String submittedUsername = transaction.getSubmittedByUsername();
+                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
+
+                String reference = "";
+                String toAccount = "";
+                String fromAccount = "";
+                String transactionType = "";
+
+                if ("disbursement".equalsIgnoreCase(typeValue)) {
+                    toAccount =getAccount(transaction.getSubmittedByUsername());
+                    fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME;
+                    transactionType= AppConstants.DISBURSEMENT;
+                    reference = "DIS-" + transaction.getId();
+                } else if ("repayment".equalsIgnoreCase(typeValue)) {
+                    fromAccount =getAccount(transaction.getSubmittedByUsername());
+                    toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME;
+                    transactionType = AppConstants.REPAYMENT;
+                    reference = "REP-" + transaction.getId();
+                }
+
+                PastelTransReq pastelTransReq = new PastelTransReq();
+                pastelTransReq.setAmount(transaction.getAmount());
+                //FIXME set the correct currency
+                pastelTransReq.setCurrency("001");
+                pastelTransReq.setDescription(typeValue);
+                pastelTransReq.setReference(reference);
+                //FIXME put the correct rate
+                pastelTransReq.setExchangeRate(1);
+                pastelTransReq.setFromAccount(fromAccount);
+                pastelTransReq.setToAccount(toAccount);
+                pastelTransReq.setAPIPassword(apiPassword);
+                pastelTransReq.setAPIUsername(apiUsername);
+                pastelTransReq.setTransactionDate(MusoniUtils.formatMusoniDt(dateArray));
+                pastelTransReq.setTransactionType(transactionType);
+
+                pastelTransReqList.add(pastelTransReq);
+            }
+        }
+
+        return pastelTransReqList;
+    }
 
     /**
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
@@ -251,6 +332,34 @@ public class MusoniProcessor {
         }
 
         return accountEntity;
+    }
+
+    public String getAccount(String submittedUsername) throws AccountNotFoundException {
+        List<Employee> employees = restClient.getAllUsers();
+
+        // Filter out the employee who initiated the transaction
+        Optional<Employee> initiator = employees.stream()
+                .filter(employee -> employee.getUsername().equals(submittedUsername))
+                .findFirst();
+
+        if (initiator.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
+        }
+
+        Employee employee = initiator.get();
+        String officeName = employee.getOfficeName();
+        String subString = " Teller Account";
+
+        if (officeName.contains(subString)) {
+            officeName += subString;
+        }
+
+        VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
+
+        if (vault == null) {
+            throw new VaultNotFoundException("Vault not found");
+        }
+        return vault.getAccount();
     }
 
 

@@ -1,15 +1,18 @@
 package com.untucapital.usuite.utg.client;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.AllLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.dto.loans.RepaymentScheduleLoan;
 import com.untucapital.usuite.utg.dto.loans.SingleLoan;
+import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
+import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +39,9 @@ import java.util.List;
 @Service
 @Slf4j
 public class RestClient {
+
+    @Value("${pastel.url}")
+    private String pastelUrl;
 
     @Value("${musoni.url}")
     private String baseUrl;
@@ -93,7 +101,7 @@ public class RestClient {
         return loans;
     }
 
-    public List<Transactions> getTransactions(int loanId) {
+    public List<Transactions> getTransactions(int loanId, Long timestamp) throws ParseException, ParseException {
 
         log.info("PageItem Id :{}", loanId);
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -124,7 +132,14 @@ public class RestClient {
         for (Transactions tx : transactions) {
             if (tx.getType().isDisbursement() || tx.getType().isRepayment()) {
 
-                cashTransactions.add(tx);
+                LocalDate transDate = MusoniUtils.formatDate(tx.getSubmittedOnDate());
+                Boolean isRequired = MusoniUtils.compareDates(timestamp, transDate);
+
+                if(isRequired) {
+                    log.info("TX: {}", tx);
+                    cashTransactions.add(tx);
+                }
+
             }
             log.info("Transaction with repayment or disbursement: {}", cashTransactions.toString());
         }
@@ -294,6 +309,32 @@ public class RestClient {
 
         return loanTransaction;
     }
+
+    public TransactionInfo savePostGlTransaction(PastelTransReq req) throws JsonProcessingException {
+
+        // Set up headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String request = objectMapper.writeValueAsString(req);
+        // Create the HTTP entity with the request body and headers
+        HttpEntity<String> requestEntity = new HttpEntity<>(request, headers);
+        TransactionInfo transactionInfo = new TransactionInfo();
+
+        try {
+
+            log.info("Request entity:{}",requestEntity);
+
+            String responseEntity  = restTemplate.exchange(pastelUrl , HttpMethod.POST, requestEntity, String.class).getBody();
+
+            transactionInfo = objectMapper.readValue(responseEntity,TransactionInfo.class);
+            log.info("SAVED TRANSACTION: {}", responseEntity);
+        }catch(Exception e){
+            log.info("FAILED TO SAVE THE TRANSACTION: ", e.getMessage());
+        }
+        return transactionInfo;
+    }
+
 
 //    public Client getClient(String clientLoans) {
 //

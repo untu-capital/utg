@@ -32,8 +32,9 @@ public class AccountService {
             entity = accountEntity.get();
 
          }else{
-            Optional<AccountEntity> account1 = accountsRepository.findByAccount("8422/000/HRE/FCA/MV");
-            entity= account1.get();
+//            Optional<AccountEntity> account1 = accountsRepository.findByAccount("8422/000/HRE/FCA/MV");
+//            entity= account1.get();
+            return null;
         }
 
         BeanUtils.copyProperties(entity, response);

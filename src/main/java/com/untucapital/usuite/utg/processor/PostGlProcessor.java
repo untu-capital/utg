@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.processor;
 
+import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
 import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
@@ -9,28 +10,38 @@ import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import com.untucapital.usuite.utg.service.cms.AccountService;
 import com.untucapital.usuite.utg.utils.EmailSender;
-import lombok.AllArgsConstructor;
+import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.LocalDate;
-import java.time.Month;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
 
 @Component
 @Slf4j
-@AllArgsConstructor
 public class PostGlProcessor {
 
+    @Value("${pastel.password}")
+    private String apiPassword;
+
+    @Value("${pastel.username}")
+    private String apiUsername;
 
     private final AccountService accountService;
     private final VaultRepository vaultRepository;
     private final EmailSender emailSender;
+
+    public PostGlProcessor(AccountService accountService, VaultRepository vaultRepository, EmailSender emailSender) {
+        this.accountService = accountService;
+        this.vaultRepository = vaultRepository;
+        this.emailSender = emailSender;
+    }
 
     public PostGlResponseDTO createFromAccountRequest(TransactionInfo transactionInfo) {
 
@@ -74,11 +85,9 @@ public class PostGlProcessor {
         request.setIImportDeclarationID(0);
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
-        request.setPeriod(calculatePeriod());
-
+        request.setPeriod(MusoniUtils.calculatePeriod());
 
         AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getFromAccount());
-
 
         request.setCredit(transactionInfo.getAmount());
         request.setDebit(0f);
@@ -130,8 +139,7 @@ public class PostGlProcessor {
         request.setIImportDeclarationID(0);
         request.setIMajorIndustryCodeID(0);
         request.setFForeignTax(0F);
-        request.setPeriod(calculatePeriod());
-
+        request.setPeriod(MusoniUtils.calculatePeriod());
 
         AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(transactionInfo.getToAccount());
 
@@ -202,17 +210,25 @@ public class PostGlProcessor {
         emailSender.send(recipientEmail, recipientSubject, emailText);
     }
 
-    public int calculatePeriod() {
-        // Define the starting point (January 2020)
-        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 1);
+    public PastelTransReq createPastelRequest(TransactionInfo transaction) throws ParseException {
 
-        // Get the current date
-        LocalDate currentDate = LocalDate.now();
+        log.info("Transaction : {}",transaction);
+        PastelTransReq pastelTransReq = new PastelTransReq();
+        pastelTransReq.setAmount(transaction.getAmount());
+        //FIXME set the correct currency
+        pastelTransReq.setCurrency("001");
+        pastelTransReq.setDescription(transaction.getDescription());
+        pastelTransReq.setReference(transaction.getReference());
+        //FIXME put the correct rate
+        pastelTransReq.setExchangeRate(transaction.getExchangeRate());
+        pastelTransReq.setFromAccount(transaction.getFromAccount());
+        pastelTransReq.setToAccount(transaction.getToAccount());
+        pastelTransReq.setAPIPassword(apiPassword);
+        pastelTransReq.setAPIUsername(apiUsername);
+        pastelTransReq.setTransactionDate(transaction.getTransactionDate());
+        pastelTransReq.setTransactionType(transaction.getTransactionType());
 
-        // Calculate the number of months between the start date and the current date
-        int months = (int) startDate.until(currentDate, java.time.temporal.ChronoUnit.MONTHS);
-
-        // Add 1 to make the period 1-based
-        return months + 1;
+        return pastelTransReq;
     }
+
 }

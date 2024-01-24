@@ -20,7 +20,7 @@ public class TransactionInfo {
     private String reference;
     private String currency;
     private Float amount;
-    private LocalDate transactionDate;
+    private String transactionDate;
     private String userName;
 
 }

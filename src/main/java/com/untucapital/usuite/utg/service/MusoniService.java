@@ -8,8 +8,10 @@ import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
+import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -97,16 +100,19 @@ public class MusoniService {
     }
 
 
-//    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
-        Long timestamp = MusoniUtils.getUnixTimeMinus24Hours();
+        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
         Loans loans = restClient.getLoans(timestamp);
         log.info("Loans from Musoni : {}", loans.toString());
 
         List<Transactions> transactions = new ArrayList<Transactions>();
         List<PostGLRequestDTO> postGlList = new ArrayList<>();
         List<PostGLRequestDTO> postGlListLB = new ArrayList<>();
+        List<PastelTransReq> pastelTransReqList = new ArrayList<>();
+
+        List<PostGl> postGls = new ArrayList<>();
 
 
         List<PageItem> pageItemList = loans.getPageItems();
@@ -115,7 +121,7 @@ public class MusoniService {
             int loanId = pageItem.getId();
 
             //Get all transactions for the pageItem
-            transactions = restClient.getTransactions(loanId);
+            transactions = restClient.getTransactions(loanId,timestamp);
 
             if (transactions == null) {
                 return;
@@ -123,28 +129,12 @@ public class MusoniService {
 
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
-//            transactionInfoList = musoniProcessor.createPastelTransaction(transactions);
-            postGlList = musoniProcessor.setPostGlFields(transactions);
-            postGlListLB = musoniProcessor.setPostGlClientLoanBook(transactions);
+            pastelTransReqList = musoniProcessor.setPastelFields(transactions);
 
-            int maxIterations = Math.max(postGlList.size(), postGlListLB.size());
-
-            for (int i = 0; i < maxIterations; i++) {
-                if (i < postGlList.size()) {
-
-                    postGlService.savePostGl(postGlList.get(i));
-                    log.info("PostGl transaction saved in the database: {}", postGlList.get(i).toString());
-
-                }
-
-                if (i < postGlListLB.size()) {
-
-                    postGlService.savePostGl(postGlListLB.get(i));
-                    log.info(" PostGl LB transaction saved in the database: {}", postGlListLB.get(i).toString());
-                }
+            log.info("Pastel Trans Request: {}",pastelTransReqList);
+            for(PastelTransReq pastelTransReq: pastelTransReqList){
+                restClient.savePostGlTransaction(pastelTransReq);
             }
-
-
         }
     }
 

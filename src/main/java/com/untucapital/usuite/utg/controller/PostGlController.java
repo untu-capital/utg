@@ -28,13 +28,14 @@ public class PostGlController {
     }
 
     @PostMapping("save")
-    public ResponseEntity<String> saveTransaction(@RequestBody TransactionInfo transactionInfo) {
+    public ResponseEntity<TransactionInfo> saveTransaction(@RequestBody TransactionInfo transactionInfo) {
 
         try {
-            postGlService.savePostGlFromCMS(transactionInfo);
-            return new ResponseEntity<>("Transaction saved successfully", HttpStatus.OK);
+            log.info("Trans Req:{}",transactionInfo);
+            TransactionInfo transactionInfo1= postGlService.savePostGlFromCMS(transactionInfo);
+            return ResponseEntity.ok(transactionInfo1);
         }catch (Exception e) {
-            return new ResponseEntity<>("Failed to save transaction: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return (ResponseEntity<TransactionInfo>) ResponseEntity.badRequest();
         }
 
     }

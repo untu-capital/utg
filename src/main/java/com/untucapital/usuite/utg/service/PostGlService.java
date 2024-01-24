@@ -1,7 +1,11 @@
 package com.untucapital.usuite.utg.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.entity.AccountEntity;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
 import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +36,8 @@ public class PostGlService {
     private final PostGlRepository postGlRepository;
     private final PostGlProcessor postGlProcessor;
     private final AccountService accountService;
+
+    private final RestClient restClient;
     private final VaultRepository vaultRepository;
     private final VaultService vaultService;
     private final UserService userService;
@@ -48,26 +55,14 @@ public class PostGlService {
     }
 
     @Transactional(value= "pastelTransactionManager")
-    public void savePostGlFromCMS(TransactionInfo request)  {
+    public TransactionInfo savePostGlFromCMS(TransactionInfo request) throws ParseException, JsonProcessingException {
 
-        List<User> user = userService.findAll();
-        PostGl trans1 = new PostGl();
-        PostGl trans2 = new PostGl();
+        log.info("Request:{}", request);
+        PastelTransReq pastelTransReq = postGlProcessor.createPastelRequest(request);
+        log.info("Pastel Trans:{}",pastelTransReq);
+        TransactionInfo trans = restClient.savePostGlTransaction(pastelTransReq);
 
-        Float currentBalanceFromAccount = getVaultAccountBalance(request.getFromAccount());
-
-        Float currentBalanceToAccount = getVaultAccountBalance(request.getToAccount());
-
-        PostGlResponseDTO transaction1 = postGlProcessor.createFromAccountRequest(request);
-        BeanUtils.copyProperties(transaction1, trans1);
-        PostGlResponseDTO transaction2 = postGlProcessor.createToAccountRequest(request);
-        BeanUtils.copyProperties(transaction2, trans2);
-
-        postGlProcessor.checkLimits(request, currentBalanceFromAccount, currentBalanceToAccount, user);
-
-        postGlRepository.save(trans1);
-        postGlRepository.save(trans2);
-
+        return trans;
     }
 
     @Transactional(value= "pastelTransactionManager")
@@ -124,7 +119,11 @@ public class PostGlService {
         AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(account);
         Integer accountLink = accountEntity.getAccountLink();
 
+        log.info("AccountLink:{}",accountLink);
         Float postGlBalances = postGlRepository.findAccountBalanceByAccountLink(accountLink);
+
+        log.info("PostGlBalances:{}",postGlBalances);
+
 
         return postGlBalances;
     }

@@ -14,6 +14,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -57,6 +59,23 @@ public class MusoniUtils {
         return timestamps;
     }
 
+    public static Boolean compareDates(Long timestamp, LocalDate transDate) {
+        // Assume you have a Timestamp object
+        Timestamp timestamp1 = new Timestamp(timestamp);
+
+        // Convert Timestamp to LocalDateTime
+        LocalDateTime localDateTime = timestamp1.toLocalDateTime();
+
+        // Extract LocalDate from LocalDateTime
+        LocalDate searchDate = localDateTime.toLocalDate();
+
+        if (transDate.isAfter(searchDate)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static Long getUnixTimeMinus24Hours() {
 
         // Get the current Unix time in milliseconds
@@ -65,6 +84,18 @@ public class MusoniUtils {
         long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000);
 
         return currentTimeMillis - millisecondsIn2_5Weeks;
+    }
+
+    public static Long getUnixTimeMinus1Hour() {
+
+        // Get the current Unix time in seconds (Java 8 or later)
+        long currentUnixTime = Instant.now().getEpochSecond();
+
+        // Calculate the number of seconds in 24 hours
+        long secondsIn1Hour = 3600;
+
+        // Subtract the calculated seconds from the current time
+        return currentUnixTime - secondsIn1Hour;
     }
 
     public static Boolean isValidDate(int[] dateArray) throws ParseException {
@@ -110,6 +141,33 @@ public class MusoniUtils {
         String transDate = new_format.format(transDates);
         return transDate;
     }
+
+    public static String formatMusoniDate(int[] datetime) throws ParseException {
+
+        String oldstring = datetime[0] + "-" + datetime[1] + "-" + datetime[2];
+        SimpleDateFormat old_format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
+        Date transDates = old_format.parse(oldstring);
+        String transDate = new_format.format(transDates);
+        return transDate;
+    }
+
+    public static String formatMusoniDt(int[] datetime) throws ParseException {
+
+        String oldstring = datetime[0] + "-" + datetime[1] + "-" + datetime[2];
+        SimpleDateFormat old_format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
+        Date transDates = old_format.parse(oldstring);
+        String transDate = new_format.format(transDates);
+        return transDate;
+    }
+    public static String formatPastelDates(LocalDate date) throws ParseException {
+
+        SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
+        String transDate = new_format.format(date);
+        return transDate;
+    }
+
 
     public static String currencyFormatter(BigDecimal amount) {
         Locale usa = new Locale("en", "US");
@@ -160,5 +218,18 @@ public class MusoniUtils {
 //        }
 //    }
 
+    public static int calculatePeriod() {
+        // Define the starting point (January 2020)
+        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 1);
+
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
+
+        // Calculate the number of months between the start date and the current date
+        int months = (int) startDate.until(currentDate, java.time.temporal.ChronoUnit.MONTHS);
+
+        // Add 1 to make the period 1-based
+        return months + 1;
+    }
 
 }
