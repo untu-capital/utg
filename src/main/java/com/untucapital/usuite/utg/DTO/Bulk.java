@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.DTO;
 
+import com.untucapital.usuite.utg.dto.BulkSMS;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

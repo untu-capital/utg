@@ -3,9 +3,7 @@ package com.untucapital.usuite.utg.controller.cms;
 
 import com.untucapital.usuite.utg.dto.cms.UpdateVaultRequest;
 import com.untucapital.usuite.utg.dto.cms.VaultRequest;
-import com.untucapital.usuite.utg.dto.cms.req.VaultRequestDTO;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
-import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +21,7 @@ import java.util.List;
 @RequestMapping("cms/vault")
 @RequiredArgsConstructor
 public class VaultController {
+
     private final VaultService vaultService;
 
     //Add
@@ -34,7 +33,7 @@ public class VaultController {
     @PutMapping("/update")
     //Update
     public ResponseEntity<VaultResponseDTO> updateVault(@RequestBody UpdateVaultRequest vault) {
-        System.out.println("Updated Vault Request"+vault.getAccount());
+        System.out.println("Updated Vault Request" + vault.getAccount());
         return ResponseEntity.ok(vaultService.updateVault(vault));
     }
 

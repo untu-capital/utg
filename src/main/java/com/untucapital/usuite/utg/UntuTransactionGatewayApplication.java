@@ -8,16 +8,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 
 @SpringBootApplication
 public class UntuTransactionGatewayApplication {
 
+    static final Logger log = LoggerFactory.getLogger(UntuTransactionGatewayApplication.class);
     @Value("${musoni.url}")
     private String musoniUrl;
     @Value("${musoni.username}")
@@ -28,7 +29,7 @@ public class UntuTransactionGatewayApplication {
     private String musoniTenantId;
     @Value("${musoni.X_API_KEY}")
     private String musoniApiKey;
-    static final Logger log = LoggerFactory.getLogger(UntuTransactionGatewayApplication.class);
+
     public static void main(String[] args) throws ParseException {
         SpringApplication.run(UntuTransactionGatewayApplication.class, args);
 
@@ -46,13 +47,13 @@ public class UntuTransactionGatewayApplication {
     }
 
     @Bean
-    public HttpHeaders httpHeaders(){
+    public HttpHeaders httpHeaders() {
         HttpHeaders headers = new HttpHeaders();
 
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setBasicAuth(musoniUsername,musoniPassword);
-        headers.set("X-Fineract-Platform-TenantId",musoniTenantId);
-        headers.set("x-api-key",musoniApiKey);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setBasicAuth(musoniUsername, musoniPassword);
+        headers.set("X-Fineract-Platform-TenantId", musoniTenantId);
+        headers.set("x-api-key", musoniApiKey);
         headers.set("Content-Type", "application/json");
 
         return headers;

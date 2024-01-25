@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.pos.controller;
 
 import com.untucapital.usuite.utg.pos.dto.POSSupplierDto;
-import com.untucapital.usuite.utg.pos.model.POSSupplier;
 import com.untucapital.usuite.utg.pos.service.SupplierService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +23,7 @@ public class SupplierController {
     @PostMapping("/supplier/save")
     @ResponseStatus(HttpStatus.CREATED)
     public POSSupplierDto saveSupplier(@RequestBody POSSupplierDto posSupplier) {
-       return supplierService.saveSupplier(posSupplier);
+        return supplierService.saveSupplier(posSupplier);
     }
 
     //Get Supplier By Id
@@ -48,7 +47,6 @@ public class SupplierController {
         System.out.println(posSupplier.toString());
         return supplierService.updateSupplier(posSupplier);
     }
-
 
     //Delete Supplier
     @DeleteMapping("/supplier/delete/{id}")
