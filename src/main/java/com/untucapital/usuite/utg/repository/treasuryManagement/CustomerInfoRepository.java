@@ -1,6 +1,6 @@
-package com.untucapital.usuite.utg.treasuryManagement.repository;
+package com.untucapital.usuite.utg.repository.treasuryManagement;
 
-import com.untucapital.usuite.utg.treasuryManagement.model.CustomerInfo;
+import com.untucapital.usuite.utg.model.treasuryManagement.CustomerInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

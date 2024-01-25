@@ -1,7 +1,7 @@
-package com.untucapital.usuite.utg.treasuryManagement.service;
+package com.untucapital.usuite.utg.service.treasuryManagement;
 
-import com.untucapital.usuite.utg.treasuryManagement.model.CustomerInfo;
-import com.untucapital.usuite.utg.treasuryManagement.repository.CustomerInfoRepository;
+import com.untucapital.usuite.utg.model.treasuryManagement.CustomerInfo;
+import com.untucapital.usuite.utg.repository.treasuryManagement.CustomerInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

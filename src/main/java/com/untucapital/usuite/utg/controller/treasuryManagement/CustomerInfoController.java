@@ -1,7 +1,7 @@
-package com.untucapital.usuite.utg.treasuryManagement.controller;
+package com.untucapital.usuite.utg.controller.treasuryManagement;
 
-import com.untucapital.usuite.utg.treasuryManagement.model.CustomerInfo;
-import com.untucapital.usuite.utg.treasuryManagement.service.CustomerInfoService;
+import com.untucapital.usuite.utg.model.treasuryManagement.CustomerInfo;
+import com.untucapital.usuite.utg.service.treasuryManagement.CustomerInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

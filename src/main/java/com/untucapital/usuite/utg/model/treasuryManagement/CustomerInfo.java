@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.treasuryManagement.model;
+package com.untucapital.usuite.utg.model.treasuryManagement;
 
 import lombok.*;
 
@@ -22,6 +22,7 @@ public class CustomerInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
     private String name;
     private String email;
