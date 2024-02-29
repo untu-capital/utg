@@ -8,6 +8,7 @@ import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.model.po.PoUser;
+import com.untucapital.usuite.utg.model.tms.TmsUser;
 import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
@@ -188,42 +189,36 @@ public class UsersController extends AbstractController<User> {
         }
     }
 
-
-
-//    @PutMapping("/updateCmsUserRole/{userId}")
-//    public ResponseEntity<User> updateCmsUser(@PathVariable String userId, @RequestBody CmsUser updatedCmsUser) {
-//        // Create a default CmsUser here with your desired values
-//        CmsUser defaultCmsUser = new CmsUser();
-//        defaultCmsUser.setRole(updatedCmsUser.getRole()); // Set your default values here
-//        User updatedUser = userService.updateUserCmsUser(userId, defaultCmsUser);
-//        return ResponseEntity.ok(updatedUser);
-//    }
-
-
-
-//    @PutMapping("/updateCmsUserRole/{id}")
-//    public ResponseEntity<String> updateCmsUserRole(@PathVariable String id, @RequestBody CmsUser updatedCmsUser) {
-//        // Retrieve the User entity by ID
-//        Optional<User> optionalUser = userRepository.findById(id);
+//    @PutMapping("/updateTmsUserRole/{id}")
+//    public ResponseEntity<String> updateTmsUserRole(@PathVariable String id, @RequestBody TmsUser updatedTmsUser) {
+//        // Log the received ID for debugging
+//        System.out.println("Received ID: " + id);
 //
+//        // Retrieve the User entity by ID
+//        Optional<User> optionalUser = userRepository.findUserById(id);
+
 //        if (optionalUser.isPresent()) {
 //            User existingUser = optionalUser.get();
+//            // Update the role of the existing user's CmsUser or create a new one if it's null
+//            TmsUser tmsUser = existingUser.getTmsUser();
 //
-//            // Update the role of the existing user's CmsUser
-//            CmsUser cmsUser = existingUser.getCmsUser();
-//            cmsUser.setRole(updatedCmsUser.getRole());
+//            if (tmsUser == null) {
+//                tmsUser = new TmsUser();
+//            }
+//
+//            tmsUser.setRole(updatedTmsUser.getRole());
+//
+//            // Set the updated CmsUser back to the User entity
+//            existingUser.setTmsUser(tmsUser);
 //
 //            // Save the updated user
 //            userRepository.save(existingUser);
 //
-//            return new ResponseEntity<String>("User role successfully updated", HttpStatus.OK);
+//            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
 //        } else {
-//            return new ResponseEntity<String>("User not found", HttpStatus.NOT_FOUND);
+//            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 //        }
 //    }
-
-
-
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<String> updateUser(@PathVariable String id, @RequestBody User user){

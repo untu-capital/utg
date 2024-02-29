@@ -23,7 +23,7 @@ public class PostGLResponseDTO {
     private Float fForeignCredit;
     private String description;
     private Integer taxTypeID;
-    private String reference;
+    private String Reference;
     private String orderNo;
     private String extOrderNum;
     private String cAuditNumber;

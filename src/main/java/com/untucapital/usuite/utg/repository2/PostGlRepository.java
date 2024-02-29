@@ -10,12 +10,19 @@ import org.springframework.stereotype.Repository;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostGlRepository extends JpaRepository<PostGl, BigInteger> {
     List<PostGlResponseDTO> findByTxDate(Date txDate);
 
     List<PostGlResponseDTO> findByAccountLink(Integer AccountLink);
+
+    @Query("SELECT p FROM PostGl p WHERE p.Reference = :reference")
+    Optional<PostGlResponseDTO> findByReference(@Param("reference") String reference);
+
+//    PostGl findPostGlByReference(String Reference);
+
 
     @Query("SELECT SUM(p.Debit) - SUM(p.Credit) " +
             "FROM PostGl p " +

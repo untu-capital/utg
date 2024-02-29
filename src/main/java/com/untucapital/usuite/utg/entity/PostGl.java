@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.entity;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
@@ -12,9 +10,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 @RequiredArgsConstructor
 @Table(name = "PostGL")
 public class PostGl {
@@ -61,6 +57,7 @@ public class PostGl {
     @Column(name = "TaxTypeID")
     private Integer TaxTypeID;
 
+    @JsonProperty("Reference")
     @Column(name = "Reference", length = 50)
     private String Reference;
 
@@ -190,7 +187,9 @@ public class PostGl {
     @Column(name = "iKeyVersion")
     private Integer iKeyVersion;
 
-//    @Id
+
+
+    //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Long id;
 //

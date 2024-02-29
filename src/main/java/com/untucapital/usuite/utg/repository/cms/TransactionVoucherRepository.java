@@ -16,7 +16,7 @@ import java.util.List;
 
 @Repository
 public interface TransactionVoucherRepository extends JpaRepository<TransactionVoucher, Integer> {
-    
+
     List<TransactionVoucher> findAllByInitiator(User user);
 
     List<TransactionVoucher> findAllByFirstApprover(User user);

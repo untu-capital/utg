@@ -88,7 +88,7 @@ public class RestClient {
         Loans loans = new Loans();
 
         try {
-            String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + MusoniUtils.generateTimestamp(timestamp), HttpMethod.GET, entity, String.class).getBody();
+            String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + timestamp, HttpMethod.GET, entity, String.class).getBody();
             log.info("Loans in the past 24 hours: {}", loanString);
 
             loans = objectMapper.readValue(loanString, Loans.class);
@@ -186,6 +186,19 @@ public class RestClient {
 
         return repaymentScheduleLoan;
     }
+
+    public String getOverdue(long timestamps){
+
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        String timestampedLoanAcc = restTemplate.exchange(
+                baseUrl + "loans?modifiedSinceTimestamp=" + timestamps,
+                HttpMethod.GET,
+                entity,
+                String.class
+        ).getBody();
+         return timestampedLoanAcc;
+    }
+
 
     public Client getClientById(String clientId) {
 

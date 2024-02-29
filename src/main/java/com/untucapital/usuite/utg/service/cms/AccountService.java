@@ -21,7 +21,7 @@ public class AccountService {
     private final AccountsRepository accountsRepository;
 
     @Transactional(value = "transactionManager")
-    public AccountEntityResponseDTO findAccountByAccount(String account)  {
+    public AccountEntityResponseDTO findAccountByAccount(String account) {
 
         AccountEntityResponseDTO response = new AccountEntityResponseDTO();
         AccountEntity entity = new AccountEntity();

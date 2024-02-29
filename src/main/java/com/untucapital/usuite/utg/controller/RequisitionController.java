@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/requisitions")
@@ -42,10 +41,11 @@ public class RequisitionController {
         return requisition;
     }
 
-    @PostMapping
-    public void saveRequisitions(@RequestBody RequisitionsRequestDTO requisitions) {
-        log.info(String.valueOf(requisitions));
-        requisitionService.saveRequisition(requisitions);
+    @PostMapping("/save")
+    public ResponseEntity<RequisitionsResponseDTO> saveRequisitions(@RequestBody RequisitionsRequestDTO requisitions) {
+        RequisitionsResponseDTO savedRequisition = requisitionService.saveRequisition(requisitions);
+        log.info("Saved requisition: {}", savedRequisition);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRequisition);
     }
 
     @DeleteMapping("/{id}")
@@ -54,18 +54,19 @@ public class RequisitionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RequisitionsResponseDTO> getRequisitionById(@PathVariable("id") String id) {
+    public RequisitionsResponseDTO getRequisitionById(@PathVariable("id") String id) {
 
         RequisitionsResponseDTO requisition = requisitionService.getRequisitionById(id);
 
         log.info("Requisition:{}", requisition);
+        return requisition;
 
-        if (requisition!=null) {
-            return new ResponseEntity<>(requisition, HttpStatus.OK);
-        } else {
-            // Handle the case when the RequisitionsResponseDTO object is not found
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+//        if (requisition!=null) {
+//            return new ResponseEntity<>(requisition, HttpStatus.OK);
+//        } else {
+//            // Handle the case when the RequisitionsResponseDTO object is not found
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
     }
 
     @GetMapping("financeApproval")

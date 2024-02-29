@@ -11,10 +11,12 @@ import com.untucapital.usuite.utg.dto.loans.*;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
+import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.processor.MusoniProcessor;
 import com.untucapital.usuite.utg.repository.MusoniRepository;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,10 +103,12 @@ public class MusoniService {
     }
 
 
-    @Scheduled(cron = "0 0 * * * ?")
+        @Scheduled(cron = "0 0 * * * ?")
+//@Scheduled(cron = "0 0 0 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
-        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
+//        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
+        Long timestamp = MusoniUtils.getUnixTimeMinusDays();
         Loans loans = restClient.getLoans(timestamp);
         log.info("Loans from Musoni : {}", loans.toString());
 
@@ -114,7 +119,6 @@ public class MusoniService {
 
         List<PostGl> postGls = new ArrayList<>();
 
-
         List<PageItem> pageItemList = loans.getPageItems();
 
         for (PageItem pageItem : pageItemList) {
@@ -122,18 +126,30 @@ public class MusoniService {
 
             //Get all transactions for the pageItem
             transactions = restClient.getTransactions(loanId,timestamp);
-
+            log.info("Transactions: {}", transactions);
             if (transactions == null) {
-                return;
+                continue;
             }
 
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
             pastelTransReqList = musoniProcessor.setPastelFields(transactions);
-
+            if(pastelTransReqList.size() ==0){
+                continue;
+            }
             log.info("Pastel Trans Request: {}",pastelTransReqList);
             for(PastelTransReq pastelTransReq: pastelTransReqList){
-                restClient.savePostGlTransaction(pastelTransReq);
+                try {
+                    PostGLResponseDTO res = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
+
+                    log.info("EXISTING TRANS:{}", res);
+                    if(res.getReference() == null) {
+                        TransactionInfo response = restClient.savePostGlTransaction(pastelTransReq);
+                        log.info("Posted Tranasction: {} ", response);
+                    }
+                }catch (Exception e){
+                    log.info("Failed to save Transaction : {}", e.getMessage());
+                }
             }
         }
     }
@@ -182,7 +198,7 @@ public class MusoniService {
 
     List<String> timestampedLoanAccs = new ArrayList<>();
 
-//    @Scheduled(fixedRate = 300000)
+    //    @Scheduled(fixedRate = 300000)
     public String transactionSmsScheduler() throws SQLException {
 
 //        Class.forName("com.mysql.jdbc.Driver");
@@ -428,82 +444,6 @@ public class MusoniService {
 
         return "";
     }
-
-//    public String disbursedLoans(String fromDate, String toDate) throws JSONException {
-//        JSONObject json = new JSONObject(getLoansByDisbursementDate(fromDate, toDate));
-//        JSONArray pageItems = json.getJSONArray("pageItems");
-//        JSONArray disbursedLoans = new JSONArray();
-//
-//        for (int i = 0; i < pageItems.length(); i++) {
-//            JSONObject page = pageItems.getJSONObject(i);
-//
-//            // Check if Loan_id exists
-//            int loanId = page.getInt("id");
-//            String accountNo = page.getString("accountNo");
-//            String clientName = page.getString("clientName");
-//            String loanProductName = page.getString("loanProductName");
-//            double principal = page.getDouble("principal");
-//            int numberOfRepayments = page.getInt("numberOfRepayments");
-//            double interestRatePerPeriod = page.getDouble("interestRatePerPeriod");
-//            String expectedMaturityDate = page.getJSONObject("timeline")
-//                    .getString("expectedMaturityDate");
-//
-//            String actualDisbursementDate = null;
-//            if (page.getJSONObject("timeline").has("actualDisbursementDate")) {
-//                actualDisbursementDate = page.getJSONObject("timeline")
-//                        .getString("actualDisbursementDate");
-//            }
-//
-//            double totalExpectedRepayment = 0.0;
-//            double totalRepayment = 0.0;
-//            double totalOutstanding = 0.0;
-//
-//            if (page.has("summary")) {
-//                totalExpectedRepayment = page.getJSONObject("summary")
-//                        .getDouble("totalExpectedRepayment");
-//            }
-//
-//            if (page.has("summary")) {
-//                totalRepayment = page.getJSONObject("summary")
-//                        .getDouble("totalRepayment");
-//            }
-//
-//            if (page.has("summary")) {
-//                totalOutstanding = page.getJSONObject("summary")
-//                        .getDouble("totalOutstanding");
-//            }
-//
-//            String officeName = page.getString("officeName");
-//            String loanOfficerName = page.getString("loanOfficerName");
-//
-//            JSONObject loanData = new JSONObject();
-//            if (actualDisbursementDate != null) {
-//                loanData.put("actualDisbursementDate", actualDisbursementDate);
-//            }
-////            loanData.put("actualDisbursementDate", page.getJSONObject("timeline").getString("actualDisbursementDate"));
-//            loanData.put("accountNo", accountNo);
-//            loanData.put("clientName", clientName);
-//            loanData.put("loanProductName", loanProductName);
-//            loanData.put("principal", principal);
-//            loanData.put("numberOfRepayments", numberOfRepayments);
-//            loanData.put("interestRatePerPeriod", interestRatePerPeriod);
-//            loanData.put("expectedMaturityDate", expectedMaturityDate);
-//            loanData.put("totalExpectedRepayment", totalExpectedRepayment);
-//            loanData.put("totalRepayment", totalRepayment);
-//            loanData.put("totalOutstanding", totalOutstanding);
-//            loanData.put("officeName", officeName);
-//            loanData.put("loanOfficerName", loanOfficerName);
-//
-//            disbursedLoans.put(loanData);
-//        }
-//
-//        // Convert the disbursedLoans JSONArray to a JSON object
-//        JSONObject result = new JSONObject();
-//        result.put("disbursedLoans", disbursedLoans);
-//
-//        return result.toString();
-//    }
-//
 
     public Result disbursedLoans(String fromDate, String toDate) {
         Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);

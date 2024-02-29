@@ -3,10 +3,12 @@ package com.untucapital.usuite.utg.model.po;
 import com.sun.istack.NotNull;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 import lombok.Data;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -39,8 +41,9 @@ public class Requisitions extends AbstractEntity {
     private String userId;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> approvers;
-    @ElementCollection(fetch = FetchType.LAZY)
+    private Set<String> approvers;
+    @ElementCollection
+    @BatchSize(size = 10)
     private List<String> attachments;
 
     @Column(name = "po_approver")

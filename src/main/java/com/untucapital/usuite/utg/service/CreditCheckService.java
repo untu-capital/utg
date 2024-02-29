@@ -35,13 +35,17 @@ public class CreditCheckService {
     @Transactional(value = "transactionManager")
     public ClientLoan fetchFCBCreditStatus(ClientLoan clientLoan) {
         log.info("Fetching FCB Credit Status for Client: {}, ID:{}", clientLoan.getFirstName() + clientLoan.getLastName(), clientLoan.getIdNumber());
-
+        Response creditResponse = null;
         //clientLoan.setLoanStatus("PENDING");
-
-        final Response creditResponse = fcbIntegrationService.performSearch(clientLoan)
+    try {
+         creditResponse = fcbIntegrationService.performSearch(clientLoan)
                 .orElseThrow(() -> new UntuSuiteException("Credit check failed for the Loan Application"));
-
+    }catch (Exception e){
+        log.info("failed to get fcb infomation: {}", e.getMessage());
+    }
+    log.info("FCB Response:{}", creditResponse);
         Response savedResponse = fcbResponseRepository.save(creditResponse);
+
 
         String creditStatus = "UNKNOWN";
         Integer creditScore = 0;

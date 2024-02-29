@@ -34,7 +34,7 @@ public class VaultResponseDTO {
 
     private Integer accountLink;
 
-    private Branches branch;
+    private Branches branches;
 
     @UpdateTimestamp
     private LocalDateTime createdAt;
@@ -99,13 +99,13 @@ public class VaultResponseDTO {
         this.accountLink = accountLink;
     }
 
-//    public Branches getBranch() {
-//        return branch;
-//    }
-//
-//    public void setBranch(Branches branch) {
-//        this.branch = branch;
-//    }
+    public Branches getBranch() {
+        return branches;
+    }
+
+    public void setBranch(Branches branch) {
+        this.branches = branch;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

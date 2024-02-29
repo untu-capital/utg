@@ -21,6 +21,7 @@ import com.untucapital.usuite.utg.repository.cms.TransactionVoucherRepository;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +38,7 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionVoucherService {
     private final TransactionVoucherRepository transactionVoucherRepository;
     private final AuthorisationRepository authorisationRepository;
@@ -58,8 +60,10 @@ public class TransactionVoucherService {
         User user = userService.find(request.getInitiator()).orElseThrow();
 
         TransactionVoucher transactionVoucher = transactionVoucherProcessor.processTransactionVoucher(request);
+        log.info("Transaction Test :{}",transactionVoucher);
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
+
 
         sendEmail(
                 firstApprover.getFirstName() + " " + firstApprover.getLastName(),

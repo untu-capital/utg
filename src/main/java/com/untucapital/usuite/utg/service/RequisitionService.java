@@ -1,9 +1,10 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.request.RequisitionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponseDTO;
 import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
-import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.po.Requisitions;
 import com.untucapital.usuite.utg.pos.model.Expenditure;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
@@ -52,15 +53,21 @@ public class RequisitionService {
     }
 
     @Transactional(value = "transactionManager")
-    public void saveRequisition(RequisitionsRequestDTO request) {
+    public RequisitionsResponseDTO saveRequisition(RequisitionsRequestDTO request) {
 
         Requisitions requisitions = new Requisitions();
+        RequisitionsResponseDTO response = new RequisitionsResponseDTO();
         Expenditure expenditure = new Expenditure();
 
         BeanUtils.copyProperties(request, requisitions);
 
-        requisitionRepository.save(requisitions);
+       Requisitions requisitions1 = requisitionRepository.save(requisitions);
+       BeanUtils.copyProperties(requisitions1,response);
+        return response;
     }
+
+
+
 
     @Transactional(value = "transactionManager")
     public RequisitionsResponseDTO getRequisitionById(String id) {
@@ -81,6 +88,7 @@ public class RequisitionService {
         }else {
             return null;
         }
+
     }
 
 

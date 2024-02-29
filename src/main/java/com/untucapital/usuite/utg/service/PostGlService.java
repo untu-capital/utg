@@ -26,6 +26,7 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -93,6 +94,20 @@ public class PostGlService {
             response.add(postGLResponseDTO);
         }
 
+        return response;
+
+    }
+
+    @Transactional(value= "pastelTransactionManager")
+    public PostGLResponseDTO getAllPostGlByRef(String reference){
+
+        PostGLResponseDTO response = new PostGLResponseDTO();
+        Optional<PostGlResponseDTO> postGl= postGlRepository.findByReference(reference);
+
+        if(postGl !=null) {
+
+            BeanUtils.copyProperties(postGl, response);
+        }
         return response;
 
     }

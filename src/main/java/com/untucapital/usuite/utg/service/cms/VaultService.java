@@ -170,9 +170,9 @@ public class VaultService {
 
         //FIXME: this is a bypass for testing
         if (vault.isEmpty()) {
-            Vault vault1 = new Vault();
-            vault1.setAccount("8422/000/HRE/FCA/MV");
-            BeanUtils.copyProperties(vault1, response);
+//            Vault vault1 = new Vault();
+//            vault1.setAccount("8422/000/HRE/FCA/MV");
+//            BeanUtils.copyProperties(vault1, response);
             return response;
         }
 
@@ -259,7 +259,9 @@ public class VaultService {
     public BigDecimal getVaultBalanceByAccount(String account) {
 
         BigDecimal vaultBalance = vaultRepository.findAccountBalanceByAccount(account);
-
+//if (vaultBalance.equals(0)){
+//
+//}
         return vaultBalance;
     }
 

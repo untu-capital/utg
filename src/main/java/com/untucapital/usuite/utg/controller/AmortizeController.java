@@ -25,7 +25,6 @@ public class AmortizeController {
 
     @GetMapping("table/{loanId}/{period}")
     public String getTable(@PathVariable String loanId, @PathVariable String period) {
-
             return amortizeService.getTable(loanId, period);
     }
 

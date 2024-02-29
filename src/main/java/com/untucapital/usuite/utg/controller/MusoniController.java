@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.QueryHint;
+import javax.security.auth.login.AccountNotFoundException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -117,12 +119,12 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "loans?modifiedSinceTimestamp="+timeStamp, HttpMethod.GET, entity, String.class).getBody();
     }
 
-//    @GetMapping("loans/transactions/")
-//    public ResponseEntity<List<PostGl>> getTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
-//       List<PostGl> transactionList = musoniService.getLoansByTimestamp();
-//
-//       return new ResponseEntity<>(transactionList,HttpStatus.OK);
-//    }
+    @GetMapping("loans/transactions")
+    public ResponseEntity <Void> getTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
+        musoniService.getLoansByTimestamp();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     public static String[] getDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -312,83 +314,83 @@ public class MusoniController {
 
     //    Get Loans By TimeStamp
     List<String> timestampedLoanAccs = new ArrayList<>();
-//    @GetMapping("getLoansByTimestamp/{timestampa}")
-@GetMapping("getLoansByTimestamp")
-public Object getLoansByTimestamp() throws JsonProcessingException {
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    long stamps = timestamp.getTime();
-    String stampString = String.valueOf(stamps);
-    String stamp = stampString.substring(0, stampString.length() - 3);
+    //    @GetMapping("getLoansByTimestamp/{timestampa}")
+    @GetMapping("getLoansByTimestamp")
+    public Object getLoansByTimestamp() throws JsonProcessingException {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        long stamps = timestamp.getTime();
+        String stampString = String.valueOf(stamps);
+        String stamp = stampString.substring(0, stampString.length() - 3);
 
-    long timestamps = Long.valueOf(stamp) - 5864286L; // 2 months, 1 week is: 5864286
-    HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
-    String timestampedLoanAcc = restTemplate.exchange(
-            musoniUrl + "loans?modifiedSinceTimestamp=" + timestamps,
-            HttpMethod.GET,
-            entity,
-            String.class
-    ).getBody();
+        long timestamps = Long.valueOf(stamp) - 5864286L; // 2 months, 1 week is: 5864286
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        String timestampedLoanAcc = restTemplate.exchange(
+                musoniUrl + "loans?modifiedSinceTimestamp=" + timestamps,
+                HttpMethod.GET,
+                entity,
+                String.class
+        ).getBody();
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    JsonNode loanAccJson = objectMapper.readTree(timestampedLoanAcc);
-    JsonNode pageItems = loanAccJson.at("/pageItems");
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode loanAccJson = objectMapper.readTree(timestampedLoanAcc);
+        JsonNode pageItems = loanAccJson.at("/pageItems");
 
-    List<Map<String, Object>> timestampedLoanAccs = new ArrayList<>();
+        List<Map<String, Object>> timestampedLoanAccs = new ArrayList<>();
 
-    for (JsonNode pageItem : pageItems) {
-        String loan_id = pageItem.get("id").asText();
-        String status = pageItem.at("/status/active").asText();
-        String client_id = pageItem.get("clientId").asText();
-        String days_in_arrears = null;
+        for (JsonNode pageItem : pageItems) {
+            String loan_id = pageItem.get("id").asText();
+            String status = pageItem.at("/status/active").asText();
+            String client_id = pageItem.get("clientId").asText();
+            String days_in_arrears = null;
 
-        if (pageItem.has("summary") && pageItem.at("/summary").has("daysInArrears")) {
-            days_in_arrears = pageItem.at("/summary/daysInArrears").asText();
-        }
-
-        String phone_number = "0";
-
-        String clientByIdResponse = getClientById(client_id); // Assuming getClientById returns a JSON string
-        JsonNode clientById = objectMapper.readTree(clientByIdResponse);
-
-        if (clientById.has("mobileNo")) {
-            phone_number = clientById.get("mobileNo").asText();
-        }
-
-        if ("true".equals(status) && days_in_arrears != null && !days_in_arrears.isEmpty()) {
-            int daysInArrears = Integer.parseInt(days_in_arrears);
-
-            if (phone_number != "0") {
-                String sms_par_one = "";
-
-                if (daysInArrears == 1) {
-                    sms_par_one = "Your repayment amount is due and payable. Please make necessary arrangements to pay so that you maintain a good record of your account. Kindly ignore this message if you have already made the FULL payment.";
-                } else if (daysInArrears == 14) {
-                    sms_par_one = "We have not received your installment payment in full, and this is now 14 days in arrears. Please urgently make payment to avoid downgrading of your account and unnecessary penalties.";
-                } else if (daysInArrears == 30) {
-                    sms_par_one = "It is now 30 days without full payment of your installment. To avoid being blacklisted and litigation, please make urgent arrangements to settle the account immediately.";
-                }
-
-                if (!sms_par_one.isEmpty()) {
-                    smsService.sendSingle(phone_number, sms_par_one);
-                }
+            if (pageItem.has("summary") && pageItem.at("/summary").has("daysInArrears")) {
+                days_in_arrears = pageItem.at("/summary/daysInArrears").asText();
             }
-        } else {
-            System.out.println("Client has no PAR or Phone number is not available.");
+
+            String phone_number = "0";
+
+            String clientByIdResponse = getClientById(client_id); // Assuming getClientById returns a JSON string
+            JsonNode clientById = objectMapper.readTree(clientByIdResponse);
+
+            if (clientById.has("mobileNo")) {
+                phone_number = clientById.get("mobileNo").asText();
+            }
+
+            if ("true".equals(status) && days_in_arrears != null && !days_in_arrears.isEmpty()) {
+                int daysInArrears = Integer.parseInt(days_in_arrears);
+
+                if (phone_number != "0") {
+                    String sms_par_one = "";
+
+                    if (daysInArrears == 1) {
+                        sms_par_one = "Your repayment amount is due and payable. Please make necessary arrangements to pay so that you maintain a good record of your account. Kindly ignore this message if you have already made the FULL payment.";
+                    } else if (daysInArrears == 14) {
+                        sms_par_one = "We have not received your installment payment in full, and this is now 14 days in arrears. Please urgently make payment to avoid downgrading of your account and unnecessary penalties.";
+                    } else if (daysInArrears == 30) {
+                        sms_par_one = "It is now 30 days without full payment of your installment. To avoid being blacklisted and litigation, please make urgent arrangements to settle the account immediately.";
+                    }
+
+                    if (!sms_par_one.isEmpty()) {
+                        smsService.sendSingle(phone_number, sms_par_one);
+                    }
+                }
+            } else {
+                System.out.println("Client has no PAR or Phone number is not available.");
+            }
+
+            Map<String, Object> loanObject = new HashMap<>();
+            loanObject.put("loanId", loan_id);
+            loanObject.put("statusActive", status);
+            loanObject.put("daysInArrears", days_in_arrears);
+            loanObject.put("clientId", client_id);
+            loanObject.put("phoneNumber", phone_number);
+
+            System.out.println(loan_id);
+            timestampedLoanAccs.add(loanObject);
         }
 
-        Map<String, Object> loanObject = new HashMap<>();
-        loanObject.put("loanId", loan_id);
-        loanObject.put("statusActive", status);
-        loanObject.put("daysInArrears", days_in_arrears);
-        loanObject.put("clientId", client_id);
-        loanObject.put("phoneNumber", phone_number);
-
-        System.out.println(loan_id);
-        timestampedLoanAccs.add(loanObject);
+        return timestampedLoanAccs;
     }
-
-    return timestampedLoanAccs;
-}
 
     public String currencyFormatter(String amount) {
         Locale usa = new Locale("en", "US");

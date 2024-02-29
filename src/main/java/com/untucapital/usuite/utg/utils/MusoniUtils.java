@@ -12,14 +12,12 @@ import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 @Component
 @Slf4j
@@ -60,16 +58,13 @@ public class MusoniUtils {
     }
 
     public static Boolean compareDates(Long timestamp, LocalDate transDate) {
-        // Assume you have a Timestamp object
-        Timestamp timestamp1 = new Timestamp(timestamp);
 
-        // Convert Timestamp to LocalDateTime
-        LocalDateTime localDateTime = timestamp1.toLocalDateTime();
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), TimeZone.getDefault().toZoneId());
 
         // Extract LocalDate from LocalDateTime
         LocalDate searchDate = localDateTime.toLocalDate();
 
-        if (transDate.isAfter(searchDate)) {
+        if (transDate.isAfter(searchDate) || transDate.isEqual(searchDate)) {
             return true;
         } else {
             return false;
@@ -81,10 +76,22 @@ public class MusoniUtils {
         // Get the current Unix time in milliseconds
         long currentTimeMillis = System.currentTimeMillis();
 
-        long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000);
+        long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000 );
 
         return currentTimeMillis - millisecondsIn2_5Weeks;
     }
+
+    public static Long getUnixTimeMinusDays() {
+        // Get the current Unix time in seconds (Java 8 or later)
+        long currentUnixTime = Instant.now().getEpochSecond();
+
+        // Calculate the number of seconds in x days
+        long secondsInDays = 1 * 24 * 60 * 60; // x days * 24 hours * 60 minutes * 60 seconds
+
+        // Subtract the calculated seconds from the current time
+        return currentUnixTime - secondsInDays;
+    }
+
 
     public static Long getUnixTimeMinus1Hour() {
 
@@ -102,7 +109,7 @@ public class MusoniUtils {
         LocalDate submitedDate = MusoniUtils.formatDate(dateArray);
         log.info("Formatted Date: {}", submitedDate);
 
-        LocalDate previousDate = LocalDate.now().minusDays(7);
+        LocalDate previousDate = LocalDate.now().minusDays(29);
 
         int compareDates = submitedDate.compareTo(previousDate);
         if (compareDates < 0) {
