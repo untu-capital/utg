@@ -17,6 +17,7 @@ import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.repository2.AccountsRepository;
 import com.untucapital.usuite.utg.repository2.PostGlRepository;
+import com.untucapital.usuite.utg.service.SmsService;
 import com.untucapital.usuite.utg.service.cms.AccountService;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
@@ -53,12 +54,15 @@ public class MusoniProcessor {
     @Value("${pastel.username}")
     private String apiUsername;
 
-    public MusoniProcessor(PostGlRepository postGlRepository, AccountsRepository accountsRepository, RestClient restClient, VaultService vaultService, AccountService accountService) {
+    private final SmsService smsService;
+
+    public MusoniProcessor(PostGlRepository postGlRepository, AccountsRepository accountsRepository, RestClient restClient, VaultService vaultService, AccountService accountService, SmsService smsService) {
         this.postGlRepository = postGlRepository;
         this.accountsRepository = accountsRepository;
         this.restClient = restClient;
         this.vaultService = vaultService;
         this.accountService = accountService;
+        this.smsService = smsService;
     }
 
 //    public MusoniProcessor(RestClient restClient, VaultService vaultService, AccountService accountService) {
@@ -212,14 +216,14 @@ public class MusoniProcessor {
                     postGl.setReference("DIS-" + transaction.getId());
                     postGl.setCredit(0f);
                     postGl.setDebit((float) transaction.getAmount());
-                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT);
+                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_DIS);
 
                 } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
 
                     postGl.setReference("REP-" + transaction.getId());
                     postGl.setCredit((float) transaction.getAmount());
                     postGl.setDebit(0f);
-                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT);
+                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_REP);
 
                 }
 
@@ -262,14 +266,20 @@ public class MusoniProcessor {
 
                 if ("disbursement".equalsIgnoreCase(typeValue)) {
                     toAccount =getAccount(transaction.getSubmittedByUsername());
-                    fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME;
+                    fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
                     transactionType= AppConstants.DISBURSEMENT;
                     reference = "DIS-" + transaction.getId();
+
+//                    smsService.sendSingle("0775797299", "This is a disbursement");
+
                 } else if ("repayment".equalsIgnoreCase(typeValue)) {
                     fromAccount =getAccount(transaction.getSubmittedByUsername());
-                    toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME;
+                    toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                     transactionType = AppConstants.REPAYMENT;
                     reference = "REP-" + transaction.getId();
+
+//                    smsService.sendSingle("0775797299", "This is a repayment");
+
                 }
 
                 PastelTransReq pastelTransReq = new PastelTransReq();
@@ -441,19 +451,6 @@ public class MusoniProcessor {
                 .collect(Collectors.toList());
 
     }
-
-//    public LoanBalance setloanBalance(){
-//
-//        LoanBalance loanBalance = new LoanBalance();
-//        loanBalance.setAccountNo(accountNo);
-//        loanBalance.setPrincipalDisbursed(principalDisbursed);
-//        loanBalance.setAmountPaid(amountPaid);
-//        loanBalance.setAmountOverdue(amountOverdue);
-//        loanBalance.setDisbursmentDate(disbursmentDate);
-//        loanBalance.setStatus(status);
-//        loanBalance.setNumberOfRepayments(numberOfRepayments);
-//        loanBalance.setMaturityDate(maturityDate);
-//    }
 
 
 }

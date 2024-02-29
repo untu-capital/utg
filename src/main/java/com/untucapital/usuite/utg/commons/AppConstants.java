@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.commons;
 
 
 public interface AppConstants {
-
     String DISBURSEMENT = "LOA-DIS";
     String REPAYMENT = "LOA-REP";
     String CASH = "CAS-TRN";
@@ -10,6 +9,10 @@ public interface AppConstants {
     String VAULT_TYPE ="Petty Cash";
     Integer LOAN_BOOK = 1010;
     String CURRENCY_USD = "USD";
-    Integer LOAN_BOOK_ACCOUNT = 101;
+
+    Integer LOAN_BOOK_ACCOUNT_DIS = 2248;
+    Integer LOAN_BOOK_ACCOUNT_REP = 2247;
+    String LOAN_BOOK_ACCOUNT_NAME_DIS = "8000/000/HO/LD";
+    String LOAN_BOOK_ACCOUNT_NAME_REP = "8000/000/HO/LR";
     String LOAN_BOOK_ACCOUNT_NAME = "9000/000";
 }

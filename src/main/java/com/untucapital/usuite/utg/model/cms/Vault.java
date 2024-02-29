@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "vaults")
+@Data
 @Getter
 @Setter
 @AllArgsConstructor
@@ -48,7 +49,11 @@ public class Vault {
     private Integer accountLink;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "branch_id") // Assuming you have a column named "branch_id" in the vaults table
     private Branches branch;
+
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    private Branches branch;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -59,83 +64,4 @@ public class Vault {
     private LocalDateTime updatedAt;
 
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigDecimal getMaxAmount() {
-        return maxAmount;
-    }
-
-    public void setMaxAmount(BigDecimal maxAmount) {
-        this.maxAmount = maxAmount;
-    }
-
-    public BigDecimal getCurrentAmount() {
-        return currentAmount;
-    }
-
-    public void setCurrentAmount(BigDecimal currentAmount) {
-        this.currentAmount = currentAmount;
-    }
-
-    public Integer getAccountLink() {
-        return accountLink;
-    }
-
-    public void setAccountLink(Integer accountLink) {
-        this.accountLink = accountLink;
-    }
-
-//    public Branches getBranch() {
-//        return branch;
-//    }
-//
-//    public void setBranch(Branches branch) {
-//        this.branch = branch;
-//    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

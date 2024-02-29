@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
 import javax.persistence.Column;
@@ -8,6 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "incomes")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Incomes extends AbstractEntity {
 
     @Column(name = "employer")

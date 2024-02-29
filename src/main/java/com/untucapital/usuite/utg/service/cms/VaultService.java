@@ -259,7 +259,9 @@ public class VaultService {
     public BigDecimal getVaultBalanceByAccount(String account) {
 
         BigDecimal vaultBalance = vaultRepository.findAccountBalanceByAccount(account);
-
+//if (vaultBalance.equals(0)){
+//
+//}
         return vaultBalance;
     }
 

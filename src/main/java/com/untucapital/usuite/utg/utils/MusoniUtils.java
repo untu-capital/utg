@@ -81,10 +81,22 @@ public class MusoniUtils {
         // Get the current Unix time in milliseconds
         long currentTimeMillis = System.currentTimeMillis();
 
-        long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000);
+        long millisecondsIn2_5Weeks = (long) (2.5 * 7 * 24 * 3600 * 1000 );
 
         return currentTimeMillis - millisecondsIn2_5Weeks;
     }
+
+    public static Long getUnixTimeMinusDays() {
+        // Get the current Unix time in seconds (Java 8 or later)
+        long currentUnixTime = Instant.now().getEpochSecond();
+
+        // Calculate the number of seconds in 22 days
+        long secondsInDays = 29 * 24 * 60 * 60; // 22 days * 24 hours * 60 minutes * 60 seconds
+
+        // Subtract the calculated seconds from the current time
+        return currentUnixTime - secondsInDays;
+    }
+
 
     public static Long getUnixTimeMinus1Hour() {
 
@@ -102,7 +114,7 @@ public class MusoniUtils {
         LocalDate submitedDate = MusoniUtils.formatDate(dateArray);
         log.info("Formatted Date: {}", submitedDate);
 
-        LocalDate previousDate = LocalDate.now().minusDays(7);
+        LocalDate previousDate = LocalDate.now().minusDays(28);
 
         int compareDates = submitedDate.compareTo(previousDate);
         if (compareDates < 0) {

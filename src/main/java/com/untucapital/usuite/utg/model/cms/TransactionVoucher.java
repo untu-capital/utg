@@ -42,10 +42,10 @@ public class TransactionVoucher {
     @Column(name = "amount")
     private BigDecimal amount;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Vault fromVault;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Vault toVault;
 
     @Column(name = "amount_in_words")
@@ -111,8 +111,7 @@ public class TransactionVoucher {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branches branch;
 }

@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.model.fcb;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.untucapital.usuite.utg.model.AbstractEntity;
 
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "fcb_inactive_searches")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Inactive extends AbstractEntity {
 
     @Column(name = "counterparty")
@@ -34,8 +36,10 @@ public class Inactive extends AbstractEntity {
     @Column(name = "comment")
     private String comment;
 
+    @JsonProperty("court_ref")
     @Column(name = "court_ref")
     private String courtRef;
+
 
     @Column(name = "event_date")
     private String eventDate;

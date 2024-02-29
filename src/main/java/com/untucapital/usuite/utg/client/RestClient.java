@@ -88,7 +88,7 @@ public class RestClient {
         Loans loans = new Loans();
 
         try {
-            String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + MusoniUtils.generateTimestamp(timestamp), HttpMethod.GET, entity, String.class).getBody();
+            String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + timestamp, HttpMethod.GET, entity, String.class).getBody();
             log.info("Loans in the past 24 hours: {}", loanString);
 
             loans = objectMapper.readValue(loanString, Loans.class);
