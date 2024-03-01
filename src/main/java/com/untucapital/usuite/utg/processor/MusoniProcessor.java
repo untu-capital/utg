@@ -70,176 +70,176 @@ public class MusoniProcessor {
 //        this.vaultService = vaultService;
 //        this.accountService = accountService;
 //    }
-
-    public List<PostGLRequestDTO> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
-        log.info("Transactions: {}", transactions);
-
-
-        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
-        java.util.Date utilDate = new java.util.Date();
-        Date sqlDate = new Date(utilDate.getTime());
-
-        for (Transactions transaction : transactions) {
-            int[] dateArray = transaction.getSubmittedOnDate();
-            log.info("Date Array: {}", Arrays.toString(dateArray));
-
-            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
-
-            if (isTransactionRequired) {
-                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-                Date date = Date.valueOf(formattedDate);
-                log.info("Formatted date: {}", formattedDate);
-
-                String typeValue = transaction.getType().getValue();
-                String submittedUsername = transaction.getSubmittedByUsername();
-                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
-                if(entity==null){
-                    continue;
-                }
-                float creditAmount = 0.0f;
-                float debitAmount = 0.0f;
-                String reference = "";
-
-                if ("disbursement".equalsIgnoreCase(typeValue)) {
-                    reference = "DIS-" + transaction.getId();
-                    creditAmount = (float) transaction.getAmount();
-                } else if ("repayment".equalsIgnoreCase(typeValue)) {
-                    reference = "REP-" + transaction.getId();
-                    debitAmount = (float) transaction.getAmount();
-                }
-
-                PostGLRequestDTO postGl = new PostGLRequestDTO();
-                postGl.setTxDate(date);
-                postGl.setDTStamp(sqlDate);
-                postGl.setId("JL");
-                postGl.setICurrencyID(1);
-                postGl.setFExchangeRate(1.0f);
-                postGl.setDescription(typeValue);
-                postGl.setBIsJCDocLine(false);
-                postGl.setBIsSTGLDocLine(false);
-                postGl.setBPrintCheque(false);
-                postGl.setIInvLineID(0L);
-                postGl.setBPBTPaid(false);
-                postGl.setBReconciled(false);
-                postGl.setUserName(transaction.getSubmittedByUsername());
-                postGl.setFExchangeRate(0.0f);
-                postGl.setFForeignDebit(0.0f);
-                postGl.setFForeignCredit(0.0f);
-                postGl.setTaxTypeID(0);
-                postGl.setTax_Amount(0.0f);
-                postGl.setProject(0);
-                postGl.setDrCrAccount(0);
-                postGl.setJobCodeLink(0);
-                postGl.setRepID(0);
-                postGl.setFJCRepCost(0.0f);
-                postGl.setIMFPID(0);
-                postGl.setITxBranchID(0);
-                postGl.setIGLTaxAccountID(0);
-                postGl.setPostGL_iBranchID(0);
-                postGl.setIImportDeclarationID(0);
-                postGl.setIMajorIndustryCodeID(0);
-                postGl.setFForeignTax(0.0f);
-
-                postGl.setReference(reference);
-                postGl.setCredit(creditAmount);
-                postGl.setDebit(debitAmount);
-                postGl.setAccountLink(entity.getAccountLink());
-
-                postGlRequestDTOs.add(postGl);
-            }
-        }
-
-        return postGlRequestDTOs;
-    }
-
-
-    public List<PostGLRequestDTO> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
-
-
-        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
-
-        for (Transactions transaction : transactions) {
-
-            int[] dateArray = transaction.getSubmittedOnDate();
-
-
-            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
-
-            if (isTransactionRequired) {
-
-                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
-
-                Date date = Date.valueOf(formattedDate);
-
-                PostGLRequestDTO postGl = new PostGLRequestDTO();
-                PostGlResponseDTO postGlLoanBook = new PostGlResponseDTO();
-
-                postGl.setTxDate(date);
-                // Get the current date and time
-                java.util.Date utilDate = new java.util.Date();
-
-                // Convert the java.util.Date to java.sql.Date
-                Date sqlDate = new Date(utilDate.getTime());
-                postGl.setDTStamp(sqlDate);
-                postGl.setId("JL");
-                postGl.setICurrencyID(1);
-                postGl.setFExchangeRate(1.0f);
-                postGl.setDescription(transaction.getType().getValue());
-                postGl.setBIsJCDocLine(false);
-                postGl.setBIsSTGLDocLine(false);
-                postGl.setBPrintCheque(false);
-                postGl.setIInvLineID(0L);
-                postGl.setBPBTPaid(false);
-                postGl.setBReconciled(false);
-                postGl.setUserName(transaction.getSubmittedByUsername());
-                postGl.setFExchangeRate(0F);
-                postGl.setFForeignDebit(0F);
-                postGl.setFForeignCredit(0F);
-                postGl.setTaxTypeID(0);
-                postGl.setTax_Amount(0F);
-                postGl.setProject(0);
-                postGl.setDrCrAccount(0);
-                postGl.setJobCodeLink(0);
-                postGl.setRepID(0);
-                postGl.setFJCRepCost(0F);
-                postGl.setIMFPID(0);
-                postGl.setITxBranchID(0);
-                postGl.setIGLTaxAccountID(0);
-                postGl.setPostGL_iBranchID(0);
-                postGl.setIImportDeclarationID(0);
-                postGl.setIMajorIndustryCodeID(0);
-                postGl.setFForeignTax(0F);
-
-                String submittedUsername = transaction.getSubmittedByUsername();
-
-                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
-                if(entity==null){
-                    continue;
-                }
-
-                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
-
-                    postGl.setReference("DIS-" + transaction.getId());
-                    postGl.setCredit(0f);
-                    postGl.setDebit((float) transaction.getAmount());
-                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_DIS);
-
-                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
-
-                    postGl.setReference("REP-" + transaction.getId());
-                    postGl.setCredit((float) transaction.getAmount());
-                    postGl.setDebit(0f);
-                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_REP);
-
-                }
-
-                postGlRequestDTOs.add(postGl);
-            }
-
-        }
-
-        return postGlRequestDTOs;
-    }
+//
+//    public List<PostGLRequestDTO> setPostGlFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+//        log.info("Transactions: {}", transactions);
+//
+//
+//        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
+//        java.util.Date utilDate = new java.util.Date();
+//        Date sqlDate = new Date(utilDate.getTime());
+//
+//        for (Transactions transaction : transactions) {
+//            int[] dateArray = transaction.getSubmittedOnDate();
+//            log.info("Date Array: {}", Arrays.toString(dateArray));
+//
+//            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
+//
+//            if (isTransactionRequired) {
+//                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
+//                Date date = Date.valueOf(formattedDate);
+//                log.info("Formatted date: {}", formattedDate);
+//
+//                String typeValue = transaction.getType().getValue();
+//                String submittedUsername = transaction.getSubmittedByUsername();
+//                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
+//                if(entity==null){
+//                    continue;
+//                }
+//                float creditAmount = 0.0f;
+//                float debitAmount = 0.0f;
+//                String reference = "";
+//
+//                if ("disbursement".equalsIgnoreCase(typeValue)) {
+//                    reference = "DIS-" + transaction.getId();
+//                    creditAmount = (float) transaction.getAmount();
+//                } else if ("repayment".equalsIgnoreCase(typeValue)) {
+//                    reference = "REP-" + transaction.getId();
+//                    debitAmount = (float) transaction.getAmount();
+//                }
+//
+//                PostGLRequestDTO postGl = new PostGLRequestDTO();
+//                postGl.setTxDate(date);
+//                postGl.setDTStamp(sqlDate);
+//                postGl.setId("JL");
+//                postGl.setICurrencyID(1);
+//                postGl.setFExchangeRate(1.0f);
+//                postGl.setDescription(typeValue);
+//                postGl.setBIsJCDocLine(false);
+//                postGl.setBIsSTGLDocLine(false);
+//                postGl.setBPrintCheque(false);
+//                postGl.setIInvLineID(0L);
+//                postGl.setBPBTPaid(false);
+//                postGl.setBReconciled(false);
+//                postGl.setUserName(transaction.getSubmittedByUsername());
+//                postGl.setFExchangeRate(0.0f);
+//                postGl.setFForeignDebit(0.0f);
+//                postGl.setFForeignCredit(0.0f);
+//                postGl.setTaxTypeID(0);
+//                postGl.setTax_Amount(0.0f);
+//                postGl.setProject(0);
+//                postGl.setDrCrAccount(0);
+//                postGl.setJobCodeLink(0);
+//                postGl.setRepID(0);
+//                postGl.setFJCRepCost(0.0f);
+//                postGl.setIMFPID(0);
+//                postGl.setITxBranchID(0);
+//                postGl.setIGLTaxAccountID(0);
+//                postGl.setPostGL_iBranchID(0);
+//                postGl.setIImportDeclarationID(0);
+//                postGl.setIMajorIndustryCodeID(0);
+//                postGl.setFForeignTax(0.0f);
+//
+//                postGl.setReference(reference);
+//                postGl.setCredit(creditAmount);
+//                postGl.setDebit(debitAmount);
+//                postGl.setAccountLink(entity.getAccountLink());
+//
+//                postGlRequestDTOs.add(postGl);
+//            }
+//        }
+//
+//        return postGlRequestDTOs;
+//    }
+//
+//
+//    public List<PostGLRequestDTO> setPostGlClientLoanBook(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+//
+//
+//        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
+//
+//        for (Transactions transaction : transactions) {
+//
+//            int[] dateArray = transaction.getSubmittedOnDate();
+//
+//
+//            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
+//
+//            if (isTransactionRequired) {
+//
+//                LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
+//
+//                Date date = Date.valueOf(formattedDate);
+//
+//                PostGLRequestDTO postGl = new PostGLRequestDTO();
+//                PostGlResponseDTO postGlLoanBook = new PostGlResponseDTO();
+//
+//                postGl.setTxDate(date);
+//                // Get the current date and time
+//                java.util.Date utilDate = new java.util.Date();
+//
+//                // Convert the java.util.Date to java.sql.Date
+//                Date sqlDate = new Date(utilDate.getTime());
+//                postGl.setDTStamp(sqlDate);
+//                postGl.setId("JL");
+//                postGl.setICurrencyID(1);
+//                postGl.setFExchangeRate(1.0f);
+//                postGl.setDescription(transaction.getType().getValue());
+//                postGl.setBIsJCDocLine(false);
+//                postGl.setBIsSTGLDocLine(false);
+//                postGl.setBPrintCheque(false);
+//                postGl.setIInvLineID(0L);
+//                postGl.setBPBTPaid(false);
+//                postGl.setBReconciled(false);
+//                postGl.setUserName(transaction.getSubmittedByUsername());
+//                postGl.setFExchangeRate(0F);
+//                postGl.setFForeignDebit(0F);
+//                postGl.setFForeignCredit(0F);
+//                postGl.setTaxTypeID(0);
+//                postGl.setTax_Amount(0F);
+//                postGl.setProject(0);
+//                postGl.setDrCrAccount(0);
+//                postGl.setJobCodeLink(0);
+//                postGl.setRepID(0);
+//                postGl.setFJCRepCost(0F);
+//                postGl.setIMFPID(0);
+//                postGl.setITxBranchID(0);
+//                postGl.setIGLTaxAccountID(0);
+//                postGl.setPostGL_iBranchID(0);
+//                postGl.setIImportDeclarationID(0);
+//                postGl.setIMajorIndustryCodeID(0);
+//                postGl.setFForeignTax(0F);
+//
+//                String submittedUsername = transaction.getSubmittedByUsername();
+//
+//                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
+//                if(entity==null){
+//                    continue;
+//                }
+//
+//                if (transaction.getType().getValue().equalsIgnoreCase("disbursement")) {
+//
+//                    postGl.setReference("DIS-" + transaction.getId());
+//                    postGl.setCredit(0f);
+//                    postGl.setDebit((float) transaction.getAmount());
+//                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_DIS);
+//
+//                } else if (transaction.getType().getValue().equalsIgnoreCase("repayment")) {
+//
+//                    postGl.setReference("REP-" + transaction.getId());
+//                    postGl.setCredit((float) transaction.getAmount());
+//                    postGl.setDebit(0f);
+//                    postGl.setAccountLink(AppConstants.LOAN_BOOK_ACCOUNT_REP);
+//
+//                }
+//
+//                postGlRequestDTOs.add(postGl);
+//            }
+//
+//        }
+//
+//        return postGlRequestDTOs;
+//    }
 
     public List<PastelTransReq> setPastelFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
@@ -262,6 +262,7 @@ public class MusoniProcessor {
                 log.info("Formatted date: {}", formattedDate);
 
                 String typeValue = transaction.getType().getValue();
+                log.info("TYPE:{}",typeValue);
                 String submittedUsername = transaction.getSubmittedByUsername();
                 AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
 
@@ -273,38 +274,55 @@ public class MusoniProcessor {
                 String fromAccount = "";
                 String transactionType = "";
 
+            PastelTransReq pastelTransReq = new PastelTransReq();
+
                 if ("disbursement".equalsIgnoreCase(typeValue)) {
-                    toAccount =getAccount(transaction.getSubmittedByUsername());
-                    fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
+                    fromAccount =getAccount(transaction.getSubmittedByUsername());
+                    toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
                     transactionType= AppConstants.DISBURSEMENT;
                     reference = "DIS-" + transaction.getId();
 
 //                    smsService.sendSingle("0775797299", "This is a disbursement");
 
-                } else if ("repayment".equalsIgnoreCase(typeValue)) {
-                    fromAccount =getAccount(transaction.getSubmittedByUsername());
-                    toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
+
+                    pastelTransReq.setAmount(transaction.getAmount());
+                    //FIXME set the correct currency
+                    pastelTransReq.setCurrency("001");
+                    pastelTransReq.setDescription(typeValue);
+                    pastelTransReq.setReference(reference);
+                    //FIXME put the correct rate
+                    pastelTransReq.setExchangeRate(1);
+                    pastelTransReq.setFromAccount(fromAccount);
+                    pastelTransReq.setToAccount(toAccount);
+                    pastelTransReq.setAPIPassword(apiPassword);
+                    pastelTransReq.setAPIUsername(apiUsername);
+                    pastelTransReq.setTransactionDate(MusoniUtils.formatMusoniDt(dateArray));
+                    pastelTransReq.setTransactionType(transactionType);
+
+                }
+                if ("repayment".equalsIgnoreCase(typeValue)) {
+                    toAccount =getAccount(transaction.getSubmittedByUsername());
+                    fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                     transactionType = AppConstants.REPAYMENT;
                     reference = "REP-" + transaction.getId();
 
 //                    smsService.sendSingle("0775797299", "This is a repayment");
 
-                }
+                    pastelTransReq.setAmount(transaction.getAmount());
+                    //FIXME set the correct currency
+                    pastelTransReq.setCurrency("001");
+                    pastelTransReq.setDescription(typeValue);
+                    pastelTransReq.setReference(reference);
+                    //FIXME put the correct rate
+                    pastelTransReq.setExchangeRate(1);
+                    pastelTransReq.setFromAccount(fromAccount);
+                    pastelTransReq.setToAccount(toAccount);
+                    pastelTransReq.setAPIPassword(apiPassword);
+                    pastelTransReq.setAPIUsername(apiUsername);
+                    pastelTransReq.setTransactionDate(MusoniUtils.formatMusoniDt(dateArray));
+                    pastelTransReq.setTransactionType(transactionType);
 
-                PastelTransReq pastelTransReq = new PastelTransReq();
-                pastelTransReq.setAmount(transaction.getAmount());
-                //FIXME set the correct currency
-                pastelTransReq.setCurrency("001");
-                pastelTransReq.setDescription(typeValue);
-                pastelTransReq.setReference(reference);
-                //FIXME put the correct rate
-                pastelTransReq.setExchangeRate(1);
-                pastelTransReq.setFromAccount(fromAccount);
-                pastelTransReq.setToAccount(toAccount);
-                pastelTransReq.setAPIPassword(apiPassword);
-                pastelTransReq.setAPIUsername(apiUsername);
-                pastelTransReq.setTransactionDate(MusoniUtils.formatMusoniDt(dateArray));
-                pastelTransReq.setTransactionType(transactionType);
+                }
 
                 pastelTransReqList.add(pastelTransReq);
             }

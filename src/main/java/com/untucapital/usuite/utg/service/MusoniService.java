@@ -13,6 +13,7 @@ import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.PostGl;
+import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
@@ -103,7 +104,7 @@ public class MusoniService {
     }
 
 
-        @Scheduled(cron = "0 0 * * * ?")
+//        @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
@@ -139,16 +140,24 @@ public class MusoniService {
             }
             log.info("Pastel Trans Request: {}",pastelTransReqList);
             for(PastelTransReq pastelTransReq: pastelTransReqList){
-                try {
-                    PostGLResponseDTO res = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
 
+                try {
+                    List<PostGlResponseDTO> res = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
                     log.info("EXISTING TRANS:{}", res);
-                    if(res.getReference() == null) {
+                    if(res.isEmpty()) {
                         TransactionInfo response = restClient.savePostGlTransaction(pastelTransReq);
                         log.info("Posted Tranasction: {} ", response);
+                    }else {
+                        log.info("TRANS ALREADY EXIST:{}", res);
                     }
                 }catch (Exception e){
+                    List<PostGlResponseDTO> responseDTO = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
+                    if(responseDTO.size() !=0){
+                     log.info("TRANSACTION SAVED <<<>>>");
+                    }
                     log.info("Failed to save Transaction : {}", e.getMessage());
+
+
                 }
             }
         }

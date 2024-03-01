@@ -36,8 +36,10 @@ public class Inactive extends AbstractEntity {
     @Column(name = "comment")
     private String comment;
 
+    @JsonProperty("court_ref")
     @Column(name = "court_ref")
     private String courtRef;
+
 
     @Column(name = "event_date")
     private String eventDate;

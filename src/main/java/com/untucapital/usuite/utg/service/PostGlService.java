@@ -99,14 +99,19 @@ public class PostGlService {
     }
 
     @Transactional(value= "pastelTransactionManager")
-    public PostGLResponseDTO getAllPostGlByRef(String reference){
+    public List<PostGlResponseDTO> getAllPostGlByRef(String reference){
 
-        PostGLResponseDTO response = new PostGLResponseDTO();
-        Optional<PostGlResponseDTO> postGl= postGlRepository.findByReference(reference);
+        List<PostGlResponseDTO> response = new ArrayList<>();
+        List<PostGl> postGl= postGlRepository.findByReference(reference);
 
         if(postGl !=null) {
 
-            BeanUtils.copyProperties(postGl, response);
+            for(PostGl po : postGl) {
+                PostGlResponseDTO responseDTO = new PostGlResponseDTO();
+                BeanUtils.copyProperties(po, responseDTO);
+
+                response.add(responseDTO);
+            }
         }
         return response;
 
@@ -139,6 +144,9 @@ public class PostGlService {
 
         log.info("PostGlBalances:{}",postGlBalances);
 
+        if(postGlBalances == null){
+            return  0.0F;
+        }
 
         return postGlBalances;
     }

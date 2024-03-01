@@ -19,7 +19,7 @@ public interface PostGlRepository extends JpaRepository<PostGl, BigInteger> {
     List<PostGlResponseDTO> findByAccountLink(Integer AccountLink);
 
     @Query("SELECT p FROM PostGl p WHERE p.Reference = :reference")
-    Optional<PostGlResponseDTO> findByReference(@Param("reference") String reference);
+    List<PostGl> findByReference(@Param("reference") String reference);
 
 //    PostGl findPostGlByReference(String Reference);
 

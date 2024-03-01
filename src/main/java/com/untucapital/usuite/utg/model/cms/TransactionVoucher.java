@@ -111,7 +111,6 @@ public class TransactionVoucher {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "branch_id")
     private Branches branch;
