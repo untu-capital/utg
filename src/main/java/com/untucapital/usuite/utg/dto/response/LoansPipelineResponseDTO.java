@@ -1,10 +1,9 @@
 package com.untucapital.usuite.utg.dto.response;
 
 
-public class LoansPipelineResponseDTO {
+import com.untucapital.usuite.utg.dto.AbstractEntityDTO;
 
-    private Long intId;
-
+public class LoansPipelineResponseDTO extends AbstractEntityDTO {
     private String userId;
 
     private String branchName;
@@ -23,13 +22,6 @@ public class LoansPipelineResponseDTO {
 
     private String loanOfficer;
 
-    public Long getIntId() {
-        return intId;
-    }
-
-    public void setIntId(Long intId) {
-        this.intId = intId;
-    }
 
     public String getUserId() {
         return userId;

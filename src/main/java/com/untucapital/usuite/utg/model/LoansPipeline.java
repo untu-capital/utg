@@ -8,11 +8,11 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "LoansPipeline")
-public class LoansPipeline {
+public class LoansPipeline extends AbstractEntity {
 
-    @Id
-    @Column(name = "int_id")
-    private Long intId;
+//    @Id
+//    @Column(name = "int_id")
+//    private Long intId;
 
     @Column(name = "user_id")
     private String userId;
@@ -41,13 +41,8 @@ public class LoansPipeline {
     @Column(name = "loan_officer")
     private String loanOfficer;
 
-    public Long getIntId() {
-        return intId;
-    }
-
-    public void setIntId(Long intId) {
-        this.intId = intId;
-    }
+    @Column(name = "average_target")
+    private  Double averageTarget;
 
     public String getUserId() {
         return userId;
@@ -119,5 +114,13 @@ public class LoansPipeline {
 
     public void setLoanOfficer(String loanOfficer) {
         this.loanOfficer = loanOfficer;
+    }
+
+    public Double getAverageTarget() {
+        return averageTarget;
+    }
+
+    public void setAverageTarget(Double averageTarget) {
+        this.averageTarget = averageTarget;
     }
 }

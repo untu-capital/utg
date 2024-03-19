@@ -241,7 +241,7 @@ public class MusoniProcessor {
 //        return postGlRequestDTOs;
 //    }
 
-    public List<PastelTransReq> setPastelFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+    public List<PastelTransReq> setPastelFields(List<Transactions> transactions, String officeName) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
 
 
@@ -264,7 +264,7 @@ public class MusoniProcessor {
                 String typeValue = transaction.getType().getValue();
                 log.info("TYPE:{}",typeValue);
                 String submittedUsername = transaction.getSubmittedByUsername();
-                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
+                AccountEntityResponseDTO entity = getAccountLink(officeName);
 
                 if(entity==null){
                     continue;
@@ -277,7 +277,7 @@ public class MusoniProcessor {
             PastelTransReq pastelTransReq = new PastelTransReq();
 
                 if ("disbursement".equalsIgnoreCase(typeValue)) {
-                    fromAccount =getAccount(transaction.getSubmittedByUsername());
+                    fromAccount =getAccount(officeName);
                     toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
                     transactionType= AppConstants.DISBURSEMENT;
                     reference = "DIS-" + transaction.getId();
@@ -301,7 +301,7 @@ public class MusoniProcessor {
 
                 }
                 if ("repayment".equalsIgnoreCase(typeValue)) {
-                    toAccount =getAccount(transaction.getSubmittedByUsername());
+                    toAccount =getAccount(officeName);
                     fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                     transactionType = AppConstants.REPAYMENT;
                     reference = "REP-" + transaction.getId();
@@ -335,20 +335,20 @@ public class MusoniProcessor {
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
      */
 
-    public AccountEntityResponseDTO getAccountLink(String submittedUsername) throws AccountNotFoundException {
-        List<Employee> employees = restClient.getAllUsers();
-
-        // Filter out the employee who initiated the transaction
-        Optional<Employee> initiator = employees.stream()
-                .filter(employee -> employee.getUsername().equals(submittedUsername))
-                .findFirst();
-
-        if (initiator.isEmpty()) {
-            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
-        }
-
-        Employee employee = initiator.get();
-        String officeName = employee.getOfficeName();
+    public AccountEntityResponseDTO getAccountLink(String officeName) throws AccountNotFoundException {
+//        List<Employee> employees = restClient.getAllUsers();
+//
+//        // Filter out the employee who initiated the transaction
+//        Optional<Employee> initiator = employees.stream()
+//                .filter(employee -> employee.getUsername().equals(submittedUsername))
+//                .findFirst();
+//
+//        if (initiator.isEmpty()) {
+//            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
+//        }
+//
+//        Employee employee = initiator.get();
+//        String officeName = employee.getOfficeName();
         String subString = " Teller Account";
 
         if (officeName.contains(subString)) {
@@ -372,25 +372,25 @@ public class MusoniProcessor {
         return accountEntity;
     }
 
-    public String getAccount(String submittedUsername) throws AccountNotFoundException {
-        List<Employee> employees = restClient.getAllUsers();
-
-        // Filter out the employee who initiated the transaction
-        Optional<Employee> initiator = employees.stream()
-                .filter(employee -> employee.getUsername().equals(submittedUsername))
-                .findFirst();
-
-        if (initiator.isEmpty()) {
-            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
-        }
-
-        Employee employee = initiator.get();
-        String officeName = employee.getOfficeName();
-        String subString = " Teller Account";
-
-        if (officeName.contains(subString)) {
-            officeName += subString;
-        }
+    public String getAccount(String officeName) throws AccountNotFoundException {
+//        List<Employee> employees = restClient.getAllUsers();
+//
+//        // Filter out the employee who initiated the transaction
+//        Optional<Employee> initiator = employees.stream()
+//                .filter(employee -> employee.getUsername().equals(submittedUsername))
+//                .findFirst();
+//
+//        if (initiator.isEmpty()) {
+//            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
+//        }
+//
+//        Employee employee = initiator.get();
+//        String officeName = employee.getOfficeName();
+//        String subString = " Teller Account";
+//
+//        if (officeName.contains(subString)) {
+//            officeName += subString;
+//        }
 
         VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
 
