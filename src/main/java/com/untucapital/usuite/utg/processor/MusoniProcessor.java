@@ -14,6 +14,7 @@ import com.untucapital.usuite.utg.entity.res.AccountEntityResponseDTO;
 import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.exception.VaultNotFoundException;
 import com.untucapital.usuite.utg.model.Employee;
+import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.repository2.AccountsRepository;
 import com.untucapital.usuite.utg.repository2.PostGlRepository;
@@ -241,7 +242,7 @@ public class MusoniProcessor {
 //        return postGlRequestDTOs;
 //    }
 
-    public List<PastelTransReq> setPastelFields(List<Transactions> transactions, String officeName) throws ParseException, JsonProcessingException, AccountNotFoundException {
+    public List<PastelTransReq> setPastelFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
 
 
@@ -264,7 +265,7 @@ public class MusoniProcessor {
                 String typeValue = transaction.getType().getValue();
                 log.info("TYPE:{}",typeValue);
                 String submittedUsername = transaction.getSubmittedByUsername();
-                AccountEntityResponseDTO entity = getAccountLink(officeName);
+                AccountEntityResponseDTO entity = getAccountLink(submittedUsername);
 
                 if(entity==null){
                     continue;
@@ -277,7 +278,11 @@ public class MusoniProcessor {
             PastelTransReq pastelTransReq = new PastelTransReq();
 
                 if ("disbursement".equalsIgnoreCase(typeValue)) {
-                    fromAccount =getAccount(officeName);
+
+                    fromAccount =getAccount(submittedUsername);
+                    if (submittedUsername.equalsIgnoreCase("masimbam")){
+                        fromAccount = "8422/000/HRE/FCA";
+                    }
                     toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
                     transactionType= AppConstants.DISBURSEMENT;
                     reference = "DIS-" + transaction.getId();
@@ -301,7 +306,10 @@ public class MusoniProcessor {
 
                 }
                 if ("repayment".equalsIgnoreCase(typeValue)) {
-                    toAccount =getAccount(officeName);
+                    toAccount =getAccount(submittedUsername );
+                    if (submittedUsername.equalsIgnoreCase("masimbam")){
+                        toAccount = "8422/000/HRE/FCA";
+                    }
                     fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                     transactionType = AppConstants.REPAYMENT;
                     reference = "REP-" + transaction.getId();
@@ -335,20 +343,21 @@ public class MusoniProcessor {
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
      */
 
-    public AccountEntityResponseDTO getAccountLink(String officeName) throws AccountNotFoundException {
-//        List<Employee> employees = restClient.getAllUsers();
-//
-//        // Filter out the employee who initiated the transaction
-//        Optional<Employee> initiator = employees.stream()
-//                .filter(employee -> employee.getUsername().equals(submittedUsername))
-//                .findFirst();
-//
-//        if (initiator.isEmpty()) {
-//            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
-//        }
-//
-//        Employee employee = initiator.get();
-//        String officeName = employee.getOfficeName();
+    public AccountEntityResponseDTO getAccountLink(String submittedUsername) throws AccountNotFoundException {
+        List<Employee> employees = restClient.getAllUsers();
+
+        // Filter out the employee who initiated the transaction
+        Optional<Employee> initiator = employees.stream()
+                .filter(employee -> employee.getUsername().equals(submittedUsername))
+                .findFirst();
+
+        if (initiator.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
+        }
+
+        Employee employee = initiator.get();
+        String officeName = employee.getOfficeName();
+
         String subString = " Teller Account";
 
         if (officeName.contains(subString)) {
@@ -372,32 +381,40 @@ public class MusoniProcessor {
         return accountEntity;
     }
 
-    public String getAccount(String officeName) throws AccountNotFoundException {
-//        List<Employee> employees = restClient.getAllUsers();
-//
-//        // Filter out the employee who initiated the transaction
-//        Optional<Employee> initiator = employees.stream()
-//                .filter(employee -> employee.getUsername().equals(submittedUsername))
-//                .findFirst();
-//
-//        if (initiator.isEmpty()) {
-//            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
-//        }
-//
-//        Employee employee = initiator.get();
-//        String officeName = employee.getOfficeName();
-//        String subString = " Teller Account";
-//
-//        if (officeName.contains(subString)) {
-//            officeName += subString;
-//        }
+    public String getAccount(String submittedUsername) throws AccountNotFoundException {
+        List<Employee> employees = restClient.getAllUsers();
+
+        // Filter out the employee who initiated the transaction
+        Optional<Employee> initiator = employees.stream()
+                .filter(employee -> employee.getUsername().equals(submittedUsername))
+                .findFirst();
+
+        if (initiator.isEmpty()) {
+            throw new UsernameNotFoundException(String.format("The user with this username: %s is not in the system", submittedUsername));
+        }
+
+        Employee employee = initiator.get();
+        String officeName = employee.getOfficeName();
+
+        if (employee.getUsername().equalsIgnoreCase("masimbam")){
+            officeName = "Harare";
+        }
+        String subString = " Petty Cash";
+
+        if (officeName.contains(subString)) {
+            officeName += subString;
+        }
+
 
         VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
 
         if (vault == null) {
             throw new VaultNotFoundException("Vault not found");
         }
-        return vault.getAccount();
+        String vault1 = vault.getAccount();
+        log.info("Vault Acc :{}", vault1);
+
+        return  vault1;
     }
 
 

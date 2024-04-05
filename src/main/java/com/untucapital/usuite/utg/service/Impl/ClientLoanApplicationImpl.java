@@ -11,6 +11,8 @@ import com.untucapital.usuite.utg.utils.FormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -172,6 +174,12 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 //        System.out.println(jsonStr);
 
         return clientRepository.findAll();
+    }
+
+
+    public List<ClientLoan> getRecentClientLoans() {
+        Pageable pageable = PageRequest.of(0, 100); // Page number 0 (first page), page size 100
+        return clientRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
     }
 
 

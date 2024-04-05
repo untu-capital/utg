@@ -58,9 +58,9 @@ public class User extends AbstractEntity {
     @JoinColumn(name = "po_user_id")
     private PoUser poUser;
 
-//    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
-//    @JoinColumn(name = "tms_user_id")
-//    private TmsUser tmsUser;
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @JoinColumn(name = "tms_user_id")
+    private TmsUser tmsUser;
 
     @NotNull
     @Column(nullable = false)
@@ -269,11 +269,11 @@ public class User extends AbstractEntity {
         this.poUser = poUser;
     }
 
-//    public TmsUser getTmsUser() {
-//        return tmsUser;
-//    }
-//
-//    public void setTmsUser(TmsUser tmsUser) {
-//        this.tmsUser = tmsUser;
-//    }
+    public TmsUser getTmsUser() {
+        return tmsUser;
+    }
+
+    public void setTmsUser(TmsUser tmsUser) {
+        this.tmsUser = tmsUser;
+    }
 }

@@ -57,6 +57,11 @@ public class ClientLoanController {
 
     }
 
+    @GetMapping("/recent")
+    public List<ClientLoan> getRecentClientLoans() {
+        return clientLoanApplication.getRecentClientLoans();
+    }
+
     //build get clientLoan by ID REST API
     @GetMapping("{id}")
     @Operation(summary = "Get a client loan application by ID")

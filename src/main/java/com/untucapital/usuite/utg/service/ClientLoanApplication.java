@@ -31,4 +31,6 @@ public interface ClientLoanApplication {
     List<ClientLoan> getClientLoanApplicationByBranchName(String branchName);
 
     List<ClientLoan> getAllClientLoansData();
+
+    List<ClientLoan> getRecentClientLoans();
 }

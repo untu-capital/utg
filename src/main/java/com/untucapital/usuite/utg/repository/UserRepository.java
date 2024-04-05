@@ -50,6 +50,10 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByPoUser_RoleIsNotNullAndPoUser_RoleNotLike(String role);
 
+    List<User> findUsersByTmsUser_RoleIsNotNullAndTmsUser_RoleNotLike(String role);
+
+    List<User> findUsersByTmsUser_Role(String role);
+
     List<User> findUsersByBranchNotNull();
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);

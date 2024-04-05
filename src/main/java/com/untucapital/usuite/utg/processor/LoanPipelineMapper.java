@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.processor;
 
 
+import com.untucapital.usuite.utg.dto.LoTotalPipelineAndDisbursementsDTO;
 import com.untucapital.usuite.utg.dto.LoanOfficerProductivityDTO;
 import com.untucapital.usuite.utg.dto.LoansPipelineDTO;
 import org.springframework.stereotype.Component;
@@ -46,4 +47,18 @@ public class LoanPipelineMapper {
         }
         return dtos;
     }
+
+    public static List<LoTotalPipelineAndDisbursementsDTO> mapTogetLoTotalPipelineAndDisbursements(List<Object[]> resultList) {
+        List<LoTotalPipelineAndDisbursementsDTO> dtos = new ArrayList<>();
+        for (Object[] row : resultList) {
+            LoTotalPipelineAndDisbursementsDTO dto = new LoTotalPipelineAndDisbursementsDTO();
+            dto.setBranchName((String) row[0]);
+            dto.setLoanOfficer((String) row[1]);
+            dto.setTotalPipeline((Double) row[2]);
+            dto.setTotalDisbursed((Double) row[3]);;
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
 }

@@ -125,7 +125,7 @@ public class MusoniService {
         for (PageItem pageItem : pageItemList) {
             int loanId = pageItem.getId();
 
-            String officeName = pageItem.getOfficeName();
+//            String officeName = pageItem.getOfficeName();
 
             //Get all transactions for the pageItem
             transactions = restClient.getTransactions(loanId,timestamp);
@@ -136,7 +136,7 @@ public class MusoniService {
 
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
-            pastelTransReqList = musoniProcessor.setPastelFields(transactions, officeName);
+            pastelTransReqList = musoniProcessor.setPastelFields(transactions);
             if(pastelTransReqList.size() ==0){
                 continue;
             }

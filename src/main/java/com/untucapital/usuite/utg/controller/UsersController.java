@@ -92,6 +92,11 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<List<User>>(userRepository.findUsersByPoUser_RoleIsNotNullAndPoUser_RoleNotLike(""), HttpStatus.OK);
     }
 
+    @GetMapping("/tmsUser")
+    public ResponseEntity<List<User>> getUsersByTmsUser() {
+        return new ResponseEntity<List<User>>(userRepository.findUsersByTmsUser_RoleIsNotNullAndTmsUser_RoleNotLike(""), HttpStatus.OK);
+    }
+
     // Get list of all users with a certain Branch Name
     @GetMapping("/creditCommitGroup/{creditCommitGroupName}")
     public ResponseEntity<List<User>> getUsersByCreditCommitGroupName(@PathVariable("creditCommitGroupName") String creditCommitGroupName) {
@@ -189,36 +194,36 @@ public class UsersController extends AbstractController<User> {
         }
     }
 
-//    @PutMapping("/updateTmsUserRole/{id}")
-//    public ResponseEntity<String> updateTmsUserRole(@PathVariable String id, @RequestBody TmsUser updatedTmsUser) {
-//        // Log the received ID for debugging
-//        System.out.println("Received ID: " + id);
-//
-//        // Retrieve the User entity by ID
-//        Optional<User> optionalUser = userRepository.findUserById(id);
+    @PutMapping("/updateTmsUserRole/{id}")
+    public ResponseEntity<String> updateTmsUserRole(@PathVariable String id, @RequestBody TmsUser updatedTmsUser) {
+        // Log the received ID for debugging
+        System.out.println("Received ID: " + id);
 
-//        if (optionalUser.isPresent()) {
-//            User existingUser = optionalUser.get();
-//            // Update the role of the existing user's CmsUser or create a new one if it's null
-//            TmsUser tmsUser = existingUser.getTmsUser();
-//
-//            if (tmsUser == null) {
-//                tmsUser = new TmsUser();
-//            }
-//
-//            tmsUser.setRole(updatedTmsUser.getRole());
-//
-//            // Set the updated CmsUser back to the User entity
-//            existingUser.setTmsUser(tmsUser);
-//
-//            // Save the updated user
-//            userRepository.save(existingUser);
-//
-//            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-//        }
-//    }
+        // Retrieve the User entity by ID
+        Optional<User> optionalUser = userRepository.findUserById(id);
+
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            // Update the role of the existing user's CmsUser or create a new one if it's null
+            TmsUser tmsUser = existingUser.getTmsUser();
+
+            if (tmsUser == null) {
+                tmsUser = new TmsUser();
+            }
+
+            tmsUser.setRole(updatedTmsUser.getRole());
+
+            // Set the updated CmsUser back to the User entity
+            existingUser.setTmsUser(tmsUser);
+
+            // Save the updated user
+            userRepository.save(existingUser);
+
+            return new ResponseEntity<>("User role successfully updated", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+    }
 
     @PutMapping("/updateUser/{id}")
     public ResponseEntity<String> updateUser(@PathVariable String id, @RequestBody User user){
@@ -279,6 +284,16 @@ public class UsersController extends AbstractController<User> {
     public ResponseEntity<List<User>> getUsersByCmsUserRole(@PathVariable("role") String role) {
         try {
             List<User> users = userRepository.findUsersByCmsUser_Role(role);
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("Error retrieving users by CMS user role: {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/getUsersByTmsUserRole/{role}")
+    public ResponseEntity<List<User>> getUsersByTmsUserRole(@PathVariable("role") String role) {
+        try {
+            List<User> users = userRepository.findUsersByTmsUser_Role(role);
             return new ResponseEntity<>(users, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Error retrieving users by CMS user role: {}", e.getMessage());

@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "po_users")
+@Table(name = "tms_users")
 public class TmsUser extends AbstractEntity {
 
     @Column(name = "role")

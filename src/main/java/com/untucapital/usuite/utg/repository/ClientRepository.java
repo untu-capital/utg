@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -80,4 +81,7 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
     List<ClientLoan> findClientLoansByBoardSignature(String boardSignature);
 
     List<ClientLoan> findByUserId(String userId);
+
+
+    Page<ClientLoan> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }

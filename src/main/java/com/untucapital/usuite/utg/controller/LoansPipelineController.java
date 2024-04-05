@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.dto.LoTotalPipelineAndDisbursementsDTO;
 import com.untucapital.usuite.utg.dto.LoanOfficerProductivityDTO;
 import com.untucapital.usuite.utg.dto.LoansPipelineDTO;
 import com.untucapital.usuite.utg.dto.request.LoansPipelineRequestDTO;
@@ -29,6 +30,30 @@ public class LoansPipelineController {
         return new ResponseEntity<>(savedLoan, HttpStatus.CREATED);
     }
 
+    @PutMapping("update/{id}")
+    public ResponseEntity<LoansPipelineResponseDTO> updateLoan(@PathVariable("id") String id, @RequestBody LoansPipelineResponseDTO updatedLoan) {
+        log.info("Updating loan with ID: {}", id);
+        LoansPipelineResponseDTO existingLoan = loansPipelineService.getLoanById(id);
+
+        if (existingLoan == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Update existing loan fields
+        existingLoan.setUserId(updatedLoan.getUserId());
+        existingLoan.setBranchName(updatedLoan.getBranchName());
+        existingLoan.setDateRecorded(updatedLoan.getDateRecorded());
+        existingLoan.setApplicant(updatedLoan.getApplicant());
+        existingLoan.setSector(updatedLoan.getSector());
+        existingLoan.setRepeatClient(updatedLoan.getRepeatClient());
+        existingLoan.setSoughtLoan(updatedLoan.getSoughtLoan());
+        existingLoan.setLoanStatus(updatedLoan.getLoanStatus());
+        existingLoan.setLoanOfficer(updatedLoan.getLoanOfficer());
+
+        LoansPipelineResponseDTO savedLoan = loansPipelineService.updateLoan(existingLoan);
+        return new ResponseEntity<>(savedLoan, HttpStatus.OK);
+    }
+
     @GetMapping("/loans")
     public ResponseEntity<List<LoansPipelineResponseDTO>> getAllLoans() {
         List<LoansPipelineResponseDTO> loans = loansPipelineService.getAllLoans();
@@ -53,6 +78,12 @@ public class LoansPipelineController {
         return new ResponseEntity<>(loans, HttpStatus.OK);
     }
 
+    @GetMapping("/getPipelineByBranch/{branchName}")
+    public ResponseEntity<List<LoansPipelineResponseDTO>> getPipelineByBranch(@PathVariable("branchName") String branchName) {
+        List<LoansPipelineResponseDTO> loans = loansPipelineService.getPipelineByBranch(branchName);
+        return new ResponseEntity<>(loans, HttpStatus.OK);
+    }
+
     @GetMapping("/getPipelineSummary")
     public List<LoansPipelineDTO> getLoanPipelineSummary() {
         return loansPipelineService.getLoanPipelineSummary();
@@ -61,6 +92,21 @@ public class LoansPipelineController {
     @GetMapping("/getLoanOfficerProductivity")
     public List<LoanOfficerProductivityDTO> getLoanOfficerProductivity() {
         return loansPipelineService.getLoanOfficerProductivity();
+    }
+
+    @GetMapping("/getLoanOfficerProductivityByBranch/{branch}")
+    public List<LoanOfficerProductivityDTO> getLoanOfficerProductivityByBranch(@PathVariable("branch") String branch) {
+        return loansPipelineService.getLoanOfficerProductivityByBranch(branch);
+    }
+
+    @GetMapping("/getLoTotalPipelineAndDisbursements")
+    public List<LoTotalPipelineAndDisbursementsDTO> getLoTotalPipelineAndDisbursements() {
+        return loansPipelineService.getLoTotalPipelineAndDisbursements();
+    }
+
+    @GetMapping("/getLoTotalPipelineAndDisbursementsByBranch/{branchName}")
+    public List<LoTotalPipelineAndDisbursementsDTO> getLoTotalPipelineAndDisbursementsByBranch(@PathVariable String branchName) {
+        return loansPipelineService.getLoTotalPipelineAndDisbursementsByBranch(branchName);
     }
 
 }
