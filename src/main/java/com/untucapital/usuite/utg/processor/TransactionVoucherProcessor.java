@@ -41,15 +41,21 @@ public class TransactionVoucherProcessor {
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
         VaultResponseDTO vaultFrom = vaultService.getVault(Integer.valueOf(request.getFromVault()));
+        log.debug("Vault From :{}",vaultFrom);
         BeanUtils.copyProperties(vaultFrom, fromVault);
+        log.debug("Vault From :{}",fromVault);
         VaultResponseDTO vaultTo = vaultService.getVault(Integer.valueOf(request.getToVault()));
+        log.debug("Vault To :{}",vaultTo);
         BeanUtils.copyProperties(vaultTo, toVault);
+        log.debug("Vault To :{}",toVault);
 
         TransactionPurpose transactionPurpose = new TransactionPurpose();
         TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
         BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
         Branches branch = fromVault.getBranch();
+
+
 
         return TransactionVoucher.builder()
                 .initiator(user)
