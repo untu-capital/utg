@@ -52,15 +52,12 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
-        System.out.println("Vault Id " + request.toString());
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
         User user = userService.find(request.getInitiator()).orElseThrow();
 
         TransactionVoucher transactionVoucher = transactionVoucherProcessor.processTransactionVoucher(request);
-        System.out.println("Vault To  "+ transactionVoucher.getToVault().getName());
-        System.out.println("Vault From  "+ transactionVoucher.getFromVault().getName());
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
 
@@ -182,21 +179,10 @@ public class TransactionVoucherService {
     //Get All Transactions By Initiator
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByInitiator(String initiator) {
-        List<TransactionVoucher> transactionVouchers;
         User user = userService.find(initiator).orElseThrow(
                 () -> new ResourceNotFoundException("Initiator", "id", initiator)
         );
-        System.out.println("Takunda "+ user.getBranch());
-
-
-
-        if (user.getBranch().equalsIgnoreCase("Head Office")) {
-
-            transactionVouchers = transactionVoucherRepository.
-                    findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(user, ApprovalStatus.APPROVED, ApprovalStatus.APPROVED);
-        } else {
-            transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
-        }
+        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
