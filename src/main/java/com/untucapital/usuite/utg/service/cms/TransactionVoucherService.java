@@ -179,10 +179,18 @@ public class TransactionVoucherService {
     //Get All Transactions By Initiator
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByInitiator(String initiator) {
+        List<TransactionVoucher> transactionVouchers;
         User user = userService.find(initiator).orElseThrow(
                 () -> new ResourceNotFoundException("Initiator", "id", initiator)
         );
-        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
+
+        if (user.getBranch().equalsIgnoreCase("Head Office")) {
+
+            transactionVouchers = transactionVoucherRepository.
+                    findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(user, ApprovalStatus.APPROVED, ApprovalStatus.APPROVED);
+        } else {
+            transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
+        }
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 

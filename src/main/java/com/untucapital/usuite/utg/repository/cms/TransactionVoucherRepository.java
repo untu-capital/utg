@@ -4,6 +4,7 @@ import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
 import com.untucapital.usuite.utg.model.cms.Vault;
+import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +27,6 @@ public interface TransactionVoucherRepository extends JpaRepository<TransactionV
     List<TransactionVoucher> findAllByBranch(Branches branch);
 
     List<TransactionVoucher> findAllByFromVaultOrToVault(Vault fromVault, Vault toVault);
+
+    List<TransactionVoucher> findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(User user, ApprovalStatus approvalStatus, ApprovalStatus approvalStatus1);
 }
