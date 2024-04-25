@@ -44,7 +44,6 @@ public class TransactionVoucherService {
     private final VaultService vaultService;
     private final BranchRepository branchRepository;
     private final UserService userService;
-    private final TransactionPurposeService transactionPurposeService;
     private final EmailSender emailSender;
     private final TransactionVoucherProcessor transactionVoucherProcessor;
 
@@ -54,7 +53,6 @@ public class TransactionVoucherService {
 
         System.out.println("Transaction Voucher => "+ request.toString());
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
-        User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
         User user = userService.find(request.getInitiator()).orElseThrow();
 

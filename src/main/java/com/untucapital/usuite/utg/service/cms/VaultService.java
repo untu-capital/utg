@@ -192,7 +192,7 @@ public class VaultService {
     @Transactional(value = "transactionManager")
     public List<VaultResponseDTO> getVaultsByBranch(String branch) {
 
-        List<VaultResponseDTO> responseList = new ArrayList<VaultResponseDTO>();
+        List<VaultResponseDTO> responseList = new ArrayList<>();
         List<Vault> vaultList= vaultRepository.findVaultByBranch_BranchName(branch);
 
         for(Vault vault : vaultList){
@@ -228,9 +228,7 @@ public class VaultService {
     @Transactional(value = "transactionManager")
     public BigDecimal getAllVaultsBalance() {
 
-        BigDecimal vaultBalance = vaultRepository.findTotalAccountBalances();
-
-        return vaultBalance;
+        return vaultRepository.findTotalAccountBalances();
     }
 
     @Transactional(value = "transactionManager")
@@ -253,9 +251,7 @@ public class VaultService {
     @Transactional(value = "transactionManager")
     public BigDecimal getVaultBalanceByAccount(String account) {
 
-        BigDecimal vaultBalance = vaultRepository.findAccountBalanceByAccount(account);
-
-        return vaultBalance;
+        return vaultRepository.findAccountBalanceByAccount(account);
     }
 
 }
