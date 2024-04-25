@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class TransactionVoucherInitiatorRequest {
 
     private String initiator;
+    private String applicationDate;
 
     private BigDecimal amount;
     private String fromVault;

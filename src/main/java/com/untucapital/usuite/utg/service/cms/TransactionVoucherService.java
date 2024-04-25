@@ -216,6 +216,7 @@ public class TransactionVoucherService {
     //Initiator Update the Transaction If it is not yet approved or got rejected by the first approver
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse updateTransactionVoucher(TransactionVoucherUpdateRequest request) {
+        System.out.println("Transaction Voucher Update "+ request.toString());
 
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
 

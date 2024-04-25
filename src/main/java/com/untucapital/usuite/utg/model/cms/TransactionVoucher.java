@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -40,7 +41,7 @@ public class TransactionVoucher {
     private LocalDateTime createdAt;
 
     @Column(name = "application_date")
-    private LocalDateTime applicationDate;
+    private LocalDate applicationDate;
 
     @Column(name = "amount")
     private BigDecimal amount;

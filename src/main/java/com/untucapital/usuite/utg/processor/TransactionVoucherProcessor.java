@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -70,7 +71,7 @@ public class TransactionVoucherProcessor {
         return TransactionVoucher.builder()
                 .referenceNumber(fromVault.getCode() + "/" + toVault.getCode() + "/" + String.format("%06d", refNo))
                 .initiator(user)
-                .applicationDate(LocalDateTime.now())
+                .applicationDate(LocalDate.parse(request.getApplicationDate()))
                 .amount(request.getAmount())
                 .fromVault(fromVault)
                 .toVault(toVault)
@@ -120,8 +121,11 @@ public class TransactionVoucherProcessor {
         BeanUtils.copyProperties(vaultTo, toVault);
 
         TransactionPurpose transactionPurpose = new TransactionPurpose();
+        TransactionPurpose purpose =transactionPurposeRepository.getById(oldTransactionId);
+
         TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(oldTransactionId);
         BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
+
 
         if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.APPROVED) {
             throw new RuntimeException("Transaction already Approved.");
@@ -143,8 +147,12 @@ public class TransactionVoucherProcessor {
             transactionVoucher.setAmountInWords(request.getAmountInWords());
         }
 
+        if (request.getApplicationDate() != null && !request.getApplicationDate().equalsIgnoreCase(String.valueOf(transactionVoucher.getApplicationDate()))) {
+            transactionVoucher.setApplicationDate(LocalDate.parse(request.getApplicationDate()));
+        }
+
         if (request.getWithdrawalPurpose() != null && transactionPurpose != transactionVoucher.getWithdrawalPurpose()) {
-            transactionVoucher.setWithdrawalPurpose(transactionPurpose);
+            transactionVoucher.setWithdrawalPurpose(purpose);
         }
 
         if (request.getCurrency() != null && !request.getCurrency().equalsIgnoreCase(transactionVoucher.getCurrency())) {
@@ -231,9 +239,9 @@ public class TransactionVoucherProcessor {
         return TransactionVoucherResponse.builder()
                 .id(transaction.getId())
                 .referenceNumber(transaction.getReferenceNumber())
-                .applicationNo(createApplicationId(transaction.getApplicationDate()))
+                .applicationNo(createApplicationId(transaction.getApplicationDate().atStartOfDay()))
                 .initiator(initiator)
-                .applicationDate(dateFormatter(transaction.getApplicationDate()))
+                .applicationDate(String.valueOf(transaction.getApplicationDate()))
                 .firstApprover(firstApprover)
                 .firstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()))
                 .firstApprovalStatus(transaction.getFirstApprovalStatus())
