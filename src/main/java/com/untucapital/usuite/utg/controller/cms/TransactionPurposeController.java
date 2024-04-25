@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.controller.cms;
 
+import com.untucapital.usuite.utg.DTO.cms.res.TransactionPurposeResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.req.TransactionPurposeRequestDTO;
-import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
-import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

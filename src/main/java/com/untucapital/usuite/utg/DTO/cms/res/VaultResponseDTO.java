@@ -1,11 +1,9 @@
-package com.untucapital.usuite.utg.dto.cms.res;
+package com.untucapital.usuite.utg.DTO.cms.res;
 
 import com.untucapital.usuite.utg.model.Branches;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -37,6 +35,7 @@ public class VaultResponseDTO {
     private Integer accountLink;
 
     private Branches branch;
+    private String code;
 
     @UpdateTimestamp
     private LocalDateTime createdAt;

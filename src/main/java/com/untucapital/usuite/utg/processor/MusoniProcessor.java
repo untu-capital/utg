@@ -1,11 +1,11 @@
 package com.untucapital.usuite.utg.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.untucapital.usuite.utg.DTO.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.DisbursedLoan;
 import com.untucapital.usuite.utg.dto.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.Loan;
-import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;

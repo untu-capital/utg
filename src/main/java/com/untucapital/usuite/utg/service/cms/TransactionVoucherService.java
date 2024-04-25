@@ -1,10 +1,10 @@
 package com.untucapital.usuite.utg.service.cms;
 
+import com.untucapital.usuite.utg.DTO.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherUpdateRequest;
-import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
@@ -52,6 +52,7 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
+        System.out.println("Transaction Voucher => "+ request.toString());
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
@@ -65,7 +66,7 @@ public class TransactionVoucherService {
                 firstApprover.getFirstName() + " " + firstApprover.getLastName(),
                 "tjchidanika@gmail.com",
                 "Transaction Approval",
-                "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher1.getApplicationDate(), transactionVoucher1.getId()) + "). The transactional purpose is " + transactionVoucher1.getWithdrawalPurpose().getName() + ".",
+                "You have a new transaction to approve - " + transactionVoucher1.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher1.getWithdrawalPurpose().getName() + ".",
                 user.getFirstName() + " " + user.getLastName()
         );
 
@@ -84,7 +85,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
                     "tjchidanika@gmail.com",
                     "Transaction Approval",
-                    "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".",
+                    "You have a new transaction to approve - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".",
                     transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
             );
         }
@@ -97,7 +98,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     "tjchidanika@gmail.com",
                     "Revise Transaction",
-                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
+                    "Revise transaction - " + transactionVoucher.getReferenceNumber() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
             );
         }
@@ -120,7 +121,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     "tjchidanika@gmail.com",
                     "Transaction Approved Successfully",
-                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
+                    "Revise transaction - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
         }
@@ -132,7 +133,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     "tjchidanika@gmail.com",
                     "Revise Transaction",
-                    "Revise Transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + ").",
+                    "Revise Transaction - " + transactionVoucher.getReferenceNumber() + ".",
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
         }

@@ -1,9 +1,9 @@
 package com.untucapital.usuite.utg.service.cms;
 
 
+import com.untucapital.usuite.utg.DTO.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.UpdateVaultRequest;
 import com.untucapital.usuite.utg.dto.cms.VaultRequest;
-import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.repository.BranchRepository;
@@ -44,8 +44,10 @@ public class VaultService {
                 .account(vaultRequest.getAccount())
                 .type(vaultRequest.getType())
                 .name(vaultRequest.getName())
+                .code(vaultRequest.getCode().toUpperCase())
                 .branch(branch)
                 .build();
+
         Vault vault1= vaultRepository.save(vault);
         BeanUtils.copyProperties(vault1, vaultResponse);
 
@@ -68,6 +70,11 @@ public class VaultService {
         if (vault.getName() != null && !vault.getName().equals(existingVault.getName())) {
             existingVault.setName(vault.getName());
         }
+
+        if (vault.getCode() != null && !vault.getCode().equals(existingVault.getCode())) {
+            existingVault.setCode(vault.getCode().toUpperCase());
+        }
+
 
         if (vault.getType() != null && !vault.getType().equals(existingVault.getType())) {
             existingVault.setType(vault.getType());

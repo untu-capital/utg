@@ -1,4 +1,4 @@
-package com.untucapital.usuite.utg.dto.cms.res;
+package com.untucapital.usuite.utg.DTO.cms.res;
 
 import lombok.*;
 

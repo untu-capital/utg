@@ -29,4 +29,6 @@ public interface TransactionVoucherRepository extends JpaRepository<TransactionV
     List<TransactionVoucher> findAllByFromVaultOrToVault(Vault fromVault, Vault toVault);
 
     List<TransactionVoucher> findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(User user, ApprovalStatus approvalStatus, ApprovalStatus approvalStatus1);
+
+    TransactionVoucher findFirstByOrderByCreatedAtDesc();
 }

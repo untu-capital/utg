@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 public class TransactionVoucherResponse {
 
     private Integer id;
+    private String referenceNumber;
 
     private UserDTO initiator;
     private String applicationDate;

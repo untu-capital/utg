@@ -35,6 +35,9 @@ public class Vault {
     @Column(name = "type")
     private String type;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "name")
     private String name;
 

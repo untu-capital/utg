@@ -1,14 +1,16 @@
 package com.untucapital.usuite.utg.processor;
 
+import com.untucapital.usuite.utg.DTO.cms.res.TransactionPurposeResponseDTO;
+import com.untucapital.usuite.utg.DTO.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.*;
-import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
-import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
+import com.untucapital.usuite.utg.repository.cms.TransactionPurposeRepository;
+import com.untucapital.usuite.utg.repository.cms.TransactionVoucherRepository;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
 import com.untucapital.usuite.utg.service.cms.VaultService;
@@ -28,11 +30,23 @@ public class TransactionVoucherProcessor {
     private final VaultService vaultService;
     private final UserService userService;
     private final TransactionPurposeService transactionPurposeService;
+    private final TransactionVoucherRepository transactionVoucherRepository;
+    private final TransactionPurposeRepository transactionPurposeRepository;
+
+    private Long getReferenceNumber() {
+        TransactionVoucher transactionVoucher = transactionVoucherRepository.findFirstByOrderByCreatedAtDesc();
+        if (transactionVoucher.getReferenceNumber()==null){
+            return 0L;
+        }
+
+        int index = transactionVoucher.getReferenceNumber().lastIndexOf("/");
+        return Long.parseLong(transactionVoucher.getReferenceNumber().substring(index + 1))+1;
+    }
 
 
+    public TransactionVoucher processTransactionVoucher(TransactionVoucherInitiatorRequest request) {
 
-    public TransactionVoucher processTransactionVoucher(TransactionVoucherInitiatorRequest request){
-
+        Long refNo = getReferenceNumber();
         Vault fromVault = new Vault();
         Vault toVault = new Vault();
         User user = userService.find(request.getInitiator()).orElseThrow();
@@ -49,16 +63,19 @@ public class TransactionVoucherProcessor {
         TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
         BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
+        TransactionPurpose purpose = transactionPurposeRepository.getById(Integer.valueOf(request.getWithdrawalPurpose()));
+
         Branches branch = fromVault.getBranch();
 
         return TransactionVoucher.builder()
+                .referenceNumber(fromVault.getCode() + "/" + toVault.getCode() + "/" + String.format("%06d", refNo))
                 .initiator(user)
                 .applicationDate(LocalDateTime.now())
                 .amount(request.getAmount())
                 .fromVault(fromVault)
                 .toVault(toVault)
                 .amountInWords(request.getAmountInWords())
-                .withdrawalPurpose(transactionPurpose)
+                .withdrawalPurpose(purpose)
                 .currency(request.getCurrency())
                 .denomination100(request.getDenomination100())
                 .denomination50(request.getDenomination50())
@@ -76,7 +93,7 @@ public class TransactionVoucherProcessor {
                 .build();
     }
 
-    public TransactionVoucher processUpdatedTransactionVoucher(TransactionVoucher transactionVoucher,TransactionVoucherUpdateRequest request){
+    public TransactionVoucher processUpdatedTransactionVoucher(TransactionVoucher transactionVoucher, TransactionVoucherUpdateRequest request) {
 
         Vault fromVault = new Vault();
         Vault toVault = new Vault();
@@ -171,6 +188,7 @@ public class TransactionVoucherProcessor {
 
         return transactionVoucher;
     }
+
     public TransactionVoucherResponse transactionVoucherResponseSerializer(TransactionVoucher transaction) {
 
         UserDTO initiator = UserDTO.builder()
@@ -212,7 +230,8 @@ public class TransactionVoucherProcessor {
 
         return TransactionVoucherResponse.builder()
                 .id(transaction.getId())
-                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
+                .referenceNumber(transaction.getReferenceNumber())
+                .applicationNo(createApplicationId(transaction.getApplicationDate()))
                 .initiator(initiator)
                 .applicationDate(dateFormatter(transaction.getApplicationDate()))
                 .firstApprover(firstApprover)
@@ -251,8 +270,8 @@ public class TransactionVoucherProcessor {
         return date.format(formatter);
     }
 
-    public String createApplicationId(LocalDateTime date, Integer id) {
+    public String createApplicationId(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
-        return date.format(formatter)+'-'+id;
+        return date.format(formatter) + '/';
     }
 }

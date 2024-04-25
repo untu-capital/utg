@@ -29,6 +29,9 @@ public class TransactionVoucher {
     @Column(name = "id")
     private Integer id;
 
+    @Column(name = "reference_number")
+    private String referenceNumber;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User initiator;
 
@@ -51,7 +54,7 @@ public class TransactionVoucher {
     @Column(name = "amount_in_words")
     private String amountInWords;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private TransactionPurpose withdrawalPurpose;
 
     @Column(name = "currency")
