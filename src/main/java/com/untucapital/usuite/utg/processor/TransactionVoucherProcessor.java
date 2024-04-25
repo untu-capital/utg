@@ -272,6 +272,6 @@ public class TransactionVoucherProcessor {
 
     public String createApplicationId(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
-        return date.format(formatter) + '/';
+        return date.format(formatter);
     }
 }
