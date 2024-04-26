@@ -34,13 +34,26 @@ public class TransactionVoucherController {
     //First Approve Transaction
     @PostMapping("/first-approve")
     public ResponseEntity<TransactionVoucherResponse> firstApproveTransaction(@RequestBody ApproverRequest request) {
+        System.out.println("First Approve Request "+ request.toString());
         return ResponseEntity.ok(transactionVoucherService.firstApproveTransaction(request));
+    }
+
+    //Bulk First Approve Transaction
+    @PostMapping("/bulk-first-approve")
+    public ResponseEntity<List<TransactionVoucherResponse>> bulkFirstApproveTransaction(@RequestBody List<ApproverRequest> requests) {
+        return ResponseEntity.ok(transactionVoucherService.bulkFirstApproveTransaction(requests));
     }
 
     //Second Approve Transaction
     @PostMapping("/second-approve")
     public ResponseEntity<TransactionVoucherResponse> secondApproveTransaction(@RequestBody ApproverRequest request) {
         return ResponseEntity.ok(transactionVoucherService.secondApproveTransaction(request));
+    }
+
+    //Bulk Second Approve Transaction
+    @PostMapping("/bulk-second-approve")
+    public ResponseEntity<List<TransactionVoucherResponse>> bulkSecondApproveTransaction(@RequestBody List<ApproverRequest> requests) {
+        return ResponseEntity.ok(transactionVoucherService.bulkSecondApproveTransaction(requests));
     }
 
     //Get All Transactions

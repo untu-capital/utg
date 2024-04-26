@@ -22,6 +22,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -266,6 +269,12 @@ public class TransactionVoucherProcessor {
                 .fromVault(fromVault)
                 .toVault(toVault)
                 .build();
+    }
+
+    public List<TransactionVoucherResponse> transactionVouchersResponseSerializer(List<TransactionVoucher> transactionVouchers) {
+        return transactionVouchers.stream()
+                .map(this::transactionVoucherResponseSerializer)
+                .collect(Collectors.toList());
     }
 
     private String dateFormatter(LocalDateTime date) {
