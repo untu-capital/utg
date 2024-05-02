@@ -9,6 +9,7 @@ import com.untucapital.usuite.utg.model.cms.Authorisation;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.service.cms.TransactionVoucherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,7 @@ public class TransactionVoucherController {
     //Initiate Transaction
     @PostMapping("/initiate")
     public ResponseEntity<TransactionVoucherResponse> initiateTransaction(@RequestBody TransactionVoucherInitiatorRequest request) {
-        return ResponseEntity.ok(transactionVoucherService.initiateTransaction(request));
+        return new ResponseEntity<>(transactionVoucherService.initiateTransaction(request), HttpStatus.CREATED);
     }
 
     //First Approve Transaction
