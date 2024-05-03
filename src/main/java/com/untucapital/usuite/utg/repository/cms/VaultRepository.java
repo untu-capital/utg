@@ -38,6 +38,11 @@ public interface VaultRepository extends JpaRepository<Vault, Integer> {
             "WHERE v.account = :account")
     BigDecimal findAccountBalanceByAccount(@Param("account") String account);
 
+    @Query("SELECT v.account, SUM(v.currentAmount) " +
+            "FROM Vault v " +
+            "GROUP BY v.account")
+    List<Object[]> findAccountBalances();
+
     @Query("SELECT SUM(v.currentAmount) " + "FROM Vault v " )
     BigDecimal findTotalAccountBalances();
 }

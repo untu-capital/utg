@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.cms.VaultRequest;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.cms.Vault;
+import com.untucapital.usuite.utg.model.cms.VaultBalances;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.VaultRepository;
 import lombok.RequiredArgsConstructor;
@@ -262,6 +263,14 @@ public class VaultService {
 //if (vaultBalance.equals(0)){
 //
 //}
+        return vaultBalance;
+    }
+
+    @Transactional(value = "transactionManager")
+    public List<Object[]> getVaultBalance() {
+
+        List<Object[]> vaultBalance = vaultRepository.findAccountBalances();
+
         return vaultBalance;
     }
 

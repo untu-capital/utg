@@ -40,4 +40,25 @@ public class AccountService {
         BeanUtils.copyProperties(entity, response);
         return response;
     }
+
+    @Transactional(value = "transactionManager")
+    public AccountEntityResponseDTO findAccounts(String account) {
+
+        AccountEntityResponseDTO response = new AccountEntityResponseDTO();
+        AccountEntity entity = new AccountEntity();
+        Optional<AccountEntity> accountEntity = accountsRepository.findByAccount(account);
+        log.info("accountEntity {}", accountEntity);
+        if(accountEntity.isPresent()) {
+            log.info("Account : {}", accountEntity.toString());
+            entity = accountEntity.get();
+
+        }else{
+//            Optional<AccountEntity> account1 = accountsRepository.findByAccount("8422/000/HRE/FCA/MV");
+//            entity= account1.get();
+            return null;
+        }
+
+        BeanUtils.copyProperties(entity, response);
+        return response;
+    }
 }

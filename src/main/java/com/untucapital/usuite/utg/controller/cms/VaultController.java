@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.cms.VaultRequest;
 import com.untucapital.usuite.utg.dto.cms.req.VaultRequestDTO;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.model.cms.Vault;
+import com.untucapital.usuite.utg.model.cms.VaultBalances;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -112,5 +113,10 @@ public class VaultController {
     @GetMapping("/get/vault-balance/{account}")
     public ResponseEntity<BigDecimal> getAllVaultsBalanceByAccount(@PathVariable String account) {
         return ResponseEntity.ok(vaultService.getVaultBalanceByAccount(account));
+    }
+
+    @GetMapping("/get/vault-balance")
+    public ResponseEntity<List<Object[]>> getVaultBalance() {
+        return ResponseEntity.ok(vaultService.getVaultBalance());
     }
 }

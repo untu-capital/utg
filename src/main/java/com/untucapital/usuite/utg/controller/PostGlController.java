@@ -1,7 +1,9 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.dto.AccountBalance;
+import com.untucapital.usuite.utg.dto.cms.req.VaultBalanceReq;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.model.cms.VaultBalances;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.service.PostGlService;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +59,12 @@ public class PostGlController {
 
         log.info("Account:{}", account);
         return ResponseEntity.ok(postGlService.getVaultAccountBalance(account.getAccount()));
+    }
+
+    @PostMapping ("getAllPastelVaultBalances")
+    public ResponseEntity<List<VaultBalances>> getAllVaultBalances(@RequestBody List<VaultBalanceReq> account) {
+
+        log.info("Account:{}", account);
+        return ResponseEntity.ok(postGlService.getAllVaultAccountBalances(account));
     }
 }
