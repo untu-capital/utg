@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.Loan;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
@@ -339,6 +340,76 @@ public class MusoniProcessor {
         return pastelTransReqList;
     }
 
+
+    public List<PastelTransReq> setSavingsAccountsPastelFields(List<SavingsAccountsTransactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
+        log.info("Transactions: {}", transactions);
+
+
+        List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
+        List<PastelTransReq>  pastelTransReqList = new ArrayList<>();
+        java.util.Date utilDate = new java.util.Date();
+        Date sqlDate = new Date(utilDate.getTime());
+
+        for (SavingsAccountsTransactions transaction : transactions) {
+            int[] dateArray = transaction.getSubmittedOnDate();
+            log.info("Date Array: {}", Arrays.toString(dateArray));
+
+//            boolean isTransactionRequired = MusoniUtils.isValidDate(dateArray);
+
+//            if (isTransactionRequired) {
+            LocalDate formattedDate = MusoniUtils.formatDate(dateArray);
+            Date date = Date.valueOf(formattedDate);
+            log.info("Formatted date: {}", formattedDate);
+
+            String typeValue = transaction.getTransactionType().getValue();
+            log.info("TYPE:{}",typeValue);
+
+            String officeName = MusoniUtils.getOffice(transaction.getPaymentDetailData().getReceiptNumber());
+            assert officeName != null;
+            AccountEntityResponseDTO entity = getAccountLinkByOfficeName(officeName);
+
+            if(entity==null){
+                continue;
+            }
+            String reference = "";
+            String toAccount = "";
+            String fromAccount = "";
+            String transactionType = "";
+
+            PastelTransReq pastelTransReq = new PastelTransReq();
+
+            if ("Deposit".equalsIgnoreCase(typeValue)) {
+
+                toAccount =getAccount(officeName );
+                fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
+                transactionType = AppConstants.REPAYMENT;
+                reference = "SREP-" + transaction.getId();
+
+//                    smsService.sendSingle("0775797299", "This is a repayment");
+
+                pastelTransReq.setAmount(transaction.getAmount());
+                //FIXME set the correct currency
+                pastelTransReq.setCurrency("001");
+                pastelTransReq.setDescription(typeValue);
+                pastelTransReq.setReference(reference);
+                //FIXME put the correct rate
+                pastelTransReq.setExchangeRate(1);
+                pastelTransReq.setFromAccount(fromAccount);
+                pastelTransReq.setToAccount(toAccount);
+                pastelTransReq.setAPIPassword(apiPassword);
+                pastelTransReq.setAPIUsername(apiUsername);
+                pastelTransReq.setTransactionDate(MusoniUtils.formatMusoniDt(dateArray));
+                pastelTransReq.setTransactionType(transactionType);
+
+            }
+
+            pastelTransReqList.add(pastelTransReq);
+        }
+//        }
+
+        return pastelTransReqList;
+    }
+
     /**
      * Retrieve all Empoloyees from Musoni and loop through the list to get the office name where a transaction was initiated
      */
@@ -381,6 +452,33 @@ public class MusoniProcessor {
         return accountEntity;
     }
 
+
+    public AccountEntityResponseDTO getAccountLinkByOfficeName(String officeName) throws AccountNotFoundException {
+
+        String subString = " Teller Account";
+
+        if (officeName.contains(subString)) {
+            officeName += subString;
+        }
+
+        VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
+
+        if (vault == null) {
+            throw new VaultNotFoundException("Vault not found");
+        }
+
+        String accountName = vault.getAccount();
+        AccountEntityResponseDTO accountEntity = accountService.findAccountByAccount(accountName);
+
+        if (accountEntity == null) {
+//            throw new AccountNotFoundException("Account not found");
+            return null;
+        }
+
+        return accountEntity;
+    }
+
+
     public String getAccount(String submittedUsername) throws AccountNotFoundException {
         List<Employee> employees = restClient.getAllUsers();
 
@@ -416,6 +514,27 @@ public class MusoniProcessor {
 
         return  vault1;
     }
+
+    public String getAccountByOfficeName(String officeName) throws AccountNotFoundException {
+
+        String subString = " Petty Cash";
+
+        if (officeName.contains(subString)) {
+            officeName += subString;
+        }
+
+
+        VaultResponseDTO vault = vaultService.getVaultByBranchAndType(officeName, AppConstants.VAULT_TYPE);
+
+        if (vault == null) {
+            throw new VaultNotFoundException("Vault not found");
+        }
+        String vault1 = vault.getAccount();
+        log.info("Vault Acc :{}", vault1);
+
+        return  vault1;
+    }
+
 
 
     public List<DisbursedLoan> getDisbursedLoans(List<Loan> loans) {
@@ -496,6 +615,7 @@ public class MusoniProcessor {
                 .collect(Collectors.toList());
 
     }
+
 
 
 }

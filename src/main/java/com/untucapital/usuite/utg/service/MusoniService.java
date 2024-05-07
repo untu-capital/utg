@@ -8,6 +8,9 @@ import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
@@ -106,6 +109,68 @@ public class MusoniService {
 
 //        @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")
+    public void getSavingsLoanAccountsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
+
+//        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
+        Long timestamp = MusoniUtils.getUnixTimeMinusDays();
+        SavingsAccountLoans loans = restClient.getSavingsLoanAccounts(timestamp);
+        log.info("Loans from Musoni : {}", loans.toString());
+
+        List<SavingsAccountsTransactions> transactions = new ArrayList<>();
+        List<PostGLRequestDTO> postGlList = new ArrayList<>();
+        List<PostGLRequestDTO> postGlListLB = new ArrayList<>();
+        List<PastelTransReq> pastelTransReqList = new ArrayList<>();
+
+        List<PostGl> postGls = new ArrayList<>();
+
+        List<PageItems> pageItemList = loans.getPageItems();
+
+        for (PageItems pageItem : pageItemList) {
+            int loanId = pageItem.getId();
+
+//            String officeName = pageItem.getOfficeName();
+
+            //Get all transactions for the pageItem
+            transactions = restClient.getSavingsAccountsTransactions(loanId,timestamp);
+            log.info("Transactions: {}", transactions);
+            if (transactions == null) {
+                continue;
+            }
+
+            log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
+
+            pastelTransReqList = musoniProcessor.setSavingsAccountsPastelFields(transactions);
+            if(pastelTransReqList.size() ==0){
+                continue;
+            }
+            log.info("Pastel Trans Request: {}",pastelTransReqList);
+            for(PastelTransReq pastelTransReq: pastelTransReqList){
+
+                try {
+                    List<PostGlResponseDTO> res = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
+                    log.info("EXISTING TRANS:{}", res);
+                    if(res.isEmpty()) {
+                        TransactionInfo response = restClient.savePostGlTransaction(pastelTransReq);
+                        log.info("Posted Tranasction: {} ", response);
+                    }else {
+                        log.info("TRANS ALREADY EXIST:{}", res);
+                    }
+                }catch (Exception e){
+                    List<PostGlResponseDTO> responseDTO = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
+                    if(responseDTO.size() !=0){
+                     log.info("TRANSACTION SAVED <<<>>>");
+                    }
+                    log.info("Failed to save Transaction : {}", e.getMessage());
+
+
+                }
+            }
+        }
+    }
+
+
+    //        @Scheduled(cron = "0 0 * * * ?")
+//@Scheduled(cron = "0 0 0 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
 //        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
@@ -155,7 +220,7 @@ public class MusoniService {
                 }catch (Exception e){
                     List<PostGlResponseDTO> responseDTO = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
                     if(responseDTO.size() !=0){
-                     log.info("TRANSACTION SAVED <<<>>>");
+                        log.info("TRANSACTION SAVED <<<>>>");
                     }
                     log.info("Failed to save Transaction : {}", e.getMessage());
 
@@ -164,6 +229,7 @@ public class MusoniService {
             }
         }
     }
+
 
     //    ToDo: Get Required information from the loan returned
     public String repaymentSchedule(String phone_number, String loanAccount) throws ParseException {

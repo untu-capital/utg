@@ -7,6 +7,10 @@ import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.dto.loans.RepaymentScheduleLoan;
 import com.untucapital.usuite.utg.dto.loans.SingleLoan;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.PageItemsTrans;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
 import com.untucapital.usuite.utg.model.Employee;
@@ -82,6 +86,26 @@ public class RestClient {
         return new HttpEntity<String>(httpHeaders());
     }
 
+    public SavingsAccountLoans getSavingsLoanAccounts(Long timestamp) {
+
+        log.info("Calling musoni to get loans");
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        SavingsAccountLoans loans = new SavingsAccountLoans();
+
+        try {
+            String loanString = restTemplate.exchange(baseUrl + "savingsaccounts?modifiedSinceTimestamp=" + timestamp, HttpMethod.GET, entity, String.class).getBody();
+            log.info("Loans in the past 24 hours: {}", loanString);
+
+            loans = objectMapper.readValue(loanString, SavingsAccountLoans.class);
+
+            log.info("Loans object: {}", loans);
+        } catch (Exception e) {
+            log.info("Exception: {}", e.getMessage());
+        }
+
+        return loans;
+    }
+
     public Loans getLoans(Long timestamp) {
         log.info("Calling musoni to get loans");
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
@@ -131,6 +155,54 @@ public class RestClient {
         List<Transactions> cashTransactions = new ArrayList<>();
         for (Transactions tx : transactions) {
             if (tx.getType().isDisbursement() || tx.getType().isRepayment()) {
+
+                LocalDate transDate = MusoniUtils.formatDate(tx.getSubmittedOnDate());
+                Boolean isRequired = MusoniUtils.compareDates(timestamp, transDate);
+
+                if(isRequired) {
+                    log.info("TX: {}", tx);
+                    cashTransactions.add(tx);
+                }
+
+            }
+            log.info("Transaction with repayment or disbursement: {}", cashTransactions.toString());
+        }
+        log.info("Transaction with repayment or disbursement: {}", cashTransactions.toString());
+
+        return cashTransactions;
+
+    }
+
+    public List<SavingsAccountsTransactions> getSavingsAccountsTransactions(int loanId, Long timestamp) throws ParseException, ParseException {
+
+        log.info("PageItem Id :{}", loanId);
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        PageItemsTrans pageItem = new PageItemsTrans();
+
+        try {
+            String loanString = restTemplate.exchange(baseUrl + "savingsaccounts/" + loanId + "?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
+
+            log.info("PageItem with id " + loanId + " and transaction information: {}", loanString);
+
+            pageItem = objectMapper.readValue(loanString, PageItemsTrans.class);
+
+            log.info("Transaction information for a loan: {}", pageItem);
+        } catch (Exception e) {
+            log.info("Failed to get Loans: {}", e.getMessage());
+        }
+
+        List<SavingsAccountsTransactions> transactions = pageItem.getTransactions();
+
+        if (transactions == null) {
+
+            return null;
+        }
+
+        log.info("Transactions : {}", transactions.toString());
+
+        List<SavingsAccountsTransactions> cashTransactions = new ArrayList<>();
+        for (SavingsAccountsTransactions tx : transactions) {
+            if (tx.getTransactionType().isDeposit()) {
 
                 LocalDate transDate = MusoniUtils.formatDate(tx.getSubmittedOnDate());
                 Boolean isRequired = MusoniUtils.compareDates(timestamp, transDate);

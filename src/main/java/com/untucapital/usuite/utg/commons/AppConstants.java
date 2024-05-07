@@ -15,4 +15,9 @@ public interface AppConstants {
     String LOAN_BOOK_ACCOUNT_NAME_DIS = "8000/000/HO/LD";
     String LOAN_BOOK_ACCOUNT_NAME_REP = "8000/000/HO/LR";
     String LOAN_BOOK_ACCOUNT_NAME = "9000/000";
+    String HRE = "Harare Petty Cash";
+    String BYO = "Bulawayo Petty Cash";
+    String GWR = "Gweru Petty Cash";
+    String GKW = "Gokwe Petty Cash";
+    String HO = "Head Office Petty Cash";
 }

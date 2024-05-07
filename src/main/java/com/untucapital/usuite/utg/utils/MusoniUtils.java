@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.utils;
 
+import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.exception.InvalidDateFormatExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -237,6 +240,32 @@ public class MusoniUtils {
 
         // Add 1 to make the period 1-based
         return months + 1;
+    }
+
+    public static  String getOffice(String recieptNumber){
+
+        Pattern pattern = Pattern.compile("\\b(\\w+)\\b");
+        Matcher matcher = pattern.matcher(recieptNumber);
+
+        if (matcher.find()) {
+            String office = matcher.group(1);
+            switch (office.toUpperCase()) {
+                case "HRE":
+                    return AppConstants.HRE;
+                case "BYO":
+                    return AppConstants.BYO;
+                case "GWR":
+                    return AppConstants.GWR;
+                case "GKW":
+                    return AppConstants.GKW;
+                case "HO":
+                    return AppConstants.HO;
+                default:
+                    return "Unknown location";
+            }
+        } else {
+            return null;
+        }
     }
 
 }
