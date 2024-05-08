@@ -13,6 +13,7 @@ import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
+import com.untucapital.usuite.utg.model.enums.cms.TransactionEmailStatus;
 import com.untucapital.usuite.utg.processor.TransactionVoucherProcessor;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
@@ -48,7 +49,7 @@ public class TransactionVoucherService {
     private final EmailSender emailSender;
     private final TransactionVoucherProcessor transactionVoucherProcessor;
 
-    //Initiate Transaction
+    //    Initiate Transaction
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
@@ -62,17 +63,16 @@ public class TransactionVoucherService {
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
 
         sendEmail(
-                firstApprover.getFirstName() + " " + firstApprover.getLastName(),
-                "tjchidanika@gmail.com",
-                "Transaction Approval",
-                "You have a new transaction to approve - " + transactionVoucher1.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher1.getWithdrawalPurpose().getName() + ".",
-                user.getFirstName() + " " + user.getLastName()
+                TransactionEmailStatus.APPROVE,
+                firstApprover,
+                transactionVoucher,
+                user
         );
 
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
     }
 
-    //First Approver Transaction
+    //    First Approver Transaction
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse firstApproveTransaction(ApproverRequest request) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
@@ -81,11 +81,10 @@ public class TransactionVoucherService {
             transactionVoucher.setFirstApprovalStatus(ApprovalStatus.APPROVED);
 
             sendEmail(
-                    transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
-                    "tjchidanika@gmail.com",
-                    "Transaction Approval",
-                    "You have a new transaction to approve - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".",
-                    transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
+                    TransactionEmailStatus.APPROVED,
+                    transactionVoucher.getSecondApprover(),
+                    transactionVoucher,
+                    transactionVoucher.getFirstApprover()
             );
         }
 
@@ -94,11 +93,10 @@ public class TransactionVoucherService {
             transactionVoucher.setFirstApprovalComment(request.getComment());
 
             sendEmail(
-                    transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
-                    "Revise Transaction",
-                    "Revise transaction - " + transactionVoucher.getReferenceNumber() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
-                    transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
+                    TransactionEmailStatus.REVISE,
+                    transactionVoucher.getInitiator(),
+                    transactionVoucher,
+                    transactionVoucher.getFirstApprover()
             );
         }
 
@@ -109,7 +107,7 @@ public class TransactionVoucherService {
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
     }
 
-    //Second Approver Transaction
+    //    Second Approver Transaction
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse secondApproveTransaction(ApproverRequest request) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
@@ -117,11 +115,10 @@ public class TransactionVoucherService {
         if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
             transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
             sendEmail(
-                    transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
-                    "Transaction Approved Successfully",
-                    "Revise transaction - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
-                    transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
+                    TransactionEmailStatus.APPROVED,
+                    transactionVoucher.getInitiator(),
+                    transactionVoucher,
+                    transactionVoucher.getSecondApprover()
             );
         }
 
@@ -129,11 +126,10 @@ public class TransactionVoucherService {
             transactionVoucher.setSecondApprovalStatus(ApprovalStatus.REVISE);
             transactionVoucher.setSecondApprovalComment(request.getComment());
             sendEmail(
-                    transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
-                    "Revise Transaction",
-                    "Revise Transaction - " + transactionVoucher.getReferenceNumber() + ".",
-                    transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
+                    TransactionEmailStatus.REVISE,
+                    transactionVoucher.getInitiator(),
+                    transactionVoucher,
+                    transactionVoucher.getSecondApprover()
             );
         }
 
@@ -143,14 +139,14 @@ public class TransactionVoucherService {
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
     }
 
-    //Get All Transactions
+    //    Get All Transactions
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactions() {
         List<TransactionVoucher> transactions = transactionVoucherRepository.findAll();
         return transactionVoucherResponseSerializerList(transactions);
     }
 
-    //Get Transaction By id
+    //    Get Transaction By id
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse getTransactionById(Integer id) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(id)
@@ -158,7 +154,7 @@ public class TransactionVoucherService {
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher);
     }
 
-    //Get All Transactions By Branch
+    //    Get All Transactions By Branch
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByBranch(String branchId) {
         Branches branch = branchRepository.findById(branchId).orElseThrow();
@@ -166,7 +162,7 @@ public class TransactionVoucherService {
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
-    //Get All Transactions By Vault
+    //    Get All Transactions By Vault
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByVault(Integer vaultId) {
         Vault vault = new Vault();
@@ -176,7 +172,7 @@ public class TransactionVoucherService {
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
-    //Get All Transactions By Initiator
+    //    Get All Transactions By Initiator
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByInitiator(String initiator) {
         List<TransactionVoucher> transactionVouchers;
@@ -194,7 +190,7 @@ public class TransactionVoucherService {
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
-    //Get All Transactions By First Approver
+    //    Get All Transactions By First Approver
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByFirstApprover(String firstApprover) {
         User user = userService.find(firstApprover).orElseThrow(
@@ -204,7 +200,7 @@ public class TransactionVoucherService {
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
-    //Get All Transactions By First Approver @Head Office or Second Approver @Branches
+    //    Get All Transactions By First Approver @Head Office or Second Approver @Branches
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsBySecondApprover(String approver) {
 
@@ -214,7 +210,7 @@ public class TransactionVoucherService {
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
-    //Initiator Update the Transaction If it is not yet approved or got rejected by the first approver
+    //    Initiator Update the Transaction If it is not yet approved or got rejected by the first approver
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse updateTransactionVoucher(TransactionVoucherUpdateRequest request) {
         System.out.println("Transaction Voucher Update " + request.toString());
@@ -228,7 +224,7 @@ public class TransactionVoucherService {
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
     }
 
-    //Delete Transaction
+    //    Delete Transaction
     @Transactional(value = "transactionManager")
     public String deleteTransaction(Integer id) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(id).orElseThrow();
@@ -249,19 +245,19 @@ public class TransactionVoucherService {
         return String.format("Transaction with id %d deleted successfully", id);
     }
 
-    //Get Authorisation by user id
+    //    Get Authorisation by user id
     @Transactional(value = "transactionManager")
     public List<Authorisation> getAuthorisationByUserId(String userId) {
         return authorisationRepository.findAllByUserId(userId);
     }
 
-    //get cms permission by user id
+    //    get cms permission by user id
     @Transactional(value = "transactionManager")
     public List<CmsVaultPermission> getCmsVaultPermissionByUserId(String userId) {
         return cmsVaultPermissionRepository.findAllByUserid(userId);
     }
 
-    //get first approvers by branchId
+    //    get first approvers by branchId
     @Transactional(value = "transactionManager")
     public List<User> findAllByBranchIdAndAuthLevel(String branchId, String authLevel) {
         List<String> authUserIds = new ArrayList<>();
@@ -274,32 +270,12 @@ public class TransactionVoucherService {
         return userService.findAllById(authUserIds);
     }
 
-    //function to serialize the transaction voucher to transaction voucher response
-    private List<TransactionVoucherResponse> transactionVoucherResponseSerializerList(List<TransactionVoucher> transactions) {
-        List<TransactionVoucherResponse> transactionVoucherResponses = new ArrayList<>();
-
-        for (TransactionVoucher transaction :
-                transactions) {
-            TransactionVoucherResponse transactionVoucherResponse = transactionVoucherProcessor.transactionVoucherResponseSerializer(transaction);
-            transactionVoucherResponses.add(transactionVoucherResponse);
-        }
-
-        return transactionVoucherResponses;
-    }
-
-
-    //Function To Send Email
-    private void sendEmail(String recipientName, String recipientEmail, String recipientSubject, String recipientMessage, String senderName) {
-        String emailText = emailSender.approvalMessage(recipientName, recipientMessage, senderName);
-        emailSender.send(recipientEmail, recipientSubject, emailText);
-    }
-
     //    Bulk First Approver
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> bulkFirstApproveTransaction(List<ApproverRequest> requests) {
         List<TransactionVoucher> transactionVouchers = new ArrayList<>();
 
-        for (ApproverRequest request: requests){
+        for (ApproverRequest request : requests) {
             TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
             if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                 transactionVoucher.setFirstApprovalStatus(ApprovalStatus.APPROVED);
@@ -314,27 +290,24 @@ public class TransactionVoucherService {
         }
 
 
-        if (!transactionVouchers.isEmpty() && !requests.isEmpty()){
+        if (!transactionVouchers.isEmpty() && !requests.isEmpty()) {
             TransactionVoucher transactionVoucher = transactionVouchers.get(0);
-            String referenceNumbers = joinReferenceNumbers(transactionVouchers);
 
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("APPROVED")) {
-                sendEmail(
-                        transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Transactions Approval",
-                        "You have a new transactions to approve - " + referenceNumbers + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".",
-                        transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
+                sendEmailBulk(
+                        TransactionEmailStatus.APPROVED,
+                        transactionVoucher.getSecondApprover(),
+                        transactionVouchers,
+                        transactionVoucher.getFirstApprover()
                 );
             }
 
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("REVISE")) {
-                sendEmail(
-                        transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Revise Transactions",
-                        "Revise the following transactions - " + transactionVoucher + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
-                        transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
+                sendEmailBulk(
+                        TransactionEmailStatus.REVISE,
+                        transactionVoucher.getInitiator(),
+                        transactionVouchers,
+                        transactionVoucher.getFirstApprover()
                 );
             }
         }
@@ -349,11 +322,11 @@ public class TransactionVoucherService {
     public List<TransactionVoucherResponse> bulkSecondApproveTransaction(List<ApproverRequest> requests) {
         List<TransactionVoucher> transactionVouchers = new ArrayList<>();
 
-        for (ApproverRequest request: requests){
+        for (ApproverRequest request : requests) {
             TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
 
 //            Check if the first approval status is approved and the second approval status is pending
-            if(transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.PENDING){
+            if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.PENDING) {
                 if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                     transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
                 }
@@ -365,7 +338,7 @@ public class TransactionVoucherService {
             }
 
 //            Check if the first approval status is pending and the second approval status is pending
-            if(transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.PENDING && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.PENDING){
+            if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.PENDING && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.PENDING) {
                 if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                     transactionVoucher.setFirstApprovalStatus(ApprovalStatus.APPROVED);
                 }
@@ -380,27 +353,24 @@ public class TransactionVoucherService {
             transactionVouchers.add(transactionVoucher);
         }
 
-        if (!transactionVouchers.isEmpty() && !requests.isEmpty()){
+        if (!transactionVouchers.isEmpty() && !requests.isEmpty()) {
             TransactionVoucher transactionVoucher = transactionVouchers.get(0);
-            String referenceNumbers = joinReferenceNumbers(transactionVouchers);
 
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("APPROVED")) {
-                sendEmail(
-                        transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Transactions Approved Successfully",
-                        "The following transactions - " + referenceNumbers + " approved successfully. The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " .",
-                        transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
+                sendEmailBulk(
+                        TransactionEmailStatus.APPROVED,
+                        transactionVoucher.getInitiator(),
+                        transactionVouchers,
+                        transactionVoucher.getSecondApprover()
                 );
             }
 
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("REVISE")) {
-                sendEmail(
-                        transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Revise Transactions",
-                        "Revise the following transactions - " + referenceNumbers + ".",
-                        transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
+                sendEmailBulk(
+                        TransactionEmailStatus.REVISE,
+                        transactionVoucher.getInitiator(),
+                        transactionVouchers,
+                        transactionVoucher.getSecondApprover()
                 );
             }
         }
@@ -409,9 +379,90 @@ public class TransactionVoucherService {
         return transactionVoucherProcessor.transactionVouchersResponseSerializer(transactionVoucherList);
     }
 
-    private String joinReferenceNumbers(List<TransactionVoucher> transactions ) {
 
-        List<String> referenceNumbers =  transactions.stream()
+    //    Function to serialize the transaction voucher to transaction voucher response
+    private List<TransactionVoucherResponse> transactionVoucherResponseSerializerList(List<TransactionVoucher> transactions) {
+        List<TransactionVoucherResponse> transactionVoucherResponses = new ArrayList<>();
+
+        for (TransactionVoucher transaction :
+                transactions) {
+            TransactionVoucherResponse transactionVoucherResponse = transactionVoucherProcessor.transactionVoucherResponseSerializer(transaction);
+            transactionVoucherResponses.add(transactionVoucherResponse);
+        }
+
+        return transactionVoucherResponses;
+    }
+
+
+    //    Function To Send Email
+    private void sendEmail(TransactionEmailStatus transactionEmailStatus, User recipient, TransactionVoucher transactionVoucher, User sender) {
+        String recipientName = "";
+        String recipientEmail = "";
+        String subject = "";
+        String message = "";
+        String senderName = "";
+
+        if (transactionEmailStatus == TransactionEmailStatus.APPROVE) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Transaction Approval";
+            message = "You have a new transaction to approve - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".";
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
+        if (transactionEmailStatus == TransactionEmailStatus.APPROVED) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Transaction Approval";
+            message = "You have a new transaction to approve - " + transactionVoucher.getReferenceNumber() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".";
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
+        if (transactionEmailStatus == TransactionEmailStatus.REVISE) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Revise Transaction";
+            message = "Revise transaction - " + transactionVoucher.getReferenceNumber() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment();
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
+        String emailText = emailSender.approvalMessage(recipientName, message, senderName);
+        emailSender.send(recipientEmail, subject, emailText);
+    }
+
+    //    Send Email For bulk approvals
+    private void sendEmailBulk(TransactionEmailStatus transactionEmailStatus, User recipient, List<TransactionVoucher> transactionVouchers, User sender) {
+        String referenceNumbers = joinReferenceNumbers(transactionVouchers);
+        String recipientName = "";
+        String recipientEmail = "";
+        String subject = "";
+        String message = "";
+        String senderName = "";
+
+        if (transactionEmailStatus == TransactionEmailStatus.APPROVED) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Transactions Approved Successfully";
+            message = "The following transactions - " + referenceNumbers + " approved successfully.";
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
+        if (transactionEmailStatus == TransactionEmailStatus.REVISE) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Revise Transactions";
+            message = "Revise the following transactions - " + referenceNumbers + ".";
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
+        String emailText = emailSender.approvalMessage(recipientName, message, senderName);
+        emailSender.send(recipientEmail, subject, emailText);
+    }
+
+    //    Function To Get Reference Numbers for bulk transaction approval
+    private String joinReferenceNumbers(List<TransactionVoucher> transactions) {
+
+        List<String> referenceNumbers = transactions.stream()
                 .map(TransactionVoucher::getReferenceNumber)
                 .collect(Collectors.toList());
 
