@@ -1,4 +1,4 @@
-package com.untucapital.purchaseorder.dto.req;
+package com.untucapital.usuite.utg.pos.dto.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +25,8 @@ public class POSSupplierRequestDTO {
     private String phone;
 
     private String contactPerson;
+
+    private String taxIdNo;
 
     private String comment;
 
