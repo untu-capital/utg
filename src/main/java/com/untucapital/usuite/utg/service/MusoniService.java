@@ -116,6 +116,7 @@ public class MusoniService {
         SavingsAccountLoans loans = restClient.getSavingsLoanAccounts(timestamp);
         log.info("Loans from Musoni : {}", loans.toString());
 
+
         List<SavingsAccountsTransactions> transactions = new ArrayList<>();
         List<PostGLRequestDTO> postGlList = new ArrayList<>();
         List<PostGLRequestDTO> postGlListLB = new ArrayList<>();
@@ -127,6 +128,13 @@ public class MusoniService {
 
         for (PageItems pageItem : pageItemList) {
             int loanId = pageItem.getId();
+
+            Client client = restClient.getClientById(String.valueOf(pageItem.getClientId()));
+            String phone_number = "0";
+            if (client.getMobileNo() != null) {
+                phone_number = client.getMobileNo();
+                phone_number = "0775797299";
+            }
 
 //            String officeName = pageItem.getOfficeName();
 
@@ -150,8 +158,17 @@ public class MusoniService {
                     List<PostGlResponseDTO> res = postGlService.getAllPostGlByRef(pastelTransReq.getReference());
                     log.info("EXISTING TRANS:{}", res);
                     if(res.isEmpty()) {
+
                         TransactionInfo response = restClient.savePostGlTransaction(pastelTransReq);
                         log.info("Posted Tranasction: {} ", response);
+
+
+                            String sms_depsot = "This serves to confirm that a loan amount of " + MusoniUtils.currencyFormatter(new BigDecimal(pastelTransReq.getAmount())) + " has been deposited to  Account: " + loanId + " on " + pastelTransReq.getTransactionDate() + " and has been collected.";
+                            smsService.sendSingle(phone_number, sms_depsot);
+
+                            log.info("SMS SENT: {} ", sms_depsot);
+
+
                     }else {
                         log.info("TRANS ALREADY EXIST:{}", res);
                     }
@@ -178,6 +195,7 @@ public class MusoniService {
         Loans loans = restClient.getLoans(timestamp);
         log.info("Loans from Musoni : {}", loans.toString());
 
+
         List<Transactions> transactions = new ArrayList<Transactions>();
         List<PostGLRequestDTO> postGlList = new ArrayList<>();
         List<PostGLRequestDTO> postGlListLB = new ArrayList<>();
@@ -190,6 +208,13 @@ public class MusoniService {
         for (PageItem pageItem : pageItemList) {
             int loanId = pageItem.getId();
 
+
+            Client client = restClient.getClientById(String.valueOf(pageItem.getClientId()));
+            String phone_number = "0";
+            if (client.getMobileNo() != null) {
+                phone_number = client.getMobileNo();
+                phone_number = "0775797299";
+            }
 //            String officeName = pageItem.getOfficeName();
 
             //Get all transactions for the pageItem
@@ -214,6 +239,17 @@ public class MusoniService {
                     if(res.isEmpty()) {
                         TransactionInfo response = restClient.savePostGlTransaction(pastelTransReq);
                         log.info("Posted Tranasction: {} ", response);
+
+                        if(pastelTransReq.getDescription().equalsIgnoreCase("Disbursement")) {
+
+                            String sms_disburse = "This serves to confirm that a loan amount of " + MusoniUtils.currencyFormatter(new BigDecimal(pastelTransReq.getAmount())) + " has been disbursed to Account: " + loanId + " on " + pastelTransReq.getTransactionDate() + " and has been collected.";
+                            smsService.sendSingle(phone_number, sms_disburse);
+
+                            log.info("SMS SENT: {} ", sms_disburse);
+                        }else {
+                            String sms_repayment = "This serves to confirm that a repayment of " + MusoniUtils.currencyFormatter(new BigDecimal(pastelTransReq.getAmount())) + " has been made to Account: " + loanId + " on " + pastelTransReq.getTransactionDate();
+                            smsService.sendSingle(phone_number, sms_repayment);
+                        }
                     }else {
                         log.info("TRANS ALREADY EXIST:{}", res);
                     }
