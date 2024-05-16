@@ -19,6 +19,7 @@ public class TransactionVoucherInitiatorRequest {
 
     private BigDecimal amount;
     private String fromVault;
+    private String vaultCode;
     private String toVault;
 
     private String amountInWords;

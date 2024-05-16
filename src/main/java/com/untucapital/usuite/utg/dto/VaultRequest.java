@@ -13,6 +13,7 @@ import lombok.Setter;
 public class VaultRequest {
     private String account;
     private String name;
+    private String code;
     private String type;
     private String branchId;
     private String accountLink;

@@ -41,10 +41,12 @@ public class VaultService {
         VaultResponseDTO vaultResponse = new VaultResponseDTO();
         Branches branch = branchRepository.findById(vaultRequest.getBranchId())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
+        log.info("Branch : {}", branch);
         Vault vault = Vault.builder()
                 .account(vaultRequest.getAccount())
                 .type(vaultRequest.getType())
                 .name(vaultRequest.getName())
+                .code(vaultRequest.getCode())
                 .branch(branch)
                 .build();
         Vault vault1= vaultRepository.save(vault);
@@ -68,6 +70,9 @@ public class VaultService {
 
         if (vault.getName() != null && !vault.getName().equals(existingVault.getName())) {
             existingVault.setName(vault.getName());
+        }
+        if (vault.getCode() != null && !vault.getCode().equals(existingVault.getCode())) {
+            existingVault.setCode(vault.getCode());
         }
 
         if (vault.getType() != null && !vault.getType().equals(existingVault.getType())) {

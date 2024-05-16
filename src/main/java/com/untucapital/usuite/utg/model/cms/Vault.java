@@ -39,6 +39,9 @@ public class Vault {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "max_amount")
     private BigDecimal maxAmount;
 

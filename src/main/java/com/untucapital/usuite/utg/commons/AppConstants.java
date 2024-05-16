@@ -20,4 +20,6 @@ public interface AppConstants {
     String GWR = "Gweru Petty Cash";
     String GKW = "Gokwe Petty Cash";
     String HO = "Head Office Petty Cash";
+
+    String SEQUENCE_NAME = "transaction_voucher_sequence";
 }

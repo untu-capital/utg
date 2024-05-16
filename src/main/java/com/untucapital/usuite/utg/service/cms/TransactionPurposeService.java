@@ -95,7 +95,9 @@ public class TransactionPurposeService {
             Optional<TransactionPurpose> transactionPurpose = transactionPurposeRepository.findById(id);
 
             if (transactionPurpose.isPresent()) {
-                BeanUtils.copyProperties(transactionPurpose, result);
+                TransactionPurpose transactionPurpose1 = transactionPurpose.get();
+
+                                BeanUtils.copyProperties(transactionPurpose1, result);
 
             }
         } catch (RuntimeException e) {

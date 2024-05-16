@@ -246,7 +246,7 @@ public class MusoniService {
                             smsService.sendSingle(phone_number, sms_disburse);
 
                             log.info("SMS SENT: {} ", sms_disburse);
-                        }else {
+                        }else if (pastelTransReq.getDescription().equalsIgnoreCase("Repayment")) {
                             String sms_repayment = "This serves to confirm that a repayment of " + MusoniUtils.currencyFormatter(new BigDecimal(pastelTransReq.getAmount())) + " has been made to Account: " + loanId + " on " + pastelTransReq.getTransactionDate();
                             smsService.sendSingle(phone_number, sms_repayment);
                         }

@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.DisbursedLoanMonth;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.Loan;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.PaymentDetailData;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
@@ -362,9 +363,33 @@ public class MusoniProcessor {
             log.info("Formatted date: {}", formattedDate);
 
             String typeValue = transaction.getTransactionType().getValue();
-            log.info("TYPE:{}",typeValue);
+//            log.info("officeName:{}",transaction.getPaymentDetailData().getReceiptNumber());
 
-            String officeName = MusoniUtils.getOffice(transaction.getPaymentDetailData().getReceiptNumber());
+            PaymentDetailData paymentDetailData = transaction.getPaymentDetailData();
+            if (paymentDetailData == null) {
+                continue;
+            }
+            String officeName = "";
+            if (paymentDetailData != null){
+                officeName = MusoniUtils.getOffice(transaction.getPaymentDetailData().getReceiptNumber());
+                if (officeName.equalsIgnoreCase("unknown location")){
+                    String paymentType = transaction.getPaymentDetailData().getPaymentType().getName();
+                    if (paymentType == null){
+                        continue;
+                    }
+                    officeName = MusoniUtils.excludeSubstring(paymentType, " Cash");
+
+                }
+
+            } else {
+               String paymentType = transaction.getPaymentDetailData().getPaymentType().getName();
+                if (paymentType == null){
+                    continue;
+                }
+                officeName = MusoniUtils.excludeSubstring(paymentType, " Cash");
+
+            }
+
             assert officeName != null;
             AccountEntityResponseDTO entity = getAccountLinkByOfficeName(officeName);
 
@@ -380,7 +405,7 @@ public class MusoniProcessor {
 
             if ("Deposit".equalsIgnoreCase(typeValue)) {
 
-                toAccount =getAccount(officeName );
+                toAccount =getAccountByOfficeName(officeName );
                 fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                 transactionType = AppConstants.REPAYMENT;
                 reference = "SREP-" + transaction.getId();

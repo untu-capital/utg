@@ -89,7 +89,7 @@ public class MusoniUtils {
         long currentUnixTime = Instant.now().getEpochSecond();
 
         // Calculate the number of seconds in x days
-        long secondsInDays = 5 * 24 * 60 * 60; // x days * 24 hours * 60 minutes * 60 seconds
+        long secondsInDays = 16 * 24 * 60 * 60; // x days * 24 hours * 60 minutes * 60 seconds
 
         // Subtract the calculated seconds from the current time
         return currentUnixTime - secondsInDays;
@@ -265,6 +265,27 @@ public class MusoniUtils {
             }
         } else {
             return null;
+        }
+    }
+
+
+    public static String extractFirstWord(String input) {
+        Pattern pattern = Pattern.compile("\\b\\w+\\b"); // Matches a word boundary followed by one or more word characters
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return matcher.group(); // Returns the first match found
+        } else {
+            return ""; // No match found
+        }
+    }
+
+    public static String excludeSubstring(String input, String substring) {
+        Pattern pattern = Pattern.compile(Pattern.quote(substring)); // Quote the substring to treat it as literal
+        Matcher matcher = pattern.matcher(input);
+        if (matcher.find()) {
+            return input.substring(0, matcher.start()).trim(); // Return the part of the string before the matched substring
+        } else {
+            return input; // If the substring is not found, return the original string
         }
     }
 

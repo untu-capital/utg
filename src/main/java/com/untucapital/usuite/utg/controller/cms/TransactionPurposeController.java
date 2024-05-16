@@ -18,36 +18,36 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("cms/transaction-purpose")
 public class TransactionPurposeController {
-    private final TransactionPurposeService transactionVoucherService;
+    private final TransactionPurposeService transactionPurposeService;
 
     //SAVE
     @PostMapping("/save")
     public ResponseEntity<TransactionPurposeResponseDTO> saveTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
-        return ResponseEntity.ok(transactionVoucherService.save(request));
+        return ResponseEntity.ok(transactionPurposeService.save(request));
     }
 
     @PutMapping("/update")
     //UPDATE
     public ResponseEntity<TransactionPurposeResponseDTO> updateTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
-        return ResponseEntity.ok(transactionVoucherService.update(request));
+        return ResponseEntity.ok(transactionPurposeService.update(request));
     }
 
     //GET ALL
     @GetMapping("/all")
     public ResponseEntity<List<TransactionPurposeResponseDTO>> getAllTransactionVoucher() {
-        return ResponseEntity.ok(transactionVoucherService.getAll());
+        return ResponseEntity.ok(transactionPurposeService.getAll());
     }
 
     //GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<TransactionPurposeResponseDTO> getTransactionVoucherById(@PathVariable Integer id) {
-        return ResponseEntity.ok(transactionVoucherService.getById(id));
+        return ResponseEntity.ok(transactionPurposeService.getById(id));
     }
 
     //DELETE
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteTransactionVoucher(@RequestBody TransactionPurposeRequestDTO request) {
-        transactionVoucherService.delete(request);
+        transactionPurposeService.delete(request);
         return ResponseEntity.ok("Transaction Purpose Deleted Successfully");
     }
 }

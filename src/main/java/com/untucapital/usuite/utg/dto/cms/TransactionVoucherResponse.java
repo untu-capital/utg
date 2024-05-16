@@ -49,6 +49,7 @@ public class TransactionVoucherResponse {
 
     private BranchDTO branch;
     private VaultDTO fromVault;
+    private String reference;
     private VaultDTO toVault;
 
 }

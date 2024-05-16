@@ -10,6 +10,7 @@ import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import com.untucapital.usuite.utg.service.UserService;
+import com.untucapital.usuite.utg.service.cms.SequenceService;
 import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
 import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,8 @@ public class TransactionVoucherProcessor {
     private final VaultService vaultService;
     private final UserService userService;
     private final TransactionPurposeService transactionPurposeService;
+    private final SequenceService sequenceService;
+
 
 
 
@@ -49,9 +52,12 @@ public class TransactionVoucherProcessor {
         BeanUtils.copyProperties(vaultTo, toVault);
         log.debug("Vault To :{}",toVault);
 
+        String transactionCode = String.format("%s%05d", request.getVaultCode(), sequenceService.getNextTransactionId());
+
+
         TransactionPurpose transactionPurpose = new TransactionPurpose();
-        TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
-        BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
+//        TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
+//        BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
         Branches branch = fromVault.getBranch();
 
@@ -62,9 +68,10 @@ public class TransactionVoucherProcessor {
                 .applicationDate(LocalDateTime.now())
                 .amount(request.getAmount())
                 .fromVault(fromVault)
+                .reference(transactionCode)
                 .toVault(toVault)
                 .amountInWords(request.getAmountInWords())
-                .withdrawalPurpose(transactionPurpose)
+                .withdrawalPurpose(Integer.parseInt(request.getWithdrawalPurpose()))
                 .currency(request.getCurrency())
                 .denomination100(request.getDenomination100())
                 .denomination50(request.getDenomination50())
@@ -89,7 +96,7 @@ public class TransactionVoucherProcessor {
 
         Integer fromVaultOldId = transactionVoucher.getFromVault().getId();
         Integer toVaultOldId = transactionVoucher.getToVault().getId();
-        Integer oldTransactionId = transactionVoucher.getWithdrawalPurpose().getId();
+        Integer oldTransactionId = transactionVoucher.getWithdrawalPurpose();
 
         if (request.getFromVault() != null) {
             fromVaultOldId = request.getFromVault();
@@ -132,8 +139,8 @@ public class TransactionVoucherProcessor {
             transactionVoucher.setAmountInWords(request.getAmountInWords());
         }
 
-        if (request.getWithdrawalPurpose() != null && transactionPurpose != transactionVoucher.getWithdrawalPurpose()) {
-            transactionVoucher.setWithdrawalPurpose(transactionPurpose);
+        if (request.getWithdrawalPurpose() != null && transactionPurpose.getId() != transactionVoucher.getWithdrawalPurpose()) {
+            transactionVoucher.setWithdrawalPurpose(transactionPurpose.getId());
         }
 
         if (request.getCurrency() != null && !request.getCurrency().equalsIgnoreCase(transactionVoucher.getCurrency())) {
@@ -177,7 +184,7 @@ public class TransactionVoucherProcessor {
 
         return transactionVoucher;
     }
-    public TransactionVoucherResponse transactionVoucherResponseSerializer(TransactionVoucher transaction) {
+    public TransactionVoucherResponse transactionVoucherResponseSerializer(TransactionVoucher transaction, TransactionPurposeResponseDTO transactionPurpose) {
 
         UserDTO initiator = UserDTO.builder()
                 .id(transaction.getInitiator().getId())
@@ -216,6 +223,8 @@ public class TransactionVoucherProcessor {
                 .name(transaction.getToVault().getName())
                 .build();
 
+
+
         return TransactionVoucherResponse.builder()
                 .id(transaction.getId())
                 .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
@@ -240,10 +249,11 @@ public class TransactionVoucherProcessor {
                 .denomination50(transaction.getDenomination50())
                 .denomination100(transaction.getDenomination100())
                 .denominationCents(transaction.getDenominationCents())
-                .withdrawalPurpose(transaction.getWithdrawalPurpose().getName())
+                .withdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()))
                 .branch(branch)
                 .fromVault(fromVault)
                 .toVault(toVault)
+                .reference(transaction.getReference())
                 .build();
     }
 

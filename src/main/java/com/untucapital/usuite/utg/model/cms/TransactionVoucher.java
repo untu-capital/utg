@@ -45,14 +45,16 @@ public class TransactionVoucher {
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Vault fromVault;
 
+    private String reference;
+
     @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private Vault toVault;
 
     @Column(name = "amount_in_words")
     private String amountInWords;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private TransactionPurpose withdrawalPurpose;
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Integer withdrawalPurpose;
 
     @Column(name = "currency")
     private String currency;

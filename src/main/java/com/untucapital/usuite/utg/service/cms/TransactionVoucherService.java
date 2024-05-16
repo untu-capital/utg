@@ -4,19 +4,18 @@ import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherUpdateRequest;
+import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
-import com.untucapital.usuite.utg.model.cms.Authorisation;
-import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
-import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
-import com.untucapital.usuite.utg.model.cms.Vault;
+import com.untucapital.usuite.utg.model.cms.*;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import com.untucapital.usuite.utg.processor.TransactionVoucherProcessor;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
 import com.untucapital.usuite.utg.repository.cms.CmsVaultPermissionRepository;
+import com.untucapital.usuite.utg.repository.cms.TransactionPurposeRepository;
 import com.untucapital.usuite.utg.repository.cms.TransactionVoucherRepository;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.EmailSender;
@@ -41,6 +40,7 @@ import java.util.List;
 @Slf4j
 public class TransactionVoucherService {
     private final TransactionVoucherRepository transactionVoucherRepository;
+    private final TransactionPurposeRepository transactionPurposeRepository;
     private final AuthorisationRepository authorisationRepository;
     private final CmsVaultPermissionRepository cmsVaultPermissionRepository;
     private final VaultService vaultService;
@@ -49,6 +49,7 @@ public class TransactionVoucherService {
     private final TransactionPurposeService transactionPurposeService;
     private final EmailSender emailSender;
     private final TransactionVoucherProcessor transactionVoucherProcessor;
+    private final SequenceService sequenceService;
 
     //Initiate Transaction
     @Transactional(value = "transactionManager")
@@ -59,7 +60,10 @@ public class TransactionVoucherService {
 
         User user = userService.find(request.getInitiator()).orElseThrow();
 
+
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
         TransactionVoucher transactionVoucher = transactionVoucherProcessor.processTransactionVoucher(request);
+
         log.info("Transaction Test :{}",transactionVoucher);
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
@@ -69,17 +73,19 @@ public class TransactionVoucherService {
                 firstApprover.getFirstName() + " " + firstApprover.getLastName(),
                 "tjchidanika@gmail.com",
                 "Transaction Approval",
-                "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher1.getApplicationDate(), transactionVoucher1.getId()) + "). The transactional purpose is " + transactionVoucher1.getWithdrawalPurpose().getName() + ".",
+                "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher1.getApplicationDate(), transactionVoucher1.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + ".",
                 user.getFirstName() + " " + user.getLastName()
         );
 
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
+
+        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
     }
 
     //First Approver Transaction
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse firstApproveTransaction(ApproverRequest request) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getWithdrawalPurpose());
 
         if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
             transactionVoucher.setFirstApprovalStatus(ApprovalStatus.APPROVED);
@@ -88,7 +94,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
                     "tjchidanika@gmail.com",
                     "Transaction Approval",
-                    "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + ".",
+                    "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + ".",
                     transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
             );
         }
@@ -101,7 +107,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     "tjchidanika@gmail.com",
                     "Revise Transaction",
-                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
+                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
             );
         }
@@ -110,13 +116,15 @@ public class TransactionVoucherService {
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
 
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
+
+        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
     }
 
     //Second Approver Transaction
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse secondApproveTransaction(ApproverRequest request) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getId());
 
         if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
             transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
@@ -124,7 +132,7 @@ public class TransactionVoucherService {
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     "tjchidanika@gmail.com",
                     "Transaction Approved Successfully",
-                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment(),
+                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
         }
@@ -144,7 +152,9 @@ public class TransactionVoucherService {
         transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
+
+
+        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
     }
 
     //Get All Transactions
@@ -159,7 +169,10 @@ public class TransactionVoucherService {
     public TransactionVoucherResponse getTransactionById(Integer id) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Transaction not found"));
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher);
+
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getId());
+
+        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher, transactionPurpose);
     }
 
     //Get All Transactions By Branch
@@ -220,7 +233,9 @@ public class TransactionVoucherService {
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
 
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getId());
+
+        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
     }
 
     //Delete Transaction
@@ -275,7 +290,10 @@ public class TransactionVoucherService {
 
         for (TransactionVoucher transaction :
                 transactions) {
-            TransactionVoucherResponse transactionVoucherResponse = transactionVoucherProcessor.transactionVoucherResponseSerializer(transaction);
+
+            TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transaction.getId());
+
+            TransactionVoucherResponse transactionVoucherResponse = transactionVoucherProcessor.transactionVoucherResponseSerializer(transaction, transactionPurpose);
             transactionVoucherResponses.add(transactionVoucherResponse);
         }
 
