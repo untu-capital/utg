@@ -2,7 +2,6 @@ package com.untucapital.usuite.utg.service.Impl;
 
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
-import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.CreditCheckService;
@@ -12,8 +11,8 @@ import com.untucapital.usuite.utg.utils.FormatterUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -82,13 +81,10 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
 
-
     @Override
     public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
-        userService.find(userId).orElseThrow(() ->
-                new ResourceNotFoundException("User", "Id", userId));
-
-        return clientRepository.findByUserId(userId);
+        userService.find(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        return clientRepository.findByUserIdOrderByCreatedAtAsc(userId);
     }
 
     @Override
@@ -98,7 +94,6 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                 () -> new ResourceNotFoundException("ClientLoan", "Id", id));
         clientLoan.setId(existingClientLoan.getId());
         /*existingClientLoan.setFirstName(clientLoan.getFirstName());
-
         existingClientLoan.setStatus(clientLoan.getStatus());
 */
         //save existing client to DB
@@ -115,7 +110,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     }
 
     @Override
-    public List<ClientLoan> getClientLoanApplicationsByLoanStatus (String loanStatus) {
+    public List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus) {
         userService.find(loanStatus).orElseThrow(() ->
                 new ResourceNotFoundException("Loan", "loan status", loanStatus));
         return clientRepository.findClientLoansByLoanStatus(loanStatus);
@@ -128,5 +123,64 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
         return clientRepository.findClientLoansByBranchName(branchName);
     }
+
+    public List<ClientLoan> getAllClientLoansData() {
+
+//        System.out.println(clientRepository.findAll());
+//        List<ClientLoan> clientLoanList = clientRepository.findAll();
+//        for (ClientLoan clientLoan : clientLoanList) {
+//            System.out.println(clientLoan);
+//        }
+
+
+//        List jsonStr = getAllClientLoanApplication();
+
+        // Create a Gson instance
+//        Gson gson = new GsonBuilder().create();
+//
+//        JSONArray jsonArray = new JSONArray(jsonStr);
+//        // Create a list to store the result
+//        List<List<Object>> result = new ArrayList<>();
+//        System.out.println("\n###################################");
+//        System.out.println(jsonStr);
+//        for (int i = 0; i < jsonArray.length(); i++) {
+//            JSONObject jsonObject = jsonArray.getInt(i);
+
+//
+//            // Extract the "createdAt" field
+//            String createdAt = jsonObject.getString("createdAt");
+//
+//            // Extract the date and time components from "createdAt"
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
+//            Date date = dateFormat.parse(createdAt);
+//            long timestamp = date.getTime();
+//
+//            // Extract other fields as needed
+//            // ...
+//
+//            // Create a list to store the extracted data for this object
+//            List<Object> data = new ArrayList<>();
+//
+//            // Add the extracted fields to the list
+//            data.add(timestamp);
+//            // Add other fields as needed
+//            // ...
+//
+//            // Add the list to the result
+//            result.add(data);
+//        }
+
+        // Print the result
+//        System.out.println(jsonStr);
+
+        return clientRepository.findAll();
+    }
+
+
+    public List<ClientLoan> getRecentClientLoans() {
+        Pageable pageable = PageRequest.of(0, 100); // Page number 0 (first page), page size 100
+        return clientRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
+    }
+
 
 }

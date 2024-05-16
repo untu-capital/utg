@@ -1,11 +1,14 @@
 package com.untucapital.usuite.utg.model;
 
+import com.untucapital.usuite.utg.model.cms.CmsUser;
+import com.untucapital.usuite.utg.model.po.PoUser;
+import com.untucapital.usuite.utg.model.tms.TmsUser;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.*;
@@ -18,6 +21,7 @@ import static javax.persistence.CascadeType.*;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"username", "contact_detail_id"})
 })
+
 public class User extends AbstractEntity {
 
     @NotBlank
@@ -35,6 +39,7 @@ public class User extends AbstractEntity {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @Column(name = "password")
     private String password;
 
     @Column(name = "reset_token")
@@ -44,6 +49,18 @@ public class User extends AbstractEntity {
     @NotNull
     @JoinColumn(name = "contact_detail_id", nullable = false)
     private ContactDetail contactDetail;
+
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @JoinColumn(name = "cms_user_id")
+    private CmsUser cmsUser;
+
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @JoinColumn(name = "po_user_id")
+    private PoUser poUser;
+
+    @OneToOne(cascade = {PERSIST, MERGE, REMOVE})
+    @JoinColumn(name = "tms_user_id")
+    private TmsUser tmsUser;
 
     @NotNull
     @Column(nullable = false)
@@ -55,10 +72,13 @@ public class User extends AbstractEntity {
 
     private String branch;
 
+    @Column(name = "credit_commit_group")
     private String creditCommitGroup;
 
+    @Column(name = "dirt_of_birth")
     private String dirtOfBirth;
 
+    @Column(name = "marital_status")
     private String maritalStatus;
 
     private String Gender;
@@ -67,13 +87,19 @@ public class User extends AbstractEntity {
 
     private String suburb;
 
+    @Column(name = "street_name")
     private String streetName;
 
+    @Column(name = "street_number")
     private String streetNumber;
 
+    @Column(name = "musoni_client_id")
     private String musoniClientId;
-
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public String getCreditCommitGroup() {
         return creditCommitGroup;
@@ -82,12 +108,6 @@ public class User extends AbstractEntity {
     public void setCreditCommitGroup(String creditCommitGroup) {
         this.creditCommitGroup = creditCommitGroup;
     }
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
 
     public String getUsername() {
         return username;
@@ -231,5 +251,29 @@ public class User extends AbstractEntity {
 
     public void setMusoniClientId(String musoniClientId) {
         this.musoniClientId = musoniClientId;
+    }
+
+    public CmsUser getCmsUser() {
+        return cmsUser;
+    }
+
+    public void setCmsUser(CmsUser cmsUser) {
+        this.cmsUser = cmsUser;
+    }
+
+    public PoUser getPoUser() {
+        return poUser;
+    }
+
+    public void setPoUser(PoUser poUser) {
+        this.poUser = poUser;
+    }
+
+    public TmsUser getTmsUser() {
+        return tmsUser;
+    }
+
+    public void setTmsUser(TmsUser tmsUser) {
+        this.tmsUser = tmsUser;
     }
 }

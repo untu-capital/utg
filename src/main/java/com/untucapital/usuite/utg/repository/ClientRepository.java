@@ -1,6 +1,8 @@
 package com.untucapital.usuite.utg.repository;
 
 import com.untucapital.usuite.utg.model.ClientLoan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +11,7 @@ import java.util.List;
 @Repository
 public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
-    List<ClientLoan> findByUserId(String userId);
+    List<ClientLoan> findByUserIdOrderByCreatedAtAsc(String userId);
     List<ClientLoan> findClientLoansByBranchNameOrderByCreatedAtDesc(String branchName);
 
 //    ClientLoan findClientLoanBy (String loanAndFileId);
@@ -18,11 +20,13 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoansByLoanStatus(String loanStatus);
 
+    List<ClientLoan> findClientLoansByUserId(String userId);
+
     List<ClientLoan> findClientLoansByLoanStatusAndAssignToAndBranchName(String loanStatus, String assignTo, String branchName);
 
     List<ClientLoan> findClientLoansByLoanStatusAndAssignedStatusAndBranchName(String loanStatus, String assignedStatus, String branchName);
 
-    List<ClientLoan> findClientLoansByLoanStatusAndBranchName(String loanStatus, String branchName);
+    List<ClientLoan> findClientLoansByLoanStatusAndBranchNameOrderByCreatedAtDesc(String loanStatus, String branchName, Pageable pageable);
 
     List<ClientLoan> findClientLoansByBocoSignatureAndBranchName(String bocoSignature, String branchName);
 
@@ -54,6 +58,8 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findClientLoanByLoanStatusAndPipelineStatusAndCreditCommit(String loanStatus, String pipelineStatus, String creditCommit);
 
+    List<ClientLoan> findClientLoanByLoanStatusAndPipelineStatus(String loanStatus, String pipelineStatus);
+
     List<ClientLoan> findClientLoanByLoanStatusAndBranchNameAndPipelineStatusAndCreditCommit(String loanStatus, String branchName, String pipelineStatus, String creditCommit);
 
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndBocoSignatureAndPipelineStatusAndBranchName(String loanStatus, String processLoanStatus, String bocoSignature, String pipelineStatus, String branchName);
@@ -73,4 +79,9 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
     List<ClientLoan> findClientLoansByLoanStatusAndProcessLoanStatusAndFinSignatureAndBoardSignature(String loanStatus, String processLoanStatus, String finSignature, String boardSignature);
 
     List<ClientLoan> findClientLoansByBoardSignature(String boardSignature);
+
+    List<ClientLoan> findByUserId(String userId);
+
+
+    Page<ClientLoan> findAllByOrderByCreatedAtDesc(Pageable pageable);
 }
