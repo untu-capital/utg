@@ -9,5 +9,6 @@ package com.untucapital.usuite.utg.model.enums.cms;
 public enum TransactionEmailStatus {
     APPROVE,
     REVISE,
-    APPROVED
+    APPROVED,
+    DECLINED
 }

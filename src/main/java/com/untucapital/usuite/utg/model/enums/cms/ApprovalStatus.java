@@ -9,4 +9,5 @@ public enum ApprovalStatus {
     PENDING,
     APPROVED,
     REVISE,
+    DECLINED
 }

@@ -53,7 +53,6 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
-        System.out.println("Transaction Voucher => " + request.toString());
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
 
         User user = userService.find(request.getInitiator()).orElseThrow();
@@ -98,12 +97,25 @@ public class TransactionVoucherService {
                     transactionVoucher,
                     transactionVoucher.getFirstApprover()
             );
+
+        }
+
+        if (request.getApprovalStatus().equalsIgnoreCase("DECLINED")) {
+            transactionVoucher.setFirstApprovalStatus(ApprovalStatus.DECLINED);
+            transactionVoucher.setFirstApprovalComment(request.getComment());
+
+            sendEmail(
+                    TransactionEmailStatus.DECLINED,
+                    transactionVoucher.getInitiator(),
+                    transactionVoucher,
+                    transactionVoucher.getFirstApprover()
+            );
         }
 
         transactionVoucher.setFirstApprovedAt(LocalDateTime.now());
 
         TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
-
+        System.out.println("Transaction Voucher" + transactionVoucher1.getFirstApprovalStatus() + " "+ transactionVoucher1.getFirstApprovalComment());
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1);
     }
 
@@ -132,6 +144,19 @@ public class TransactionVoucherService {
                     transactionVoucher.getSecondApprover()
             );
         }
+
+        if (request.getApprovalStatus().equalsIgnoreCase("DECLINED")) {
+            transactionVoucher.setSecondApprovalStatus(ApprovalStatus.DECLINED);
+            transactionVoucher.setSecondApprovalComment(request.getComment());
+            sendEmail(
+                    TransactionEmailStatus.DECLINED,
+                    transactionVoucher.getInitiator(),
+                    transactionVoucher,
+                    transactionVoucher.getSecondApprover()
+            );
+        }
+
+
 
         transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
 
@@ -180,13 +205,15 @@ public class TransactionVoucherService {
                 () -> new ResourceNotFoundException("Initiator", "id", initiator)
         );
 
+        // Allow Head Office BOCO's can view all approved transactions.
         if (user.getBranch().equalsIgnoreCase("Head Office")) {
-
             transactionVouchers = transactionVoucherRepository.
                     findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(user, ApprovalStatus.APPROVED, ApprovalStatus.APPROVED);
-        } else {
+        }
+        else {
             transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
         }
+
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
@@ -349,7 +376,7 @@ public class TransactionVoucherService {
                 }
             }
 
-            transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
+            transactionVoucher.setFirstApprovedAt(LocalDateTime.now());
             transactionVouchers.add(transactionVoucher);
         }
 
@@ -425,6 +452,15 @@ public class TransactionVoucherService {
             message = "Revise transaction - " + transactionVoucher.getReferenceNumber() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment();
             senderName = sender.getFirstName() + " " + sender.getLastName();
         }
+
+        if (transactionEmailStatus == TransactionEmailStatus.DECLINED) {
+            recipientName = recipient.getFirstName() + " " + recipient.getLastName();
+            recipientEmail = recipient.getContactDetail().getEmailAddress();
+            subject = "Declined Transaction";
+            message = "Declined transaction - " + transactionVoucher.getReferenceNumber() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose().getName() + " ." + transactionVoucher.getFirstApprovalComment();
+            senderName = sender.getFirstName() + " " + sender.getLastName();
+        }
+
 
         String emailText = emailSender.approvalMessage(recipientName, message, senderName);
         emailSender.send(recipientEmail, subject, emailText);

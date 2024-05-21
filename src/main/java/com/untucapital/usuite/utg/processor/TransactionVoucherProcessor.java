@@ -47,7 +47,6 @@ public class TransactionVoucherProcessor {
         return Long.parseLong(transactionVoucher.getReferenceNumber().substring(index + 1))+1;
     }
 
-
     public TransactionVoucher processTransactionVoucher(TransactionVoucherInitiatorRequest request) {
 
         Long refNo = getReferenceNumber();
