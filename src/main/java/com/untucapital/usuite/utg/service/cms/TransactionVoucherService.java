@@ -255,8 +255,7 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public String deleteTransaction(Integer id) {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(id).orElseThrow();
-
-        if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED || transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.APPROVED) {
+        if (transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.APPROVED) {
             throw new RuntimeException("Transaction already approved by the first approver");
         }
 
