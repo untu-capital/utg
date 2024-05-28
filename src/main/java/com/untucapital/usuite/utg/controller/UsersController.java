@@ -330,7 +330,7 @@ public class UsersController extends AbstractController<User> {
         User updatedUser = userRepository.getUserById(userId);
         updatedUser.setMusoniClientId(user.getMusoniClientId());
         userRepository.save(updatedUser);
-        return new ResponseEntity<String>("Musoni Client Id successfully updated.", HttpStatus.OK);
+        return new ResponseEntity<String>("Musoni Client synced Id successfully updated.", HttpStatus.OK);
     }
 
 //    public ResponseEntity<String> updateCcFinalMeeting(@PathVariable String id, @RequestBody ClientLoan clientLoan){

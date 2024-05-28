@@ -14,7 +14,7 @@ public class UpdateVaultRequest {
     private Integer id;
     private String account;
     private String type;
-    private String name;
     private String code;
+    private String name;
     private String branchId;
 }

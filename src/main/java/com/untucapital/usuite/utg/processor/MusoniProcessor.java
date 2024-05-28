@@ -247,7 +247,6 @@ public class MusoniProcessor {
     public List<PastelTransReq> setPastelFields(List<Transactions> transactions) throws ParseException, JsonProcessingException, AccountNotFoundException {
         log.info("Transactions: {}", transactions);
 
-
         List<PostGLRequestDTO> postGlRequestDTOs = new ArrayList<>();
         List<PastelTransReq>  pastelTransReqList = new ArrayList<>();
         java.util.Date utilDate = new java.util.Date();

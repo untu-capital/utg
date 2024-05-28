@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.AllLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.dto.loans.RepaymentScheduleLoan;
 import com.untucapital.usuite.utg.dto.loans.SingleLoan;
@@ -20,6 +21,8 @@ import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -29,6 +32,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
@@ -419,6 +423,75 @@ public class RestClient {
         }
         return transactionInfo;
     }
+
+
+    public String getClientIDByDataFilter(@RequestBody ClientsMobile clientsMobile) {
+        final String s = """
+                {
+                    "filterRulesExpression": {
+                        "condition": "OR",
+                        "rules": [
+                            {
+                                "id": "mobileNo",
+                                "field": "mobileNo",
+                                "type": "string",
+                                "input": "text",
+                                "operator": "equal",
+                                "value": %s
+                            },
+                            {
+                                "id": "mobileNoSecondary",
+                                "field": "mobileNoSecondary",
+                                "type": "string",
+                                "input": "text",
+                                "operator": "equal",
+                                "value": %s
+                            }
+                        ],
+                        "valid": true
+                    },
+                    "responseParameters": [
+                        {
+                            "ordinal": 0,
+                            "name": "id"
+                        },
+                        {
+                            "ordinal": 1,
+                            "name": "accountNo"
+                        },
+                        {
+                            "ordinal": 2,
+                            "name": "status"
+                        },
+                        {
+                            "ordinal": 3,
+                            "name": "mobileNo"
+                        }
+                    ],
+                    "sortByParameters": [
+                        {
+                            "ordinal": 0,
+                            "name": "id",
+                            "direction": "ASC"
+                        }
+                    ]
+                }
+                """.formatted(clientsMobile.getPrimaryMobileNumber(), clientsMobile.getSecondaryMobileNumber());
+        String client, clientId;
+        try {
+            HttpEntity<String> entity = new HttpEntity<String>(s, httpHeaders());
+            client = restTemplate.exchange(baseUrl + "datafilters/clients/queries/run-filter", HttpMethod.POST, entity, String.class).getBody();
+            clientId = new JSONObject(new JSONObject(client).getJSONArray("pageItems").get(0).toString()).getBigInteger("id").toString();
+//            client = getClientById(clientId);
+
+        } catch (JSONException e) {
+            return "{ \"errorMessage\": \"Client with mobile number %s not found\"}".formatted(clientsMobile.getPrimaryMobileNumber());
+        }
+        return clientId;
+
+
+    }
+
 
 
 //    public Client getClient(String clientLoans) {

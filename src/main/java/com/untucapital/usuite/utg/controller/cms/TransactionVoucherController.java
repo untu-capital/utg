@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller.cms;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
@@ -9,9 +10,11 @@ import com.untucapital.usuite.utg.model.cms.Authorisation;
 import com.untucapital.usuite.utg.model.cms.CmsVaultPermission;
 import com.untucapital.usuite.utg.service.cms.TransactionVoucherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -28,19 +31,32 @@ public class TransactionVoucherController {
     //Initiate Transaction
     @PostMapping("/initiate")
     public ResponseEntity<TransactionVoucherResponse> initiateTransaction(@RequestBody TransactionVoucherInitiatorRequest request) {
-        return ResponseEntity.ok(transactionVoucherService.initiateTransaction(request));
+        return new ResponseEntity<>(transactionVoucherService.initiateTransaction(request), HttpStatus.CREATED);
     }
 
     //First Approve Transaction
     @PostMapping("/first-approve")
     public ResponseEntity<TransactionVoucherResponse> firstApproveTransaction(@RequestBody ApproverRequest request) {
+        System.out.println("First Approve Request "+ request.toString());
         return ResponseEntity.ok(transactionVoucherService.firstApproveTransaction(request));
+    }
+
+    //Bulk First Approve Transaction
+    @PostMapping("/bulk-first-approve")
+    public ResponseEntity<List<TransactionVoucherResponse>> bulkFirstApproveTransaction(@RequestBody List<ApproverRequest> requests) {
+        return ResponseEntity.ok(transactionVoucherService.bulkFirstApproveTransaction(requests));
     }
 
     //Second Approve Transaction
     @PostMapping("/second-approve")
     public ResponseEntity<TransactionVoucherResponse> secondApproveTransaction(@RequestBody ApproverRequest request) {
         return ResponseEntity.ok(transactionVoucherService.secondApproveTransaction(request));
+    }
+
+    //Bulk Second Approve Transaction
+    @PostMapping("/bulk-second-approve")
+    public ResponseEntity<List<TransactionVoucherResponse>> bulkSecondApproveTransaction(@RequestBody List<ApproverRequest> requests) throws JsonProcessingException, ParseException {
+        return ResponseEntity.ok(transactionVoucherService.bulkSecondApproveTransaction(requests));
     }
 
     //Get All Transactions

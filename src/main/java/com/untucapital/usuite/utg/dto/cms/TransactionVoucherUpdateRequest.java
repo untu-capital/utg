@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.dto.cms;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 
@@ -12,10 +13,10 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
-
+@ToString
 public class TransactionVoucherUpdateRequest {
     private Integer id;
-
+    private String applicationDate;
     private BigDecimal amount;
     private Integer fromVault;
     private Integer toVault;
@@ -30,6 +31,5 @@ public class TransactionVoucherUpdateRequest {
     private Integer denomination5;
     private Integer denomination2;
     private Integer denomination1;
-
     private Integer denominationCents;
 }

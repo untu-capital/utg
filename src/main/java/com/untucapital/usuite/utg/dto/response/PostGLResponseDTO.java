@@ -9,7 +9,6 @@ import java.sql.Date;
 @Data
 @RequiredArgsConstructor
 public class PostGLResponseDTO {
-
     private BigInteger autoIdx;
     private Date txDate;
     private String id;

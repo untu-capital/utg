@@ -3,6 +3,7 @@ package com.untucapital.usuite.utg.model.cms;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author tjchidanika

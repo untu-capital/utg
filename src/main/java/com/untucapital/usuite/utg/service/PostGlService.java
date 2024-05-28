@@ -66,6 +66,18 @@ public class PostGlService {
     }
 
     @Transactional(value = "pastelTransactionManager")
+    public TransactionInfo saveBulkPostGlFromCMS(List<PastelTransReq> request) throws JsonProcessingException {
+
+        log.info("Request:{}", request);
+        TransactionInfo trans = new TransactionInfo();
+        for (PastelTransReq pastelTransReq: request){
+            trans = restClient.savePostGlTransaction(pastelTransReq);
+        }
+
+        return trans;
+    }
+
+    @Transactional(value = "pastelTransactionManager")
     public List<PostGLResponseDTO> getAllPostGl() {
 
         List<PostGLResponseDTO> response = new ArrayList<>();

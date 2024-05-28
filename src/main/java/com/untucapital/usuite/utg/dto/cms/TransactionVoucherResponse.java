@@ -1,9 +1,7 @@
 package com.untucapital.usuite.utg.dto.cms;
 
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
@@ -15,9 +13,11 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class TransactionVoucherResponse {
 
     private Integer id;
+    private String referenceNumber;
 
     private UserDTO initiator;
     private String applicationDate;

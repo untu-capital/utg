@@ -76,7 +76,6 @@ public class AbstractEntity implements Serializable {
         this.deletedAt = deletedAt;
     }
 
-
     // METHODS
     @PrePersist
     private void onPersist() {

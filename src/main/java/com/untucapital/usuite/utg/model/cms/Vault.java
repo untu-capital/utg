@@ -4,7 +4,6 @@ import com.untucapital.usuite.utg.model.Branches;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.context.annotation.Profile;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -36,11 +35,11 @@ public class Vault {
     @Column(name = "type")
     private String type;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "code")
     private String code;
+
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "max_amount")
     private BigDecimal maxAmount;

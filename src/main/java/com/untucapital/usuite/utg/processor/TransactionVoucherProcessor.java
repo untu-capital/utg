@@ -9,6 +9,8 @@ import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.model.cms.TransactionVoucher;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
+import com.untucapital.usuite.utg.repository.cms.TransactionPurposeRepository;
+import com.untucapital.usuite.utg.repository.cms.TransactionVoucherRepository;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.service.cms.SequenceService;
 import com.untucapital.usuite.utg.service.cms.TransactionPurposeService;
@@ -16,10 +18,15 @@ import com.untucapital.usuite.utg.service.cms.VaultService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -31,7 +38,18 @@ public class TransactionVoucherProcessor {
     private final TransactionPurposeService transactionPurposeService;
     private final SequenceService sequenceService;
 
+    private final TransactionVoucherRepository transactionVoucherRepository;
+    private final TransactionPurposeRepository transactionPurposeRepository;
 
+//    private Long getReferenceNumber() {
+//        TransactionVoucher transactionVoucher = transactionVoucherRepository.findFirstByOrderByCreatedAtDesc();
+//        if (transactionVoucher.getReferenceNumber()==null){
+//            return 0L;
+//        }
+//
+//        int index = transactionVoucher.getReferenceNumber().lastIndexOf("/");
+//        return Long.parseLong(transactionVoucher.getReferenceNumber().substring(index + 1))+1;
+//    }
 
 
     public TransactionVoucher processTransactionVoucher(TransactionVoucherInitiatorRequest request){
@@ -58,6 +76,8 @@ public class TransactionVoucherProcessor {
         TransactionPurpose transactionPurpose = new TransactionPurpose();
 //        TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
 //        BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
+
+        TransactionPurpose purpose = transactionPurposeRepository.getById(Integer.valueOf(request.getWithdrawalPurpose()));
 
         Branches branch = fromVault.getBranch();
 
@@ -89,7 +109,7 @@ public class TransactionVoucherProcessor {
                 .build();
     }
 
-    public TransactionVoucher processUpdatedTransactionVoucher(TransactionVoucher transactionVoucher,TransactionVoucherUpdateRequest request){
+    public TransactionVoucher processUpdatedTransactionVoucher(TransactionVoucher transactionVoucher,TransactionVoucherUpdateRequest request) {
 
         Vault fromVault = new Vault();
         Vault toVault = new Vault();
@@ -116,6 +136,8 @@ public class TransactionVoucherProcessor {
         BeanUtils.copyProperties(vaultTo, toVault);
 
         TransactionPurpose transactionPurpose = new TransactionPurpose();
+        TransactionPurpose purpose = transactionPurposeRepository.getById(oldTransactionId);
+
         TransactionPurposeResponseDTO transactionPurposeResponseDTO = transactionPurposeService.getById(oldTransactionId);
         BeanUtils.copyProperties(transactionPurposeResponseDTO, transactionPurpose);
 
@@ -143,46 +165,52 @@ public class TransactionVoucherProcessor {
             transactionVoucher.setWithdrawalPurpose(transactionPurpose.getId());
         }
 
-        if (request.getCurrency() != null && !request.getCurrency().equalsIgnoreCase(transactionVoucher.getCurrency())) {
-            transactionVoucher.setCurrency(request.getCurrency());
-        }
+            if (request.getApplicationDate() != null && !request.getApplicationDate().equalsIgnoreCase(String.valueOf(transactionVoucher.getApplicationDate()))) {
+                transactionVoucher.setApplicationDate(LocalDateTime.parse(request.getApplicationDate()));
+            }
 
-        if (request.getDenomination100() != null && !request.getDenomination100().equals(transactionVoucher.getDenomination100())) {
-            transactionVoucher.setDenomination100(request.getDenomination100());
-        }
 
-        if (request.getDenomination50() != null && !request.getDenomination50().equals(transactionVoucher.getDenomination50())) {
-            transactionVoucher.setDenomination50(request.getDenomination50());
-        }
+            if (request.getCurrency() != null && !request.getCurrency().equalsIgnoreCase(transactionVoucher.getCurrency())) {
+                transactionVoucher.setCurrency(request.getCurrency());
+            }
 
-        if (request.getDenomination20() != null && !request.getDenomination20().equals(transactionVoucher.getDenomination20())) {
-            transactionVoucher.setDenomination20(request.getDenomination20());
-        }
+            if (request.getDenomination100() != null && !request.getDenomination100().equals(transactionVoucher.getDenomination100())) {
+                transactionVoucher.setDenomination100(request.getDenomination100());
+            }
 
-        if (request.getDenomination10() != null && !request.getDenomination10().equals(transactionVoucher.getDenomination10())) {
-            transactionVoucher.setDenomination10(request.getDenomination10());
-        }
+            if (request.getDenomination50() != null && !request.getDenomination50().equals(transactionVoucher.getDenomination50())) {
+                transactionVoucher.setDenomination50(request.getDenomination50());
+            }
 
-        if (request.getDenomination5() != null && !request.getDenomination5().equals(transactionVoucher.getDenomination5())) {
-            transactionVoucher.setDenomination5(request.getDenomination5());
-        }
+            if (request.getDenomination20() != null && !request.getDenomination20().equals(transactionVoucher.getDenomination20())) {
+                transactionVoucher.setDenomination20(request.getDenomination20());
+            }
 
-        if (request.getDenomination2() != null && !request.getDenomination2().equals(transactionVoucher.getDenomination2())) {
-            transactionVoucher.setDenomination2(request.getDenomination2());
-        }
+            if (request.getDenomination10() != null && !request.getDenomination10().equals(transactionVoucher.getDenomination10())) {
+                transactionVoucher.setDenomination10(request.getDenomination10());
+            }
 
-        if (request.getDenomination1() != null && !request.getDenomination1().equals(transactionVoucher.getDenomination1())) {
-            transactionVoucher.setDenomination1(request.getDenomination1());
-        }
+            if (request.getDenomination5() != null && !request.getDenomination5().equals(transactionVoucher.getDenomination5())) {
+                transactionVoucher.setDenomination5(request.getDenomination5());
+            }
 
-        if (request.getDenominationCents() != null && !request.getDenominationCents().equals(transactionVoucher.getDenominationCents())) {
-            transactionVoucher.setDenomination1(request.getDenominationCents());
-        }
+            if (request.getDenomination2() != null && !request.getDenomination2().equals(transactionVoucher.getDenomination2())) {
+                transactionVoucher.setDenomination2(request.getDenomination2());
+            }
 
-        transactionVoucher.setFirstApprovalStatus(ApprovalStatus.PENDING);
-        transactionVoucher.setSecondApprovalStatus(ApprovalStatus.PENDING);
+            if (request.getDenomination1() != null && !request.getDenomination1().equals(transactionVoucher.getDenomination1())) {
+                transactionVoucher.setDenomination1(request.getDenomination1());
+            }
 
-        return transactionVoucher;
+            if (request.getDenominationCents() != null && !request.getDenominationCents().equals(transactionVoucher.getDenominationCents())) {
+                transactionVoucher.setDenomination1(request.getDenominationCents());
+            }
+
+            transactionVoucher.setFirstApprovalStatus(ApprovalStatus.PENDING);
+            transactionVoucher.setSecondApprovalStatus(ApprovalStatus.PENDING);
+
+            return transactionVoucher;
+
     }
     public TransactionVoucherResponse transactionVoucherResponseSerializer(TransactionVoucher transaction, TransactionPurposeResponseDTO transactionPurpose) {
 
@@ -227,7 +255,7 @@ public class TransactionVoucherProcessor {
 
         return TransactionVoucherResponse.builder()
                 .id(transaction.getId())
-                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
+//                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
                 .initiator(initiator)
                 .applicationDate(dateFormatter(transaction.getApplicationDate()))
                 .firstApprover(firstApprover)
@@ -257,6 +285,90 @@ public class TransactionVoucherProcessor {
                 .build();
     }
 
+    public List<TransactionVoucherResponse> transactionVouchersResponseSerializer(List<TransactionVoucher> transactionVouchers) {
+
+
+//        return transactionVouchers.stream()
+//                .map(this::transactionVoucherResponseSerializer)
+//                .collect(Collectors.toList());
+
+        List<TransactionVoucherResponse> transactionVoucherResponses = new ArrayList<>();
+        for (TransactionVoucher transaction: transactionVouchers ){
+
+            UserDTO initiator = UserDTO.builder()
+                    .id(transaction.getInitiator().getId())
+                    .firstName(transaction.getInitiator().getFirstName())
+                    .lastName(transaction.getInitiator().getLastName())
+                    .build();
+
+            UserDTO firstApprover = UserDTO.builder()
+                    .id(transaction.getFirstApprover().getId())
+                    .firstName(transaction.getFirstApprover().getFirstName())
+                    .lastName(transaction.getFirstApprover().getLastName())
+                    .build();
+
+            UserDTO secondApprover = UserDTO.builder()
+                    .id(transaction.getSecondApprover().getId())
+                    .firstName(transaction.getSecondApprover().getFirstName())
+                    .lastName(transaction.getSecondApprover().getLastName())
+                    .build();
+
+            BranchDTO branch = BranchDTO.builder()
+                    .id(transaction.getBranch().getId())
+                    .name(transaction.getBranch().getBranchName())
+                    .build();
+
+            VaultDTO fromVault = VaultDTO.builder()
+                    .id(transaction.getFromVault().getId())
+                    .account(transaction.getFromVault().getAccount())
+                    .type(transaction.getFromVault().getType())
+                    .name(transaction.getFromVault().getName())
+                    .build();
+
+            VaultDTO toVault = VaultDTO.builder()
+                    .id(transaction.getToVault().getId())
+                    .account(transaction.getToVault().getAccount())
+                    .type(transaction.getToVault().getType())
+                    .name(transaction.getToVault().getName())
+                    .build();
+            TransactionVoucherResponse transactionVoucherResponse = TransactionVoucherResponse.builder()
+                    .id(transaction.getId())
+//                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
+                    .initiator(initiator)
+                    .applicationDate(dateFormatter(transaction.getApplicationDate()))
+                    .firstApprover(firstApprover)
+                    .firstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()))
+                    .firstApprovalStatus(transaction.getFirstApprovalStatus())
+                    .firstApprovalComment(transaction.getFirstApprovalComment())
+                    .secondApprover(secondApprover)
+                    .secondApprovedAt(dateFormatter(transaction.getSecondApprovedAt()))
+                    .secondApprovalStatus(transaction.getSecondApprovalStatus())
+                    .secondApprovalComment(transaction.getSecondApprovalComment())
+                    .amountInWords(transaction.getAmountInWords())
+                    .currency(transaction.getCurrency())
+                    .amount(transaction.getAmount())
+                    .denomination1(transaction.getDenomination1())
+                    .denomination2(transaction.getDenomination2())
+                    .denomination5(transaction.getDenomination5())
+                    .denomination10(transaction.getDenomination10())
+                    .denomination20(transaction.getDenomination20())
+                    .denomination50(transaction.getDenomination50())
+                    .denomination100(transaction.getDenomination100())
+                    .denominationCents(transaction.getDenominationCents())
+                    .withdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()))
+                    .branch(branch)
+                    .fromVault(fromVault)
+                    .toVault(toVault)
+                    .reference(transaction.getReference())
+                    .build();
+
+//            BeanUtils.copyProperties(tr, transactionVoucherResponse);
+            transactionVoucherResponses.add(transactionVoucherResponse);
+        }
+        return transactionVoucherResponses;
+    }
+
+
     private String dateFormatter(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd (HH:mm)");
 
@@ -267,8 +379,8 @@ public class TransactionVoucherProcessor {
         return date.format(formatter);
     }
 
-    public String createApplicationId(LocalDateTime date, Integer id) {
+    public String createApplicationId(LocalDateTime date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
-        return date.format(formatter)+'-'+id;
+        return date.format(formatter);
     }
 }

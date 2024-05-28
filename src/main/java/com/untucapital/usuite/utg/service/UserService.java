@@ -2,9 +2,11 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.auth.TokenProvider;
 import com.untucapital.usuite.utg.auth.UserPrincipal;
+import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.controller.payload.LoginReq;
 import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
+import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
 import com.untucapital.usuite.utg.model.ConfirmationToken;
@@ -59,12 +61,13 @@ public class UserService extends AbstractService<User> {
     private final EmailSender emailSender;
 
     private final SmsService smsService;
+    private final RestClient restClient;
 
     @Autowired
     public UserService(AuthenticationManager authenticationManager, TokenProvider tokenProvider,
                        UserRepository userRepository, EmailValidator emailValidator, RoleRepository roleRepository,
                        ConfirmationTokenRepository confirmationTokenRepository, BCryptPasswordEncoder passwordEncoder,
-                       EmailSender emailSender, SmsService smsService) {
+                       EmailSender emailSender, SmsService smsService, RestClient restClient) {
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
         this.userRepository = userRepository;
@@ -74,6 +77,7 @@ public class UserService extends AbstractService<User> {
         this.passwordEncoder = passwordEncoder;
         this.emailSender = emailSender;
         this.smsService = smsService;
+        this.restClient = restClient;
     }
 
     @Override
@@ -481,4 +485,22 @@ public class UserService extends AbstractService<User> {
     }
 
 
+
+    @Transactional(value = "transactionManager")
+    public User saveMusoniClientId(ClientsMobile clientsMobile) {
+        try {
+            Long mobileNumber = Long.parseLong(clientsMobile.getPrimaryMobileNumber());
+            User user = userRepository.findByContactDetail_MobileNumber(mobileNumber);
+            if (user != null) {
+                String clientId = restClient.getClientIDByDataFilter(clientsMobile);
+                user.setMusoniClientId(clientId);
+                userRepository.save(user);
+            }
+            return user;
+
+        } catch (NumberFormatException e) {
+
+            return null;
+        }
+    }
 }

@@ -645,7 +645,6 @@ public class MusoniService {
         return result;
     }
 
-
     public List<Integer> disbursedLoansByDate(String fromDate, String toDate) {
         Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);
         log.info("Loans:{}", loans);

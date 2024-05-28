@@ -22,4 +22,5 @@ public interface AppConstants {
     String HO = "Head Office Petty Cash";
 
     String SEQUENCE_NAME = "transaction_voucher_sequence";
+    Integer EXCHANGE_RATE = 1;
 }

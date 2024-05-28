@@ -14,6 +14,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -173,8 +174,8 @@ public class MusoniUtils {
     }
     public static String formatPastelDates(LocalDate date) throws ParseException {
 
-        SimpleDateFormat new_format = new SimpleDateFormat("dd-MMM-yyyy");
-        String transDate = new_format.format(date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        String transDate = formatter.format(date);
         return transDate;
     }
 

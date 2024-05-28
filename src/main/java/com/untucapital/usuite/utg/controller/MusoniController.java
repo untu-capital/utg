@@ -4,7 +4,9 @@ package com.untucapital.usuite.utg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
+import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
@@ -74,6 +76,7 @@ public class MusoniController {
 
     private final MusoniService musoniService;
     private final SmsService smsService;
+    private final RestClient restClient;
 
     private HttpHeaders headers;
 
@@ -191,10 +194,13 @@ public class MusoniController {
     }
 
     //Get ClientID by PhoneNumber
-    @PostMapping("datafilters")
-    public String getClientIDByDataFilter(@RequestBody Map<String, Object> body) {
-        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
-        return restTemplate.exchange(musoniUrl + "datafilters/clients/queries/run-filter", HttpMethod.GET, entity, String.class).getBody();
+    @PostMapping("getClientByMobile")
+    public String getClientIDByMobile(@RequestBody ClientsMobile clientsMobile) {
+
+        return restClient.getClientIDByDataFilter(clientsMobile);
+
+//        CLIENT ID
+
     }
 
     List<String> clientAccounts = new ArrayList<>();

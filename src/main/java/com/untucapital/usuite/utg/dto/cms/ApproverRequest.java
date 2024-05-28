@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.dto.cms;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author tjchidanika
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@ToString
 public class ApproverRequest {
 
     private Integer id;

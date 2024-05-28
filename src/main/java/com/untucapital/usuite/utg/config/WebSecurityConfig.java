@@ -389,6 +389,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v3/**")
                 .permitAll()
 
+                .antMatchers("/treasury_management/**")
+                .permitAll()
+
                 .anyRequest()
                 .authenticated();
 

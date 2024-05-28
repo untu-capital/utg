@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service.cms;
 
 import com.untucapital.usuite.utg.dto.cms.req.TransactionPurposeRequestDTO;
+
 import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
 import com.untucapital.usuite.utg.model.cms.TransactionPurpose;
 import com.untucapital.usuite.utg.repository.cms.TransactionPurposeRepository;
@@ -87,6 +88,7 @@ public class TransactionPurposeService {
 
         return result;
     }
+
     //get by id
     public TransactionPurposeResponseDTO getById(Integer id){
 

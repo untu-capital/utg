@@ -51,7 +51,6 @@ public class SupplierController {
         return supplierService.updateSupplier(posSupplier);
     }
 
-
     //Delete Supplier
     @DeleteMapping("/delete/{id}")
     @ResponseStatus(HttpStatus.OK)

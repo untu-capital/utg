@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -35,6 +36,7 @@ public class VaultRequestDTO {
     private Integer accountLink;
 
     private Branches branch;
+    private String code;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

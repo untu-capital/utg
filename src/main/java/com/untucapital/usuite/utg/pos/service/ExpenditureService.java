@@ -1,11 +1,13 @@
 package com.untucapital.usuite.utg.pos.service;
 
 
+import com.untucapital.usuite.utg.dto.response.BudgetResponseDTO;
 import com.untucapital.usuite.utg.pos.dto.ExpenditureDto;
 import com.untucapital.usuite.utg.pos.dto.ExpenditureResponseDto;
 import com.untucapital.usuite.utg.pos.dto.POSBalanceSheetDto;
 import com.untucapital.usuite.utg.pos.model.Budget;
 import com.untucapital.usuite.utg.pos.model.Expenditure;
+import com.untucapital.usuite.utg.pos.model.POSBalanceSheet;
 import com.untucapital.usuite.utg.pos.processor.ExpenditureProcessor;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +64,8 @@ public class ExpenditureService {
     @Transactional(value = "transactionManager")
     public List<ExpenditureResponseDto> getTotalExpenditureByYearAndMonth(int year, String month) {
 
+//        List<ExpenditureDto> response = new ArrayList<>();
+        float total = 0f;
 
         List<Expenditure> expenditureList = expenditureRepository.findByMonthAndYear(month, year);
 
@@ -94,6 +99,9 @@ public class ExpenditureService {
     @Transactional(value = "transactionManager")
     public List<ExpenditureResponseDto> getExpenditureByCategoryAndMonthAndYear(String category, String month,int year) {
 
+        float total = 0f;
+
+//        ExpenditureResponseDto response = new ExpenditureResponseDto();
         List<Expenditure> expenditureList = expenditureRepository.findByCategoryAndMonthAndYear(category,month, year);
 
         List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
@@ -104,8 +112,11 @@ public class ExpenditureService {
     @Transactional(value = "transactionManager")
     public List<ExpenditureResponseDto> getExpenditureByPeriod(LocalDateTime dateFrom, LocalDateTime dateTo) {
 
+//        ExpenditureResponseDto response = new ExpenditureResponseDto();
+        float total = 0f;
 
         List<Expenditure> expenditureList = expenditureRepository.findByCreatedAtBetween(dateFrom, dateTo);
+
 
         List<ExpenditureResponseDto> response = expenditureProcessor.setResponse(expenditureList);
 
