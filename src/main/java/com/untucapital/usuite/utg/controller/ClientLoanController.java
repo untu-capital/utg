@@ -49,6 +49,14 @@ public class ClientLoanController {
         return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
     }
 
+    @GetMapping("getActiveLoanByUserId/{userId}")
+    @Operation(summary = "Create a new client loan application")
+    public List<ClientLoan> getActiveLoanByUserId(@PathVariable("userId") String userId) {
+
+        return clientLoanApplication.getActiveLoans(userId);
+
+    }
+
     //build get all loan applications REST API
     @GetMapping
     @Operation(summary = "Get all client loan applications")

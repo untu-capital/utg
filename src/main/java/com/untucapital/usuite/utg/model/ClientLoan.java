@@ -70,7 +70,7 @@ public class ClientLoan extends AbstractEntity {
     private String tenure;
 
     @NotNull
-    @JoinColumn(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private String userId;
 
     @Column(name = "loan_status", nullable = false)

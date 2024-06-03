@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -41,6 +42,9 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public ClientLoan saveClientLoan(ClientLoan clientLoan) {
         log.info("Loan Application Request - {}", FormatterUtil.toJson(clientLoan));
+
+
+
         ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
 
         log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
@@ -84,7 +88,9 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
         userService.find(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
-        return clientRepository.findByUserIdOrderByCreatedAtAsc(userId);
+        List<ClientLoan> clientLoans = clientRepository.findByUserIdOrderByCreatedAtAsc(userId);
+        log.info("Client loans: {}", clientLoans);
+        return clientLoans;
     }
 
     @Override
@@ -182,5 +188,23 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return clientRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
     }
 
+    @Override
+    public List<ClientLoan> getActiveLoans(String userId) {
+
+        List<ClientLoan> clientLoans= clientRepository.findClientLoansByUserId(userId);
+
+        List<ClientLoan> clientLoanList = new ArrayList<>();
+        for (ClientLoan clientLoan: clientLoans){
+            if (clientLoan.getLoanStatus().equalsIgnoreCase("ACCEPTED") && !(clientLoan.getPipelineStatus().equalsIgnoreCase("cc_final_meeting"))){
+                clientLoanList.add(clientLoan);
+            }
+
+            else if (clientLoan.getLoanStatus().equalsIgnoreCase("PENDING")){
+                clientLoanList.add(clientLoan);
+            }
+        }
+
+        return clientLoanList;
+    }
 
 }
