@@ -46,6 +46,10 @@ public class AuthController {
     private final SmsService smsService;
     private final UserRepository userRepository;
 
+
+    @Autowired
+    private JavaMailSender mailSender;
+
     @Value("${untu.reset-token.link}")
     private String resetPassUrl;
 
@@ -105,10 +109,9 @@ public class AuthController {
 
     @GetMapping("/check_mobile")
     public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") String mobile) {
-        // Remove leading zeros
+
         mobile = mobile.replaceFirst("^0+(?!$)", "");
 
-        // Convert to long
         long mobileNumber;
         try {
             mobileNumber = Long.parseLong(mobile);
@@ -122,10 +125,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Mobile number provided does not exist"));
         }
     }
-
-
-    @Autowired
-    private JavaMailSender mailSender;
 
     @PostMapping("/forgot_password")
     public ResponseEntity<UsuiteApiResp> processForgotPassword(HttpServletRequest request, Model model) {
