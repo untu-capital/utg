@@ -104,12 +104,23 @@ public class AuthController {
     }
 
     @GetMapping("/check_mobile")
-    public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") long mobile) {
+    public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") String mobile) {
+        // Remove leading zeros
+        mobile = mobile.replaceFirst("^0+(?!$)", "");
 
-        if (userService.checkUserMobile(mobile)) {
+        // Convert to long
+        long mobileNumber;
+        try {
+            mobileNumber = Long.parseLong(mobile);
+        } catch (NumberFormatException e) {
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("Invalid mobile number format"));
+        }
+
+        if (userService.checkUserMobile(mobileNumber)) {
             return ResponseEntity.ok(new UsuiteApiResp("Mobile number exists"));
-        } else
+        } else {
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Mobile number provided does not exist"));
+        }
     }
 
 

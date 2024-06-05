@@ -23,6 +23,5 @@ public interface AppConstants {
     String GKW = "Gokwe Petty Cash";
     String HO = "Head Office Petty Cash";
 
-    String SEQUENCE_NAME = "transaction_voucher_sequence";
     Integer EXCHANGE_RATE = 1;
 }
