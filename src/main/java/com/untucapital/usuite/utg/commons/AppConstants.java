@@ -2,6 +2,8 @@ package com.untucapital.usuite.utg.commons;
 
 
 public interface AppConstants {
+
+    String SEQUENCE_NAME = "transaction_voucher_sequence";
     String DISBURSEMENT = "LOA-DIS";
     String REPAYMENT = "LOA-REP";
     String CASH = "CAS-TRN";

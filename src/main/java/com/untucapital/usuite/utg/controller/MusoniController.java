@@ -136,6 +136,13 @@ public class MusoniController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("savingsAccounts/savingsTransactions")
+    public ResponseEntity <Void> getSavingsAccountsTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
+        musoniService.getSavingsLoanAccountsByTimestamp();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     public static String[] getDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance();
