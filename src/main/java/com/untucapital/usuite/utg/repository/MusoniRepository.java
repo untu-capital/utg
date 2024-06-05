@@ -12,4 +12,6 @@ public interface MusoniRepository extends JpaRepository<MusoniClient, String> {
     MusoniClient findMusoniClientById(String clientId);
 
     List<MusoniClient> findMusoniClientsByStatus(String status);
+
+
 }

@@ -24,4 +24,10 @@ public interface AppConstants {
     String HO = "Head Office Petty Cash";
 
     Integer EXCHANGE_RATE = 1;
+
+
+
+//    RESPONSE MESSAGES:
+    Integer NOT_FOUND = 404;
+
 }

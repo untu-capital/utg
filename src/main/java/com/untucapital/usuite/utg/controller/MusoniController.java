@@ -6,9 +6,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
+import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.loans.Result;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
@@ -141,6 +145,13 @@ public class MusoniController {
         musoniService.getSavingsLoanAccountsByTimestamp();
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("savingsById/{savingsId}")
+    public SettlementAccountResponse getSavingsLoanAccountById(@PathVariable String savingsId) throws AccountNotFoundException {
+
+        return musoniService.getSavingsLoanAccountById(savingsId);
+
     }
 
     public static String[] getDate() {

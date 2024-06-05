@@ -1,6 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.dto.Currency;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.*;
@@ -10,6 +11,7 @@ import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
@@ -37,6 +39,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -107,8 +110,10 @@ public class MusoniService {
     }
 
 
+
 //        @Scheduled(cron = "0 0 * * * ?")
-//@Scheduled(cron = "0 0 0 * * ?")
+//@Scheduled(cron = "0 0 * * * ?")
+
     public void getSavingsLoanAccountsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
 //        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
@@ -684,6 +689,29 @@ public class MusoniService {
         List<DisbursedLoanMonth> disbursedLoanMonths = musoniProcessor.groupByMonth(disbursedLoans);
 
         return musoniProcessor.disbursedLoans(disbursedLoanMonths);
+    }
+
+
+
+    public SettlementAccountResponse getSavingsLoanAccountById(@PathVariable String savingsId) throws com.untucapital.usuite.utg.exception.AccountNotFoundException {
+
+        SettlementAccountResponse settlementAccountResponse = new SettlementAccountResponse();
+
+        PageItems settlementAccount = restClient.getSavingsLoanAccountById(savingsId);
+
+
+        Integer clientId = settlementAccount.getClientId();
+        if (clientId != 0){
+            Client musoniClient = restClient.getClientById(String.valueOf(clientId));
+            settlementAccountResponse.setClientId(String.valueOf(clientId));
+            settlementAccountResponse.setPhoneNumber(musoniClient.getMobileNo());
+        }else {
+            settlementAccountResponse.setResponseCode(AppConstants.NOT_FOUND);
+            settlementAccountResponse.setResponseMsg("ACCOUNT NOT FOUND");
+        }
+
+
+        return settlementAccountResponse;
     }
 }
 

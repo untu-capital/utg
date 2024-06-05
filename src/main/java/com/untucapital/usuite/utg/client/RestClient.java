@@ -493,6 +493,26 @@ public class RestClient {
     }
 
 
+    public PageItems getSavingsLoanAccountById(@PathVariable String savingsId) {
+        PageItems settlementAccount = new PageItems();
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        try {
+            String savingsAcc = restTemplate.exchange(baseUrl + "savingsaccounts/"+savingsId, HttpMethod.GET, entity, String.class).getBody();
+            settlementAccount = objectMapper.readValue(savingsAcc,PageItems.class);
+
+        }catch(Exception e){
+            log.info("FAILED TO GET SETTLEMENT ACCOUNT: ", e.getMessage());
+        }
+        return settlementAccount;
+
+
+
+    }
+
+
+
+
+
 
 //    public Client getClient(String clientLoans) {
 //
