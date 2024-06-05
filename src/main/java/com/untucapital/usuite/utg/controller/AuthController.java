@@ -46,7 +46,6 @@ public class AuthController {
     private final SmsService smsService;
     private final UserRepository userRepository;
 
-
     @Autowired
     private JavaMailSender mailSender;
 
@@ -108,23 +107,14 @@ public class AuthController {
     }
 
     @GetMapping("/check_mobile")
-    public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") String mobile) {
+    public ResponseEntity<UsuiteApiResp> checkMobile(@RequestParam("mobile") long mobile) {
 
-        mobile = mobile.replaceFirst("^0+(?!$)", "");
-
-        long mobileNumber;
-        try {
-            mobileNumber = Long.parseLong(mobile);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(new UsuiteApiResp("Invalid mobile number format"));
-        }
-
-        if (userService.checkUserMobile(mobileNumber)) {
+        if (userService.checkUserMobile(mobile)) {
             return ResponseEntity.ok(new UsuiteApiResp("Mobile number exists"));
-        } else {
+        } else
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Mobile number provided does not exist"));
-        }
     }
+
 
     @PostMapping("/forgot_password")
     public ResponseEntity<UsuiteApiResp> processForgotPassword(HttpServletRequest request, Model model) {
