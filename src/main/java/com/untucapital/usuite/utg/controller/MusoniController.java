@@ -4,10 +4,13 @@ package com.untucapital.usuite.utg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
+import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
+import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
@@ -16,6 +19,7 @@ import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
+import com.untucapital.usuite.utg.service.pdfGeneratorService.LoanStatementPdfGeneratorService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +39,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 import static org.hibernate.annotations.QueryHints.READ_ONLY;
 import static org.hibernate.jpa.QueryHints.HINT_CACHEABLE;
 import static org.hibernate.jpa.QueryHints.HINT_FETCH_SIZE;
@@ -48,6 +53,7 @@ public class MusoniController {
     private static final Logger log = LoggerFactory.getLogger(MusoniPastelController.class);
     @Autowired
     RestTemplate restTemplate;
+
     @Value("${musoni.url}")
     private String musoniUrl;
     @Value("${musoni.username}")
@@ -61,6 +67,8 @@ public class MusoniController {
 
     private final PostGlService postGlService;
 
+    @Autowired
+    private LoanStatementPdfGeneratorService loanStatementPdfGeneratorService;
 
     public HttpHeaders httpHeaders() {
         HttpHeaders headers = new HttpHeaders();
@@ -197,6 +205,21 @@ public class MusoniController {
         return restTemplate.exchange(musoniUrl + "clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
     }
 
+    //Get All Client Loans By Id
+    @GetMapping("getActiveClientLoans/{clientId}")
+    public List<ViewClientLoansResponse> getClientLoans(@PathVariable Long clientId) throws ParseException {
+
+        return musoniService.activeClientLoans(clientId);
+    }
+
+    @GetMapping("getNextInstalment/{loanId}")
+    public NextInstalmentResponse getNextInstalment(@PathVariable String loanId) throws ParseException {
+
+        return musoniService.getNextRepaymentSchedule(loanId);
+    }
+
+
+
     //Get Loan Repayment Schedule By Id
     @GetMapping("loansRepaymentSchedule/{loanId}")
     public String getLoanLoanRepaymentScheduleById(@PathVariable Long loanId) {
@@ -312,35 +335,113 @@ public class MusoniController {
 
         List<Map<String, Object>> loanAccRepay = new ArrayList<>();
 
-        for (JsonNode periodNode : repaymentSchedule) {
-            String period = periodNode.get("period").asText();
-            String fromDate = formatDate(periodNode.get("fromDate"));
-            String dueDate = formatDate(periodNode.get("dueDate"));
-            String amountDue = periodNode.at("/totalDueForPeriod").asText();
-            String amountPaid = periodNode.at("/totalPaidForPeriod").asText();
-            String amountOutstanding = periodNode.at("/totalOutstandingForPeriod").asText();
+        if (repaymentSchedule.isArray()) {
+            for (JsonNode periodNode : repaymentSchedule) {
+                String period = getNodeText(periodNode, "period");
+                String fromDate = formatDate(periodNode.get("fromDate"));
+                String dueDate = formatDate(periodNode.get("dueDate"));
+                String amountDue = getNodeText(periodNode, "totalDueForPeriod");
+                String amountPaid = getNodeText(periodNode, "totalPaidForPeriod");
+                String amountOutstanding = getNodeText(periodNode, "totalOutstandingForPeriod");
+                String paidBy = formatDate(periodNode.get("obligationsMetOnDate"));
 
-            Map<String, Object> loanBal = new HashMap<>();
-            loanBal.put("Prepayment Schedule for Loan Account", "accountNo");
-            loanBal.put("Period", period);
-            loanBal.put("From Date", fromDate);
-            loanBal.put("To Date", dueDate);
-            loanBal.put("Amount Due", amountDue);
-            loanBal.put("Amount Paid", amountPaid);
-            loanBal.put("Amount Outstanding", amountOutstanding);
+                Map<String, Object> loanBal = new HashMap<>();
+                loanBal.put("loanId", loanAccount);
+                loanBal.put("period", period);
+//                loanBal.put("From Date", fromDate);
+                loanBal.put("date", dueDate);  // 1st column
+                loanBal.put("totalDue", amountDue); //3rd column
+                loanBal.put("totalPaid", amountPaid); //4th column
+                loanBal.put("totalOutstanding", amountOutstanding); //5th column
+                loanBal.put("paidBy", paidBy); //2nd column
 
-            loanAccRepay.add(loanBal);
+//                loanBal.put("Prepayment Schedule for Loan Account", loanAccount);
+//                loanBal.put("Period", period);
+//                loanBal.put("From Date", fromDate);
+//                loanBal.put("To Date", dueDate);  // 1
+//                loanBal.put("Amount Due", amountDue);
+//                loanBal.put("Amount Paid", amountPaid);
+//                loanBal.put("Amount Outstanding", amountOutstanding);
+//                loanBal.put("Paid By", paidBy);
+
+                loanAccRepay.add(loanBal);
+            }
         }
 
         return loanAccRepay;
     }
 
-    private String formatDate(JsonNode dateNode) {
-        String year = dateNode.get(2).asText();
-        String month = dateNode.get(1).asText();
-        String day = dateNode.get(0).asText();
-        return year + "-" + month + "-" + day;
+    @GetMapping("/getLoanRepaymentSchedulePdf/{loanAccount}")
+    public ResponseEntity<byte[]> getLoanRepaymentSchedulePdf(@PathVariable String loanAccount) throws java.io.IOException, IOException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        String clientAccount = restTemplate.exchange(
+                musoniUrl + "loans/" + loanAccount + "?associations=repaymentSchedule",
+                HttpMethod.GET,
+                entity,
+                String.class
+        ).getBody();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode clientAccountJson = objectMapper.readTree(clientAccount);
+        JsonNode repaymentSchedule = clientAccountJson.at("/repaymentSchedule/periods");
+
+        List<Map<String, Object>> loanAccRepay = new ArrayList<>();
+
+        if (repaymentSchedule.isArray()) {
+            for (JsonNode periodNode : repaymentSchedule) {
+                String period = periodNode.path("period").asText();
+                String dueDate = periodNode.path("dueDate").asText();
+                String amountDue = periodNode.path("totalDueForPeriod").asText();
+                String amountPaid = periodNode.path("totalPaidForPeriod").asText();
+                String amountOutstanding = periodNode.path("totalOutstandingForPeriod").asText();
+                String paidBy = periodNode.path("obligationsMetOnDate").asText();
+
+                Map<String, Object> loanBal = new HashMap<>();
+                loanBal.put("date", dueDate);
+                loanBal.put("totalDue", amountDue);
+                loanBal.put("totalPaid", amountPaid);
+                loanBal.put("totalOutstanding", amountOutstanding);
+                loanBal.put("paidBy", paidBy);
+
+                loanAccRepay.add(loanBal);
+            }
+        }
+
+        byte[] pdfBytes = loanStatementPdfGeneratorService.generateLoanSchedulePdf(loanAccRepay);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.setContentType(MediaType.APPLICATION_PDF);
+        responseHeaders.setContentDispositionFormData("attachment", "LoanSchedule.pdf");
+
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .body(pdfBytes);
     }
+    private String getNodeText(JsonNode node, String fieldName) {
+        JsonNode childNode = node.get(fieldName);
+        return childNode == null || childNode.isNull() ? "" : childNode.asText();
+    }
+
+    private String formatDate(JsonNode dateNode) {
+        if (dateNode == null || !dateNode.isArray()) {
+            return "";
+        }
+        int year = dateNode.get(0).asInt();
+        int month = dateNode.get(1).asInt();
+        int day = dateNode.get(2).asInt();
+        return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
+
+//    private String formatDate(JsonNode dateNode) {
+//        String year = dateNode.get(2).asText();
+//        String month = dateNode.get(1).asText();
+//        String day = dateNode.get(0).asText();
+//        return year + "-" + month + "-" + day;
+//    }
 
 
     //    Get Loans By TimeStamp

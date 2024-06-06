@@ -1,10 +1,7 @@
 package com.untucapital.usuite.utg.controller;
 
 import com.untucapital.usuite.utg.dto.ErrorResponse;
-import com.untucapital.usuite.utg.exception.BadRequestException;
-import com.untucapital.usuite.utg.exception.ClientNotFoundException;
-import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
-import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
+import com.untucapital.usuite.utg.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +17,24 @@ public class CustomExceptionHandlerController {
     public final ResponseEntity<ErrorResponse> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
         ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SmsException.class)
+    public final ResponseEntity<ErrorResponse> handleSmsException(SmsException ex, WebRequest request) {
+        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EmptyException.class)
+    public final ResponseEntity<ErrorResponse> handleEmptyException(EmptyException ex, WebRequest request) {
+        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TokenExpiryException.class)
+    public final ResponseEntity<ErrorResponse> handleTokenExpiryException(TokenExpiryException ex, WebRequest request) {
+        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity<>(errorDetails, HttpStatus.REQUEST_TIMEOUT);
     }
 
     @ExceptionHandler(SettlementAccountNotFoundException.class)

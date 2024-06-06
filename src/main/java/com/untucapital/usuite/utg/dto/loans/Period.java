@@ -18,4 +18,6 @@ public class Period {
     private double totalActualCostOfLoanForPeriod;
     private int modifiedByHoliday;
     private int period;
+    private int[] obligationsMetOnDate;
+    private double totalOutstandingForPeriod;
 }
