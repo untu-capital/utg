@@ -8,6 +8,8 @@ import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
+import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
+import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
@@ -196,6 +198,21 @@ public class MusoniController {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         return restTemplate.exchange(musoniUrl + "clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
     }
+
+    //Get All Client Loans By Id
+    @GetMapping("getActiveClientLoans/{clientId}")
+    public List<ViewClientLoansResponse> getClientLoans(@PathVariable Long clientId) throws ParseException {
+
+        return musoniService.activeClientLoans(clientId);
+    }
+
+    @GetMapping("getNextInstalment/{loanId}")
+    public NextInstalmentResponse getNextInstalment(@PathVariable String loanId) throws ParseException {
+
+        return musoniService.getNextRepaymentSchedule(loanId);
+    }
+
+
 
     //Get Loan Repayment Schedule By Id
     @GetMapping("loansRepaymentSchedule/{loanId}")

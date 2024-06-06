@@ -6,11 +6,15 @@ import com.untucapital.usuite.utg.dto.Currency;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.*;
 import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
+import com.untucapital.usuite.utg.dto.client.loan.LoanAccount;
+import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
 import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccount;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
@@ -19,14 +23,21 @@ import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
+import com.untucapital.usuite.utg.exception.EmptyException;
+import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
+import com.untucapital.usuite.utg.exception.SmsException;
+import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.MusoniClient;
+import com.untucapital.usuite.utg.model.settlements.SettlementAccountsTokens;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.processor.MusoniProcessor;
 import com.untucapital.usuite.utg.repository.MusoniRepository;
+import com.untucapital.usuite.utg.repository.settlementsAccounts.SettlementAccountsTokensRepository;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
+import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -48,6 +59,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -81,6 +93,8 @@ public class MusoniService {
     private final RestClient restClient;
 
     private final MusoniProcessor musoniProcessor;
+
+    private final SettlementAccountsTokensRepository settlementAccountsTokensRepository;
 
     @Lazy
     private final PostGlService postGlService;
@@ -693,7 +707,7 @@ public class MusoniService {
 
 
 
-    public SettlementAccountResponse getSavingsLoanAccountById(@PathVariable String savingsId) throws com.untucapital.usuite.utg.exception.AccountNotFoundException {
+    public SettlementAccountResponse getSavingsLoanAccountById(@PathVariable String savingsId) {
 
         SettlementAccountResponse settlementAccountResponse = new SettlementAccountResponse();
 
@@ -703,15 +717,112 @@ public class MusoniService {
         Integer clientId = settlementAccount.getClientId();
         if (clientId != 0){
             Client musoniClient = restClient.getClientById(String.valueOf(clientId));
-            settlementAccountResponse.setClientId(String.valueOf(clientId));
-            settlementAccountResponse.setPhoneNumber(musoniClient.getMobileNo());
+
+            if (musoniClient.getMobileNo() != null){
+                settlementAccountResponse.setClientId(String.valueOf(clientId));
+                settlementAccountResponse.setPhoneNumber(musoniClient.getMobileNo());
+
+
+                // Generate and Save confirmation token
+                String token = RandomNumUtils.generateCode(4);
+
+                SettlementAccountsTokens confirmToken = new SettlementAccountsTokens();
+                confirmToken.setToken(token);
+                confirmToken.setExpirationDate(LocalDateTime.now().plusMinutes(15));
+                confirmToken.setClientId(String.valueOf(clientId));
+                settlementAccountsTokensRepository.save(confirmToken);
+//
+//                String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
+//                emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
+
+                String smsText = "Your Confirmation code is : " + token +
+                        "\n\nYou can use it for Account Confirmation.\nUntu Capital Ltd";
+
+//                TODO Replace phone number
+//                smsService.sendSingle(musoniClient.getMobileNo(), smsText);
+                try {
+                    smsService.sendSingle("0775797299", smsText);
+                } catch (Exception e){
+                    throw new SmsException(e.getMessage());
+                }
+            }
+
+
         }else {
-            settlementAccountResponse.setResponseCode(AppConstants.NOT_FOUND);
-            settlementAccountResponse.setResponseMsg("ACCOUNT NOT FOUND");
+            throw new SettlementAccountNotFoundException("This Settlement Account : "+ savingsId +" does not exist");
         }
 
 
         return settlementAccountResponse;
+    }
+
+    public List<ViewClientLoansResponse> activeClientLoans(Long clientId) throws ParseException {
+
+        List<LoanAccount> loanAccounts = restClient.getClientLoansById(clientId);
+
+        List<ViewClientLoansResponse> response = new ArrayList<>();
+
+
+        for (LoanAccount account: loanAccounts){
+            ViewClientLoansResponse viewClientLoansResponse = new ViewClientLoansResponse();
+
+            viewClientLoansResponse.setLoanId(account.getId());
+            viewClientLoansResponse.setDisbursementDate(MusoniUtils.formatDate(account.getTimeline().getActualDisbursementDate()));
+
+            response.add(viewClientLoansResponse);
+
+        }
+        if(response.isEmpty()){
+            throw new EmptyException("Could not find any Active loans");
+        }
+
+        return response;
+    }
+
+
+    public NextInstalmentResponse getNextRepaymentSchedule(String loanAccount) throws ParseException {
+
+        NextInstalmentResponse response = new NextInstalmentResponse();
+
+        RepaymentScheduleLoan repaymentScheduleLoan = restClient.getRepaymentSchedule(loanAccount);
+
+        RepaymentScheduleDTO repaymentScheduleDTO = new RepaymentScheduleDTO();
+        RepaymentSchedule repaymentSchedule = repaymentScheduleLoan.getRepaymentSchedule();
+        List<Period> periods = repaymentSchedule.getPeriods();
+
+        int totalPeriods = periods.size();
+
+        log.info("#################### START #############################");
+        log.info("Total Repayment Periods: " + totalPeriods);
+        log.info("#################### END   #############################");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy,MM,dd", Locale.ENGLISH);
+        LocalDate currentDate = LocalDate.now();
+
+        Double amountDue = 0.0;
+        LocalDate dueDate = null;
+        for (int period = 1; period < totalPeriods; period++) {
+
+            Period periodData = periods.get(period);
+            amountDue = periodData.getTotalDueForPeriod();
+            int[] dueDateArray = periodData.getDueDate();
+
+
+            dueDate = LocalDate.of(dueDateArray[0], dueDateArray[1], dueDateArray[2]);
+
+            if (dueDate.isEqual(currentDate) || dueDate.isAfter(currentDate)) {
+                log.info("Next Repayment date is: " + dueDate);
+//                smsService.sendSingle(phone_number, "Please be reminded that your next repayment date is: " + dueDate + "\n\nNote: Ignore this message if you've already made your payment.");
+                break;
+            }
+        }
+
+        response.setLoanId(loanAccount);
+        response.setAmountDue(amountDue);
+        response.setDueDate(dueDate);
+
+        return response;
+
     }
 }
 
