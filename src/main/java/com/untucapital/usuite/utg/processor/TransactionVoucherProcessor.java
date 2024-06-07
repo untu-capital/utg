@@ -70,7 +70,8 @@ public class TransactionVoucherProcessor {
         Branches branch = fromVault.getBranch();
 
         return TransactionVoucher.builder()
-                .referenceNumber(fromVault.getCode() + "/" + toVault.getCode() + "/" + String.format("%06d", refNo))
+//                .referenceNumber(fromVault.getCode() + "/" + toVault.getCode() + "/" + String.format("%06d", refNo))
+                .referenceNumber(fromVault.getCode() + String.format("%06d", refNo))
                 .initiator(user)
                 .applicationDate(LocalDate.parse(request.getApplicationDate()))
                 .amount(request.getAmount())

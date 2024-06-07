@@ -460,7 +460,6 @@ public class TransactionVoucherService {
             senderName = sender.getFirstName() + " " + sender.getLastName();
         }
 
-
         String emailText = emailSender.approvalMessage(recipientName, message, senderName);
         emailSender.send(recipientEmail, subject, emailText);
     }
