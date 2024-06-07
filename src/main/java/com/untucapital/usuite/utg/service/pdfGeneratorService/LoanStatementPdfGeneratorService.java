@@ -86,7 +86,7 @@ public class LoanStatementPdfGeneratorService {
                     .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
                     .setFontSize(18));
 
-            Table table = new Table(new float[]{1, 3, 3, 3});
+            Table table = new Table(new float[]{1, 3, 3, 3, 3, 3});
             table.addHeaderCell("Period");
             table.addHeaderCell("Due Date");
             table.addHeaderCell("Paid By");
