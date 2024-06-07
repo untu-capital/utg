@@ -97,7 +97,11 @@ public class LoanStatementPdfGeneratorService {
             for (ClientStatementResponse entry : clientStatementResponses) {
                 table.addCell(String.valueOf(entry.getPeriod()));
                 table.addCell(String.valueOf(entry.getDueDate()));
-                table.addCell(String.valueOf(entry.getPaidBy()));
+                if(entry.getPaidBy() != null) {
+                    table.addCell(String.valueOf(entry.getPaidBy()));
+                }else {
+                    table.addCell("- - -");
+                }
                 table.addCell(String.format("%.2f", entry.getAmountDue()));
                 table.addCell(String.format("%.2f", entry.getAmountPaid()));
                 table.addCell(String.format("%.2f", entry.getAmountOutstanding()));
