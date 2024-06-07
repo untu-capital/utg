@@ -826,7 +826,7 @@ public class MusoniService {
 
     }
 
-    public List<ClientStatementResponse> getRepaymentSchedule(String loanAccount) throws ParseException {
+    public List<ClientStatementResponse> getClientRepaymentSchedule(String loanAccount) throws ParseException {
 
         List<ClientStatementResponse> response = new ArrayList<>();
 

@@ -11,8 +11,8 @@ public class ErrorResponse {
 
     private String message;
     private String details;
-    private Integer code;
     private LocalDateTime timestamp;
+    private Integer code;
 
     public ErrorResponse(String message, String description, LocalDateTime now) {
         this.message = message;

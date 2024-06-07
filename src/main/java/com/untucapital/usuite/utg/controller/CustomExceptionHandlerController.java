@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.controller;
 
+import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.dto.ErrorResponse;
 import com.untucapital.usuite.utg.exception.*;
 import org.springframework.http.HttpStatus;
@@ -45,7 +46,7 @@ public class CustomExceptionHandlerController {
 
     @ExceptionHandler(ClientNotFoundException.class)
     public final ResponseEntity<ErrorResponse> handleClientNotFoundException(ClientNotFoundException ex, WebRequest request) {
-        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false),LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

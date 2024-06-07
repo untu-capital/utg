@@ -74,7 +74,7 @@ public class LoanStatementPdfGeneratorService {
 
     public ByteArrayInputStream generateAmortizationSchedulePdf(String loanAccount) throws ParseException {
 
-        List<ClientStatementResponse> clientStatementResponses = musoniService.getRepaymentSchedule(loanAccount);
+        List<ClientStatementResponse> clientStatementResponses = musoniService.getClientRepaymentSchedule(loanAccount);
 
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {

@@ -362,7 +362,7 @@ public class UserService extends AbstractService<User> {
     @Transactional(value = "transactionManager")
     public boolean checkUserMobile(long mobile) {
         log.debug("Check User Mobile Request mobile: {}", mobile);
-        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(mobile), "US");
+        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(mobile), "ZWE");
         return userRepository.existsByContactDetailMobileNumber(Long.parseLong(normalizedMobile));
     }
 

@@ -371,7 +371,7 @@ public class MusoniController {
         return loanAccRepay;
     }
 
-    @GetMapping("/getLoanRepaymentSchedulePdf/{loanAccount}")
+    @GetMapping("/getMusoniLoanRepaymentSchedulePdf/{loanAccount}")
     public ResponseEntity<byte[]> getLoanRepaymentSchedulePdf(@PathVariable String loanAccount) throws java.io.IOException, IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/json");
