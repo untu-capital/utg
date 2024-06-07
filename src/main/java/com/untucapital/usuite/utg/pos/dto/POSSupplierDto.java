@@ -23,6 +23,7 @@ public class POSSupplierDto implements Serializable {
     String phone;
     String contactPerson;
     String comment;
+    String taxClearance;
     ApprovalStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

@@ -67,4 +67,7 @@ public class POSSupplier {
     @Column(name = "tax_id_no")
     private String taxIdNo;
 
+    @Column(name = "tax_clearance")
+    private String taxClearance;
+
 }

@@ -1,6 +1,4 @@
 package com.untucapital.usuite.utg.pos.model;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
