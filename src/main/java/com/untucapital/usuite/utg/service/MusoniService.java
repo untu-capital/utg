@@ -847,6 +847,7 @@ public class MusoniService {
             if (period.getObligationsMetOnDate() != null) {
                 clientStatementResponse.setPaidBy(MusoniUtils.formatDate(period.getObligationsMetOnDate()));
             }
+
             clientStatementResponse.setAmountPaid(period.getTotalPaidForPeriod());
             clientStatementResponse.setAmountOutstanding(period.getTotalOutstandingForPeriod());
 
