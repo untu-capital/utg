@@ -371,6 +371,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/requisitions/**")
                 .permitAll()
 
+                .antMatchers("/targets/**")
+                .permitAll()
+
                 .antMatchers("/poTransactions/**")
                 .permitAll()
 

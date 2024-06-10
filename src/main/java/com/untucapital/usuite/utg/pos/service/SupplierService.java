@@ -98,6 +98,7 @@ public class SupplierService {
         existingSupplier.setPhone(posSupplier.getPhone());
         existingSupplier.setContactPerson(posSupplier.getContactPerson());
         existingSupplier.setComment(posSupplier.getComment());
+        existingSupplier.setTaxClearance(posSupplier.getTaxClearance());
         POSSupplier supplier = supplierRepository.save(existingSupplier);
         POSSupplierDto posSupplierDto = new POSSupplierDto();
         BeanUtils.copyProperties(supplier, posSupplierDto);

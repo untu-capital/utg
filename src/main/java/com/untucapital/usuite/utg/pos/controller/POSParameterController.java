@@ -18,7 +18,7 @@ public class POSParameterController {
     //Save Parameter
     @PostMapping("/save")
     @ResponseStatus(HttpStatus.CREATED)
-    public POSParameter saveCategory(@RequestBody POSParameter posParameter) {
+    public POSParameter saveParameter(@RequestBody POSParameter posParameter) {
         return posParameterService.saveParameter(posParameter);
     }
     //Get Parameter By Id
