@@ -82,12 +82,12 @@ public class LoanStatementPdfGeneratorService {
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
-            document.add(new Paragraph("Amortization Schedule")
+            document.add(new Paragraph("Summarized Statement")
                     .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
                     .setFontSize(18));
 
-            Table table = new Table(new float[]{1, 3, 3, 3, 3, 3});
-            table.addHeaderCell("Period");
+            Table table = new Table(new float[]{1, 4, 4, 3, 3, 3});
+//            table.addHeaderCell("Period");
             table.addHeaderCell("Due Date");
             table.addHeaderCell("Paid By");
             table.addHeaderCell("Total Due");
@@ -95,8 +95,8 @@ public class LoanStatementPdfGeneratorService {
             table.addHeaderCell("Total Outstanding");
 
             for (ClientStatementResponse entry : clientStatementResponses) {
-                table.addCell(String.valueOf(entry.getPeriod()));
-                table.addCell(String.valueOf(entry.getDueDate()));
+//                table.addCell(String.valueOf(entry.getPeriod()));
+                table.addCell(String.valueOf(entry.getDueDate()));;
                 table.addCell(String.valueOf(entry.getPaidBy()));
                 table.addCell(String.format("%.2f", entry.getAmountDue()));
                 table.addCell(String.format("%.2f", entry.getAmountPaid()));
