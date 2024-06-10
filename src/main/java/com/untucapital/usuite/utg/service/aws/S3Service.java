@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 @Service
@@ -40,11 +39,15 @@ public class S3Service {
                 .build();
     }
 
-    public void uploadPDF(String key, byte[] pdfContent) {
+    public String uploadPDF(String key, byte[] pdfContent) {
         InputStream is = new ByteArrayInputStream(pdfContent);
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(pdfContent.length);
         metadata.setContentType("application/pdf");
         s3client.putObject(bucketName, key, is, metadata);
+
+        // Construct the URL of the uploaded PDF
+        return s3client.getUrl(bucketName, key).toString();
     }
 }
+

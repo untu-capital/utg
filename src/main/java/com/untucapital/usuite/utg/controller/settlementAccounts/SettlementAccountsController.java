@@ -64,10 +64,10 @@ public class SettlementAccountsController {
 
         String key = "pdfs/" + UUID.randomUUID() + ".pdf";
 
-        s3Service.uploadPDF(key, bis.readAllBytes());
+        String pdfUrl = s3Service.uploadPDF(key, bis.readAllBytes());
 
 
-        return ResponseEntity.ok(key);
+        return ResponseEntity.ok(pdfUrl);
     }
 
 
