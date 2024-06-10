@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.aws.S3Service;
 import com.untucapital.usuite.utg.service.pdfGeneratorService.LoanStatementPdfGeneratorService;
 import com.untucapital.usuite.utg.service.settlementAccounts.SettlementAccountsService;
+import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -56,13 +57,13 @@ public class SettlementAccountsController {
     }
 
     @GetMapping("/getLoanStatement/{loanAccount}")
-    public ResponseEntity<String> getSettlementStatement(@PathVariable("loanAccount") String loanAmount) throws ParseException {
+    public ResponseEntity<String> getSettlementStatement(@PathVariable("loanAccount") String loanId) throws ParseException {
 
 
 
-        ByteArrayInputStream bis = loanStatementPdfGeneratorService.generateAmortizationSchedulePdf(loanAmount);
+        ByteArrayInputStream bis = loanStatementPdfGeneratorService.generateAmortizationSchedulePdf(loanId);
 
-        String key = "pdfs/" + UUID.randomUUID() + ".pdf";
+        String key = "pdfs/" + loanId+"-"+RandomNumUtils.generateAwsCode(Integer.parseInt(loanId)) + ".pdf";
 
         String pdfUrl = s3Service.uploadPDF(key, bis.readAllBytes());
 
