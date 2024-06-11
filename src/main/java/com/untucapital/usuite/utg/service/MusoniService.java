@@ -63,6 +63,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -837,10 +838,10 @@ public class MusoniService {
         RepaymentSchedule repaymentSchedule = repaymentScheduleLoan.getRepaymentSchedule();
         List<Period> periods = repaymentSchedule.getPeriods();
 
-        for (Period period: periods){
-            ClientStatementResponse clientStatementResponse = new ClientStatementResponse();
+        List<Period> remainingPeriods = periods.stream().skip(1).collect(Collectors.toList());
 
-//            String amountOutstanding = periodNode.path("totalOutstandingForPeriod").asText();
+        for (Period period : remainingPeriods) {
+            ClientStatementResponse clientStatementResponse = new ClientStatementResponse();
 
             clientStatementResponse.setAmountDue(period.getTotalDueForPeriod());
             clientStatementResponse.setDueDate(MusoniUtils.formatDate(period.getDueDate()));
