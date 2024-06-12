@@ -18,10 +18,7 @@ import com.untucapital.usuite.utg.model.enums.RoleType;
 import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
-import com.untucapital.usuite.utg.utils.EmailSender;
-import com.untucapital.usuite.utg.utils.EmailValidator;
-import com.untucapital.usuite.utg.utils.FormatterUtil;
-import com.untucapital.usuite.utg.utils.RandomNumUtils;
+import com.untucapital.usuite.utg.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -181,10 +178,12 @@ public class UserService extends AbstractService<User> {
         log.debug("User Registration Request - {}", FormatterUtil.toJson(signUpRequest));
 
         if (userRepository.existsUserByUsername(signUpRequest.getUsername())) {
-            throw new ValidationException("Username is already taken");
+            throw new ValidationException("Account number is already used");
         }
 
-        if (userRepository.existsByContactDetailMobileNumber(signUpRequest.getMobileNumber())) {
+        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZW");
+        if (userRepository.existsByContactDetailMobileNumber(Long.parseLong(normalizedMobile))) {
+//        if (userRepository.existsByContactDetailMobileNumber(signUpRequest.getMobileNumber())) {
             throw new ValidationException("Mobile Number already exists");
         }
 
@@ -234,7 +233,7 @@ public class UserService extends AbstractService<User> {
         emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
 
         String smsText = "Your verification code is : " + token +
-                "\nYou can use: " + user.getUsername() + " as your username, or login using your mobile number: " + user.getContactDetail().getMobileNumber() + "." +
+                "\nYou can use: " + user.getUsername() + " to login, or login using your mobile number: " + user.getContactDetail().getMobileNumber() + "." +
                 "\n\nThank you for registering with us.\nUntu Capital Ltd";
         smsService.sendSingle(String.valueOf(user.getContactDetail().getMobileNumber()), smsText);
 
@@ -363,8 +362,8 @@ public class UserService extends AbstractService<User> {
     @Transactional(value = "transactionManager")
     public boolean checkUserMobile(long mobile) {
         log.debug("Check User Mobile Request mobile: {}", mobile);
-
-        return userRepository.existsByContactDetailMobileNumber(mobile);
+        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(mobile), "ZW");
+        return userRepository.existsByContactDetailMobileNumber(Long.parseLong(normalizedMobile));
     }
 
     @Transactional(value = "transactionManager")

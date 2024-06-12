@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.AllLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
+import com.untucapital.usuite.utg.dto.client.loan.AccountData;
+import com.untucapital.usuite.utg.dto.client.loan.LoanAccount;
 import com.untucapital.usuite.utg.dto.loans.LoanTransaction;
 import com.untucapital.usuite.utg.dto.loans.RepaymentScheduleLoan;
 import com.untucapital.usuite.utg.dto.loans.SingleLoan;
@@ -40,6 +42,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Panashe Rutimhu Dell 8/10/2023
@@ -249,7 +252,7 @@ public class RestClient {
 
         RepaymentScheduleLoan repaymentScheduleLoan = new RepaymentScheduleLoan();
         try {
-            String repaymentSchedule = restTemplate.exchange("https://api.demo.irl.musoniservices.com/v1/loans/"
+            String repaymentSchedule = restTemplate.exchange(baseUrl+"/loans/"
                     + loanAccount + "?associations=repaymentSchedule", HttpMethod.GET, setHttpEntity(), String.class).getBody();
 
             repaymentScheduleLoan = objectMapper.readValue(repaymentSchedule, RepaymentScheduleLoan.class);
@@ -491,6 +494,48 @@ public class RestClient {
 
 
     }
+
+
+    public PageItems getSavingsLoanAccountById(@PathVariable String savingsId) {
+        PageItems settlementAccount = new PageItems();
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        try {
+            String savingsAcc = restTemplate.exchange(baseUrl + "savingsaccounts/"+savingsId, HttpMethod.GET, entity, String.class).getBody();
+            settlementAccount = objectMapper.readValue(savingsAcc,PageItems.class);
+
+        }catch(Exception e){
+            log.info("FAILED TO GET SETTLEMENT ACCOUNT: ", e.getMessage());
+        }
+        return settlementAccount;
+
+
+
+    }
+
+    public List<LoanAccount> getClientLoansById(@PathVariable Long clientId) {
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        AccountData accountData = new AccountData();
+        List<LoanAccount> activeLoanAccounts = new ArrayList<>();
+        try {
+            String clientLoans = restTemplate.exchange(baseUrl + "clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
+
+            accountData = objectMapper.readValue(clientLoans, AccountData.class);
+
+            List<LoanAccount> loanAccounts = accountData.getLoanAccounts();
+
+            // Filter loan accounts where status.active is true
+            activeLoanAccounts = loanAccounts.stream()
+                    .filter(loanAccount -> loanAccount.getStatus().isActive())
+                    .collect(Collectors.toList());
+
+
+        }catch (Exception e){
+            log.info("Failed to get Client loans: {}", e.getMessage());
+        }
+
+        return activeLoanAccounts;
+    }
+
 
 
 

@@ -46,6 +46,9 @@ public class AuthController {
     private final SmsService smsService;
     private final UserRepository userRepository;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
     @Value("${untu.reset-token.link}")
     private String resetPassUrl;
 
@@ -112,9 +115,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Mobile number provided does not exist"));
     }
 
-
-    @Autowired
-    private JavaMailSender mailSender;
 
     @PostMapping("/forgot_password")
     public ResponseEntity<UsuiteApiResp> processForgotPassword(HttpServletRequest request, Model model) {

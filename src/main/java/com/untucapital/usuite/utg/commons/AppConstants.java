@@ -2,6 +2,8 @@ package com.untucapital.usuite.utg.commons;
 
 
 public interface AppConstants {
+
+    String SEQUENCE_NAME = "transaction_voucher_sequence";
     String DISBURSEMENT = "LOA-DIS";
     String REPAYMENT = "LOA-REP";
     String CASH = "CAS-TRN";
@@ -21,6 +23,11 @@ public interface AppConstants {
     String GKW = "Gokwe Petty Cash";
     String HO = "Head Office Petty Cash";
 
-    String SEQUENCE_NAME = "transaction_voucher_sequence";
     Integer EXCHANGE_RATE = 1;
+
+
+
+//    RESPONSE MESSAGES:
+    Integer NOT_FOUND = 404;
+
 }

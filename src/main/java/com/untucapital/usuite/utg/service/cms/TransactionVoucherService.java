@@ -91,7 +91,7 @@ public class TransactionVoucherService {
 
         sendEmail(
                 firstApprover.getFirstName() + " " + firstApprover.getLastName(),
-                "tjchidanika@gmail.com",
+                firstApprover.getContactDetail().getEmailAddress(),
                 "Transaction Approval",
 //                "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher1.getApplicationDate(), transactionVoucher1.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + ".",
                 "You have a new transaction to approve - " + transactionVoucher1.getReference() + ". The transactional purpose is " + transactionVoucher1.getWithdrawalPurpose() + ".",
@@ -113,7 +113,7 @@ public class TransactionVoucherService {
 
             sendEmail(
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
-                    "tjchidanika@gmail.com",
+                    transactionVoucher.getSecondApprover().getContactDetail().getEmailAddress(),
                     "Transaction Approval",
 //                    "You have a new transaction to approve (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + ".",
                     "You have a new transaction to approve - " + transactionVoucher.getReference() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose()+ ".",
@@ -127,7 +127,7 @@ public class TransactionVoucherService {
 
             sendEmail(
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
+                    transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
                     "Revise Transaction",
 //                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     "Revise transaction - " + transactionVoucher.getReference() + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
@@ -149,11 +149,12 @@ public class TransactionVoucherService {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
         TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getId());
 
+
         if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
             transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
             sendEmail(
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
+                    transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
                     "Transaction Approved Successfully",
 //                    "Revise transaction (" + transactionVoucherProcessor.createApplicationId(transactionVoucher.getApplicationDate(), transactionVoucher.getId()) + "). The transactional purpose is " + transactionPurpose.getName() + " ." + transactionVoucher.getFirstApprovalComment(),
                     "Revise transaction - " + transactionVoucher.getReference() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
@@ -166,9 +167,9 @@ public class TransactionVoucherService {
             transactionVoucher.setSecondApprovalComment(request.getComment());
             sendEmail(
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    "tjchidanika@gmail.com",
-                    "Revise Transaction",
-                    "Revise Transaction - " + transactionVoucher.getReference() + ".",
+                    transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
+                    "Make Transaction adjustments",
+                    "Make adjustments to the transaction with reference : " + transactionVoucher.getReference() + ". Comment for adjustments : " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
         }
@@ -366,9 +367,9 @@ public class TransactionVoucherService {
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                 sendEmail(
                         transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Transactions Approval",
-                        "You have a new transactions to approve - " + referenceNumbers + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + ".",
+                        transactionVoucher.getSecondApprover().getContactDetail().getEmailAddress(),
+                        "Transaction Approved",
+                        "You have a new transaction to approve - " + referenceNumbers + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + ".",
                         transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
                 );
             }
@@ -376,9 +377,9 @@ public class TransactionVoucherService {
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("REVISE")) {
                 sendEmail(
                         transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Revise Transactions",
-                        "Revise the following transactions - " + transactionVoucher + " The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
+                        transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
+                        "Make Transaction adjustments",
+                        "Make adjustments to the transaction with reference : " + referenceNumbers + ". Comment for adjustments : " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
                         transactionVoucher.getFirstApprover().getFirstName() + " " + transactionVoucher.getFirstApprover().getLastName()
                 );
             }
@@ -403,7 +404,37 @@ public class TransactionVoucherService {
             if(transactionVoucher.getFirstApprovalStatus() == ApprovalStatus.APPROVED && transactionVoucher.getSecondApprovalStatus() == ApprovalStatus.PENDING){
                 if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                     transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
+
+                    if (transactionVoucher.getWithdrawalPurpose() != null){
+
+
+                        PastelTransReq pastelTransReq = new PastelTransReq();
+
+
+                        TransactionPurpose transactionPurpose = transactionPurposeRepository.getById(transactionVoucher.getWithdrawalPurpose());
+
+                        String description = transactionPurpose.getName();
+                        LocalDate date = transactionVoucher.getApplicationDate().toLocalDate();
+                        log.info("Loacal Date: {}", date);
+                        pastelTransReq.setTransactionDate(MusoniUtils.formatPastelDates(date));
+                        pastelTransReq.setDescription(description);
+                        pastelTransReq.setTransactionType(AppConstants.CASH);
+                        pastelTransReq.setAmount(transactionVoucher.getAmount().doubleValue());
+                        pastelTransReq.setCurrency(transactionVoucher.getCurrency());
+                        pastelTransReq.setReference(transactionVoucher.getReference());
+                        pastelTransReq.setAPIPassword(apiPassword);
+                        pastelTransReq.setAPIUsername(apiUsername);
+                        pastelTransReq.setFromAccount(transactionVoucher.getFromVault().getAccount());
+                        pastelTransReq.setToAccount(transactionVoucher.getToVault().getAccount());
+                        pastelTransReq.setExchangeRate(AppConstants.EXCHANGE_RATE);
+
+                        pastelTransReqs.add(pastelTransReq);
+
+
+                    }
                 }
+
+
 
                 if (request.getApprovalStatus().equalsIgnoreCase("REVISE")) {
                     transactionVoucher.setSecondApprovalStatus(ApprovalStatus.REVISE);
@@ -426,33 +457,6 @@ public class TransactionVoucherService {
             transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
             transactionVouchers.add(transactionVoucher);
 
-            if (transactionVoucher.getWithdrawalPurpose() != null){
-
-
-                PastelTransReq pastelTransReq = new PastelTransReq();
-
-
-                TransactionPurpose transactionPurpose = transactionPurposeRepository.getById(transactionVoucher.getWithdrawalPurpose());
-
-                String description = transactionPurpose.getName();
-                LocalDate date = transactionVoucher.getApplicationDate().toLocalDate();
-                log.info("Loacal Date: {}", date);
-                pastelTransReq.setTransactionDate(MusoniUtils.formatPastelDates(date));
-                pastelTransReq.setDescription(description);
-                pastelTransReq.setTransactionType(AppConstants.CASH);
-                pastelTransReq.setAmount(transactionVoucher.getAmount().doubleValue());
-                pastelTransReq.setCurrency(transactionVoucher.getCurrency());
-                pastelTransReq.setReference(transactionVoucher.getReference());
-                pastelTransReq.setAPIPassword(apiPassword);
-                pastelTransReq.setAPIUsername(apiUsername);
-                pastelTransReq.setFromAccount(transactionVoucher.getFromVault().getAccount());
-                pastelTransReq.setToAccount(transactionVoucher.getToVault().getAccount());
-                pastelTransReq.setExchangeRate(AppConstants.EXCHANGE_RATE);
-
-                pastelTransReqs.add(pastelTransReq);
-
-
-            }
         }
 
         if (!transactionVouchers.isEmpty() && !requests.isEmpty()){
@@ -462,9 +466,9 @@ public class TransactionVoucherService {
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("APPROVED")) {
                 sendEmail(
                         transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Transactions Approved Successfully",
-                        "The following transactions - " + referenceNumbers + " approved successfully. The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " .",
+                        transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
+                        "Transaction Approved Successfully",
+                        "The following transaction with Reference : " + referenceNumbers + " approved successfully. Purpose for transaction is: " + transactionVoucher.getWithdrawalPurpose() + " .",
                         transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
                 );
             }
@@ -472,9 +476,9 @@ public class TransactionVoucherService {
             if (requests.get(0).getApprovalStatus().equalsIgnoreCase("REVISE")) {
                 sendEmail(
                         transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                        "tjchidanika@gmail.com",
-                        "Revise Transactions",
-                        "Revise the following transactions - " + referenceNumbers + ".",
+                        transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
+                        "Make Transaction adjustments",
+                        "Make adjustments to the transaction with reference : " + referenceNumbers + ".",
                         transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
                 );
             }

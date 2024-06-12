@@ -11,7 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 
@@ -38,6 +37,10 @@ public class IndustryService extends AbstractService<Industry> {
     @Override
     public List<User> getUserByRole(String name) {
         return null;
+    }
+
+    public Industry getIndustryById(String id) {
+        return industryRepository.findIndustriesById(id);
     }
 
     @Transactional(value = "transactionManager")

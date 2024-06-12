@@ -371,6 +371,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/requisitions/**")
                 .permitAll()
 
+                .antMatchers("/targets/**")
+                .permitAll()
+
                 .antMatchers("/poTransactions/**")
                 .permitAll()
 
@@ -390,6 +393,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
                 .antMatchers("/treasury_management/**")
+                .permitAll()
+
+                .antMatchers("/settlements/**")
                 .permitAll()
 
                 .anyRequest()
