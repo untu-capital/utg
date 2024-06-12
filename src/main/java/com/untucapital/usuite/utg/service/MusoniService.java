@@ -738,12 +738,12 @@ public class MusoniService {
 //                String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
 //                emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
 
-                String smsText = "Your OTP is : " + token +
+                String smsText = "Your Confirmation code is : " + token +
                         "\n\nYou can use it for Account Confirmation.\nUntu Capital Ltd";
 
-                try {
 //                TODO Replace phone number
 //                smsService.sendSingle(musoniClient.getMobileNo(), smsText);
+                try {
                     smsService.sendSingle("0775797299", smsText);
                 } catch (Exception e){
                     throw new SmsException(e.getMessage());

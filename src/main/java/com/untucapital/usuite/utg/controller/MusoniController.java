@@ -208,11 +208,13 @@ public class MusoniController {
     //Get All Client Loans By Id
     @GetMapping("getActiveClientLoans/{clientId}")
     public List<ViewClientLoansResponse> getClientLoans(@PathVariable Long clientId) throws ParseException {
+
         return musoniService.activeClientLoans(clientId);
     }
 
     @GetMapping("getNextInstalment/{loanId}")
     public NextInstalmentResponse getNextInstalment(@PathVariable String loanId) throws ParseException {
+
         return musoniService.getNextRepaymentSchedule(loanId);
     }
 
