@@ -44,7 +44,7 @@ public class ClientLoanController {
     //build save loan REST API
     @PostMapping
     @Operation(summary = "Create a new client loan application")
-    public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) {
+    public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) throws ParseException {
         log.info(String.valueOf(clientLoan));
         return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
     }

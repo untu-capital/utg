@@ -35,12 +35,16 @@ public class UserPrincipalService implements UserDetailsService {
     }
 
     public Optional<User> findUserByUsernameOrMobileNumber(String username) {
-        try {
-            Long mobileNumber = Long.parseLong(username);
-            return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
-        } catch (NumberFormatException e) {
-            return userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()) {
+            try {
+                Long mobileNumber = Long.parseLong(username);
+                return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
+            } catch (NumberFormatException e) {
+                return userRepository.findByUsername(username);
+            }
         }
+        return user;
     }
 
     // This method is used by the AuthFilter

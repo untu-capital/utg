@@ -7,6 +7,8 @@ import com.untucapital.usuite.utg.controller.payload.LoginReq;
 import com.untucapital.usuite.utg.controller.payload.LoginResp;
 import com.untucapital.usuite.utg.controller.payload.SignUpRequest;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
+import com.untucapital.usuite.utg.dto.client.CustomerKyc;
+import com.untucapital.usuite.utg.exception.KycNotFoundException;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
 import com.untucapital.usuite.utg.model.ConfirmationToken;
@@ -178,7 +180,7 @@ public class UserService extends AbstractService<User> {
         log.debug("User Registration Request - {}", FormatterUtil.toJson(signUpRequest));
 
         if (userRepository.existsUserByUsername(signUpRequest.getUsername())) {
-            throw new ValidationException("Account number is already used");
+            throw new ValidationException("This account number is already associated with another WhatsApp account. If you wish to request a change of the phone number linked to your account, please contact our branch.");
         }
 
         String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZW");
@@ -221,7 +223,7 @@ public class UserService extends AbstractService<User> {
         User createdUser = userRepository.save(user);
 
         // Generate and Save confirmation token
-        String token = RandomNumUtils.generateCode(6);
+        String token = RandomNumUtils.generateCode(4);
 
         ConfirmationToken confirmToken = new ConfirmationToken();
         confirmToken.setToken(token);
@@ -230,12 +232,12 @@ public class UserService extends AbstractService<User> {
         confirmationTokenRepository.save(confirmToken);
 
         String emailText = emailSender.buildConfirmationEmail(user.getFirstName(), user.getUsername(), token);
-        emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
+//        emailSender.send(user.getContactDetail().getEmailAddress(), "Untu Credit Application Account Verification", emailText);
 
         String smsText = "Your verification code is : " + token +
                 "\nYou can use: " + user.getUsername() + " to login, or login using your mobile number: " + user.getContactDetail().getMobileNumber() + "." +
                 "\n\nThank you for registering with us.\nUntu Capital Ltd";
-        smsService.sendSingle(String.valueOf(user.getContactDetail().getMobileNumber()), smsText);
+//        smsService.sendSingle(String.valueOf(user.getContactDetail().getMobileNumber()), smsText);
 
         return Optional.of(createdUser.getId());
     }
@@ -415,13 +417,17 @@ public class UserService extends AbstractService<User> {
 
     @Transactional(value = "transactionManager")
     public Optional<User> findUserByUsernameOrMobileNumber(String username) {
-        try {
-            Long mobileNumber = Long.parseLong(username);
-            return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
-        } catch (NumberFormatException e) {
-            log.debug("QWERTY USER LOGIN");
-            return userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
+        if(user.isEmpty()) {
+            try {
+                Long mobileNumber = Long.parseLong(username);
+                return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
+            } catch (NumberFormatException e) {
+                log.debug("QWERTY USER LOGIN");
+                return userRepository.findByUsername(username);
+            }
         }
+        return user;
     }
 
     @Transactional(value = "transactionManager")
@@ -440,7 +446,7 @@ public class UserService extends AbstractService<User> {
 
 //            User createdUser = userRepository.save(user);
             // Generate and Save confirmation token
-            String token = RandomNumUtils.generateCode(6);
+            String token = RandomNumUtils.generateCode(4);
             ConfirmationToken confirmToken = new ConfirmationToken();
             confirmToken.setToken(token);
             confirmToken.setExpirationDate(LocalDateTime.now().plusMinutes(30));
@@ -501,5 +507,24 @@ public class UserService extends AbstractService<User> {
 
             return null;
         }
+    }
+    @Transactional(value = "transactionManager")
+    public CustomerKyc getKyc(String username) {
+        CustomerKyc kyc = new CustomerKyc();
+        User user = userRepository.findByUsername(username).orElseThrow();
+
+        if (user.getNationalId() != null && user.getCity() != null && user.getStreetName() != null && user.getStreetNumber() != null && user.getSuburb() != null && user.getMaritalStatus() != null) {
+            kyc.setNationalId(user.getNationalId());
+            kyc.setCity(user.getCity());
+            kyc.setMaritalStatus(user.getMaritalStatus());
+            kyc.setStreetName(user.getStreetName());
+            kyc.setStreetNumber(user.getStreetNumber());
+            kyc.setSuburbName(user.getSuburb());
+
+        } else {
+            throw new KycNotFoundException("Fill in kyc information");
+        }
+
+        return kyc;
     }
 }

@@ -2,9 +2,8 @@ package com.untucapital.usuite.utg.controller;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.untucapital.usuite.utg.dto.client.CustomerKyc;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
-import com.untucapital.usuite.utg.model.ClientLoan;
-import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.CmsUser;
 import com.untucapital.usuite.utg.model.po.PoUser;
@@ -13,7 +12,6 @@ import com.untucapital.usuite.utg.repository.ConfirmationTokenRepository;
 import com.untucapital.usuite.utg.repository.RoleRepository;
 import com.untucapital.usuite.utg.repository.UserRepository;
 import com.untucapital.usuite.utg.service.AbstractService;
-import com.untucapital.usuite.utg.service.ClientLoanApplication;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import org.slf4j.Logger;
@@ -23,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,6 +76,11 @@ public class UsersController extends AbstractController<User> {
     @GetMapping ("getUser/{id}")
     public ResponseEntity<User> getUserById(@PathVariable("id") String userId) {
         return new ResponseEntity<User>(userRepository.getUserById(userId),HttpStatus.OK);
+    }
+
+    @GetMapping ("getUserKycById/{username}")
+    public CustomerKyc getUserKycById(@PathVariable("username") String username) {
+       return userService.getKyc(username);
     }
 
 //    GET ALL Cash Management USERS
@@ -236,6 +238,21 @@ public class UsersController extends AbstractController<User> {
         updatedUser.setDirtOfBirth(user.getDirtOfBirth());
         updatedUser.setMaritalStatus(user.getMaritalStatus());
         updatedUser.setGender(user.getGender());
+        updatedUser.setCity(user.getCity());
+        updatedUser.setSuburb(user.getSuburb());
+        updatedUser.setStreetName(user.getStreetName());
+        updatedUser.setStreetNumber(user.getStreetNumber());
+
+        userRepository.save(updatedUser);
+        return new ResponseEntity<String>("User Info Status successfully updated.", HttpStatus.OK);
+    }
+
+    @PutMapping("/updateKycInfo/{id}")
+    public ResponseEntity<String> updateKycInfo(@PathVariable String id, @RequestBody User user){
+        User updatedUser = userRepository.getUserById(id);
+
+        updatedUser.setNationalId(user.getNationalId());
+        updatedUser.setMaritalStatus(user.getMaritalStatus());
         updatedUser.setCity(user.getCity());
         updatedUser.setSuburb(user.getSuburb());
         updatedUser.setStreetName(user.getStreetName());

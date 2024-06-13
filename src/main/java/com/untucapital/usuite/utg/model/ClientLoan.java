@@ -73,6 +73,17 @@ public class ClientLoan extends AbstractEntity {
     @Column(name = "user_id", nullable = false)
     private String userId;
 
+    @Column(name = "username")
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Column(name = "loan_status", nullable = false)
     private String loanStatus;
 
@@ -891,5 +902,91 @@ public class ClientLoan extends AbstractEntity {
 
     public void setPlatformUsed(String platformUsed) {
         this.platformUsed = platformUsed;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientLoan{" +
+                "firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", idNumber='" + idNumber + '\'' +
+                ", branchName='" + branchName + '\'' +
+                ", maritalStatus='" + maritalStatus + '\'' +
+                ", gender='" + gender + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", placeOfBusiness='" + placeOfBusiness + '\'' +
+                ", industryCode='" + industryCode + '\'' +
+                ", loanAmount='" + loanAmount + '\'' +
+                ", streetNo='" + streetNo + '\'' +
+                ", businessName='" + businessName + '\'' +
+                ", businessStartDate='" + businessStartDate + '\'' +
+                ", streetName='" + streetName + '\'' +
+                ", suburb='" + suburb + '\'' +
+                ", city='" + city + '\'' +
+                ", tenure='" + tenure + '\'' +
+                ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
+                ", loanStatus='" + loanStatus + '\'' +
+                ", loanStatusAssigner='" + loanStatusAssigner + '\'' +
+                ", fcbScore=" + fcbScore +
+                ", fcbStatus='" + fcbStatus + '\'' +
+                ", comment='" + comment + '\'' +
+                ", assignTo='" + assignTo + '\'' +
+                ", assignedBy='" + assignedBy + '\'' +
+                ", additionalRemarks='" + additionalRemarks + '\'' +
+                ", loanFileId='" + loanFileId + '\'' +
+                ", processLoanStatus='" + processLoanStatus + '\'' +
+                ", processedBy='" + processedBy + '\'' +
+                ", meetingLoanAmount='" + meetingLoanAmount + '\'' +
+                ", meetingTenure='" + meetingTenure + '\'' +
+                ", meetingInterestRate='" + meetingInterestRate + '\'' +
+                ", meetingOnWhichBasis='" + meetingOnWhichBasis + '\'' +
+                ", meetingCashHandlingFee='" + meetingCashHandlingFee + '\'' +
+                ", meetingRepaymentAmount='" + meetingRepaymentAmount + '\'' +
+                ", meetingProduct='" + meetingProduct + '\'' +
+                ", meetingRN='" + meetingRN + '\'' +
+                ", meetingUpfrontFee='" + meetingUpfrontFee + '\'' +
+                ", meetingFinalizedBy='" + meetingFinalizedBy + '\'' +
+                ", bocoSignature='" + bocoSignature + '\'' +
+                ", bocoSignatureImage='" + bocoSignatureImage + '\'' +
+                ", bocoName='" + bocoName + '\'' +
+                ", bmSignature='" + bmSignature + '\'' +
+                ", bmName='" + bmName + '\'' +
+                ", caSignature='" + caSignature + '\'' +
+                ", caName='" + caName + '\'' +
+                ", cmSignature='" + cmSignature + '\'' +
+                ", cmName='" + cmName + '\'' +
+                ", finSignature='" + finSignature + '\'' +
+                ", finName='" + finName + '\'' +
+                ", boardSignature='" + boardSignature + '\'' +
+                ", boardName='" + boardName + '\'' +
+                ", assignedStatus='" + assignedStatus + '\'' +
+                ", lessFees='" + lessFees + '\'' +
+                ", applicationFee='" + applicationFee + '\'' +
+                ", bocoDate='" + bocoDate + '\'' +
+                ", bmDateAssignLo='" + bmDateAssignLo + '\'' +
+                ", loDate='" + loDate + '\'' +
+                ", bmDateMeeting='" + bmDateMeeting + '\'' +
+                ", ccDate='" + ccDate + '\'' +
+                ", predisDate='" + predisDate + '\'' +
+                ", pipelineStatus='" + pipelineStatus + '\'' +
+                ", bmSetMeeting='" + bmSetMeeting + '\'' +
+                ", creditCommit='" + creditCommit + '\'' +
+                ", completelyDone='" + completelyDone + '\'' +
+                ", nextOfKinName='" + nextOfKinName + '\'' +
+                ", nextOfKinPhone='" + nextOfKinPhone + '\'' +
+                ", nextOfKinRelationship='" + nextOfKinRelationship + '\'' +
+                ", nextOfKinAddress='" + nextOfKinAddress + '\'' +
+                ", nextOfKinName2='" + nextOfKinName2 + '\'' +
+                ", nextOfKinPhone2='" + nextOfKinPhone2 + '\'' +
+                ", nextOfKinRelationship2='" + nextOfKinRelationship2 + '\'' +
+                ", nextOfKinAddress2='" + nextOfKinAddress2 + '\'' +
+                ", clientLoanId='" + clientLoanId + '\'' +
+                ", loanCount='" + loanCount + '\'' +
+                ", platformUsed='" + platformUsed + '\'' +
+                ", fcbResponse=" + fcbResponse +
+                '}';
     }
 }

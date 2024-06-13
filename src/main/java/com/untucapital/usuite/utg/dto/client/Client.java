@@ -21,7 +21,7 @@ public class Client {
     private String lastname;
     private String displayName;
     private String mobileNo;
-    private List<Integer> dateOfBirth;
+    private int[] dateOfBirth;
     private RejectionReason rejectionReason;
     private Gender gender;
     private ClientType clientType;

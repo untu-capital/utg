@@ -1,5 +1,9 @@
 package com.untucapital.usuite.utg.service.Impl;
 
+import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
@@ -8,6 +12,7 @@ import com.untucapital.usuite.utg.service.CreditCheckService;
 import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import com.untucapital.usuite.utg.utils.FormatterUtil;
+import com.untucapital.usuite.utg.utils.MusoniUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,19 +35,39 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     private final UserService userService;
     private final EmailSender emailSender;
 
+    private final RestClient restClient;
+
 
     @Autowired
-    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService, EmailSender emailSender) {
+    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService, EmailSender emailSender, RestClient restClient) {
         this.clientRepository = clientRepository;
         this.creditCheckService = creditCheckService;
         this.userService = userService;
         this.emailSender = emailSender;
+        this.restClient = restClient;
         this.clientLoanApplication = clientLoanApplication;
     }
 
     @Override
-    public ClientLoan saveClientLoan(ClientLoan clientLoan) {
+    public ClientLoan saveClientLoan(ClientLoan clientLoan) throws ParseException {
         log.info("Loan Application Request - {}", FormatterUtil.toJson(clientLoan));
+
+        List<ClientLoan> loans = getClientLoanApplicationsByUserId(clientLoan.getUserId());
+
+        if (loans.isEmpty()) {
+
+            PageItems settlementAccount = restClient.getSavingsLoanAccountById(clientLoan.getUsername());
+
+            Client musoniClient = restClient.getClientById(String.valueOf(settlementAccount.getClientId()));
+
+            clientLoan.setFirstName(musoniClient.getFirstname());
+            clientLoan.setLastName(musoniClient.getLastname());
+            clientLoan.setGender(musoniClient.getGender().getName());
+            clientLoan.setDateOfBirth(MusoniUtils.formatDate(musoniClient.getDateOfBirth()));
+            clientLoan.setPhoneNumber(musoniClient.getMobileNo());
+            clientLoan.setBranchName(musoniClient.getOfficeName());
+        }
+
 
 
 
