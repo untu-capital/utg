@@ -34,6 +34,9 @@ public class SignUpRequest {
     @NotNull
     private Long mobileNumber;
 
+    @NotNull
+    private String musoniClientId;
+
 
     public String getUsername() {
         return username;
@@ -57,5 +60,9 @@ public class SignUpRequest {
 
     public Long getMobileNumber() {
         return mobileNumber;
+    }
+
+    public String getMusoniClientId() {
+        return musoniClientId;
     }
 }

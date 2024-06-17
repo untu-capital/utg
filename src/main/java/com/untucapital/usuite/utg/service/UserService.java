@@ -180,8 +180,9 @@ public class UserService extends AbstractService<User> {
         if (userRepository.existsUserByUsername(signUpRequest.getUsername())) {
             throw new ValidationException("Username is already taken");
         }
+        log.info("mobile number: {}", signUpRequest.getMobileNumber());
 
-        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZWE");
+        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZW");
         if (userRepository.existsByContactDetailMobileNumber(Long.parseLong(normalizedMobile))) {
 //        if (userRepository.existsByContactDetailMobileNumber(signUpRequest.getMobileNumber())) {
             throw new ValidationException("Mobile Number already exists");
@@ -199,6 +200,7 @@ public class UserService extends AbstractService<User> {
         user.setUsername(signUpRequest.getUsername());
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
+        user.setMusoniClientId(signUpRequest.getMusoniClientId());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setActive(true);
         user.setVerified(true);
@@ -221,7 +223,7 @@ public class UserService extends AbstractService<User> {
         User createdUser = userRepository.save(user);
 
         // Generate and Save confirmation token
-        String token = RandomNumUtils.generateCode(6);
+        String token = RandomNumUtils.generateCode(4);
 
         ConfirmationToken confirmToken = new ConfirmationToken();
         confirmToken.setToken(token);
@@ -362,7 +364,7 @@ public class UserService extends AbstractService<User> {
     @Transactional(value = "transactionManager")
     public boolean checkUserMobile(long mobile) {
         log.debug("Check User Mobile Request mobile: {}", mobile);
-        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(mobile), "ZWE");
+        String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(mobile), "ZW");
         return userRepository.existsByContactDetailMobileNumber(Long.parseLong(normalizedMobile));
     }
 
@@ -440,7 +442,7 @@ public class UserService extends AbstractService<User> {
 
 //            User createdUser = userRepository.save(user);
             // Generate and Save confirmation token
-            String token = RandomNumUtils.generateCode(6);
+            String token = RandomNumUtils.generateCode(4);
             ConfirmationToken confirmToken = new ConfirmationToken();
             confirmToken.setToken(token);
             confirmToken.setExpirationDate(LocalDateTime.now().plusMinutes(30));
