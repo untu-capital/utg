@@ -3,8 +3,8 @@ package com.untucapital.usuite.utg.service.Impl;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
-import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
+import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
@@ -53,22 +53,28 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         log.info("Loan Application Request - {}", FormatterUtil.toJson(clientLoan));
 
         List<ClientLoan> loans = getClientLoanApplicationsByUserId(clientLoan.getUserId());
-
         if (loans.isEmpty()) {
+            if (clientLoan.getFirstName() == null && clientLoan.getLastName() == null &&
+                    clientLoan.getGender() == null && clientLoan.getDateOfBirth() == null &&
+                    clientLoan.getPhoneNumber() == null && clientLoan.getBranchName() == null) {
 
-            PageItems settlementAccount = restClient.getSavingsLoanAccountById(clientLoan.getUsername());
+                PageItems settlementAccount = restClient.getSavingsLoanAccountById(clientLoan.getUsername());
 
-            Client musoniClient = restClient.getClientById(String.valueOf(settlementAccount.getClientId()));
+                if (settlementAccount.getClientId() == 0) {
+                    throw new SettlementAccountNotFoundException("This Settlement Account : " + clientLoan.getUsername() + " does not exist");
+                }
 
-            clientLoan.setFirstName(musoniClient.getFirstname());
-            clientLoan.setLastName(musoniClient.getLastname());
-            clientLoan.setGender(musoniClient.getGender().getName());
-            clientLoan.setDateOfBirth(MusoniUtils.formatDate(musoniClient.getDateOfBirth()));
-            clientLoan.setPhoneNumber(musoniClient.getMobileNo());
-            clientLoan.setBranchName(musoniClient.getOfficeName());
+                Client musoniClient = restClient.getClientById(String.valueOf(settlementAccount.getClientId()));
+
+                clientLoan.setFirstName(musoniClient.getFirstname());
+                clientLoan.setLastName(musoniClient.getLastname());
+                clientLoan.setGender(musoniClient.getGender().getName());
+                clientLoan.setDateOfBirth(MusoniUtils.formatDate(musoniClient.getDateOfBirth()));
+                clientLoan.setPhoneNumber(musoniClient.getMobileNo());
+                clientLoan.setBranchName(musoniClient.getOfficeName());
+            }
+
         }
-
-
 
 
         ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
@@ -217,15 +223,13 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public List<ClientLoan> getActiveLoans(String userId) {
 
-        List<ClientLoan> clientLoans= clientRepository.findClientLoansByUserId(userId);
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByUserId(userId);
 
         List<ClientLoan> clientLoanList = new ArrayList<>();
-        for (ClientLoan clientLoan: clientLoans){
-            if (clientLoan.getLoanStatus().equalsIgnoreCase("ACCEPTED") && !(clientLoan.getPipelineStatus().equalsIgnoreCase("cc_final_meeting"))){
+        for (ClientLoan clientLoan : clientLoans) {
+            if (clientLoan.getLoanStatus().equalsIgnoreCase("ACCEPTED") && !(clientLoan.getPipelineStatus().equalsIgnoreCase("cc_final_meeting"))) {
                 clientLoanList.add(clientLoan);
-            }
-
-            else if (clientLoan.getLoanStatus().equalsIgnoreCase("PENDING")){
+            } else if (clientLoan.getLoanStatus().equalsIgnoreCase("PENDING")) {
                 clientLoanList.add(clientLoan);
             }
         }

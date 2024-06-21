@@ -28,7 +28,13 @@ public class CustomExceptionHandlerController {
     }
 
     @ExceptionHandler(ValidationException.class)
-    public final ResponseEntity<ErrorResponse> ValidationException(ValidationException ex, WebRequest request) {
+    public final ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex, WebRequest request) {
+        ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PhoneNumberException.class)
+    public final ResponseEntity<ErrorResponse> handlePhoneNumberException(PhoneNumberException ex, WebRequest request) {
         ErrorResponse errorDetails = new ErrorResponse(ex.getMessage(), request.getDescription(false), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }

@@ -7,6 +7,7 @@ import com.untucapital.usuite.utg.dto.BulkSMS;
 import com.untucapital.usuite.utg.dto.BulkSMSDTO;
 import com.untucapital.usuite.utg.dto.SMSDto;
 import com.untucapital.usuite.utg.dto.sms.BulkMessage;
+import com.untucapital.usuite.utg.exception.SmsException;
 import com.untucapital.usuite.utg.repository.SMSRepo;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +61,11 @@ public class SmsService {
 //        Sms sms = new Sms("UNTU",destination,messageText,messageReference,messageDate,"","");
         SMSDto smsDto = new SMSDto("UNTU", destination, messageText, messageReference, messageDate, "", "");
         HttpEntity<SMSDto> entity = new HttpEntity<>(smsDto, setESolutionsHeaders());
-        return restTemplate.exchange(eSolutionsBaseURL + "single", HttpMethod.POST, entity, String.class).getBody();
+        try {
+            return restTemplate.exchange(eSolutionsBaseURL + "single", HttpMethod.POST, entity, String.class).getBody();
+        }catch (Exception e){
+            throw new SmsException(e.getMessage()+ ". Please try to singup again");
+        }
     }
 
     public String sendBulkSMS(BulkSMSDTO bulkSMSDTO) {

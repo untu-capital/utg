@@ -714,7 +714,15 @@ public class MusoniService {
 
         SettlementAccountResponse settlementAccountResponse = new SettlementAccountResponse();
 
-        PageItems settlementAccount = restClient.getSavingsLoanAccountById(savingsId);
+        PageItems settlementAccount = new PageItems();
+
+        try {
+            settlementAccount = restClient.getSavingsLoanAccountById(savingsId);
+        }catch (Exception e){
+            log.info("FAILED TO GET THE ACCOUNT:{}", e.getMessage());
+            throw new SettlementAccountNotFoundException("This Settlement Account : "+ savingsId +" does not exist");
+        }
+
 
 
         Integer clientId = settlementAccount.getClientId();

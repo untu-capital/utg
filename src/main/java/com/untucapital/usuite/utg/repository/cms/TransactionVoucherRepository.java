@@ -8,7 +8,9 @@ import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author tjchidanika
@@ -31,4 +33,8 @@ public interface TransactionVoucherRepository extends JpaRepository<TransactionV
     List<TransactionVoucher> findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(User user, ApprovalStatus approvalStatus, ApprovalStatus approvalStatus1);
 
     TransactionVoucher findFirstByOrderByCreatedAtDesc();
+
+    Optional<TransactionVoucher> findByAmountAndAmountInWordsAndInitiator_IdAndDenomination100AndDenomination50AndDenomination20AndDenomination10AndDenomination5AndDenomination2AndDenomination1(BigDecimal amount, String amountInWords, String id, Integer denomination100, Integer denomination50, Integer denomination20, Integer denomination10, Integer denomination5, Integer denomination2, Integer denomination1);
+
+
 }

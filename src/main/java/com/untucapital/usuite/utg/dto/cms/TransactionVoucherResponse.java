@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.dto.cms;
 
+import com.untucapital.usuite.utg.dto.cms.res.Response;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import lombok.*;
 
@@ -10,11 +11,8 @@ import java.math.BigDecimal;
  * @created 9/10/2023
  */
 
-@Getter
-@Setter
-@Builder
-@AllArgsConstructor
-public class TransactionVoucherResponse {
+@Data
+public class TransactionVoucherResponse extends Response {
 
     private Integer id;
     private String referenceNumber;
@@ -51,5 +49,7 @@ public class TransactionVoucherResponse {
     private VaultDTO fromVault;
     private String reference;
     private VaultDTO toVault;
+
+
 
 }

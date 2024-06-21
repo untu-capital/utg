@@ -40,4 +40,6 @@ public class TransactionVoucherInitiatorRequest {
 
     private String firstApprover;
     private String secondApprover;
+
+    private boolean duplicate;
 }

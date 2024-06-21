@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.cms.ApproverRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherInitiatorRequest;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherResponse;
 import com.untucapital.usuite.utg.dto.cms.TransactionVoucherUpdateRequest;
+import com.untucapital.usuite.utg.dto.cms.res.Response;
 import com.untucapital.usuite.utg.dto.cms.res.TransactionPurposeResponseDTO;
 import com.untucapital.usuite.utg.dto.cms.res.VaultResponseDTO;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
@@ -36,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -75,18 +77,48 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public TransactionVoucherResponse initiateTransaction(TransactionVoucherInitiatorRequest request) {
 
+        TransactionVoucherResponse respons = new TransactionVoucherResponse();
         User firstApprover = userService.find(request.getFirstApprover()).orElseThrow();
         User secondApprover = userService.find(request.getSecondApprover()).orElseThrow();
 
         User user = userService.find(request.getInitiator()).orElseThrow();
 
+        Response res = new Response();
 
         TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(Integer.valueOf(request.getWithdrawalPurpose()));
         TransactionVoucher transactionVoucher = transactionVoucherProcessor.processTransactionVoucher(request);
 
         log.info("Transaction Test :{}",transactionVoucher);
 
-        TransactionVoucher transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
+        Optional<TransactionVoucher> transaction =  transactionVoucherRepository.findByAmountAndAmountInWordsAndInitiator_IdAndDenomination100AndDenomination50AndDenomination20AndDenomination10AndDenomination5AndDenomination2AndDenomination1(transactionVoucher.getAmount(),
+                transactionVoucher.getAmountInWords(),
+                transactionVoucher.getInitiator().getId(),
+                transactionVoucher.getDenomination100(),
+                transactionVoucher.getDenomination50(),
+                transactionVoucher.getDenomination20(),
+                transactionVoucher.getDenomination10(),
+                transactionVoucher.getDenomination5(),
+                transactionVoucher.getDenomination2(),
+                transactionVoucher.getDenomination1()
+    );
+
+        TransactionVoucher transactionVoucher1 = new TransactionVoucher();
+        if (transaction.isPresent() && !request.isDuplicate()){
+            if (transaction.get().getCreatedAt().isBefore(LocalDateTime.now().minusHours(8))){
+                transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
+            } else {
+
+                BeanUtils.copyProperties(request,respons);
+                respons.setResponseCode(409);
+                respons.setResponseMsg("Transaction already exist");
+
+                log.info("Trans voucher response: {}", respons);
+                return respons;
+            }
+
+        } else {
+            transactionVoucher1 = transactionVoucherRepository.save(transactionVoucher);
+        }
 
 
         sendEmail(
@@ -99,7 +131,14 @@ public class TransactionVoucherService {
         );
 
 
-        return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
+        respons = transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher1, transactionPurpose);
+
+        if (res.getResponseCode() != 0 && res.getResponseMsg() != null) {
+            respons.setResponseCode(res.getResponseCode());
+            respons.setResponseMsg(res.getResponseMsg());
+        }
+
+        return respons;
     }
 
     //First Approver Transaction

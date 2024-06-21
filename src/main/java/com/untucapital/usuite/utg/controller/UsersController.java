@@ -122,6 +122,11 @@ public class UsersController extends AbstractController<User> {
         return new ResponseEntity<User>(userRepository.getUserByContactDetail_MobileNumber(mobileNumber),HttpStatus.OK);
     }
 
+    @GetMapping ("/getUserByUsername/{username}")
+    public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        return new ResponseEntity<User>(userRepository.getUserByUsername(username),HttpStatus.OK);
+    }
+
     @GetMapping ("/getUserByEmailAddress/{email}")
     public ResponseEntity<User> getUserByEmailAddress(@PathVariable("email") String email) {
         return new ResponseEntity<User>(userRepository.getUserByContactDetail_EmailAddress(email),HttpStatus.OK);

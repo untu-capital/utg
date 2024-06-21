@@ -253,39 +253,40 @@ public class TransactionVoucherProcessor {
 
 
 
-        return TransactionVoucherResponse.builder()
-                .id(transaction.getId())
-//                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
-                .initiator(initiator)
-                .applicationDate(dateFormatter(transaction.getApplicationDate()))
-                .firstApprover(firstApprover)
-                .firstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()))
-                .firstApprovalStatus(transaction.getFirstApprovalStatus())
-                .firstApprovalComment(transaction.getFirstApprovalComment())
-                .secondApprover(secondApprover)
-                .secondApprovedAt(dateFormatter(transaction.getSecondApprovedAt()))
-                .secondApprovalStatus(transaction.getSecondApprovalStatus())
-                .secondApprovalComment(transaction.getSecondApprovalComment())
-                .amountInWords(transaction.getAmountInWords())
-                .currency(transaction.getCurrency())
-                .amount(transaction.getAmount())
-                .denomination1(transaction.getDenomination1())
-                .denomination2(transaction.getDenomination2())
-                .denomination5(transaction.getDenomination5())
-                .denomination10(transaction.getDenomination10())
-                .denomination20(transaction.getDenomination20())
-                .denomination50(transaction.getDenomination50())
-                .denomination100(transaction.getDenomination100())
-                .denominationCents(transaction.getDenominationCents())
-                .withdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()))
-                .branch(branch)
-                .fromVault(fromVault)
-                .toVault(toVault)
-                .reference(transaction.getReference())
-                .build();
-    }
+        TransactionVoucherResponse response = new TransactionVoucherResponse();
+        response.setId(transaction.getId());
+//        response.setApplicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()));
+        response.setInitiator(initiator);
+        response.setApplicationDate(dateFormatter(transaction.getApplicationDate()));
+        response.setFirstApprover(firstApprover);
+        response.setFirstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()));
+        response.setFirstApprovalStatus(transaction.getFirstApprovalStatus());
+        response.setFirstApprovalComment(transaction.getFirstApprovalComment());
+        response.setSecondApprover(secondApprover);
+        response.setSecondApprovedAt(dateFormatter(transaction.getSecondApprovedAt()));
+        response.setSecondApprovalStatus(transaction.getSecondApprovalStatus());
+        response.setSecondApprovalComment(transaction.getSecondApprovalComment());
+        response.setAmountInWords(transaction.getAmountInWords());
+        response.setCurrency(transaction.getCurrency());
+        response.setAmount(transaction.getAmount());
+        response.setDenomination1(transaction.getDenomination1());
+        response.setDenomination2(transaction.getDenomination2());
+        response.setDenomination5(transaction.getDenomination5());
+        response.setDenomination10(transaction.getDenomination10());
+        response.setDenomination20(transaction.getDenomination20());
+        response.setDenomination50(transaction.getDenomination50());
+        response.setDenomination100(transaction.getDenomination100());
+        response.setDenominationCents(transaction.getDenominationCents());
+        response.setWithdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()));
+        response.setBranch(branch);
+        response.setFromVault(fromVault);
+        response.setToVault(toVault);
+        response.setReference(transaction.getReference());
 
-    public List<TransactionVoucherResponse> transactionVouchersResponseSerializer(List<TransactionVoucher> transactionVouchers) {
+        return response;
+}
+
+        public List<TransactionVoucherResponse> transactionVouchersResponseSerializer(List<TransactionVoucher> transactionVouchers) {
 
 
 //        return transactionVouchers.stream()
@@ -331,36 +332,40 @@ public class TransactionVoucherProcessor {
                     .type(transaction.getToVault().getType())
                     .name(transaction.getToVault().getName())
                     .build();
-            TransactionVoucherResponse transactionVoucherResponse = TransactionVoucherResponse.builder()
-                    .id(transaction.getId())
-//                .applicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()))
-                    .initiator(initiator)
-                    .applicationDate(dateFormatter(transaction.getApplicationDate()))
-                    .firstApprover(firstApprover)
-                    .firstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()))
-                    .firstApprovalStatus(transaction.getFirstApprovalStatus())
-                    .firstApprovalComment(transaction.getFirstApprovalComment())
-                    .secondApprover(secondApprover)
-                    .secondApprovedAt(dateFormatter(transaction.getSecondApprovedAt()))
-                    .secondApprovalStatus(transaction.getSecondApprovalStatus())
-                    .secondApprovalComment(transaction.getSecondApprovalComment())
-                    .amountInWords(transaction.getAmountInWords())
-                    .currency(transaction.getCurrency())
-                    .amount(transaction.getAmount())
-                    .denomination1(transaction.getDenomination1())
-                    .denomination2(transaction.getDenomination2())
-                    .denomination5(transaction.getDenomination5())
-                    .denomination10(transaction.getDenomination10())
-                    .denomination20(transaction.getDenomination20())
-                    .denomination50(transaction.getDenomination50())
-                    .denomination100(transaction.getDenomination100())
-                    .denominationCents(transaction.getDenominationCents())
-                    .withdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()))
-                    .branch(branch)
-                    .fromVault(fromVault)
-                    .toVault(toVault)
-                    .reference(transaction.getReference())
-                    .build();
+
+
+            TransactionVoucherResponse transactionVoucherResponse = new TransactionVoucherResponse();
+
+            transactionVoucherResponse.setId(transaction.getId());
+            transactionVoucherResponse.setInitiator(initiator);
+            transactionVoucherResponse.setApplicationDate(dateFormatter(transaction.getApplicationDate()));
+            transactionVoucherResponse.setFirstApprover(firstApprover);
+            transactionVoucherResponse.setFirstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()));
+            transactionVoucherResponse.setFirstApprovalStatus(transaction.getFirstApprovalStatus());
+            transactionVoucherResponse.setFirstApprovalComment(transaction.getFirstApprovalComment());
+            transactionVoucherResponse.setSecondApprover(secondApprover);
+            transactionVoucherResponse.setSecondApprovedAt(dateFormatter(transaction.getSecondApprovedAt()));
+            transactionVoucherResponse.setSecondApprovalStatus(transaction.getSecondApprovalStatus());
+            transactionVoucherResponse.setSecondApprovalComment(transaction.getSecondApprovalComment());
+            transactionVoucherResponse.setAmountInWords(transaction.getAmountInWords());
+            transactionVoucherResponse.setCurrency(transaction.getCurrency());
+            transactionVoucherResponse.setAmount(transaction.getAmount());
+            transactionVoucherResponse.setDenomination1(transaction.getDenomination1());
+            transactionVoucherResponse.setDenomination2(transaction.getDenomination2());
+            transactionVoucherResponse.setDenomination5(transaction.getDenomination5());
+            transactionVoucherResponse.setDenomination10(transaction.getDenomination10());
+            transactionVoucherResponse.setDenomination20(transaction.getDenomination20());
+            transactionVoucherResponse.setDenomination50(transaction.getDenomination50());
+            transactionVoucherResponse.setDenomination100(transaction.getDenomination100());
+            transactionVoucherResponse.setDenominationCents(transaction.getDenominationCents());
+            transactionVoucherResponse.setWithdrawalPurpose(String.valueOf(transaction.getWithdrawalPurpose()));
+            transactionVoucherResponse.setBranch(branch);
+            transactionVoucherResponse.setFromVault(fromVault);
+            transactionVoucherResponse.setToVault(toVault);
+            transactionVoucherResponse.setReference(transaction.getReference());
+
+//            return transactionVoucherResponse;
+
 
 //            BeanUtils.copyProperties(tr, transactionVoucherResponse);
             transactionVoucherResponses.add(transactionVoucherResponse);
