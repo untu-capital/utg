@@ -6,8 +6,10 @@ import com.untucapital.usuite.utg.dto.Email;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.service.CreditCheckService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +26,25 @@ import java.util.*;
 
 @RestController
 @RequestMapping(path = "credit_application")
+//@RequiredArgsConstructor
 public class ClientLoanController {
 
 
     private static final Logger log = LoggerFactory.getLogger(ClientLoanController.class);
     private final EmailSender emailSender;
+
     @Autowired
     ClientRepository clientRepository;
+
     private final ClientLoanApplication clientLoanApplication;
 
-    public ClientLoanController(ClientLoanApplication clientLoanApplication, EmailSender emailSender) {
-        this.clientLoanApplication = clientLoanApplication;
+    private final CreditCheckService creditCheckService;
+
+    public ClientLoanController(EmailSender emailSender, ClientLoanApplication clientLoanApplication, CreditCheckService creditCheckService) {
         this.emailSender = emailSender;
+        this.clientLoanApplication = clientLoanApplication;
+        this.creditCheckService = creditCheckService;
     }
-
-
 
 
     //build save loan REST API
@@ -48,6 +54,20 @@ public class ClientLoanController {
         log.info(String.valueOf(clientLoan));
         return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
     }
+
+    //Fetch for Client FCB
+    @PostMapping("/creditCheckedLoan/{id}")
+    @Operation(summary = "Check FCB reports for client loan application")
+    public ResponseEntity<ClientLoan> creditCheckedLoan(@PathVariable String id) throws ParseException {
+
+        ClientLoan clientLoan = creditCheckService.fetchFCBCreditStatusById(id);
+        if (clientLoan != null) {
+            return new ResponseEntity<>(clientLoan, HttpStatus.CREATED);
+        }else {
+            return null;
+        }
+    }
+
 
     @GetMapping("getActiveLoanByUserId/{userId}")
     @Operation(summary = "Create a new client loan application")

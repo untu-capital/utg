@@ -13,6 +13,7 @@ import com.untucapital.usuite.utg.service.UserService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import com.untucapital.usuite.utg.utils.FormatterUtil;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,22 +31,16 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     private static final Logger log = LoggerFactory.getLogger(ClientLoanApplication.class);
 
     private final ClientRepository clientRepository;
-    private final CreditCheckService creditCheckService;
-    private ClientLoanApplication clientLoanApplication;
     private final UserService userService;
-    private final EmailSender emailSender;
 
     private final RestClient restClient;
 
 
     @Autowired
-    public ClientLoanApplicationImpl(ClientRepository clientRepository, CreditCheckService creditCheckService, UserService userService, EmailSender emailSender, RestClient restClient) {
+    public ClientLoanApplicationImpl(ClientRepository clientRepository, UserService userService, RestClient restClient) {
         this.clientRepository = clientRepository;
-        this.creditCheckService = creditCheckService;
         this.userService = userService;
-        this.emailSender = emailSender;
         this.restClient = restClient;
-        this.clientLoanApplication = clientLoanApplication;
     }
 
     @Override
@@ -77,10 +72,10 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         }
 
 
-        ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
+//        ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
 
         log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
-        return clientRepository.save(creditCheckedLoan);
+        return clientRepository.save(clientLoan);
     }
 
     @Override

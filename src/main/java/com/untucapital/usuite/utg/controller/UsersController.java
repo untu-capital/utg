@@ -244,6 +244,7 @@ public class UsersController extends AbstractController<User> {
         updatedUser.setMaritalStatus(user.getMaritalStatus());
         updatedUser.setGender(user.getGender());
         updatedUser.setCity(user.getCity());
+        updatedUser.setNationalId(user.getNationalId());
         updatedUser.setSuburb(user.getSuburb());
         updatedUser.setStreetName(user.getStreetName());
         updatedUser.setStreetNumber(user.getStreetNumber());

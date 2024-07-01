@@ -152,6 +152,7 @@ public class AuthController {
 //            sendEmail(email, resetPasswordLink);
             smsService.sendSingle(mobile, resetPin);
             return ResponseEntity.ok(new UsuiteApiResp("We have sent an OTP Code to your mobile number. Please check."));
+
         } catch (ResourceNotFoundException ex) {
             model.addAttribute("error", ex.getMessage());
             return ResponseEntity.badRequest().body(new UsuiteApiResp("Failed to sent a reset password link"));
@@ -211,7 +212,7 @@ public class AuthController {
 
         if (user == null) {
 //            model.addAttribute("message", "Invalid Token");
-            return ResponseEntity.badRequest().body(new UsuiteApiResp("Token used nolonger valid"));
+            return ResponseEntity.badRequest().body(new UsuiteApiResp("Token used has expired"));
 //            return "message";
         } else {
             userService.updatePassword(user, password);

@@ -284,8 +284,7 @@ public class ClientLoan extends AbstractEntity {
     }
 
     @OneToOne
-    @NotNull
-    @JoinColumn(name = "fcb_response_id", nullable = false)
+    @JoinColumn(name = "fcb_response_id")
     private Response fcbResponse;
 
     public String getFirstName() {

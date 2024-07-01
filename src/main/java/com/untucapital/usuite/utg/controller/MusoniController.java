@@ -4,6 +4,8 @@ package com.untucapital.usuite.utg.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
@@ -151,15 +153,17 @@ public class MusoniController {
     @GetMapping("savingsAccounts/savingsTransactions")
     public ResponseEntity <Void> getSavingsAccountsTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
         musoniService.getSavingsLoanAccountsByTimestamp();
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("savingsById/{savingsId}")
     public SettlementAccountResponse getSavingsLoanAccountById(@PathVariable String savingsId) throws AccountNotFoundException {
-
         return musoniService.getSavingsLoanAccountById(savingsId);
+    }
 
+    @GetMapping("getClientIdBySettlementAcc/{savingsId}")
+    public SettlementAccountResponse getClientIdBySettlementAcc(@PathVariable String savingsId) throws AccountNotFoundException {
+        return musoniService.getClientIdBySettlementAcc(savingsId);
     }
 
     public static String[] getDate() {
@@ -204,6 +208,41 @@ public class MusoniController {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         return restTemplate.exchange(musoniUrl + "clients/"+clientId+"/accounts", HttpMethod.GET, entity, String.class).getBody();
     }
+
+//    this is used my mobile app to get active loans using client id
+    @GetMapping("getActiveClientLoansByClientId/{clientId}")
+    public String getActiveClientLoansByClientId(@PathVariable Long clientId) {
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        ResponseEntity<String> response = restTemplate.exchange(
+                musoniUrl + "clients/" + clientId + "/accounts", HttpMethod.GET, entity, String.class);
+
+        // Parse the response body
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode root = mapper.readTree(response.getBody());
+            ArrayNode loanAccounts = (ArrayNode) root.get("loanAccounts");
+
+            // Filter for active loan accounts
+            ArrayNode activeLoanAccounts = mapper.createArrayNode();
+            for (JsonNode loanAccount : loanAccounts) {
+                if ("Active".equals(loanAccount.get("status").get("value").asText())) {
+                    activeLoanAccounts.add(loanAccount);
+                }
+            }
+
+            // Create the final JSON object with only active loan accounts
+            ObjectNode filteredResult = mapper.createObjectNode();
+            filteredResult.set("loanAccounts", activeLoanAccounts);
+            filteredResult.set("savingsAccounts", root.get("savingsAccounts"));
+
+            // Convert the filtered result to a JSON string and return
+            return filteredResult.toString();
+        } catch (IOException | JsonProcessingException e) {
+            e.printStackTrace();
+            return "{}";
+        }
+    }
+
 
     //Get All Client Loans By Id
     @GetMapping("getActiveClientLoans/{clientId}")

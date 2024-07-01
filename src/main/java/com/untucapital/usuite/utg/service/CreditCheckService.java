@@ -1,19 +1,23 @@
 package com.untucapital.usuite.utg.service;
 
+import com.untucapital.usuite.utg.exception.ResourceNotFoundException;
 import com.untucapital.usuite.utg.exception.UntuSuiteException;
 import com.untucapital.usuite.utg.integration.fcbintservice.FCBIntegrationService;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.model.fcb.Response;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.repository.FCBResponseRepository;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +29,26 @@ public class CreditCheckService {
     private final ClientRepository clientRepository;
     private final FCBResponseRepository fcbResponseRepository;
 
-    @Autowired
-    public CreditCheckService(FCBIntegrationService fcbIntegrationService, ClientRepository clientRepository, FCBResponseRepository fcbResponseRepository) {
+
+    public CreditCheckService(FCBIntegrationService fcbIntegrationService, ClientRepository clientRepository, FCBResponseRepository fcbResponseRepository, ClientLoanApplication clientLoanApplication) {
         this.fcbIntegrationService = fcbIntegrationService;
         this.clientRepository = clientRepository;
         this.fcbResponseRepository = fcbResponseRepository;
+    }
+
+    @Transactional(value = "transactionManager")
+    public ClientLoan fetchFCBCreditStatusById(String id) throws ParseException {
+        Optional<ClientLoan> clientLoan = clientRepository.findById(id); // Use your existing method to fetch by loanId
+        if (clientLoan == null) {
+            throw new ResourceNotFoundException("ClientLoan", "Id", id);
+        }
+        if (clientLoan.isPresent()) {
+            return fetchFCBCreditStatus(clientLoan.get()); // Update clientLoan with FCB credit status
+//        clientLoanApplication.saveClientLoan(clientLoan); // Assuming you have a method to save clientLoan back
+
+        }
+        return null;
+
     }
 
     @Transactional(value = "transactionManager")

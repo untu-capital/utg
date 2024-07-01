@@ -180,7 +180,7 @@ public class UserService extends AbstractService<User> {
         log.debug("User Registration Request - {}", FormatterUtil.toJson(signUpRequest));
 
         if (userRepository.existsUserByUsername(signUpRequest.getUsername())) {
-            throw new ValidationException("This account number is already associated with another WhatsApp account. If you wish to request a change of the phone number linked to your account, please contact our branch.");
+            throw new ValidationException("The account number you\'ve entered is already associated with another number.");
         }
 
         String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZW");
