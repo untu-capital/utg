@@ -405,6 +405,11 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional(value = "transactionManager")
+    public Optional<User> getUserById(String userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Transactional(value = "transactionManager")
     public List<User> getUsersByRole(String roleName) {
         List<User> users = userRepository.findAll();
         List<User> usersByRole = users.stream()

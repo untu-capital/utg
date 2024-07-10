@@ -54,13 +54,11 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                     clientLoan.getPhoneNumber() == null && clientLoan.getBranchName() == null) {
 
                 PageItems settlementAccount = restClient.getSavingsLoanAccountById(clientLoan.getUsername());
-
                 if (settlementAccount.getClientId() == 0) {
                     throw new SettlementAccountNotFoundException("This Settlement Account : " + clientLoan.getUsername() + " does not exist");
                 }
 
                 Client musoniClient = restClient.getClientById(String.valueOf(settlementAccount.getClientId()));
-
                 clientLoan.setFirstName(musoniClient.getFirstname());
                 clientLoan.setLastName(musoniClient.getLastname());
                 clientLoan.setGender(musoniClient.getGender().getName());

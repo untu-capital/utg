@@ -95,6 +95,12 @@ public class PurchaseOrderTransactionsController {
         }
     }
 
+    @GetMapping("countByRequisitionId/{id}")
+    public ResponseEntity<Long> getTransactionCountByRequisitionId(@PathVariable("id") String id) {
+        long count = purchaseOrderTransactionsService.getTransactionCountByRequisitionId(id);
+        return new ResponseEntity<>(count, HttpStatus.OK);
+    }
+
     @GetMapping("getByCategory/{category}")
     public ResponseEntity<List<PurchaseOrderTransactions>> getPurchaseOrderTransactionByCategory(@PathVariable("category") String category) {
         List<PurchaseOrderTransactions> purchaseOrderTransactions = purchaseOrderTransactionsService.getPurchaseOrderTransactionsByCategory(category);

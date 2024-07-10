@@ -2,9 +2,19 @@ package com.untucapital.usuite.utg.service;
 
 import com.untucapital.usuite.utg.dto.request.PurchaseOrderTransactionsRequestDTO;
 import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponseDTO;
+import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
 import com.untucapital.usuite.utg.exception.DuplicateEntryException;
 import com.untucapital.usuite.utg.model.PurchaseOrderTransactions;
+import com.untucapital.usuite.utg.model.po.Requisitions;
+import com.untucapital.usuite.utg.pos.dto.POSParameterDto;
+import com.untucapital.usuite.utg.pos.dto.POSSupplierDto;
+import com.untucapital.usuite.utg.pos.model.POSCategory;
+import com.untucapital.usuite.utg.pos.model.POSParameter;
+import com.untucapital.usuite.utg.pos.service.POSCategoryService;
+import com.untucapital.usuite.utg.pos.service.POSParameterService;
+import com.untucapital.usuite.utg.pos.service.SupplierService;
 import com.untucapital.usuite.utg.repository.PurchaseOrderTransactionsRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,28 +24,145 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @javax.transaction.Transactional
+@RequiredArgsConstructor
 public class PurchaseOrderTransactionsService {
 
     @Autowired
     private PurchaseOrderTransactionsRepository purchaseOrderTransactionsRepository;
 
+    private final POSCategoryService posCategoryService;
+
+    private final SupplierService supplierService;
+
+    private final POSParameterService parameterService;
+
+//    private final RequisitionService requisitionService;
+
+//    @Transactional(value = "transactionManager")
+//    public List<PurchaseOrderTransactionsResponseDTO> getAllPurchaseOrderTransactions() {
+//
+//        List<PurchaseOrderTransactionsResponseDTO> response = new ArrayList<>();
+//        List<PurchaseOrderTransactions> purchaseOrderTransactionsList= purchaseOrderTransactionsRepository.findAll();
+//
+//        for (PurchaseOrderTransactions purchaseOrderTransaction : purchaseOrderTransactionsList) {
+//            PurchaseOrderTransactionsResponseDTO responseDTO = new PurchaseOrderTransactionsResponseDTO();
+//
+//            BeanUtils.copyProperties(purchaseOrderTransaction, responseDTO);
+//            response.add(responseDTO);
+//        }
+//
+//        return response;
+//    }
+
     @Transactional(value = "transactionManager")
     public List<PurchaseOrderTransactionsResponseDTO> getAllPurchaseOrderTransactions() {
-
         List<PurchaseOrderTransactionsResponseDTO> response = new ArrayList<>();
-        List<PurchaseOrderTransactions> purchaseOrderTransactionsList= purchaseOrderTransactionsRepository.findAll();
+        List<PurchaseOrderTransactions> purchaseOrderTransactionsList = purchaseOrderTransactionsRepository.findAll();
 
         for (PurchaseOrderTransactions purchaseOrderTransaction : purchaseOrderTransactionsList) {
             PurchaseOrderTransactionsResponseDTO responseDTO = new PurchaseOrderTransactionsResponseDTO();
+
+            // Copy properties from entity to DTO
             BeanUtils.copyProperties(purchaseOrderTransaction, responseDTO);
+
+            // Fetch and set Supplier details
+            Integer supplierId = Integer.valueOf(purchaseOrderTransaction.getPoSupplier());
+            POSSupplierDto supplierDto = supplierService.getSupplierById(supplierId);
+            responseDTO.setPoSupplierName(supplierDto.getName());
+
+            // Fetch and set Category details
+            Integer categoryId = Integer.valueOf(purchaseOrderTransaction.getPoCategory());
+            POSCategory category = posCategoryService.getCategoryById(categoryId);
+            responseDTO.setPoCategoryName(category.getName());
+
+            // Fetch and set Requisition details
+            String requisitionId = purchaseOrderTransaction.getPoRequisitionId();
+            RequisitionsResponseDTO requisitionDto = requisitionService.getRequisitionById(requisitionId);
+            responseDTO.setPoRequisitionName(requisitionDto.getPoName());
+
             response.add(responseDTO);
         }
 
         return response;
     }
+
+
+
+
+    @Transactional(value = "transactionManager")
+    public List<PurchaseOrderTransactionsResponseDTO> getByRequisitionId(String requisitionId) {
+        Optional<List<PurchaseOrderTransactions>> transactionsOptional = purchaseOrderTransactionsRepository
+                .getPurchaseOrderTransactionsByPoRequisitionId(requisitionId);
+
+        if (transactionsOptional.isPresent()) {
+            List<PurchaseOrderTransactions> transactions = transactionsOptional.get();
+            return transactions.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private PurchaseOrderTransactionsResponseDTO convertToDTO(PurchaseOrderTransactions transaction) {
+        PurchaseOrderTransactionsResponseDTO dto = new PurchaseOrderTransactionsResponseDTO();
+
+        // Copy properties from entity to DTO
+        BeanUtils.copyProperties(transaction, dto);
+
+        // Fetch and set Supplier details
+        Integer supplierId = Integer.valueOf(transaction.getPoSupplier());
+        POSSupplierDto supplierDto = supplierService.getSupplierById(supplierId);
+        dto.setPoSupplierName(supplierDto.getName());
+
+        // Fetch and set Category details
+        Integer categoryId = Integer.valueOf(transaction.getPoCategory());
+        POSCategory category = posCategoryService.getCategoryById(categoryId);
+        dto.setPoCategoryName(category.getName());
+
+        // Calculate ZIMRA Tax
+        Double totalAmount = Double.valueOf(transaction.getPoAmount());
+        Double discountedAmount = calculateZimraTax(totalAmount, supplierDto);
+
+        dto.setZimraTax(discountedAmount);
+
+        return dto;
+    }
+
+//    private Double calculateZimraTax(Double totalAmount, POSSupplierDto supplierDto) {
+//        if ("No".equalsIgnoreCase(supplierDto.getTaxClearance())) {
+//            List<ParameterDto> parameters = parameterService.getAllParameters(); // Assuming you have a method to fetch all parameters
+//            for (ParameterDto parameter : parameters) {
+//                if (totalAmount > parameter.getCumulative()) {
+//                    return totalAmount * parameter.getTax() / 100;
+//                }
+//            }
+//        }
+//        return 0.0;
+//    }
+
+    private Double calculateZimraTax(Double totalAmount, POSSupplierDto supplierDto) {
+        if ("No".equalsIgnoreCase(supplierDto.getTaxClearance()) || supplierDto.getTaxClearance() == null) {
+            List<POSParameter> parameters = parameterService.getAllParameters(); // Assuming you have a method to fetch all parameters
+            for (POSParameter parameter : parameters) {
+                if (totalAmount > parameter.getCumulative()) {
+                    return totalAmount * parameter.getTax() / 100;
+                }
+            }
+        }
+        return 0.0;
+    }
+
+
+//    private PurchaseOrderTransactionsResponseDTO convertToDTO(PurchaseOrderTransactions transaction) {
+//        PurchaseOrderTransactionsResponseDTO dto = new PurchaseOrderTransactionsResponseDTO();
+//        BeanUtils.copyProperties(transaction, dto);
+//        return dto;
+//    }
 
     @Transactional(value = "transactionManager")
     public void savePurchaseOrderTransaction(PurchaseOrderTransactionsRequestDTO request) {
@@ -88,6 +215,14 @@ public class PurchaseOrderTransactionsService {
         }
 
             return response;
+    }
+
+    @Transactional(value = "transactionManager")
+    public long getTransactionCountByRequisitionId(String id) {
+        Optional<List<PurchaseOrderTransactions>> purchaseOrderTransactionsList = purchaseOrderTransactionsRepository
+                .getPurchaseOrderTransactionsByPoRequisitionId(id);
+
+        return purchaseOrderTransactionsList.map(List::size).orElse(0);
     }
 
     @Transactional(value = "transactionManager")
