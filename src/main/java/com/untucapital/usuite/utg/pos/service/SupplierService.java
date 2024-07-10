@@ -56,6 +56,7 @@ public class SupplierService {
 
         return response;
     }
+
     //Get All Suppliers
     @Transactional(value = "transactionManager")
     public List<POSSupplierDto> getAllSuppliers() {

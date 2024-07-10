@@ -11,6 +11,8 @@ public interface PurchaseOrderTransactionsRepository extends JpaRepository<Purch
 
     Optional<List<PurchaseOrderTransactions>> getPurchaseOrderTransactionsByPoRequisitionId(String id);
 
+//    List<PurchaseOrderTransactions> findByRequisitionId(String requisitionId);
+
     boolean existsByPoItemAndPoSupplierAndPoCategoryAndPoQuantityAndPoAmountAndPoRequisitionId(
             String poItem, String poSupplier, String poCategory, String poQuantity, String poAmount, String poRequisitionId);
 

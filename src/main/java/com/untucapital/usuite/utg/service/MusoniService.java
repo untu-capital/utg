@@ -806,7 +806,6 @@ public class MusoniService {
 
         List<ViewClientLoansResponse> response = new ArrayList<>();
 
-
         for (LoanAccount account: loanAccounts){
             ViewClientLoansResponse viewClientLoansResponse = new ViewClientLoansResponse();
 

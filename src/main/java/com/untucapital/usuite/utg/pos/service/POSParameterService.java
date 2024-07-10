@@ -1,7 +1,6 @@
 package com.untucapital.usuite.utg.pos.service;
 
 import com.untucapital.usuite.utg.pos.model.POSParameter;
-import com.untucapital.usuite.utg.pos.model.POSParameter;
 import com.untucapital.usuite.utg.pos.repository.POSParameterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

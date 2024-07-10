@@ -6,8 +6,12 @@ import com.untucapital.usuite.utg.dto.response.PurchaseOrderTransactionsResponse
 import com.untucapital.usuite.utg.dto.response.RequisitionsResponseDTO;
 import com.untucapital.usuite.utg.model.cms.Vault;
 import com.untucapital.usuite.utg.model.po.Requisitions;
+import com.untucapital.usuite.utg.pos.dto.POSSupplierDto;
 import com.untucapital.usuite.utg.pos.model.Expenditure;
+import com.untucapital.usuite.utg.pos.model.POSParameter;
 import com.untucapital.usuite.utg.pos.repository.ExpenditureRepository;
+import com.untucapital.usuite.utg.pos.service.POSParameterService;
+import com.untucapital.usuite.utg.pos.service.SupplierService;
 import com.untucapital.usuite.utg.repository.RequisitionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
@@ -36,21 +40,133 @@ public class RequisitionService {
     @Autowired
     private PurchaseOrderTransactionsService purchaseOrderTransactionsService;
 
-    @Transactional(value = "transactionManager")
-    public List<RequisitionsResponseDTO> getAllRequistions() {
+    @Autowired
+    private POSParameterService parameterService;
 
+    @Autowired
+    private SupplierService supplierService;
+
+    @Autowired
+    private UserService userService;
+
+
+
+    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getAllRequistions() {
+//
+//        List<RequisitionsResponseDTO> response = new ArrayList<>();
+//        List<Requisitions> requisitionsList= requisitionRepository.findAll();
+//        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
+//
+//        for (Requisitions requisition : requisitionsList) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            response.add(responseDTO);
+//        }
+//
+//        return response;
+//    }
+
+//    public List<RequisitionsResponseDTO> getAllRequistions() {
+//        List<RequisitionsResponseDTO> response = new ArrayList<>();
+//        List<Requisitions> requisitionsList = requisitionRepository.findAll();
+//        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
+//
+//        for (Requisitions requisition : requisitionsList) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//
+//            // Calculate totalAmount
+//            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+//                    .getByRequisitionId(requisition.getId());
+//
+//            int totalAmount = transactions.stream()
+//                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+//                    .sum();
+//
+//            responseDTO.setPoTotal(String.valueOf(totalAmount));
+//            responseDTO.setTransactions(transactions); // Set the transactions
+//
+//            response.add(responseDTO);
+//        }
+//
+//        return response;
+//    }
+
+    public List<RequisitionsResponseDTO> getAllRequistions() {
         List<RequisitionsResponseDTO> response = new ArrayList<>();
-        List<Requisitions> requisitionsList= requisitionRepository.findAll();
+        List<Requisitions> requisitionsList = requisitionRepository.findAll();
         requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
         for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+//            responseDTO.setTransactions(transactions);
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+
             response.add(responseDTO);
         }
 
         return response;
     }
+
+    private String getUserFullName(String userId) {
+        return userService.getUserById(userId)
+                .map(user -> user.getFirstName() + " " + user.getLastName())
+                .orElse("");
+    }
+
+
+    private Double calculateZimraTax(int totalAmount, String supplierId) {
+        // Fetch supplier details
+        POSSupplierDto supplierDto = supplierService.getSupplierById(Integer.valueOf(supplierId));
+
+        // Fetch parameters (assuming parameters() returns a list of parameter objects)
+        List<POSParameter> parameters = parameterService.getAllParameters();
+
+        // Calculate ZIMRA tax based on supplier and total amount
+        if ("No".equals(supplierDto.getTaxClearance()) || supplierDto.getTaxClearance() == null) {
+            for (POSParameter param : parameters) {
+                if (totalAmount > param.getCumulative()) {
+                    return (double) (totalAmount * param.getTax() / 100);
+                }
+            }
+        }
+
+        return 0.0;
+    }
+
+
+
 
     @Transactional(value = "transactionManager")
     public RequisitionsResponseDTO saveRequisition(RequisitionsRequestDTO request) {

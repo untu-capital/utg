@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.pos.controller;
 
+import com.untucapital.usuite.utg.pos.dto.POSParameterDto;
 import com.untucapital.usuite.utg.pos.model.POSParameter;
 import com.untucapital.usuite.utg.pos.service.POSParameterService;
 import lombok.RequiredArgsConstructor;
