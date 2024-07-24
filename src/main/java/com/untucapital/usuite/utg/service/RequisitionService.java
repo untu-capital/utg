@@ -208,103 +208,382 @@ public class RequisitionService {
     }
 
 
+//    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getRequisitionByUserId(String userid) {
+//
+//        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
+//        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByUserId(userid);
+//
+//        for (Requisitions requisition : requisitions) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            requisitionsResponseDTO.add(responseDTO);
+//        }
+//
+//        return requisitionsResponseDTO;
+//
+////        return requisitionRepository.findRequisitionsByUserId(userid);
+//    }
+
     @Transactional(value = "transactionManager")
     public List<RequisitionsResponseDTO> getRequisitionByUserId(String userid) {
 
-        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
-        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByUserId(userid);
+        List<RequisitionsResponseDTO> response = new ArrayList<>();
+        List<Requisitions> requisitionsList = requisitionRepository.findRequisitionsByUserId(userid);
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
-        for (Requisitions requisition : requisitions) {
+        for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
-            requisitionsResponseDTO.add(responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+//        responseDTO.setTransactions(transactions);
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+            response.add(responseDTO);
         }
 
-        return requisitionsResponseDTO;
-
-//        return requisitionRepository.findRequisitionsByUserId(userid);
+        return response;
     }
+
+
+//    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getRequisitionByApproverId(String userid) {
+//
+//        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
+//        List<Requisitions> requisitions = requisitionRepository.findRequisitionByApprovers(userid);
+//
+//        for (Requisitions requisition : requisitions) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            requisitionsResponseDTO.add(responseDTO);
+//        }
+//
+//        return requisitionsResponseDTO;
+//
+//    }
 
     @Transactional(value = "transactionManager")
     public List<RequisitionsResponseDTO> getRequisitionByApproverId(String userid) {
+        List<RequisitionsResponseDTO> response = new ArrayList<>();
+        List<Requisitions> requisitionsList = requisitionRepository.findRequisitionByApprovers(userid);
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
-        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
-        List<Requisitions> requisitions = requisitionRepository.findRequisitionByApprovers(userid);
-
-        for (Requisitions requisition : requisitions) {
+        for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
-            requisitionsResponseDTO.add(responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+            response.add(responseDTO);
         }
 
-        return requisitionsResponseDTO;
-
+        return response;
     }
+
+
+
+//    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getRequisitionsToBeApprovedByFinance() {
+//
+//        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
+//        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNull();
+//
+//        for (Requisitions requisition : requisitions) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            requisitionsResponseDTO.add(responseDTO);
+//        }
+//
+//        return requisitionsResponseDTO;
+//
+//    }
 
 
     @Transactional(value = "transactionManager")
     public List<RequisitionsResponseDTO> getRequisitionsToBeApprovedByFinance() {
+        List<RequisitionsResponseDTO> response = new ArrayList<>();
+        List<Requisitions> requisitionsList = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNull();
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
-        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
-        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNull();
-
-        for (Requisitions requisition : requisitions) {
+        for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
-            requisitionsResponseDTO.add(responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+            response.add(responseDTO);
         }
 
-        return requisitionsResponseDTO;
-
+        return response;
     }
+
+
+//    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getRequisitionsApprovedByFinance() {
+//
+//        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
+//        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNotNull();
+//
+//        for (Requisitions requisition : requisitions) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            requisitionsResponseDTO.add(responseDTO);
+//        }
+//
+//        return requisitionsResponseDTO;
+//
+//    }
 
     @Transactional(value = "transactionManager")
     public List<RequisitionsResponseDTO> getRequisitionsApprovedByFinance() {
+        List<RequisitionsResponseDTO> response = new ArrayList<>();
+        List<Requisitions> requisitionsList = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNotNull();
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
-        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
-        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByPoApproverIsNotNullAndCmsApproverIsNotNull();
-
-        for (Requisitions requisition : requisitions) {
+        for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
-            requisitionsResponseDTO.add(responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+            response.add(responseDTO);
         }
 
-        return requisitionsResponseDTO;
-
+        return response;
     }
+
+
+//    @Transactional(value = "transactionManager")
+//    public List<RequisitionsResponseDTO> getRequisitionsByTellerId(String tellerId) {
+//
+//        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
+//        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByTeller(tellerId);
+//
+//        for (Requisitions requisition : requisitions) {
+//            RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+//            BeanUtils.copyProperties(requisition, responseDTO);
+//            requisitionsResponseDTO.add(responseDTO);
+//        }
+//
+//        return requisitionsResponseDTO;
+//
+//    }
 
     @Transactional(value = "transactionManager")
     public List<RequisitionsResponseDTO> getRequisitionsByTellerId(String tellerId) {
+        List<RequisitionsResponseDTO> response = new ArrayList<>();
+        List<Requisitions> requisitionsList = requisitionRepository.findRequisitionsByTeller(tellerId);
+        requisitionsList.forEach(requisition -> Hibernate.initialize(requisition.getAttachments()));
 
-        List<RequisitionsResponseDTO> requisitionsResponseDTO = new ArrayList<>();
-        List<Requisitions> requisitions = requisitionRepository.findRequisitionsByTeller(tellerId);
-
-        for (Requisitions requisition : requisitions) {
+        for (Requisitions requisition : requisitionsList) {
             RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
             BeanUtils.copyProperties(requisition, responseDTO);
-            requisitionsResponseDTO.add(responseDTO);
+
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
+
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+
+            response.add(responseDTO);
         }
 
-        return requisitionsResponseDTO;
-
+        return response;
     }
+
+
+//    @Transactional(value = "transactionManager")
+//    public RequisitionsResponseDTO getRequisitionByPoNumber(String poNumber) {
+//
+//        RequisitionsResponseDTO response = new RequisitionsResponseDTO();
+//        Optional<Requisitions> requisitions = requisitionRepository.getRequisitionsByPoNumber(poNumber);
+//
+//        if(requisitions.isPresent()) {
+//            Requisitions requisitions1 = requisitions.get();
+//            BeanUtils.copyProperties(requisitions1,response);
+//
+//            return response;
+//        }else {
+//            return null;
+//        }
+//    }
+
 
     @Transactional(value = "transactionManager")
     public RequisitionsResponseDTO getRequisitionByPoNumber(String poNumber) {
+        RequisitionsResponseDTO responseDTO = new RequisitionsResponseDTO();
+        Optional<Requisitions> requisitionsOpt = requisitionRepository.getRequisitionsByPoNumber(poNumber);
 
-        RequisitionsResponseDTO response = new RequisitionsResponseDTO();
-        Optional<Requisitions> requisitions = requisitionRepository.getRequisitionsByPoNumber(poNumber);
+        if(requisitionsOpt.isPresent()) {
+            Requisitions requisition = requisitionsOpt.get();
+            BeanUtils.copyProperties(requisition, responseDTO);
 
-        if(requisitions.isPresent()) {
-            Requisitions requisitions1 = requisitions.get();
-            BeanUtils.copyProperties(requisitions1,response);
+            // Fetch transactions
+            List<PurchaseOrderTransactionsResponseDTO> transactions = purchaseOrderTransactionsService
+                    .getByRequisitionId(requisition.getId());
 
-            return response;
-        }else {
+            // Calculate totalAmount
+            int totalAmount = transactions.stream()
+                    .mapToInt(transaction -> Integer.parseInt(transaction.getPoAmount()))
+                    .sum();
+
+            // Calculate poCount
+            int poCount = transactions.size();
+
+            // Calculate ZIMRA tax
+            Double zimraTax = 0.0;
+            if (!transactions.isEmpty()) {
+                String poSupplier = transactions.get(0).getPoSupplier();
+                zimraTax = calculateZimraTax(totalAmount, poSupplier);
+            }
+
+            // Set total amount, poCount, and zimraTax
+            responseDTO.setPoTotal(String.valueOf(totalAmount));
+            responseDTO.setPoCount(String.valueOf(poCount));
+            responseDTO.setZimraTax(String.valueOf(zimraTax));
+
+            // Fetch and set approver details with null checks
+            responseDTO.setPoApproverName(requisition.getPoApprover() != null ? getUserFullName(requisition.getPoApprover()) : "");
+            responseDTO.setCmsApproverName(requisition.getCmsApprover() != null ? getUserFullName(requisition.getCmsApprover()) : "");
+            responseDTO.setTellerName(requisition.getTeller() != null ? getUserFullName(requisition.getTeller()) : "");
+        } else {
             return null;
         }
+
+        return responseDTO;
     }
+
 
     @Transactional(value = "transactionManager")
     public RequisitionsResponseDTO updateRequisition(String poNumber) {
