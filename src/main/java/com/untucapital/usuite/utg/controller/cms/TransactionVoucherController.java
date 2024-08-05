@@ -49,7 +49,7 @@ public class TransactionVoucherController {
 
     //Second Approve Transaction
     @PostMapping("/second-approve")
-    public ResponseEntity<TransactionVoucherResponse> secondApproveTransaction(@RequestBody ApproverRequest request) {
+    public ResponseEntity<TransactionVoucherResponse> secondApproveTransaction(@RequestBody ApproverRequest request) throws ParseException, JsonProcessingException {
         return ResponseEntity.ok(transactionVoucherService.secondApproveTransaction(request));
     }
 

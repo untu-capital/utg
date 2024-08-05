@@ -184,13 +184,39 @@ public class TransactionVoucherService {
 
     //Second Approver Transaction
     @Transactional(value = "transactionManager")
-    public TransactionVoucherResponse secondApproveTransaction(ApproverRequest request) {
+    public TransactionVoucherResponse secondApproveTransaction(ApproverRequest request) throws ParseException, JsonProcessingException {
         TransactionVoucher transactionVoucher = transactionVoucherRepository.findById(request.getId()).orElseThrow();
-        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getId());
+        TransactionPurposeResponseDTO transactionPurpose = transactionPurposeService.getById(transactionVoucher.getWithdrawalPurpose());
 
+        log.info("Transaction Purpose: {}", transactionPurpose);
 
         if (request.getApprovalStatus().equalsIgnoreCase("APPROVED")) {
             transactionVoucher.setSecondApprovalStatus(ApprovalStatus.APPROVED);
+
+            PastelTransReq pastelTransReq = new PastelTransReq();
+
+            if (transactionVoucher.getWithdrawalPurpose() != null){
+
+//                TransactionPurpose transactionPurpos = transactionPurposeRepository.getById(transactionVoucher.getWithdrawalPurpose());
+
+                String description = transactionPurpose.getName();
+                LocalDate date = transactionVoucher.getApplicationDate().toLocalDate();
+                log.info("Loacal Date: {}", date);
+                pastelTransReq.setTransactionDate(MusoniUtils.formatPastelDates(date));
+                pastelTransReq.setDescription(description);
+                pastelTransReq.setTransactionType(AppConstants.CASH);
+                pastelTransReq.setAmount(transactionVoucher.getAmount().doubleValue());
+                pastelTransReq.setCurrency(transactionVoucher.getCurrency());
+                pastelTransReq.setReference(transactionVoucher.getReference());
+                pastelTransReq.setAPIPassword(apiPassword);
+                pastelTransReq.setAPIUsername(apiUsername);
+                pastelTransReq.setFromAccount(transactionVoucher.getFromVault().getAccount());
+                pastelTransReq.setToAccount(transactionVoucher.getToVault().getAccount());
+                pastelTransReq.setExchangeRate(AppConstants.EXCHANGE_RATE);
+
+            }
+            postGlService.savePostGlFromCMS(pastelTransReq);
+
             sendEmail(
                     transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
                     transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
@@ -199,6 +225,7 @@ public class TransactionVoucherService {
                     "Revise transaction - " + transactionVoucher.getReference() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
+
         }
 
         if (request.getApprovalStatus().equalsIgnoreCase("REVISE")) {

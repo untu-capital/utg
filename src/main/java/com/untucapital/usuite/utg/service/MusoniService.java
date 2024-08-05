@@ -206,9 +206,8 @@ public class MusoniService {
             }
         }
     }
-
-
-    //        @Scheduled(cron = "0 0 * * * ?")
+    
+//            @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
@@ -287,7 +286,6 @@ public class MusoniService {
             }
         }
     }
-
 
     //    ToDo: Get Required information from the loan returned
     public String repaymentSchedule(String phone_number, String loanAccount) throws ParseException {

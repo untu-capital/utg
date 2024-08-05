@@ -29,18 +29,18 @@ public class PostGlController {
         return ResponseEntity.ok(postGlService.getAllPostGl());
     }
 
-    @PostMapping("save")
-    public ResponseEntity<TransactionInfo> saveTransaction(@RequestBody TransactionInfo transactionInfo) {
-
-        try {
-            log.info("Trans Req:{}",transactionInfo);
-            TransactionInfo transactionInfo1= postGlService.savePostGlFromCMS(transactionInfo);
-            return ResponseEntity.ok(transactionInfo1);
-        }catch (Exception e) {
-            return (ResponseEntity<TransactionInfo>) ResponseEntity.badRequest();
-        }
-
-    }
+//    @PostMapping("save")
+//    public ResponseEntity<TransactionInfo> saveTransaction(@RequestBody TransactionInfo transactionInfo) {
+//
+//        try {
+//            log.info("Trans Req:{}",transactionInfo);
+//            TransactionInfo transactionInfo1= postGlService.savePostGlFromCMS(transactionInfo);
+//            return ResponseEntity.ok(transactionInfo1);
+//        }catch (Exception e) {
+//            return (ResponseEntity<TransactionInfo>) ResponseEntity.badRequest();
+//        }
+//
+//    }
 
     @GetMapping("getByAccountLink/{accountLink}")
     public ResponseEntity<List<PostGLResponseDTO>> getByAccountLink(@PathVariable("accountLink") Integer accountLink) {

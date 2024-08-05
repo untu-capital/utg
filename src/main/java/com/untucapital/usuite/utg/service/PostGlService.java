@@ -55,12 +55,11 @@ public class PostGlService {
     }
 
     @Transactional(value = "pastelTransactionManager")
-    public TransactionInfo savePostGlFromCMS(TransactionInfo request) throws ParseException, JsonProcessingException {
+    public TransactionInfo savePostGlFromCMS(PastelTransReq request) throws ParseException, JsonProcessingException {
 
-        log.info("Request:{}", request);
-        PastelTransReq pastelTransReq = postGlProcessor.createPastelRequest(request);
-        log.info("Pastel Trans:{}", pastelTransReq);
-        TransactionInfo trans = restClient.savePostGlTransaction(pastelTransReq);
+//        PastelTransReq pastelTransReq = postGlProcessor.createPastelRequest(request);
+        log.info("Pastel Trans:{}", request);
+        TransactionInfo trans = restClient.savePostGlTransaction(request);
 
         return trans;
     }
