@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author panashe rutimhu
@@ -45,129 +47,43 @@ public class ExpenditureProcessor {
         return result;
     }
 
-    public List<POSBalanceSheetDto> setBalanceSheetResponse(List<Budget> budgetList, List<Object[]> expenditureDtoList, int year){
+    private static final String[] MONTHS = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
 
+    public List<POSBalanceSheetDto> setBalanceSheetResponse(List<Budget> budgetList, List<Object[]> expenditureDtoList, int year) {
         List<POSBalanceSheetDto> posBalanceSheetList = new ArrayList<>();
 
+        // Create a map of budgets by month for quick lookup
+        Map<Integer, Budget> budgetMap = budgetList.stream()
+                .collect(Collectors.toMap(Budget::getMonth, budget -> budget));
+
         for (Object[] result : expenditureDtoList) {
-
             POSBalanceSheetDto posBalanceSheetDto = new POSBalanceSheetDto();
-
-            log.info("result: {}", expenditureDtoList);
             POSBalanceSheet posBalanceSheet = new POSBalanceSheet();
-
 
             String monthString = (String) result[0];
             int month = Integer.parseInt(monthString);
             BigDecimal sumAmountBig = (BigDecimal) result[1];
             float sumAmount = sumAmountBig.floatValue();
 
-
-            Budget budget = budgetList.stream()
-                    .filter(b -> b.getMonth() == month)
-                    .findFirst()
-                    .orElse(null);
-
-            log.info("Month: {}", month);
-
+            Budget budget = budgetMap.get(month);
             if (budget != null) {
-                switch (month) {
-                    case 1:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("January");
-
-                        break;
-                    case 2:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("February");
-
-                        break;
-                    case 3:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("March");
-
-
-                        break;
-                    case 4:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("April");
-
-                        break;
-                    case 5:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("May");
-
-                        break;
-                    case 6:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("June");
-
-                        break;
-                    case 7:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("July");
-
-                        break;
-                    case 8:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("August");
-
-                        break;
-                    case 9:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("September");
-
-                        break;
-                    case 10:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("October");
-
-                        break;
-                    case 11:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("November");
-
-                        break;
-                    case 12:
-                        posBalanceSheet.setExpenditure(sumAmount);
-                        posBalanceSheet.setBudget(budget.getAmount());
-                        posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
-                        posBalanceSheet.setMonth("December");
-
-                        break;
-                }
-            }else {
-                throw  new RuntimeException("Budget not found");
+                posBalanceSheet.setExpenditure(sumAmount);
+                posBalanceSheet.setBudget(budget.getAmount());
+                posBalanceSheet.setBalance(budget.getAmount() - sumAmount);
+                posBalanceSheet.setMonth(MONTHS[month - 1]);
+            } else {
+                throw new RuntimeException("Budget not found for month: " + month);
             }
+
             posBalanceSheet.setYear(year);
             BeanUtils.copyProperties(posBalanceSheet, posBalanceSheetDto);
             posBalanceSheetList.add(posBalanceSheetDto);
             log.info("PosBalanceSheetList: {}", posBalanceSheetList);
         }
 
-
-            return posBalanceSheetList;
+        return posBalanceSheetList;
     }
 }

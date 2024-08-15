@@ -1,5 +1,6 @@
 package com.untucapital.usuite.utg.dto.response;
 
+import com.untucapital.usuite.utg.dto.AbstractEntityDTO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -13,25 +14,21 @@ import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @Data
-public class BudgetResponseDTO {
-
-
-    private Integer id;
+public class BudgetResponseDTO extends AbstractEntityDTO {
     private String category;
     private int year;
-    private BigDecimal january;
-    private BigDecimal february;
-    private BigDecimal march;
-    private BigDecimal april;
-    private BigDecimal may;
-    private BigDecimal june;
-    private BigDecimal july;
-    private BigDecimal august;
-    private BigDecimal september;
-    private BigDecimal october;
-    private BigDecimal november;
-    private BigDecimal december;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private Float amount;
 
+    private String january;
+    private String february;
+    private String march;
+    private String april;
+    private String may;
+    private String june;
+    private String july;
+    private String august;
+    private String september;
+    private String october;
+    private String november;
+    private String december;
 }

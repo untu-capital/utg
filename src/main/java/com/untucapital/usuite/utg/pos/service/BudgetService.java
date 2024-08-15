@@ -22,16 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BudgetService {
     public final BudgetRepository budgetRepository;
+    public final POSCategoryService posCategoryService;
 
     //1. create budget
     @Transactional(value = "transactionManager")
     public BudgetResponseDTO createBudget(BudgetRequestDTO request) {
-
         Budget budget = new Budget();
-        BudgetResponseDTO response = new BudgetResponseDTO();
         BeanUtils.copyProperties(request, budget);
-        Budget budget1 = budgetRepository.save(budget);
-        BeanUtils.copyProperties(budget1, response);
+
+        Budget savedBudget = budgetRepository.save(budget);
+
+        BudgetResponseDTO response = new BudgetResponseDTO();
+        BeanUtils.copyProperties(savedBudget, response);
 
         return response;
     }
@@ -50,45 +52,45 @@ public class BudgetService {
     @Transactional(value = "transactionManager")
     public List<BudgetResponseDTO> getAllBudgets() {
 
-        List<BudgetResponseDTO> response = new ArrayList<BudgetResponseDTO>();
+        List<BudgetResponseDTO> response = new ArrayList<>();
         List<Budget> budgetList = budgetRepository.findAll();
 
         for (Budget budget : budgetList) {
             BudgetResponseDTO budgetResponse = new BudgetResponseDTO();
+            String categoryName = posCategoryService.getCategoryById(Integer.valueOf(budget.getCategory())).getName();
             BeanUtils.copyProperties(budget, budgetResponse);
-
+            budgetResponse.setCategory(categoryName);
             response.add(budgetResponse);
         }
-
         return response;
     }
 
     //4. update budget
     @Transactional(value = "transactionManager")
     public BudgetResponseDTO updateBudget(BudgetRequestDTO budget) {
+        Budget existingBudget = budgetRepository.findById(budget.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Budget not found"));
 
-        BudgetResponseDTO response = new BudgetResponseDTO();
-        Budget existingBudget = budgetRepository.findById(budget.getId()).orElse(null);
-
-        assert existingBudget != null;
         existingBudget.setCategory(budget.getCategory());
         existingBudget.setYear(budget.getYear());
-        existingBudget.setMonth(budget.getMonth());
-//        existingBudget.setJanuary(budget.getJanuary());
-//        existingBudget.setFebruary(budget.getFebruary());
-//        existingBudget.setMarch(budget.getMarch());
-//        existingBudget.setApril(budget.getApril());
-//        existingBudget.setMay(budget.getMay());
-//        existingBudget.setJune(budget.getJune());
-//        existingBudget.setJuly(budget.getJuly());
-//        existingBudget.setAugust(budget.getAugust());
-//        existingBudget.setSeptember(budget.getSeptember());
-//        existingBudget.setOctober(budget.getOctober());
-//        existingBudget.setNovember(budget.getNovember());
-//        existingBudget.setDecember(budget.getDecember());
+        existingBudget.setAmount(budget.getAmount());
+        existingBudget.setJanuary(budget.getJanuary());
+        existingBudget.setFebruary(budget.getFebruary());
+        existingBudget.setMarch(budget.getMarch());
+        existingBudget.setApril(budget.getApril());
+        existingBudget.setMay(budget.getMay());
+        existingBudget.setJune(budget.getJune());
+        existingBudget.setJuly(budget.getJuly());
+        existingBudget.setAugust(budget.getAugust());
+        existingBudget.setSeptember(budget.getSeptember());
+        existingBudget.setOctober(budget.getOctober());
+        existingBudget.setNovember(budget.getNovember());
+        existingBudget.setDecember(budget.getDecember());
 
-        budgetRepository.save(existingBudget);
-        BeanUtils.copyProperties(existingBudget, response);
+        Budget updatedBudget = budgetRepository.save(existingBudget);
+
+        BudgetResponseDTO response = new BudgetResponseDTO();
+        BeanUtils.copyProperties(updatedBudget, response);
 
         return response;
     }

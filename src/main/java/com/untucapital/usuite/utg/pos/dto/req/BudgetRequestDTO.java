@@ -16,8 +16,7 @@ public class BudgetRequestDTO extends AbstractEntityDTO {
 
     private String category;
     private int year;
-    private int month;
-    private Float amount;
+    private Float amount; // Note: ensure this matches the data type from the form and frontend
 
     private String january;
     private String february;
@@ -31,7 +30,4 @@ public class BudgetRequestDTO extends AbstractEntityDTO {
     private String october;
     private String november;
     private String december;
-
-
-
 }

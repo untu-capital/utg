@@ -1,8 +1,7 @@
 package com.untucapital.usuite.utg.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.untucapital.usuite.utg.commons.AppConstants;
-import com.untucapital.usuite.utg.dto.Currency;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.*;
 import com.untucapital.usuite.utg.dto.client.Client;
@@ -15,19 +14,16 @@ import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
-import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccount;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.dto.request.PostGLRequestDTO;
 import com.untucapital.usuite.utg.client.RestClient;
-import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.entity.PostGl;
 import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.exception.EmptyException;
 import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
 import com.untucapital.usuite.utg.exception.SmsException;
-import com.untucapital.usuite.utg.model.ConfirmationToken;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.settlements.SettlementAccountsTokens;
 import com.untucapital.usuite.utg.model.transactions.Loans;
@@ -41,23 +37,23 @@ import com.untucapital.usuite.utg.utils.MusoniUtils;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.security.auth.login.AccountNotFoundException;
 import java.math.BigDecimal;
-import java.sql.*;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -206,7 +202,7 @@ public class MusoniService {
             }
         }
     }
-    
+
 //            @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")
     public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
@@ -897,5 +893,6 @@ public class MusoniService {
         return response;
 
     }
+
 }
 

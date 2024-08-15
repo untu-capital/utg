@@ -22,17 +22,22 @@ import java.time.LocalDateTime;
 @Data
 public class Budget extends AbstractEntity {
 
-    @Column(name = "category")
     private String category;
-
-
-    @Column(name = "year")
     private int year;
-
-    @Column(name = "month")
+    private Float amount;
     private int month;
 
-    @Column(name = "amount")
-    private Float amount;
+    private String january;
+    private String february;
+    private String march;
+    private String april;
+    private String may;
+    private String june;
+    private String july;
+    private String august;
+    private String september;
+    private String october;
+    private String november;
+    private String december;
 
 }

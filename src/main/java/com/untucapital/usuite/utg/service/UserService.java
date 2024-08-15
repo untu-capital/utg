@@ -428,7 +428,7 @@ public class UserService extends AbstractService<User> {
                 Long mobileNumber = Long.parseLong(username);
                 return Optional.ofNullable(userRepository.findByContactDetail_MobileNumber(mobileNumber));
             } catch (NumberFormatException e) {
-                log.debug("QWERTY USER LOGIN");
+                log.debug("TRY FINDING USER BY USERNAME: ");
                 return userRepository.findByUsername(username);
             }
         }
