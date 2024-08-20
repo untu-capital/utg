@@ -170,6 +170,18 @@ public class UsersController extends AbstractController<User> {
         }
     }
 
+    @PutMapping("/userCleanup")
+    public ResponseEntity<?> cleanupUser(@RequestParam String mobile, @RequestParam String activeAcc) {
+        try {
+            User updatedUser = userService.dbCleanup(mobile, activeAcc);
+            return ResponseEntity.ok(updatedUser);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred while cleaning up the user.");
+        }
+    }
+
     @PutMapping("/updatePoUserRole/{id}")
     public ResponseEntity<String> updatePoUserRole(@PathVariable String id, @RequestBody PoUser updatedPoUser) {
         // Log the received ID for debugging

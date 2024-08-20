@@ -15,6 +15,7 @@ import com.untucapital.usuite.utg.model.Branches;
 import com.untucapital.usuite.utg.model.User;
 import com.untucapital.usuite.utg.model.cms.*;
 import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
+import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.processor.TransactionVoucherProcessor;
 import com.untucapital.usuite.utg.repository.BranchRepository;
 import com.untucapital.usuite.utg.repository.cms.AuthorisationRepository;
@@ -212,17 +213,27 @@ public class TransactionVoucherService {
                 pastelTransReq.setExchangeRate(AppConstants.EXCHANGE_RATE);
             }
 
-            postGlService.savePostGlFromCMS(pastelTransReq); // This must succeed for the save to happen
+            // Call the service to post to GL and save the transaction
+            TransactionInfo transactionInfo = postGlService.savePostGlFromCMS(pastelTransReq);
 
-            transactionVoucher = transactionVoucherRepository.save(transactionVoucher); // Save after successful posting
+            log.info("Pastel Trans Req: {}", pastelTransReq);
 
-            sendEmail(
-                    transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
-                    transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
-                    "Transaction Approved Successfully",
-                    "Revise transaction - " + transactionVoucher.getReference() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
-                    transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
-            );
+            // Check if the transactionInfo has a non-null amount before saving the transaction voucher
+            if (transactionInfo != null && transactionInfo.getAmount() != null) {
+                transactionVoucher = transactionVoucherRepository.save(transactionVoucher);
+
+                sendEmail(
+                        transactionVoucher.getInitiator().getFirstName() + " " + transactionVoucher.getInitiator().getLastName(),
+                        transactionVoucher.getInitiator().getContactDetail().getEmailAddress(),
+                        "Transaction Approved Successfully",
+                        "Revise transaction - " + transactionVoucher.getReference() + ". The transactional purpose is " + transactionVoucher.getWithdrawalPurpose() + " ." + transactionVoucher.getFirstApprovalComment(),
+                        transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
+                );
+                transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
+
+            } else {
+                log.warn("Transaction not saved due to null connection response.");
+            }
         }
 
         if (request.getApprovalStatus().equalsIgnoreCase("REVISE")) {
@@ -236,8 +247,6 @@ public class TransactionVoucherService {
                     transactionVoucher.getSecondApprover().getFirstName() + " " + transactionVoucher.getSecondApprover().getLastName()
             );
         }
-
-        transactionVoucher.setSecondApprovedAt(LocalDateTime.now());
 
         return transactionVoucherProcessor.transactionVoucherResponseSerializer(transactionVoucher, transactionPurpose);
     }

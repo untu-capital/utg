@@ -62,6 +62,7 @@ public class PostGlService {
         TransactionInfo trans = restClient.savePostGlTransaction(request);
 
         return trans;
+
     }
 
     @Transactional(value = "pastelTransactionManager")

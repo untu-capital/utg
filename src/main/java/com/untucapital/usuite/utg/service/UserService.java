@@ -468,6 +468,23 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional(value = "transactionManager")
+    public User dbCleanup(String mobile, String activeAcc) {
+        Optional<User> cleanUser = findUserByUsernameOrMobileNumber(mobile);
+
+        if (cleanUser.isPresent()) {
+            User user  = cleanUser.get();
+
+            user.setUsername(activeAcc);
+            userRepository.save(user);
+
+            return user;
+        } else {
+            // Handle the case where the user with the provided userId is not found.
+            throw new ResourceNotFoundException("User", "mobile number", mobile);
+        }
+    }
+
+    @Transactional(value = "transactionManager")
     public User updateUserCmsUser(String userId, CmsUser defaultCmsUser) {
         Optional<User> userOptional = userRepository.findById(userId);
 
