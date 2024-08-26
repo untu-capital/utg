@@ -9,13 +9,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
-import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
@@ -139,6 +140,24 @@ public class MusoniController {
         musoniService.getLoansByTimestamp();
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("loanTransactions/{loanAccount}")
+    public List<TransactionDTO> getTransactionsByLoanId(@PathVariable int loanAccount) throws ParseException, JsonProcessingException, AccountNotFoundException {
+        List<TransactionDTO> transactionDTO = musoniService.getTransactionsByLoanId(loanAccount);
+        return transactionDTO;
+    }
+
+    @GetMapping("savingsTransactions/{savingsAccount}")
+    public List<SavingsTransactionDTO> getTransactionsBySavingsId(@PathVariable int savingsAccount) throws ParseException, JsonProcessingException, AccountNotFoundException {
+        List<SavingsTransactionDTO> transactionDTO = musoniService.getTransactionsBySavingsId(savingsAccount);
+        return transactionDTO;
+    }
+
+    @GetMapping("pmfTransactions/{pmfAccount}")
+    public List<TransactionDTO> getTransactionsByPostMaturityFeeId(@PathVariable int pmfAccount) throws ParseException, JsonProcessingException, AccountNotFoundException {
+        List<TransactionDTO> transactionDTO = musoniService.getTransactionsByPostMaturityFeeId(pmfAccount);
+        return transactionDTO;
     }
 
     @GetMapping("savings/transactions")
@@ -354,58 +373,69 @@ public class MusoniController {
         return loanBal;
     }
 
-    List<String> loanAccRepay = new ArrayList<>();
+//    List<String> loanAccRepay = new ArrayList<>();
     //Get Clients Loans By Client ID
+//    @GetMapping("getLoanRepaymentSchedule/{loanAccount}")
+//    public Object getLoanRepaymentSchedule(@PathVariable String loanAccount) throws JsonProcessingException {
+//        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+//        String clientAccount = restTemplate.exchange(
+//                musoniUrl + "loans/" + loanAccount + "?associations=repaymentSchedule",
+//                HttpMethod.GET,
+//                entity,
+//                String.class
+//        ).getBody();
+//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        JsonNode clientAccountJson = objectMapper.readTree(clientAccount);
+//        JsonNode repaymentSchedule = clientAccountJson.at("/repaymentSchedule/periods");
+//
+//        List<Map<String, Object>> loanAccRepay = new ArrayList<>();
+//
+//        if (repaymentSchedule.isArray()) {
+//            for (JsonNode periodNode : repaymentSchedule) {
+//                String period = getNodeText(periodNode, "period");
+//                String fromDate = formatDate(periodNode.get("fromDate"));
+//                String dueDate = formatDate(periodNode.get("dueDate"));
+//                String amountDue = getNodeText(periodNode, "totalDueForPeriod");
+//                String amountPaid = getNodeText(periodNode, "totalPaidForPeriod");
+//                String amountOutstanding = getNodeText(periodNode, "totalOutstandingForPeriod");
+//                String paidBy = formatDate(periodNode.get("obligationsMetOnDate"));
+//
+//                Map<String, Object> loanBal = new HashMap<>();
+//                loanBal.put("loanId", loanAccount);
+//                loanBal.put("period", period);
+////                loanBal.put("From Date", fromDate);
+//                loanBal.put("date", dueDate);  // 1st column
+//                loanBal.put("totalDue", amountDue); //3rd column
+//                loanBal.put("totalPaid", amountPaid); //4th column
+//                loanBal.put("totalOutstanding", amountOutstanding); //5th column
+//                loanBal.put("paidBy", paidBy); //2nd column
+//
+//                loanAccRepay.add(loanBal);
+//            }
+//        }
+//
+//        return loanAccRepay;
+//    }
+
     @GetMapping("getLoanRepaymentSchedule/{loanAccount}")
     public Object getLoanRepaymentSchedule(@PathVariable String loanAccount) throws JsonProcessingException {
-        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
-        String clientAccount = restTemplate.exchange(
-                musoniUrl + "loans/" + loanAccount + "?associations=repaymentSchedule",
-                HttpMethod.GET,
-                entity,
-                String.class
-        ).getBody();
+        return musoniService.getLoanRepaymentSchedule(loanAccount);
+//        return restClient.getRepaymentSchedule(loanAccount);
+    }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode clientAccountJson = objectMapper.readTree(clientAccount);
-        JsonNode repaymentSchedule = clientAccountJson.at("/repaymentSchedule/periods");
+    @GetMapping("getAndProcessLoanRepayment/{loanAccount}")
+    public ResponseEntity<List<TransactionDTO>> getAndProcessLoanRepayment(@PathVariable String loanAccount) {
+        try {
+            // Call the service method to get and process the loan repayment schedule
+            List<TransactionDTO> result = musoniService.getAndProcessLoanRepayment(loanAccount);
 
-        List<Map<String, Object>> loanAccRepay = new ArrayList<>();
-
-        if (repaymentSchedule.isArray()) {
-            for (JsonNode periodNode : repaymentSchedule) {
-                String period = getNodeText(periodNode, "period");
-                String fromDate = formatDate(periodNode.get("fromDate"));
-                String dueDate = formatDate(periodNode.get("dueDate"));
-                String amountDue = getNodeText(periodNode, "totalDueForPeriod");
-                String amountPaid = getNodeText(periodNode, "totalPaidForPeriod");
-                String amountOutstanding = getNodeText(periodNode, "totalOutstandingForPeriod");
-                String paidBy = formatDate(periodNode.get("obligationsMetOnDate"));
-
-                Map<String, Object> loanBal = new HashMap<>();
-                loanBal.put("loanId", loanAccount);
-                loanBal.put("period", period);
-//                loanBal.put("From Date", fromDate);
-                loanBal.put("date", dueDate);  // 1st column
-                loanBal.put("totalDue", amountDue); //3rd column
-                loanBal.put("totalPaid", amountPaid); //4th column
-                loanBal.put("totalOutstanding", amountOutstanding); //5th column
-                loanBal.put("paidBy", paidBy); //2nd column
-
-//                loanBal.put("Prepayment Schedule for Loan Account", loanAccount);
-//                loanBal.put("Period", period);
-//                loanBal.put("From Date", fromDate);
-//                loanBal.put("To Date", dueDate);  // 1
-//                loanBal.put("Amount Due", amountDue);
-//                loanBal.put("Amount Paid", amountPaid);
-//                loanBal.put("Amount Outstanding", amountOutstanding);
-//                loanBal.put("Paid By", paidBy);
-
-                loanAccRepay.add(loanBal);
-            }
+            // Return the result with an HTTP 200 OK status
+            return ResponseEntity.ok(result);
+        } catch (JsonProcessingException e) {
+            // Handle the exception and return an HTTP 500 Internal Server Error status
+            return ResponseEntity.status(500).body(null);
         }
-
-        return loanAccRepay;
     }
 
     @GetMapping("/getMusoniLoanRepaymentSchedulePdf/{loanAccount}")

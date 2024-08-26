@@ -1,6 +1,8 @@
 package com.untucapital.usuite.utg.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.AllLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
@@ -21,6 +23,8 @@ import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONException;
@@ -179,6 +183,126 @@ public class RestClient {
         return cashTransactions;
 
     }
+
+    public List<TransactionDTO> getTransactionsByLoanId(int loanId) {
+        log.info("Calling Musoni to get transactions for loan ID: {}", loanId);
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        List<TransactionDTO> transactions = new ArrayList<>();
+
+        try {
+            String transactionsString = restTemplate.exchange(
+                    baseUrl + "loans/" + loanId + "?associations=transactions",
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            ).getBody();
+            log.info("Transactions for loan ID {}: {}", loanId, transactionsString);
+
+            // Map the "transactions" array from the JSON response to a list of TransactionDTO objects
+            JsonNode rootNode = objectMapper.readTree(transactionsString);
+            JsonNode transactionsNode = rootNode.path("transactions");
+
+            if (transactionsNode.isArray()) {
+                List<TransactionDTO> allTransactions = objectMapper.readValue(
+                        transactionsNode.toString(),
+                        new TypeReference<List<TransactionDTO>>() {}
+                );
+
+                // Filter out transactions that contain the transfer field
+                transactions = allTransactions.stream()
+                        .filter(transaction -> transaction.getTransfer() == null)
+                        .collect(Collectors.toList());
+            }
+
+            log.info("Filtered transactions list (without transfer): {}", transactions);
+        } catch (Exception e) {
+            log.error("Exception: {}", e.getMessage());
+        }
+
+        return transactions;
+    }
+
+
+    public List<SavingsTransactionDTO> getTransactionsBySavingsId(int savingsId) {
+        log.info("Calling Musoni to get transactions for savings ID: {}", savingsId);
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        List<SavingsTransactionDTO> transactions = new ArrayList<>();
+
+        try {
+            String transactionsString = restTemplate.exchange(
+                    baseUrl + "savingsaccounts/" + savingsId + "?associations=transactions",
+                    HttpMethod.GET,
+                    entity,
+                    String.class
+            ).getBody();
+            log.info("Transactions for savings ID {}: {}", savingsId, transactionsString);
+
+            // Map the "transactions" array from the JSON response to a list of SavingsTransactionDTO objects
+            JsonNode rootNode = objectMapper.readTree(transactionsString);
+            JsonNode transactionsNode = rootNode.path("transactions");
+
+            if (transactionsNode.isArray()) {
+                // Deserialize the JSON into a list of SavingsTransactionDTO objects
+                List<SavingsTransactionDTO> allTransactions = objectMapper.readValue(
+                        transactionsNode.toString(),
+                        new TypeReference<List<SavingsTransactionDTO>>() {}
+                );
+
+                // Filter the transactions where the transaction type value is "Deposit"
+                transactions = allTransactions.stream()
+                        .filter(transaction ->
+                                "Deposit".equalsIgnoreCase(transaction.getTransactionType().getValue())
+                        )
+                        .collect(Collectors.toList());
+            }
+
+            log.info("Filtered transactions list: {}", transactions);
+        } catch (Exception e) {
+            log.error("Exception: {}", e.getMessage());
+        }
+
+        return transactions;
+    }
+
+
+    public List<TransactionDTO> getTransactionsByPostMaturityFeeId(int loanId) {
+        log.info("Calling Musoni to get transactions for loan ID: {}", loanId);
+        HttpEntity<String> entity = new HttpEntity<>(httpHeaders());
+        List<TransactionDTO> transactions = new ArrayList<>();
+
+        try {
+            String transactionsString = restTemplate.exchange(baseUrl + "loans/" + loanId + "?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
+            log.info("Transactions for loan ID {}: {}", loanId, transactionsString);
+
+            // Map the "transactions" array from the JSON response to a list of TransactionDTO objects
+            JsonNode rootNode = objectMapper.readTree(transactionsString);
+            JsonNode transactionsNode = rootNode.path("transactions");
+
+            if (transactionsNode.isArray()) {
+                transactions = objectMapper.readValue(transactionsNode.toString(), new TypeReference<List<TransactionDTO>>() {});
+            }
+
+            // Filter out transactions where type.value is "Disbursement"
+            transactions = transactions.stream()
+                    .filter(transaction -> !"Disbursement".equals(transaction.getType().getValue()))
+                    .peek(transaction -> {
+                        // Rename 'Accrual' to 'Fee Applied'
+                        if ("Accrual".equals(transaction.getType().getValue())) {
+                            transaction.getType().setValue("Fee Applied");
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            log.info("Filtered and modified transactions list: {}", transactions);
+        } catch (Exception e) {
+            log.error("Exception: {}", e.getMessage());
+        }
+
+        return transactions;
+    }
+
+
+
 
     public List<SavingsAccountsTransactions> getSavingsAccountsTransactions(int loanId, Long timestamp) throws ParseException, ParseException {
 

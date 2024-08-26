@@ -1,7 +1,8 @@
 package com.untucapital.usuite.utg.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.*;
 import com.untucapital.usuite.utg.dto.client.Client;
@@ -30,6 +31,9 @@ import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionTypeDTO;
 import com.untucapital.usuite.utg.processor.MusoniProcessor;
 import com.untucapital.usuite.utg.repository.MusoniRepository;
 import com.untucapital.usuite.utg.repository.settlementsAccounts.SettlementAccountsTokensRepository;
@@ -37,8 +41,6 @@ import com.untucapital.usuite.utg.utils.MusoniUtils;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,8 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -99,6 +103,8 @@ public class MusoniService {
     private final PostGlService postGlService;
 
     private static final Logger log = LoggerFactory.getLogger(RoleService.class);
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 
     @Autowired
@@ -202,6 +208,188 @@ public class MusoniService {
             }
         }
     }
+
+    public List<TransactionDTO> getTransactionsByLoanId(int loanId) throws JsonProcessingException {
+        List<TransactionDTO> response = restClient.getTransactionsByLoanId(loanId);
+        log.info("Loan Transactions : {}", response.toString());
+
+         return response;
+    }
+
+    public List<SavingsTransactionDTO> getTransactionsBySavingsId(int loanId) throws JsonProcessingException {
+        List<SavingsTransactionDTO> response = restClient.getTransactionsBySavingsId(loanId);
+        log.info("Savings Transactions : {}", response.toString());
+
+         return response;
+    }
+
+    public List<TransactionDTO> getTransactionsByPostMaturityFeeId(int loanId) throws JsonProcessingException {
+        List<TransactionDTO> response = restClient.getTransactionsByPostMaturityFeeId(loanId);
+        log.info("PMF Transactions : {}", response.toString());
+
+         return response;
+    }
+
+    // Function to get and process loan repayment schedule
+    public List<TransactionDTO> getAndProcessLoanRepayment(String loanAccount) throws JsonProcessingException {
+        // Step 1: Get the loan repayment schedule
+        List<Map<String, Object>> loanRepaymentSchedule = (List<Map<String, Object>>) getLoanRepaymentSchedule(loanAccount);
+        log.info("loanRepaymentSchedule: {}",loanRepaymentSchedule);
+
+        // Step 2: Process the loan repayment schedule
+        List<TransactionDTO> filteredResults = processLoanRepaymentSchedule(loanRepaymentSchedule);
+        log.info("filteredResults: {}",filteredResults);
+
+        return filteredResults;
+    }
+
+    public List<TransactionDTO> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
+        List<TransactionDTO> filteredResults = new ArrayList<>();
+
+        for (Map<String, Object> entry : repaymentSchedule) {
+            String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
+
+            double totalOutstanding;
+            if (totalOutstandingStr.isEmpty()) {
+                totalOutstanding = 0.0;  // Or handle the empty string case as needed
+            } else {
+                totalOutstanding = Double.parseDouble(totalOutstandingStr);
+            }
+
+            log.info("date: {}", entry.get("date").toString());
+
+            LocalDate date = entry.get("date") != null ? LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER) : null;
+
+            LocalDate paidBy = (entry.get("paidBy") != null && !entry.get("paidBy").toString().isEmpty())
+                    ? LocalDate.parse(entry.get("paidBy").toString(), DATE_FORMATTER)
+                    : (LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER).isBefore(LocalDate.now()) ? LocalDate.now() : null);
+
+            if (totalOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
+                // Calculate the last day of the month following the paidBy date
+                LocalDate newDate = paidBy.with(TemporalAdjusters.lastDayOfMonth());
+
+                // Calculate the penalty fee
+                double penaltyFee = totalOutstanding * 0.05; // 5% monthly rate
+
+
+                // Create a new TransactionDTO object
+                TransactionDTO transactionDTO = new TransactionDTO();
+                transactionDTO.setDate(newDate);
+                transactionDTO.setAmount(penaltyFee);
+
+                // Create and set the TransactionTypeDTO object
+                TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+                transactionTypeDTO.setValue("Fee Applied");
+                transactionDTO.setType(transactionTypeDTO);
+
+                // Map other necessary fields from entry to transactionDTO
+//                transactionDTO.setOfficeName(entry.get("officeName").toString());  // Example field mapping
+//                transactionDTO.setSubmittedByUsername(entry.get("submittedByUsername").toString());  // Example field mapping
+
+                // Add the transactionDTO to the filtered results
+                filteredResults.add(transactionDTO);
+            }
+        }
+
+        return filteredResults;
+    }
+
+
+//    public List<Map<String, Object>> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
+//        List<Map<String, Object>> filteredResults = new ArrayList<>();
+//
+//        for (Map<String, Object> entry : repaymentSchedule) {
+//            String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
+//
+//            double totalOutstanding;
+//            if (totalOutstandingStr.isEmpty()) {
+//                totalOutstanding = 0.0;  // Or handle the empty string case as needed
+//            } else {
+//                totalOutstanding = Double.parseDouble(totalOutstandingStr);
+//            }
+//
+//            log.info("date: {}", entry.get("date").toString());
+//
+//            LocalDate date = entry.get("date") != null ? LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER) : null;
+//
+//            LocalDate paidBy = (entry.get("paidBy") != null && !entry.get("paidBy").toString().isEmpty())
+//                    ? LocalDate.parse(entry.get("paidBy").toString(), DATE_FORMATTER)
+//                    : (LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER).isBefore(LocalDate.now()) ? LocalDate.now() : null);
+//
+//            if (totalOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
+//                // Calculate the last day of the month following the paidBy date
+//                LocalDate newDate = paidBy.with(TemporalAdjusters.lastDayOfMonth());
+//
+//                // Calculate the penalty fee
+//                double penaltyFee = totalOutstanding * 0.05; // 5% monthly rate
+//
+//                // Add new data to the entry
+//                entry.put("newDate", newDate);
+//                entry.put("penaltyFee", penaltyFee);
+//
+//                // Add the entry to the filtered results
+//                filteredResults.add(entry);
+//            }
+//        }
+//        return filteredResults;
+//    }
+
+    public Object getLoanRepaymentSchedule(String loanAccount) throws JsonProcessingException {
+//        String repaymentScheduleLoan = String.valueOf(restClient.getRepaymentSchedule(loanAccount));
+        HttpEntity<String> entity = new HttpEntity<>(restClient.httpHeaders());
+        String repaymentScheduleLoan = restTemplate.exchange(
+                musoniUrl + "loans/" + loanAccount + "?associations=repaymentSchedule",
+                HttpMethod.GET,
+                entity,
+                String.class
+        ).getBody();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode clientAccountJson = objectMapper.readTree(String.valueOf(repaymentScheduleLoan));
+        JsonNode repaymentSchedule = clientAccountJson.at("/repaymentSchedule/periods");
+
+        List<Map<String, Object>> loanAccRepay = new ArrayList<>();
+
+        if (repaymentSchedule.isArray()) {
+            for (JsonNode periodNode : repaymentSchedule) {
+                String period = getNodeText(periodNode, "period");
+                String fromDate = formatDate(periodNode.get("fromDate"));
+                String dueDate = formatDate(periodNode.get("dueDate"));
+                String amountDue = getNodeText(periodNode, "totalDueForPeriod");
+                String amountPaid = getNodeText(periodNode, "totalPaidForPeriod");
+                String amountOutstanding = getNodeText(periodNode, "totalOutstandingForPeriod");
+                String paidBy = formatDate(periodNode.get("obligationsMetOnDate"));
+
+                Map<String, Object> loanBal = new HashMap<>();
+                loanBal.put("loanId", loanAccount);
+                loanBal.put("period", period);
+                loanBal.put("date", dueDate);  // 1st column
+                loanBal.put("totalDue", amountDue); //3rd column
+                loanBal.put("totalPaid", amountPaid); //4th column
+                loanBal.put("totalOutstanding", amountOutstanding); //5th column
+                loanBal.put("paidBy", paidBy); //2nd column
+
+                loanAccRepay.add(loanBal);
+            }
+        }
+        return loanAccRepay;
+    }
+
+    private String getNodeText(JsonNode node, String fieldName) {
+        JsonNode childNode = node.get(fieldName);
+        return childNode == null || childNode.isNull() ? "" : childNode.asText();
+    }
+
+    private String formatDate(JsonNode dateNode) {
+        if (dateNode == null || !dateNode.isArray()) {
+            return "";
+        }
+        int year = dateNode.get(0).asInt();
+        int month = dateNode.get(1).asInt();
+        int day = dateNode.get(2).asInt();
+        return String.format("%04d-%02d-%02d", year, month, day);
+    }
+
 
 //            @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")

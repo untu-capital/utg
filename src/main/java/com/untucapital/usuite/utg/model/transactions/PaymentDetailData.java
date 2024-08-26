@@ -10,12 +10,6 @@ import lombok.NoArgsConstructor;
 public class PaymentDetailData {
 
     private int id;
-    private PaymentType paymentType;
-    private String accountNumber;
-    private String checkNumber;
-    private String routingCode;
     private String receiptNumber;
-    private String bankNumber;
-
 
 }

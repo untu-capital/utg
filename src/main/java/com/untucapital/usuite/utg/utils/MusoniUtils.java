@@ -16,10 +16,7 @@ import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,6 +138,16 @@ public class MusoniUtils {
 
         LocalDate localDate = date.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
         return localDate;
+    }
+
+    public static LocalDate convertToLocalDate(List<Integer> dateList) {
+        if (dateList.size() == 3) {
+            int year = dateList.get(0);
+            int month = dateList.get(1);
+            int day = dateList.get(2);
+            return LocalDate.of(year, month, day);
+        }
+        throw new IllegalArgumentException("Invalid date format");
     }
 
     public static String getTransDate(LoanTransaction loanTransaction) throws ParseException {
