@@ -278,7 +278,7 @@ public class MusoniProcessor {
 
             PastelTransReq pastelTransReq = new PastelTransReq();
 
-                if ("disbursement".equalsIgnoreCase(typeValue)) {
+                if (AppConstants.LOAN_DISBURSEMENT.equalsIgnoreCase(typeValue)) {
 
                     fromAccount =getAccount(submittedUsername);
                     if (submittedUsername.equalsIgnoreCase("masimbam")){
@@ -306,7 +306,7 @@ public class MusoniProcessor {
                     pastelTransReq.setTransactionType(transactionType);
 
                 }
-                if ("repayment".equalsIgnoreCase(typeValue)) {
+                if (AppConstants.LOAN_REPAYMENT.equalsIgnoreCase(typeValue)) {
                     toAccount =getAccount(submittedUsername );
                     if (submittedUsername.equalsIgnoreCase("masimbam")){
                         toAccount = "8422/000/HRE/FCA";
@@ -402,7 +402,7 @@ public class MusoniProcessor {
 
             PastelTransReq pastelTransReq = new PastelTransReq();
 
-            if ("Deposit".equalsIgnoreCase(typeValue)) {
+            if (AppConstants.LOAN_DEPOSIT.equalsIgnoreCase(typeValue)) {
 
                 toAccount =getAccountByOfficeName(officeName );
                 fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;

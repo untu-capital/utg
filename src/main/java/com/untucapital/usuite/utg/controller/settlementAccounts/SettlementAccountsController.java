@@ -2,6 +2,7 @@ package com.untucapital.usuite.utg.controller.settlementAccounts;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.aws.S3Service;
@@ -46,22 +47,33 @@ public class SettlementAccountsController {
                 .body(bis.readAllBytes());
     }
 
-    @GetMapping("/getInterimStatementPdf/loanId/{loanId}/savingsId/{savingsId}/postMaturityFeeId/{postMaturityFeeId}")
+    @GetMapping("/getInterimStatementPdf/loanId/{loanId}")
     public ResponseEntity<byte[]> getInterimStatementPdf(
-            @PathVariable("loanId") int loanId,
-            @PathVariable("savingsId") int savingsId,
-            @PathVariable("postMaturityFeeId") int postMaturityFeeId) throws ParseException, JsonProcessingException {
+            @PathVariable("loanId") String loanId) throws ParseException, JsonProcessingException {
 
-        ByteArrayInputStream bis = loanStatementPdfGeneratorService.generateInterimStatementPdf(loanId, savingsId, postMaturityFeeId);
+        // Call getClientAccountsByLoanAcc() to retrieve ClientAccounts details
+        ClientAccounts clientAccounts = musoniService.getClientAccountsByLoanAcc(loanId);
+
+        // Extract the necessary IDs from ClientAccounts
+        int savingsId = Integer.parseInt(clientAccounts.getSettlementAccount());
+        int postMaturityFeeId = Integer.parseInt(clientAccounts.getPostMaturityFee());
+
+        // Generate the PDF using the retrieved IDs
+        ByteArrayInputStream bis = loanStatementPdfGeneratorService.generateInterimStatementPdf(
+                Integer.parseInt(clientAccounts.getLoanId()), savingsId, postMaturityFeeId);
+
+        // Prepare HTTP headers for the response
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "inline; filename=interim_statement.pdf");
 
+        // Return the generated PDF as the response
         return ResponseEntity
                 .ok()
                 .headers(headers)
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(bis.readAllBytes());
     }
+
 
 
     @GetMapping("/getCombinedTransactions")

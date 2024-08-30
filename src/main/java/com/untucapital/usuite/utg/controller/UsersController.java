@@ -114,7 +114,7 @@ public class UsersController extends AbstractController<User> {
     // Get list of all users with role of Loan Officer
     @GetMapping("/roleAndBranch/{roleName}/{branchName}")
     public ResponseEntity<List<User>> getUsersByRoleAndBranch(@PathVariable("roleName") String roleName, @PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<User>>(userService.getUsersByRole(roleName), HttpStatus.OK);
+        return new ResponseEntity<List<User>>(userService.getUsersByRoleAndBranch(roleName, branchName), HttpStatus.OK);
     }
 
     @GetMapping ("/getUserByMobileNumber/{mobileNumber}")

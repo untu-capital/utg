@@ -25,9 +25,16 @@ public interface AppConstants {
 
     Integer EXCHANGE_RATE = 1;
 
-
-
 //    RESPONSE MESSAGES:
     Integer NOT_FOUND = 404;
+
+    String BALANCE_BD = "Balance b/d";
+    String FEE_APPLIED = "Fee Applied";
+    String PENATLY_FEE = "5% Penalty fee applied for late repayment";
+    String INTEREST_APPLIED = "Interest Applied";
+    String LOAN_DISBURSEMENT = "Disbursement";
+    String LOAN_REPAYMENT = "Repayment";
+    String LOAN_DEPOSIT = "Deposit";
+    String LOAN_ACCRUAL = "Accrual";
 
 }

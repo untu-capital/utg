@@ -15,9 +15,12 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.untucapital.usuite.utg.client.RestClient;
+import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.ClientStatementResponse;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionTypeDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +45,7 @@ import java.util.stream.Collectors;
 public class LoanStatementPdfGeneratorService {
 
     private final MusoniService musoniService;
+    private final RestClient restClient;
 
     public byte[] generateLoanSchedulePdf(List<Map<String, Object>> loanAccRepay) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -129,45 +133,68 @@ public class LoanStatementPdfGeneratorService {
 
         // Get transactions by loan ID
         List<TransactionDTO> loanTransactions = musoniService.getTransactionsByLoanId(loanId);
+        log.info("loanTransactions: {}", loanTransactions);
         combinedTransactions.addAll(loanTransactions);
+
+        // Get the disbursement date
+        LocalDate disbursementDate = restClient.getDisbursementDate(loanTransactions);
+        LocalDate maturityDate = restClient.getMaturityDate(loanId);
 
         // Get transactions by savings ID
         List<SavingsTransactionDTO> savingsTransactions = musoniService.getTransactionsBySavingsId(savingsId);
-        combinedTransactions.addAll(convertToTransactionDTO(savingsTransactions));
+        log.info("savingsTransactions: {}", savingsTransactions);
+
+        // Get savings balance at the disbursement date
+        TransactionDTO balanceBd = restClient.getSavingsBalanceBD(String.valueOf(savingsId), disbursementDate, savingsTransactions);
+        log.info("balanceBd: {}", balanceBd);
+
+        if (balanceBd != null) {
+            TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+            transactionTypeDTO.setValue(AppConstants.BALANCE_BD); // Set the value of the TransactionTypeDTO
+            balanceBd.setType(transactionTypeDTO); // Set the TransactionTypeDTO object in the balanceBd
+            combinedTransactions.add(balanceBd); // Add the single TransactionDTO to the combined list
+        }
+
+        // Filter the savings transactions by date
+        List<SavingsTransactionDTO> filteredSavingsTransactions = savingsTransactions.stream()
+                .filter(savingsTransaction -> {
+                    List<Integer> dateList = savingsTransaction.getDate();
+                    LocalDate transactionDate = LocalDate.of(dateList.get(0), dateList.get(1), dateList.get(2));
+                    return !transactionDate.isBefore(disbursementDate) && !transactionDate.isAfter(maturityDate);
+                })
+                .collect(Collectors.toList());
+
+        // Convert the filtered transactions to TransactionDTO and add to the combined list
+        combinedTransactions.addAll(convertToTransactionDTO(filteredSavingsTransactions));
 
         // Get transactions by post-maturity fee ID
         List<TransactionDTO> postMaturityFeeTransactions = musoniService.getTransactionsByPostMaturityFeeId(postMaturityFeeId);
-        log.info("postMaturityFeeTransactions : {}",postMaturityFeeTransactions);
+        log.info("postMaturityFeeTransactions: {}", postMaturityFeeTransactions);
         combinedTransactions.addAll(postMaturityFeeTransactions);
 
+        // Get and process loan repayment (penalty transactions)
         List<TransactionDTO> penaltyTransactions = musoniService.getAndProcessLoanRepayment(String.valueOf(loanId));
-        combinedTransactions.addAll(penaltyTransactions);
+        log.info("penaltyTransactions: {}", penaltyTransactions);
+
+        // Filter the penalty transactions by date
+        List<TransactionDTO> filteredPenaltyTransactions = penaltyTransactions.stream()
+                .filter(penaltyTransaction -> {
+                    LocalDate transactionDate = penaltyTransaction.getDate();
+                    return !transactionDate.isBefore(disbursementDate) && !transactionDate.isAfter(maturityDate);
+                })
+                .collect(Collectors.toList());
+
+        // Add the filtered penalty transactions to the combined list
+        combinedTransactions.addAll(filteredPenaltyTransactions);
 
         // Optionally, sort the combined transactions by date or another criterion
-         combinedTransactions.sort(Comparator.comparing(TransactionDTO::getDate));
+        combinedTransactions.sort(Comparator.comparing(TransactionDTO::getDate));
 
         return combinedTransactions;
     }
 
-//
-//    private List<TransactionDTO> convertToTransactionDTO(List<SavingsTransactionDTO> savingsTransactions) {
-//        List<TransactionDTO> transactionDTOs = new ArrayList<>();
-//        for (SavingsTransactionDTO savingsTransaction : savingsTransactions) {
-//            TransactionDTO transactionDTO = new TransactionDTO();
-//            transactionDTO.setId(savingsTransaction.getId());
-//            transactionDTO.setCode(savingsTransaction.getCode());
-//            transactionDTO.setValue(savingsTransaction.getValue());
-//            transactionDTO.setDate(savingsTransaction.getDate());
-//            transactionDTO.setAmount(savingsTransaction.getAmount());
-//            // Map other necessary fields
-//            transactionDTOs.add(transactionDTO);
-//        }
-//        return transactionDTOs;
-//    }
-
     private List<TransactionDTO> convertToTransactionDTO(List<SavingsTransactionDTO> savingsTransactions) {
-        // Convert SavingsTransactionDTO to TransactionDTO, if needed
-        // Assuming that TransactionDTO and SavingsTransactionDTO have similar structure
+        // Convert SavingsTransactionDTO to TransactionDTO
         return savingsTransactions.stream()
                 .map(savingsTransaction -> {
                     TransactionDTO transactionDTO = new TransactionDTO();
@@ -175,7 +202,6 @@ public class LoanStatementPdfGeneratorService {
                     transactionDTO.setType(savingsTransaction.getTransactionType());
                     LocalDate date = MusoniUtils.convertToLocalDate(savingsTransaction.getDate());
                     transactionDTO.setDate(date);
-//                    transactionDTO.setDate(savingsTransaction.getDate());
                     transactionDTO.setCurrency(savingsTransaction.getCurrency());
                     transactionDTO.setAmount(savingsTransaction.getAmount());
                     transactionDTO.setSubmittedByUsername(null); // Or set the appropriate value
@@ -184,6 +210,8 @@ public class LoanStatementPdfGeneratorService {
                 })
                 .collect(Collectors.toList());
     }
+
+
 
     public ByteArrayInputStream generateInterimStatementPdf(int loanId, int savingsId, int postMaturityFeeId) throws ParseException, JsonProcessingException {
         List<TransactionDTO> transactions = getCombinedTransactions(loanId, savingsId, postMaturityFeeId);
@@ -219,7 +247,7 @@ public class LoanStatementPdfGeneratorService {
 
             // Add table headers
             table.addHeaderCell(new Cell().add(new Paragraph("Date")));
-            table.addHeaderCell(new Cell().add(new Paragraph("Transaction Type")));
+            table.addHeaderCell(new Cell().add(new Paragraph("Transaction Description")));
             table.addHeaderCell(new Cell().add(new Paragraph("Debit")));
             table.addHeaderCell(new Cell().add(new Paragraph("Credit")));
             table.addHeaderCell(new Cell().add(new Paragraph("Balance")));
@@ -231,18 +259,18 @@ public class LoanStatementPdfGeneratorService {
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
 
                 String transactionType = transaction.getType().getValue();
-                if (transactionType.equalsIgnoreCase("Accrual")) {
-                    transactionType = "Interest Applied";
-                } else if (transactionType.equalsIgnoreCase("Deposit")) {
-                    transactionType = "Repayment";
+                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_ACCRUAL)) {
+                    transactionType = AppConstants.INTEREST_APPLIED;
+                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DEPOSIT)) {
+                    transactionType = AppConstants.LOAN_REPAYMENT;
                 }
                 table.addCell(new Cell().add(new Paragraph(transactionType)));
 
-                if (transactionType.equalsIgnoreCase("Disbursement") || transactionType.equalsIgnoreCase("Interest Applied") || transactionType.equalsIgnoreCase("Fee Applied")) {
+                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DISBURSEMENT) || transactionType.equalsIgnoreCase(AppConstants.INTEREST_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.FEE_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.PENATLY_FEE)) {
                     table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
                     table.addCell(new Cell().add(new Paragraph("0.00")));
                     balance += transaction.getAmount();
-                } else if (transactionType.equalsIgnoreCase("Repayment")) {
+                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_REPAYMENT) || transactionType.equalsIgnoreCase(AppConstants.BALANCE_BD)) {
                     table.addCell(new Cell().add(new Paragraph("0.00")));
                     table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
                     balance -= transaction.getAmount();

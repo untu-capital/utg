@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.untucapital.usuite.utg.commons.AppConstants;
 import com.untucapital.usuite.utg.dto.AllLoans;
 import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
@@ -25,8 +26,10 @@ import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionTypeDTO;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -98,7 +102,6 @@ public class RestClient {
     }
 
     public SavingsAccountLoans getSavingsLoanAccounts(Long timestamp) {
-
         log.info("Calling musoni to get loans");
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
         SavingsAccountLoans loans = new SavingsAccountLoans();
@@ -106,14 +109,11 @@ public class RestClient {
         try {
             String loanString = restTemplate.exchange(baseUrl + "savingsaccounts?modifiedSinceTimestamp=" + timestamp, HttpMethod.GET, entity, String.class).getBody();
             log.info("Loans in the past 24 hours: {}", loanString);
-
             loans = objectMapper.readValue(loanString, SavingsAccountLoans.class);
-
             log.info("Loans object: {}", loans);
         } catch (Exception e) {
             log.info("Exception: {}", e.getMessage());
         }
-
         return loans;
     }
 
@@ -125,9 +125,7 @@ public class RestClient {
         try {
             String loanString = restTemplate.exchange(baseUrl + "loans?modifiedSinceTimestamp=" + timestamp, HttpMethod.GET, entity, String.class).getBody();
             log.info("Loans in the past 24 hours: {}", loanString);
-
             loans = objectMapper.readValue(loanString, Loans.class);
-
             log.info("Loans object: {}", loans);
         } catch (Exception e) {
             log.info("Exception: {}", e.getMessage());
@@ -144,20 +142,15 @@ public class RestClient {
 
         try {
             String loanString = restTemplate.exchange(baseUrl + "loans/" + loanId + "?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
-
             log.info("PageItem with id " + loanId + " and transaction information: {}", loanString);
-
             pageItem = objectMapper.readValue(loanString, PageItem.class);
-
             log.info("Transaction information for a loan: {}", pageItem);
         } catch (Exception e) {
             log.info("Failed to get Loans: {}", e.getMessage());
         }
 
         List<Transactions> transactions = pageItem.getTransactions();
-
         if (transactions == null) {
-
             return null;
         }
 
@@ -166,23 +159,72 @@ public class RestClient {
         List<Transactions> cashTransactions = new ArrayList<>();
         for (Transactions tx : transactions) {
             if (tx.getType().isDisbursement() || tx.getType().isRepayment()) {
-
                 LocalDate transDate = MusoniUtils.formatDate(tx.getSubmittedOnDate());
                 Boolean isRequired = MusoniUtils.compareDates(timestamp, transDate);
-
                 if(isRequired) {
                     log.info("TX: {}", tx);
                     cashTransactions.add(tx);
                 }
-
             }
             log.info("Transaction with repayment or disbursement: {}", cashTransactions.toString());
         }
         log.info("Transaction with repayment or disbursement: {}", cashTransactions.toString());
-
         return cashTransactions;
-
     }
+
+    public LocalDate getDisbursementDate(List<TransactionDTO> transactions) {
+        for (TransactionDTO transaction : transactions) {
+            TransactionTypeDTO type = transaction.getType();
+            if (type != null && type.getDisbursement()) {
+                return transaction.getDate();
+            }
+        }
+        return null;
+    }
+
+    public LocalDate getMaturityDate(int loanId) {
+        SingleLoan loan = getLoanId(String.valueOf(loanId));
+
+        log.info("maturityDate: {}", loan);
+
+        // Extract the expected maturity date from the timeline
+        int[] maturityDateArray = loan.getTimeline().getExpectedMaturityDate();
+
+        if (maturityDateArray != null && maturityDateArray.length == 3) {
+            // Convert the array of integers to LocalDate
+            LocalDate maturityDate = LocalDate.of(maturityDateArray[0], maturityDateArray[1], maturityDateArray[2]);
+            return maturityDate;
+        } else {
+            // Handle the case where the maturity date is not available or in an unexpected format
+            log.warn("Expected maturity date is not available or is in an unexpected format.");
+            return null;
+        }
+    }
+
+//    private List<TransactionDTO> transactions;
+public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate, List<SavingsTransactionDTO> transactions) {
+    Optional<TransactionDTO> transactionOpt = transactions.stream()
+            // Convert SavingsTransactionDTO to TransactionDTO before filtering
+            .map(savingsTransaction -> {
+                TransactionDTO transactionDTO = new TransactionDTO();
+                transactionDTO.setId(savingsTransaction.getId());
+                transactionDTO.setType(savingsTransaction.getTransactionType());
+                LocalDate date = MusoniUtils.convertToLocalDate(savingsTransaction.getDate());
+                transactionDTO.setDate(date);
+                transactionDTO.setCurrency(savingsTransaction.getCurrency());
+                transactionDTO.setAmount(savingsTransaction.getRunningBalance());
+                transactionDTO.setSubmittedByUsername(null); // Set appropriate value if necessary
+                // Set other fields as needed
+                return transactionDTO;
+            })
+            // Filter transactions for the specific SavingsId and dates before the provided date
+            .filter(t -> t.getDate().isBefore(localDate))
+            .max((t1, t2) -> t1.getDate().compareTo(t2.getDate())); // Find the most recent transaction
+
+    // Return the found transaction or handle if not found
+    return transactionOpt.orElse(null); // Customize the response for no transaction found
+}
+
 
     public List<TransactionDTO> getTransactionsByLoanId(int loanId) {
         log.info("Calling Musoni to get transactions for loan ID: {}", loanId);
@@ -251,7 +293,7 @@ public class RestClient {
                 // Filter the transactions where the transaction type value is "Deposit"
                 transactions = allTransactions.stream()
                         .filter(transaction ->
-                                "Deposit".equalsIgnoreCase(transaction.getTransactionType().getValue())
+                                AppConstants.LOAN_DEPOSIT.equalsIgnoreCase(transaction.getTransactionType().getValue())
                         )
                         .collect(Collectors.toList());
             }
@@ -284,11 +326,11 @@ public class RestClient {
 
             // Filter out transactions where type.value is "Disbursement"
             transactions = transactions.stream()
-                    .filter(transaction -> !"Disbursement".equals(transaction.getType().getValue()))
+                    .filter(transaction -> !AppConstants.LOAN_DISBURSEMENT.equals(transaction.getType().getValue()))
                     .peek(transaction -> {
                         // Rename 'Accrual' to 'Fee Applied'
-                        if ("Accrual".equals(transaction.getType().getValue())) {
-                            transaction.getType().setValue("Fee Applied");
+                        if (AppConstants.LOAN_ACCRUAL.equals(transaction.getType().getValue())) {
+                            transaction.getType().setValue(AppConstants.FEE_APPLIED);
                         }
                     })
                     .collect(Collectors.toList());
@@ -615,10 +657,151 @@ public class RestClient {
             return "{ \"errorMessage\": \"Client with mobile number %s not found\"}".formatted(clientsMobile.getPrimaryMobileNumber());
         }
         return clientId;
-
-
     }
 
+    public String getSavingsAccountByClientId(Long clientId) {
+        final String requestPayload = """
+            {
+                "filterRulesExpression": {
+                    "condition": "AND",
+                    "rules": [
+                        {
+                            "id": "clientId",
+                            "field": "clientId",
+                            "type": "long",
+                            "input": "text",
+                            "operator": "equal",
+                            "value": %s
+                        }
+                    ],
+                    "valid": true
+                },
+                "responseParameters": [
+                    {
+                        "ordinal": 0,
+                        "name": "id"
+                    },
+                    {
+                        "ordinal": 1,
+                        "name": "accountNo"
+                    },
+                    {
+                        "ordinal": 2,
+                        "name": "clientName"
+                    },
+                    {
+                        "ordinal": 3,
+                        "name": "status"
+                    }
+                ],
+                "sortByParameters": [
+                    {
+                        "ordinal": 0,
+                        "name": "id",
+                        "direction": "ASC"
+                    }
+                ]
+            }
+            """.formatted(clientId);
+
+        String response;
+        String savingsAccountId;
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(requestPayload, httpHeaders());
+            response = restTemplate.exchange(baseUrl + "datafilters/savingsaccounts/queries/run-filter", HttpMethod.POST, entity, String.class).getBody();
+
+            log.info("response: {}", response);
+
+            // Parse the JSON response
+            JSONArray pageItems = new JSONObject(response).getJSONArray("pageItems");
+            log.info("page items: {}", pageItems);
+
+            // Initialize a variable to store the desired savings account ID
+            savingsAccountId = null;
+
+            // Get the ID from the last object in the pageItems array
+            if (pageItems.length() > 0) {
+                JSONObject lastItem = pageItems.getJSONObject(pageItems.length() - 1);
+                savingsAccountId = String.valueOf(lastItem.getInt("id"));
+                log.info("Found savings account ID: {}", savingsAccountId);
+            }
+
+            // Handle the case where the desired savings account is not found
+            if (savingsAccountId == null) {
+                log.info("No savings account matching the criteria was found.");
+            } else {
+                // Process the savings account ID further as needed
+                log.info("Processing savings account ID: {}", savingsAccountId);
+            }
+
+        } catch (JSONException e) {
+            return String.format("{ \"errorMessage\": \"Savings account with clientId %s not found\"}", clientId);
+        }
+
+
+        return savingsAccountId;
+    }
+
+    public String getClientByDateOfBirth(String dob){
+        LocalDate localDate = LocalDate.parse(dob);
+        final String s = """
+                {
+                    "filterRulesExpression": {
+                        "condition": "OR",
+                        "rules": [
+                            {
+                                "id": "dateOfBirth",
+                                "field": "dateOfBirth",
+                                "type": "date",
+                                "input": "date",
+                                "operator": "equal",
+                                "value": %s
+                            }
+                        ],
+                        "valid": true
+                    },
+                    "responseParameters": [
+                        {
+                            "ordinal": 0,
+                            "name": "id"
+                        },
+                        {
+                            "ordinal": 1,
+                            "name": "accountNo"
+                        },
+                        {
+                            "ordinal": 2,
+                            "name": "mobileNo"
+                        },
+                        {
+                            "ordinal": 3,
+                            "name": "dateOfBirth"
+                        }
+                    ],
+                    "sortByParameters": [
+                        {
+                            "ordinal": 0,
+                            "name": "id",
+                            "direction": "ASC"
+                        }
+                    ]
+                }
+                """.formatted(localDate);
+
+        String clientsFilteredResponse;
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<String>(s, httpHeaders());
+            clientsFilteredResponse = restTemplate.exchange(baseUrl + "datafilters/clients/queries/run-filter", HttpMethod.POST, entity, String.class).getBody();
+        }
+        catch (JSONException e) {
+            return "{ \"errorMessage\": \"Client with Date of Birth %s not found\"}".formatted(dob);
+        }
+        log.info("clientsFilteredResponse: {}",clientsFilteredResponse);
+            return clientsFilteredResponse;
+
+    }
 
     public PageItems getSavingsLoanAccountById(@PathVariable String savingsId) {
         PageItems settlementAccount = new PageItems();
@@ -631,10 +814,34 @@ public class RestClient {
             log.info("FAILED TO GET SETTLEMENT ACCOUNT: ", e.getMessage());
         }
         return settlementAccount;
-
-
-
     }
+
+    public PageItems getClientAccountsByLoanAcc(@PathVariable String loanId) {
+        PageItems settlementAccount = new PageItems();
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        try {
+            String savingsAcc = restTemplate.exchange(baseUrl + "loans/"+loanId, HttpMethod.GET, entity, String.class).getBody();
+            log.info("Savings Acc: {}",savingsAcc);
+            settlementAccount = objectMapper.readValue(savingsAcc,PageItems.class);
+        }catch(Exception e){
+            log.info("FAILED TO GET LOAN ACCOUNT: ", e.getMessage());
+        }
+        return settlementAccount;
+    }
+
+    public PageItems getClientFeesByLoanId(@PathVariable String loanId) {
+        PageItems settlementAccount = new PageItems();
+        HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
+        try {
+            String savingsAcc = restTemplate.exchange(baseUrl + "loans/"+loanId, HttpMethod.GET, entity, String.class).getBody();
+            log.info("Savings Acc: {}",savingsAcc);
+            settlementAccount = objectMapper.readValue(savingsAcc,PageItems.class);
+        }catch(Exception e){
+            log.info("FAILED TO GET LOAN ACCOUNT: ", e.getMessage());
+        }
+        return settlementAccount;
+    }
+
 
     public List<LoanAccount> getClientLoansById(@PathVariable Long clientId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
