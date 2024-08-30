@@ -421,6 +421,22 @@ public class UserService extends AbstractService<User> {
     }
 
     @Transactional(value = "transactionManager")
+    public List<User> getUsersByRoleAndBranch(String roleName, String branch) {
+        List<User> users = userRepository.findAll();
+        List<User> usersByRoleAndBranch = users.stream()
+                .filter(user ->
+                        roleName.equals(user.getRoles().stream()
+                                .map(Role::getDescription)
+                                .filter(roleDesc -> roleDesc.equals(roleName))
+                                .findAny().orElse(null))
+                                && branch.equals(user.getBranch())
+                )
+                .collect(Collectors.toList());
+        return usersByRoleAndBranch;
+    }
+
+
+    @Transactional(value = "transactionManager")
     public Optional<User> findUserByUsernameOrMobileNumber(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         if(user.isEmpty()) {

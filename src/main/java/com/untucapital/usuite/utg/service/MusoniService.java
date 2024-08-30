@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.*;
 import com.untucapital.usuite.utg.dto.client.Client;
+import com.untucapital.usuite.utg.dto.client.ClientFeesResponse;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.loan.LoanAccount;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.ClientStatementResponse;
@@ -13,6 +14,7 @@ import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentRes
 import com.untucapital.usuite.utg.dto.loans.RepaymentSchedule;
 import com.untucapital.usuite.utg.dto.loans.Result;
 import com.untucapital.usuite.utg.dto.loans.*;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SavingsAccountLoans;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
@@ -209,9 +211,12 @@ public class MusoniService {
         }
     }
 
+//    LocalDate disbursementDate;
     public List<TransactionDTO> getTransactionsByLoanId(int loanId) throws JsonProcessingException {
         List<TransactionDTO> response = restClient.getTransactionsByLoanId(loanId);
         log.info("Loan Transactions : {}", response.toString());
+
+//        disbursementDate = restClient.getDisbursementDate(response);
 
          return response;
     }
@@ -243,60 +248,8 @@ public class MusoniService {
         return filteredResults;
     }
 
-    public List<TransactionDTO> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
-        List<TransactionDTO> filteredResults = new ArrayList<>();
-
-        for (Map<String, Object> entry : repaymentSchedule) {
-            String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
-
-            double totalOutstanding;
-            if (totalOutstandingStr.isEmpty()) {
-                totalOutstanding = 0.0;  // Or handle the empty string case as needed
-            } else {
-                totalOutstanding = Double.parseDouble(totalOutstandingStr);
-            }
-
-            log.info("date: {}", entry.get("date").toString());
-
-            LocalDate date = entry.get("date") != null ? LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER) : null;
-
-            LocalDate paidBy = (entry.get("paidBy") != null && !entry.get("paidBy").toString().isEmpty())
-                    ? LocalDate.parse(entry.get("paidBy").toString(), DATE_FORMATTER)
-                    : (LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER).isBefore(LocalDate.now()) ? LocalDate.now() : null);
-
-            if (totalOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
-                // Calculate the last day of the month following the paidBy date
-                LocalDate newDate = paidBy.with(TemporalAdjusters.lastDayOfMonth());
-
-                // Calculate the penalty fee
-                double penaltyFee = totalOutstanding * 0.05; // 5% monthly rate
-
-
-                // Create a new TransactionDTO object
-                TransactionDTO transactionDTO = new TransactionDTO();
-                transactionDTO.setDate(newDate);
-                transactionDTO.setAmount(penaltyFee);
-
-                // Create and set the TransactionTypeDTO object
-                TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
-                transactionTypeDTO.setValue("Fee Applied");
-                transactionDTO.setType(transactionTypeDTO);
-
-                // Map other necessary fields from entry to transactionDTO
-//                transactionDTO.setOfficeName(entry.get("officeName").toString());  // Example field mapping
-//                transactionDTO.setSubmittedByUsername(entry.get("submittedByUsername").toString());  // Example field mapping
-
-                // Add the transactionDTO to the filtered results
-                filteredResults.add(transactionDTO);
-            }
-        }
-
-        return filteredResults;
-    }
-
-
-//    public List<Map<String, Object>> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
-//        List<Map<String, Object>> filteredResults = new ArrayList<>();
+//    public List<TransactionDTO> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
+//        List<TransactionDTO> filteredResults = new ArrayList<>();
 //
 //        for (Map<String, Object> entry : repaymentSchedule) {
 //            String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
@@ -318,21 +271,73 @@ public class MusoniService {
 //
 //            if (totalOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
 //                // Calculate the last day of the month following the paidBy date
-//                LocalDate newDate = paidBy.with(TemporalAdjusters.lastDayOfMonth());
+//                LocalDate newDate = date.with(TemporalAdjusters.lastDayOfMonth());
+////                LocalDate newDate = paidBy.with(TemporalAdjusters.lastDayOfMonth());
 //
 //                // Calculate the penalty fee
 //                double penaltyFee = totalOutstanding * 0.05; // 5% monthly rate
 //
-//                // Add new data to the entry
-//                entry.put("newDate", newDate);
-//                entry.put("penaltyFee", penaltyFee);
+//                // Create a new TransactionDTO object
+//                TransactionDTO transactionDTO = new TransactionDTO();
+//                transactionDTO.setDate(newDate);
+//                transactionDTO.setAmount(penaltyFee);
 //
-//                // Add the entry to the filtered results
-//                filteredResults.add(entry);
+//                // Create and set the TransactionTypeDTO object
+//                TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+//                transactionTypeDTO.setValue("Fee Applied");
+//                transactionDTO.setType(transactionTypeDTO);
+//
+//                // Add the transactionDTO to the filtered results
+//                filteredResults.add(transactionDTO);
 //            }
 //        }
+//
 //        return filteredResults;
 //    }
+
+    public List<TransactionDTO> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
+        List<TransactionDTO> filteredResults = new ArrayList<>();
+        double cumulativeOutstanding = 0.0;
+
+        for (Map<String, Object> entry : repaymentSchedule) {
+            String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
+            double totalOutstanding = totalOutstandingStr.isEmpty() ? 0.0 : Double.parseDouble(totalOutstandingStr);
+
+            cumulativeOutstanding += totalOutstanding;
+
+            log.info("date: {}", entry.get("date").toString());
+
+            LocalDate date = entry.get("date") != null ? LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER) : null;
+
+            LocalDate paidBy = (entry.get("paidBy") != null && !entry.get("paidBy").toString().isEmpty())
+                    ? LocalDate.parse(entry.get("paidBy").toString(), DATE_FORMATTER)
+                    : (LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER).isBefore(LocalDate.now()) ? LocalDate.now() : null);
+
+            if (cumulativeOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
+                // Calculate new date (date + 21 days)
+                LocalDate newDate = date.plusDays(21);
+                newDate = newDate.with(TemporalAdjusters.lastDayOfMonth());
+
+                // Calculate the penalty fee (5% of cumulativeOutstanding)
+                double penaltyFee = cumulativeOutstanding * 0.05; // 5% monthly rate
+
+                // Create a new TransactionDTO object
+                TransactionDTO transactionDTO = new TransactionDTO();
+                transactionDTO.setDate(newDate);
+                transactionDTO.setAmount(penaltyFee);
+
+                // Create and set the TransactionTypeDTO object
+                TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+                transactionTypeDTO.setValue("Fee Applied");
+                transactionDTO.setType(transactionTypeDTO);
+
+                // Add the transactionDTO to the filtered results
+                filteredResults.add(transactionDTO);
+            }
+        }
+
+        return filteredResults;
+    }
 
     public Object getLoanRepaymentSchedule(String loanAccount) throws JsonProcessingException {
 //        String repaymentScheduleLoan = String.valueOf(restClient.getRepaymentSchedule(loanAccount));
@@ -347,6 +352,7 @@ public class MusoniService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode clientAccountJson = objectMapper.readTree(String.valueOf(repaymentScheduleLoan));
         JsonNode repaymentSchedule = clientAccountJson.at("/repaymentSchedule/periods");
+        log.info("repaymentSchedule: {}", repaymentSchedule);
 
         List<Map<String, Object>> loanAccRepay = new ArrayList<>();
 
@@ -372,6 +378,7 @@ public class MusoniService {
                 loanAccRepay.add(loanBal);
             }
         }
+        log.info("loanAccRepay: {}", loanAccRepay);
         return loanAccRepay;
     }
 
@@ -962,8 +969,6 @@ public class MusoniService {
             throw new SettlementAccountNotFoundException("This Settlement Account : "+ savingsId +" does not exist");
         }
 
-
-
         Integer clientId = settlementAccount.getClientId();
         if (clientId != 0){
             Client musoniClient = restClient.getClientById(String.valueOf(clientId));
@@ -973,14 +978,78 @@ public class MusoniService {
                 settlementAccountResponse.setPhoneNumber(musoniClient.getMobileNo());
             }
 
-
         }else {
             throw new SettlementAccountNotFoundException("This Settlement Account : "+ savingsId +" does not exist");
         }
 
-
         return settlementAccountResponse;
     }
+
+    public ClientAccounts getClientAccountsByLoanAcc(@PathVariable String loanId) throws ParseException {
+
+        ClientAccounts clientAccounts = new ClientAccounts();
+
+        PageItems loanAccount;
+
+        try {
+            loanAccount = restClient.getClientAccountsByLoanAcc(loanId);
+        } catch (Exception e) {
+            log.info("FAILED TO GET THE ACCOUNT: {}", e.getMessage());
+            throw new SettlementAccountNotFoundException("This Loan Account : " + loanId + " does not exist");
+        }
+
+        Integer clientId = loanAccount.getClientId();
+        if (clientId != 0) {
+            Client musoniClient = restClient.getClientById(String.valueOf(clientId));
+
+            if (musoniClient.getMobileNo() != null) {
+                clientAccounts.setClientId(String.valueOf(clientId));
+                clientAccounts.setPhoneNumber(musoniClient.getMobileNo());
+                clientAccounts.setLoanId(loanId);
+
+                // Fetch Post Maturity Fees for the client
+                List<ClientFeesResponse> feesResponses = getClientFeesByLoanId(Long.valueOf(clientId));
+
+                // Set the last Post Maturity Fee ID
+                if (!feesResponses.isEmpty()) {
+                    String lastFeeId = feesResponses.get(feesResponses.size() - 1).getId();
+                    clientAccounts.setPostMaturityFee(lastFeeId);
+                }
+                else {
+                    clientAccounts.setPostMaturityFee("0");
+                }
+
+                clientAccounts.setSettlementAccount(restClient.getSavingsAccountByClientId(Long.valueOf(clientId)));
+            }
+
+        } else {
+            throw new SettlementAccountNotFoundException("This Settlement Account : " + loanId + " does not exist");
+        }
+
+        return clientAccounts;
+    }
+
+    public List<ClientFeesResponse> getClientFeesByLoanId(Long clientId) throws ParseException {
+
+        List<LoanAccount> loanAccounts = restClient.getClientLoansById(clientId);
+
+        List<ClientFeesResponse> response = new ArrayList<>();
+
+        for (LoanAccount account : loanAccounts) {
+            // Check if the productName is "Post Maturity Fees"
+            if ("Post Maturity Fees".equals(account.getProductName())) {
+                ClientFeesResponse clientFeesResponse = new ClientFeesResponse();
+                clientFeesResponse.setId(String.valueOf(account.getId()));
+
+                // Add the response to the list
+                response.add(clientFeesResponse);
+            }
+        }
+        // Now 'response' contains only the IDs of loans with productName "Post Maturity Fees"
+        // Remove the exception and simply return the response, even if it's empty.
+        return response;
+    }
+
 
     public List<ViewClientLoansResponse> activeClientLoans(Long clientId) throws ParseException {
 

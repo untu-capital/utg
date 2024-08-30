@@ -528,6 +528,7 @@ public class ClientLoanController {
     @PostMapping("sendEmail")
     public ResponseEntity<ClientLoan> sendEmail(@RequestBody Email email) {
 //        String recipientEmail = emailSender.send(email.getRecipient(), email.getSubject(), email.getMessage());
+        log.info("email: {}", email);
         emailSender.send(email.getRecipient(), email.getSubject(), email.getMessage());
         return new ResponseEntity<ClientLoan>(clientLoanApplication.sendLoanSuccess(email.getRecipient(), email.getSubject()), HttpStatus.OK);
     }

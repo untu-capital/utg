@@ -13,6 +13,8 @@ import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
 import com.untucapital.usuite.utg.dto.loans.Result;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
+import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
@@ -181,6 +183,16 @@ public class MusoniController {
     @GetMapping("getClientIdBySettlementAcc/{savingsId}")
     public SettlementAccountResponse getClientIdBySettlementAcc(@PathVariable String savingsId) throws AccountNotFoundException {
         return musoniService.getClientIdBySettlementAcc(savingsId);
+    }
+
+    @GetMapping("getClientAccountsByLoanAcc/{loanAcc}")
+    public ClientAccounts getClientAccountsByLoanAcc(@PathVariable String loanAcc) throws AccountNotFoundException, ParseException {
+        return musoniService.getClientAccountsByLoanAcc(loanAcc);
+    }
+
+    @GetMapping("getClientFeesByLoanId/{loanAcc}")
+    public PageItems getClientFeesByLoanId(@PathVariable String loanAcc) throws AccountNotFoundException {
+        return restClient.getClientFeesByLoanId(loanAcc);
     }
 
     public static String[] getDate() {
@@ -420,8 +432,8 @@ public class MusoniController {
 
     @GetMapping("getLoanRepaymentSchedule/{loanAccount}")
     public Object getLoanRepaymentSchedule(@PathVariable String loanAccount) throws JsonProcessingException {
-        return musoniService.getLoanRepaymentSchedule(loanAccount);
-//        return restClient.getRepaymentSchedule(loanAccount);
+//        return musoniService.getLoanRepaymentSchedule(loanAccount);
+        return restClient.getRepaymentSchedule(loanAccount);
     }
 
     @GetMapping("getAndProcessLoanRepayment/{loanAccount}")
