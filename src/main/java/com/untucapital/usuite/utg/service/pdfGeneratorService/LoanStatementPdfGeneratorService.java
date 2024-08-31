@@ -211,8 +211,6 @@ public class LoanStatementPdfGeneratorService {
                 .collect(Collectors.toList());
     }
 
-
-
     public ByteArrayInputStream generateInterimStatementPdf(int loanId, int savingsId, int postMaturityFeeId) throws ParseException, JsonProcessingException {
         List<TransactionDTO> transactions = getCombinedTransactions(loanId, savingsId, postMaturityFeeId);
 
