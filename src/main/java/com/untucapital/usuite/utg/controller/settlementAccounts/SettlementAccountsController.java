@@ -74,6 +74,33 @@ public class SettlementAccountsController {
                 .body(bis.readAllBytes());
     }
 
+    @GetMapping("/generateStyledStatementPdf/loanId/{loanId}")
+    public ResponseEntity<byte[]> generateStyledStatementPdf(
+            @PathVariable("loanId") String loanId) throws ParseException, JsonProcessingException {
+
+        // Call getClientAccountsByLoanAcc() to retrieve ClientAccounts details
+        ClientAccounts clientAccounts = musoniService.getClientAccountsByLoanAcc(loanId);
+
+        // Extract the necessary IDs from ClientAccounts
+        int savingsId = Integer.parseInt(clientAccounts.getSettlementAccount());
+        int postMaturityFeeId = Integer.parseInt(clientAccounts.getPostMaturityFee());
+
+        // Generate the PDF using the retrieved IDs
+        ByteArrayInputStream bis = loanStatementPdfGeneratorService.generateStyledStatementPdf(
+                Integer.parseInt(clientAccounts.getLoanId()), savingsId, postMaturityFeeId);
+
+        // Prepare HTTP headers for the response
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=interim_statement.pdf");
+
+        // Return the generated PDF as the response
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(bis.readAllBytes());
+    }
+
 
 
     @GetMapping("/getCombinedTransactions")

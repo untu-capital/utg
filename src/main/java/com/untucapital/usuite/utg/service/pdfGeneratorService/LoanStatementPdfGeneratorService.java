@@ -290,5 +290,95 @@ public class LoanStatementPdfGeneratorService {
         }
     }
 
+    public ByteArrayInputStream generateStyledStatementPdf(int loanId, int savingsId, int postMaturityFeeId) throws ParseException, JsonProcessingException {
+        List<TransactionDTO> transactions = getCombinedTransactions(loanId, savingsId, postMaturityFeeId);
+
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            PdfWriter writer = new PdfWriter(out);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // Add Header
+            document.add(new Paragraph("Loan Statement")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                    .setFontSize(18));
+
+            document.add(new Paragraph("Account No: " + loanId)
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(12));
+
+            document.add(new Paragraph("Interest Rate: 9.0%")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(12));
+
+            document.add(new Paragraph("Print Date: " + new SimpleDateFormat("dd.MM.yyyy").format(new Date()))
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(12));
+
+            document.add(new Paragraph("\n"));
+
+            // Add Contact Information and Address (Footer)
+            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.LEFT));
+
+            document.add(new Paragraph("Email: info@untucapital.co.zw | Support: +263 784 558 769")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.LEFT));
+
+            // Add Table with width adjustments
+            float[] columnWidths = {3, 5, 3, 3, 3}; // Adjust the number of columns and their relative widths
+            Table table = new Table(columnWidths);
+            table.setWidth(UnitValue.createPercentValue(100)); // Set the table to fill the width of the page
+
+            // Add table headers
+            table.addHeaderCell(new Cell().add(new Paragraph("Date").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+            table.addHeaderCell(new Cell().add(new Paragraph("Transaction Description").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+            table.addHeaderCell(new Cell().add(new Paragraph("Debit").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+            table.addHeaderCell(new Cell().add(new Paragraph("Credit").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+            table.addHeaderCell(new Cell().add(new Paragraph("Balance").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+
+            double balance = 0.0;
+
+            // Iterate through transactions and populate the table
+            for (TransactionDTO transaction : transactions) {
+                table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
+
+                String transactionType = transaction.getType().getValue();
+                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_ACCRUAL)) {
+                    transactionType = AppConstants.INTEREST_APPLIED;
+                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DEPOSIT)) {
+                    transactionType = AppConstants.LOAN_REPAYMENT;
+                }
+                table.addCell(new Cell().add(new Paragraph(transactionType)));
+
+                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DISBURSEMENT) || transactionType.equalsIgnoreCase(AppConstants.INTEREST_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.FEE_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.PENATLY_FEE)) {
+                    table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
+                    table.addCell(new Cell().add(new Paragraph("0.00")));
+                    balance += transaction.getAmount();
+                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_REPAYMENT) || transactionType.equalsIgnoreCase(AppConstants.BALANCE_BD)) {
+                    table.addCell(new Cell().add(new Paragraph("0.00")));
+                    table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
+                    balance -= transaction.getAmount();
+                } else {
+                    table.addCell(new Cell().add(new Paragraph("0.00")));
+                    table.addCell(new Cell().add(new Paragraph("0.00")));
+                }
+
+                table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
+            }
+
+            document.add(table);
+            document.close();
+
+            return new ByteArrayInputStream(out.toByteArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }

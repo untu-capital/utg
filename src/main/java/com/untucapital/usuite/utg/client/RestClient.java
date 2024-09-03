@@ -46,10 +46,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -867,7 +864,11 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         return activeLoanAccounts;
     }
 
-
+    public static String generateUniqueId(String prefix) {
+        long timestamp = System.currentTimeMillis();
+        String uniqueId = prefix + Long.toString(timestamp) + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
+        return uniqueId;
+    }
 
 
 //    public Client getClient(String clientLoans) {
