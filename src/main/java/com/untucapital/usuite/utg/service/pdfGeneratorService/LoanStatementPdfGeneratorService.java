@@ -4,16 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.io.font.constants.StandardFonts;
+import com.itextpdf.io.image.ImageData;
+import com.itextpdf.io.image.ImageDataFactory;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import com.itextpdf.layout.borders.Border;
 import com.itextpdf.layout.element.Cell;
+import com.itextpdf.layout.element.Image;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import com.itextpdf.layout.property.UnitValue;
+import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
@@ -25,6 +31,7 @@ import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,6 +39,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -298,35 +306,57 @@ public class LoanStatementPdfGeneratorService {
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
-            // Add Header
-            document.add(new Paragraph("Loan Statement")
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
-                    .setFontSize(18));
 
-            document.add(new Paragraph("Account No: " + loanId)
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(12));
+            File imageFile = new ClassPathResource("static/untu-logo.png").getFile();
+            ImageData imageData = ImageDataFactory.create(imageFile.getAbsolutePath());
 
-            document.add(new Paragraph("Interest Rate: 9.0%")
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(12));
+            if (!imageFile.exists()) {
+                throw new IOException("Image file not found: " + imageFile.getAbsolutePath());
+            }
+            Image logo = new Image(imageData).scaleToFit(100, 100); // Scale the logo appropriately
 
-            document.add(new Paragraph("Print Date: " + new SimpleDateFormat("dd.MM.yyyy").format(new Date()))
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(12));
+            // Create a table for the header section
+            Table headerTable = new Table(new float[]{2, 8});
+            headerTable.setWidth(UnitValue.createPercentValue(100));
 
+            // Add empty cells for layout
+//            headerTable.addCell(new Cell().add(new Paragraph("Gweru")).setBorder(Border.NO_BORDER));
+            headerTable.addCell(new Cell().add(logo).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT).setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.MIDDLE));
+            headerTable.addCell(new Cell().setBorder(Border.NO_BORDER));
+
+            // Second row for print date and account details
+            headerTable.addCell(new Cell().setBorder(Border.NO_BORDER));
+            Cell accountDetails = new Cell().add(new Paragraph("Print Date")
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                            .setFontSize(10))
+                    .add(new Paragraph(new SimpleDateFormat("dd.MM.yyyy").format(new Date()))
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                            .setFontSize(10))
+                    .add(new Paragraph("Account No.")
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                            .setFontSize(10))
+                    .add(new Paragraph(String.format("%08d", loanId)) // Formatting loanId as Account No.
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                            .setFontSize(10))
+                    .add(new Paragraph("Interest Rate")
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                            .setFontSize(10))
+                    .add(new Paragraph("9.0%")
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                            .setFontSize(10))
+                    .setBorder(Border.NO_BORDER)
+                    .setTextAlignment(TextAlignment.LEFT);
+            headerTable.addCell(accountDetails);
+
+            // Third row for the account holder name
+//            headerTable.addCell(new Cell(1, 3).add(new Paragraph("TGO Motors (Enard Masikati) Tinango")
+//                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+//                    .setFontSize(12)).setBorder(Border.NO_BORDER));
+
+            document.add(headerTable);
+
+            // Add some space after the header
             document.add(new Paragraph("\n"));
-
-            // Add Contact Information and Address (Footer)
-            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(10)
-                    .setTextAlignment(TextAlignment.LEFT));
-
-            document.add(new Paragraph("Email: info@untucapital.co.zw | Support: +263 784 558 769")
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(10)
-                    .setTextAlignment(TextAlignment.LEFT));
 
             // Add Table with width adjustments
             float[] columnWidths = {3, 5, 3, 3, 3}; // Adjust the number of columns and their relative widths
@@ -370,6 +400,19 @@ public class LoanStatementPdfGeneratorService {
                 table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
             }
 
+            // Add Contact Information and Address (Footer)
+            document.add(new Paragraph("\n")); // Add some space before footer
+            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.LEFT));
+
+            document.add(new Paragraph("Email: info@untucapital.co.zw | Support: +263 784 558 769")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(10)
+                    .setTextAlignment(TextAlignment.LEFT));
+
+
             document.add(table);
             document.close();
 
@@ -379,6 +422,4 @@ public class LoanStatementPdfGeneratorService {
             return null;
         }
     }
-
-
 }
