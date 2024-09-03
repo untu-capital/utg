@@ -6,6 +6,7 @@ import com.untucapital.usuite.utg.dto.Email;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
+import com.untucapital.usuite.utg.service.ClientLoanService;
 import com.untucapital.usuite.utg.service.CreditCheckService;
 import com.untucapital.usuite.utg.utils.EmailSender;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,20 +41,34 @@ public class ClientLoanController {
 
     private final CreditCheckService creditCheckService;
 
-    public ClientLoanController(EmailSender emailSender, ClientLoanApplication clientLoanApplication, CreditCheckService creditCheckService) {
+    private final ClientLoanService clientLoanService;
+
+    public ClientLoanController(EmailSender emailSender, ClientLoanApplication clientLoanApplication, CreditCheckService creditCheckService, ClientLoanService clientLoanService) {
         this.emailSender = emailSender;
         this.clientLoanApplication = clientLoanApplication;
         this.creditCheckService = creditCheckService;
+        this.clientLoanService = clientLoanService;
     }
 
 
     //build save loan REST API
+//    @PostMapping
+//    @Operation(summary = "Create a new client loan application")
+//    public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) throws ParseException {
+//        log.info(String.valueOf(clientLoan));
+//        return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
+//    }
+
     @PostMapping
     @Operation(summary = "Create a new client loan application")
     public ResponseEntity<ClientLoan> saveClientLoan(@RequestBody ClientLoan clientLoan) throws ParseException {
         log.info(String.valueOf(clientLoan));
-        return new ResponseEntity<ClientLoan>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
+        // Process the client loan to set default values
+        clientLoan = clientLoanService.processClientLoan(clientLoan);
+        return new ResponseEntity<>(clientLoanApplication.saveClientLoan(clientLoan), HttpStatus.CREATED);
     }
+
+
 
     //Fetch for Client FCB
     @PostMapping("/creditCheckedLoan/{id}")
