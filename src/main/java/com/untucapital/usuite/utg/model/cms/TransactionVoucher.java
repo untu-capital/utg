@@ -38,7 +38,7 @@ public class TransactionVoucher {
     private LocalDateTime createdAt;
 
     @Column(name = "application_date")
-    private LocalDateTime applicationDate;
+    private LocalDate applicationDate;
 
     @Column(name = "amount")
     private BigDecimal amount;

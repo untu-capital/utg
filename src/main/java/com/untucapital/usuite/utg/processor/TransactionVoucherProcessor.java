@@ -85,7 +85,7 @@ public class TransactionVoucherProcessor {
 
         return TransactionVoucher.builder()
                 .initiator(user)
-                .applicationDate(LocalDateTime.now())
+                .applicationDate(request.getApplicationDate())
                 .amount(request.getAmount())
                 .fromVault(fromVault)
                 .reference(transactionCode)
@@ -166,7 +166,7 @@ public class TransactionVoucherProcessor {
         }
 
             if (request.getApplicationDate() != null && !request.getApplicationDate().equalsIgnoreCase(String.valueOf(transactionVoucher.getApplicationDate()))) {
-                transactionVoucher.setApplicationDate(LocalDateTime.parse(request.getApplicationDate()));
+                transactionVoucher.setApplicationDate(LocalDate.parse(request.getApplicationDate()));
             }
 
 
@@ -257,7 +257,7 @@ public class TransactionVoucherProcessor {
         response.setId(transaction.getId());
 //        response.setApplicationNo(createApplicationId(transaction.getApplicationDate(), transaction.getId()));
         response.setInitiator(initiator);
-        response.setApplicationDate(dateFormatter(transaction.getApplicationDate()));
+        response.setApplicationDate(transaction.getApplicationDate());
         response.setFirstApprover(firstApprover);
         response.setFirstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()));
         response.setFirstApprovalStatus(transaction.getFirstApprovalStatus());
@@ -338,7 +338,7 @@ public class TransactionVoucherProcessor {
 
             transactionVoucherResponse.setId(transaction.getId());
             transactionVoucherResponse.setInitiator(initiator);
-            transactionVoucherResponse.setApplicationDate(dateFormatter(transaction.getApplicationDate()));
+            transactionVoucherResponse.setApplicationDate(transaction.getApplicationDate());
             transactionVoucherResponse.setFirstApprover(firstApprover);
             transactionVoucherResponse.setFirstApprovedAt(dateFormatter(transaction.getFirstApprovedAt()));
             transactionVoucherResponse.setFirstApprovalStatus(transaction.getFirstApprovalStatus());
@@ -384,8 +384,8 @@ public class TransactionVoucherProcessor {
         return date.format(formatter);
     }
 
-    public String createApplicationId(LocalDateTime date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yy-MM-dd");
+    public String createDate(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return date.format(formatter);
     }
 }

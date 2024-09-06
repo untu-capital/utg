@@ -113,7 +113,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     @Override
     public List<ClientLoan> getClientLoanApplicationsByUserId(String userId) {
         userService.find(userId).orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
-        List<ClientLoan> clientLoans = clientRepository.findByUserIdOrderByCreatedAtAsc(userId);
+        List<ClientLoan> clientLoans = clientRepository.findByUserIdOrderByCreatedAtDesc(userId);
         log.info("Client loans: {}", clientLoans);
         return clientLoans;
     }
@@ -144,7 +144,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
     public List<ClientLoan> getClientLoanApplicationsByLoanStatus(String loanStatus) {
         userService.find(loanStatus).orElseThrow(() ->
                 new ResourceNotFoundException("Loan", "loan status", loanStatus));
-        return clientRepository.findClientLoansByLoanStatus(loanStatus);
+        return clientRepository.findClientLoansByLoanStatusOrderByCreatedAtDesc(loanStatus);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         userService.find(branchName).orElseThrow(() ->
                 new ResourceNotFoundException("Loan Applications", "BranchName", branchName));
 
-        return clientRepository.findClientLoansByBranchName(branchName);
+        return clientRepository.findClientLoansByBranchNameOrderByCreatedAtDesc(branchName);
     }
 
     public List<ClientLoan> getAllClientLoansData() {
@@ -209,14 +209,14 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
 
 
     public List<ClientLoan> getRecentClientLoans() {
-        Pageable pageable = PageRequest.of(0, 100); // Page number 0 (first page), page size 100
+        Pageable pageable = PageRequest.of(0, 50); // Page number 0 (first page), page size 100
         return clientRepository.findAllByOrderByCreatedAtDesc(pageable).getContent();
     }
 
     @Override
     public List<ClientLoan> getActiveLoans(String userId) {
 
-        List<ClientLoan> clientLoans = clientRepository.findClientLoansByUserId(userId);
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByUserIdOrderByCreatedAtDesc(userId);
 
         List<ClientLoan> clientLoanList = new ArrayList<>();
         for (ClientLoan clientLoan : clientLoans) {

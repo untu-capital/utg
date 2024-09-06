@@ -65,7 +65,7 @@ public class UsersController extends AbstractController<User> {
     // Get list of all users with a certain Branch Name
     @GetMapping("/branch/{branchName}")
     public ResponseEntity<List<User>> getUsersByBranch(@PathVariable("branchName") String branchName) {
-        return new ResponseEntity<List<User>>(userRepository.findUsersByBranch(branchName), HttpStatus.OK);
+        return new ResponseEntity<List<User>>(userRepository.findUsersByBranchOrderByCreatedAtDesc(branchName), HttpStatus.OK);
     }
 
 //    @GetMapping("/{id}")
@@ -312,7 +312,7 @@ public class UsersController extends AbstractController<User> {
     // Get list of all users with a certain Branch Name
     @GetMapping("/untuStaff")
     public ResponseEntity<List<User>> getUntuStaff() {
-        return new ResponseEntity<List<User>>(userRepository.findUsersByBranchNotNull(), HttpStatus.OK);
+        return new ResponseEntity<List<User>>(userRepository.findUsersByBranchNotNullOrderByCreatedAtDesc(), HttpStatus.OK);
     }
 
     @GetMapping("/getUsersByCmsUserRole/{role}")

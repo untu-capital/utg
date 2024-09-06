@@ -198,7 +198,7 @@ public class TransactionVoucherService {
 
             if (transactionVoucher.getWithdrawalPurpose() != null) {
                 String description = transactionPurpose.getName();
-                LocalDate date = transactionVoucher.getApplicationDate().toLocalDate();
+                LocalDate date = transactionVoucher.getApplicationDate();
                 log.info("Loacal Date: {}", date);
                 pastelTransReq.setTransactionDate(MusoniUtils.formatPastelDates(date));
                 pastelTransReq.setDescription(description);
@@ -255,7 +255,7 @@ public class TransactionVoucherService {
     //Get All Transactions
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactions() {
-        List<TransactionVoucher> transactions = transactionVoucherRepository.findAll();
+        List<TransactionVoucher> transactions = transactionVoucherRepository.findAllByOrderByCreatedAtDesc();
         return transactionVoucherResponseSerializerList(transactions);
     }
 
@@ -274,7 +274,7 @@ public class TransactionVoucherService {
     @Transactional(value = "transactionManager")
     public List<TransactionVoucherResponse> getAllTransactionsByBranch(String branchId) {
         Branches branch = branchRepository.findById(branchId).orElseThrow();
-        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByBranch(branch);
+        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByBranchOrderByCreatedAtDesc(branch);
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
@@ -284,7 +284,7 @@ public class TransactionVoucherService {
         Vault vault = new Vault();
         VaultResponseDTO vaultResponse = vaultService.getVault(vaultId);
         BeanUtils.copyProperties(vaultResponse, vault);
-        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByFromVaultOrToVault(vault, vault);
+        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByFromVaultOrToVaultOrderByCreatedAtDesc(vault, vault);
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
@@ -299,9 +299,9 @@ public class TransactionVoucherService {
         if (user.getBranch().equalsIgnoreCase("Head Office")) {
 
             transactionVouchers = transactionVoucherRepository.
-                    findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(user, ApprovalStatus.APPROVED, ApprovalStatus.APPROVED);
+                    findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatusOrderByCreatedAtDesc(user, ApprovalStatus.APPROVED, ApprovalStatus.APPROVED);
         } else {
-            transactionVouchers = transactionVoucherRepository.findAllByInitiator(user);
+            transactionVouchers = transactionVoucherRepository.findAllByInitiatorOrderByCreatedAtDesc(user);
         }
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
@@ -312,7 +312,7 @@ public class TransactionVoucherService {
         User user = userService.find(firstApprover).orElseThrow(
                 () -> new ResourceNotFoundException("First Approver", "id", firstApprover)
         );
-        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByFirstApprover(user);
+        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllByFirstApproverOrderByCreatedAtDesc(user);
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
 
@@ -321,7 +321,7 @@ public class TransactionVoucherService {
     public List<TransactionVoucherResponse> getAllTransactionsBySecondApprover(String approver) {
 
         User user = userService.find(approver).orElseThrow();
-        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllBySecondApprover(user);
+        List<TransactionVoucher> transactionVouchers = transactionVoucherRepository.findAllBySecondApproverOrderByCreatedAtDesc(user);
 
         return transactionVoucherResponseSerializerList(transactionVouchers);
     }
@@ -484,7 +484,7 @@ public class TransactionVoucherService {
                         TransactionPurpose transactionPurpose = transactionPurposeRepository.getById(transactionVoucher.getWithdrawalPurpose());
 
                         String description = transactionPurpose.getName();
-                        LocalDate date = transactionVoucher.getApplicationDate().toLocalDate();
+                        LocalDate date = transactionVoucher.getApplicationDate();
                         log.info("Loacal Date: {}", date);
                         pastelTransReq.setTransactionDate(MusoniUtils.formatPastelDates(date));
                         pastelTransReq.setDescription(description);

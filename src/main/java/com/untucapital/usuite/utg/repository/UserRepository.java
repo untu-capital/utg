@@ -44,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     User getUserByContactDetail_EmailAddress(String email);
 
-    List<User> findUsersByBranch(String branchName);
+    List<User> findUsersByBranchOrderByCreatedAtDesc(String branchName);
 
     List<User> findUsersByCmsUser_RoleIsNotNullAndCmsUser_RoleNotLike(String role);
 
@@ -56,7 +56,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByTmsUser_Role(String role);
 
-    List<User> findUsersByBranchNotNull();
+    List<User> findUsersByBranchNotNullOrderByCreatedAtDesc();
 
     List<User> findUsersByCreditCommitGroup(String creditCommitGroupName);
 

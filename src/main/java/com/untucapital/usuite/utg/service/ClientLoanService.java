@@ -26,6 +26,37 @@ public class ClientLoanService {
             clientLoan.setLoanFileId(generateUniqueId("4587"));
         }
 
+        // Assign default loan status
+        if (clientLoan.getLoanStatus() == null || clientLoan.getLoanStatus().trim().isEmpty()) {
+            clientLoan.setLoanStatus("PENDING");
+        }
+
+        // Assign default process loan status
+        if (clientLoan.getProcessLoanStatus() == null || clientLoan.getProcessLoanStatus().trim().isEmpty()) {
+            clientLoan.setProcessLoanStatus("uncomplete");
+        }
+
+        // Assign default signatures
+        if (clientLoan.getBocoSignature() == null || clientLoan.getBocoSignature().trim().isEmpty()) {
+            clientLoan.setBocoSignature("Unsigned");
+        }
+
+        if (clientLoan.getBmSignature() == null || clientLoan.getBmSignature().trim().isEmpty()) {
+            clientLoan.setBmSignature("Unsigned");
+        }
+
+        if (clientLoan.getCaSignature() == null || clientLoan.getCaSignature().trim().isEmpty()) {
+            clientLoan.setCaSignature("Unsigned");
+        }
+
+        if (clientLoan.getCmSignature() == null || clientLoan.getCmSignature().trim().isEmpty()) {
+            clientLoan.setCmSignature("Unsigned");
+        }
+
+        if (clientLoan.getFinSignature() == null || clientLoan.getFinSignature().trim().isEmpty()) {
+            clientLoan.setFinSignature("Unsigned");
+        }
+
         return clientLoan;
     }
 

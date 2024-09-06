@@ -20,19 +20,20 @@ import java.util.Optional;
 @Repository
 public interface TransactionVoucherRepository extends JpaRepository<TransactionVoucher, Integer> {
 
-    List<TransactionVoucher> findAllByInitiator(User user);
+    List<TransactionVoucher> findAllByOrderByCreatedAtDesc();
+    List<TransactionVoucher> findAllByInitiatorOrderByCreatedAtDesc(User user);
 
-    List<TransactionVoucher> findAllByFirstApprover(User user);
+    List<TransactionVoucher> findAllByFirstApproverOrderByCreatedAtDesc(User user);
 
-    List<TransactionVoucher> findAllBySecondApprover(User user);
+    List<TransactionVoucher> findAllBySecondApproverOrderByCreatedAtDesc(User user);
 
-    List<TransactionVoucher> findAllByBranch(Branches branch);
+    List<TransactionVoucher> findAllByBranchOrderByCreatedAtDesc(Branches branch);
 
-    List<TransactionVoucher> findAllByFromVaultOrToVault(Vault fromVault, Vault toVault);
+    List<TransactionVoucher> findAllByFromVaultOrToVaultOrderByCreatedAtDesc(Vault fromVault, Vault toVault);
 
-    List<TransactionVoucher> findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatus(User user, ApprovalStatus approvalStatus, ApprovalStatus approvalStatus1);
+    List<TransactionVoucher> findAllByInitiatorOrFirstApprovalStatusAndSecondApprovalStatusOrderByCreatedAtDesc(User user, ApprovalStatus approvalStatus, ApprovalStatus approvalStatus1);
 
-    TransactionVoucher findFirstByOrderByCreatedAtDesc();
+    TransactionVoucher findFirstByOrderByCreatedAtDesc(); // This one already orders by `created_at` in descending order.
 
     Optional<TransactionVoucher> findByAmountAndAmountInWordsAndInitiator_IdAndDenomination100AndDenomination50AndDenomination20AndDenomination10AndDenomination5AndDenomination2AndDenomination1(BigDecimal amount, String amountInWords, String id, Integer denomination100, Integer denomination50, Integer denomination20, Integer denomination10, Integer denomination5, Integer denomination2, Integer denomination1);
 

@@ -5,6 +5,7 @@ import com.untucapital.usuite.utg.model.enums.cms.ApprovalStatus;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * @author tjchidanika
@@ -18,7 +19,7 @@ public class TransactionVoucherResponse extends Response {
     private String referenceNumber;
 
     private UserDTO initiator;
-    private String applicationDate;
+    private LocalDate applicationDate;
     private String applicationNo;
 
     private UserDTO firstApprover;

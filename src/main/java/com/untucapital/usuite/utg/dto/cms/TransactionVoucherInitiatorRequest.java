@@ -1,10 +1,13 @@
 package com.untucapital.usuite.utg.dto.cms;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author tjchidanika
@@ -16,7 +19,11 @@ import java.math.BigDecimal;
 public class TransactionVoucherInitiatorRequest {
 
     private String initiator;
-    private String applicationDate;
+//    private LocalDateTime applicationDate;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate applicationDate;
+
 
     private BigDecimal amount;
     private String fromVault;
