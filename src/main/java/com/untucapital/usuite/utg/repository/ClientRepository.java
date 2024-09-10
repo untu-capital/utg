@@ -12,6 +12,7 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
     List<ClientLoan> findByUserIdOrderByCreatedAtDesc(String userId);
+    List<ClientLoan> findByPhoneNumberOrderByCreatedAtDesc(String phoneNumber);
     List<ClientLoan> findClientLoansByBranchNameOrderByCreatedAtDesc(String branchName);
 
 //    ClientLoan findClientLoanBy (String loanAndFileId);

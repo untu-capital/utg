@@ -85,10 +85,19 @@ public class ClientLoanController {
 
 
     @GetMapping("getActiveLoanByUserId/{userId}")
-    @Operation(summary = "Create a new client loan application")
+    @Operation(summary = "get a new client loan application")
     public List<ClientLoan> getActiveLoanByUserId(@PathVariable("userId") String userId) {
 
         return clientLoanApplication.getActiveLoans(userId);
+
+    }
+
+
+    @GetMapping("userByPhone/{phone}")
+    @Operation(summary = "get a new client loan application")
+    public ClientLoan getClientLoanApplicationByMobile(@PathVariable("phone") String phone) {
+
+        return clientLoanApplication.getClientLoanApplicationByMobile(phone);
 
     }
 

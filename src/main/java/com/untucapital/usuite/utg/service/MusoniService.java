@@ -44,6 +44,8 @@ import com.untucapital.usuite.utg.utils.MusoniUtils;
 import com.untucapital.usuite.utg.utils.RandomNumUtils;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1136,6 +1138,65 @@ public class MusoniService {
             return "Failed to process client data.";
         }
     }
+
+    public List<String> getEligibleLoans(int loanStatus, double loanAmount, int dayInArrears) {
+        // Get all loans based on filter
+        String response = restClient.getLoansByFilter(loanStatus, loanAmount, dayInArrears);
+        JSONObject jsonResponse = new JSONObject(response);
+        JSONArray loans = jsonResponse.getJSONArray("pageItems");
+
+        List<String> eligibleLoans = new ArrayList<>();
+
+        // Loop through each loan account
+        for (int i = 0; i < loans.length(); i++) {
+            String accountNo = loans.getJSONObject(i).getString("accountNo");
+
+            // Get repayment schedule for the account
+            String repaymentScheduleResponse = String.valueOf(restClient.getRepaymentSchedule(accountNo));
+            JSONObject repaymentSchedule = new JSONObject(repaymentScheduleResponse);
+            JSONArray periods = repaymentSchedule.getJSONObject("repaymentSchedule").getJSONArray("periods");
+
+            int totalRepayments = repaymentSchedule.getInt("numberOfRepayments");
+            int periodsWithRepayment = 0;
+            boolean lateRepaymentFound = false;
+
+            // Loop through each period in the repayment schedule
+            for (int j = 0; j < periods.length(); j++) {
+                JSONObject period = periods.getJSONObject(j);
+                String obligationsMetOnDate = period.optString("obligationsMetOnDate", null);
+                String dueDate = period.getJSONArray("dueDate").toString(); // Convert dueDate to a date format as needed
+
+                // Check if obligationsMetOnDate exists and is within dueDate
+                if (obligationsMetOnDate != null) {
+                    periodsWithRepayment++;
+
+                    // Check if obligationsMetOnDate is more than 30 days after dueDate
+                    if (isMoreThan30DaysLate(dueDate, obligationsMetOnDate)) {
+                        lateRepaymentFound = true;
+                        break;
+                    }
+                }
+            }
+
+            // Calculate percentage of repayment periods met
+            double repaymentPercentage = ((double) periodsWithRepayment / totalRepayments) * 100;
+
+            // Add to eligible loans if 50% or more repayments made and no late repayments found
+            if (repaymentPercentage >= 50 && !lateRepaymentFound) {
+                eligibleLoans.add(accountNo);
+            }
+        }
+
+        return eligibleLoans;
+    }
+
+    // Helper function to check if obligationsMetOnDate is more than 30 days after dueDate
+    private boolean isMoreThan30DaysLate(String dueDate, String obligationsMetOnDate) {
+        LocalDate due = LocalDate.parse(dueDate); // Assuming dueDate is parsed to LocalDate
+        LocalDate metOn = LocalDate.parse(obligationsMetOnDate); // Assuming obligationsMetOnDate is parsed to LocalDate
+        return ChronoUnit.DAYS.between(due, metOn) >= 30;
+    }
+
 
 }
 

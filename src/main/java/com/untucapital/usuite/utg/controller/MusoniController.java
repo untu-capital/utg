@@ -640,4 +640,10 @@ public class MusoniController {
         return musoniService.getClientByDateOfBirth(dob);
     }
 
+    @GetMapping("/getLoansByFilter/{loanStatus}/{loanAmount}/{dayInArrears}")
+    @Operation(summary = "Get Filtered loans")
+    public String getLoansByFilter(@PathVariable String loanStatus, @PathVariable String loanAmount, @PathVariable String dayInArrears) {
+        return musoniService.getEligibleLoans(Integer.parseInt(loanStatus), Double.parseDouble(loanAmount), Integer.parseInt(dayInArrears)).toString();
+    }
+
 }

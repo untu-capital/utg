@@ -8,12 +8,9 @@ import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
 import com.untucapital.usuite.utg.model.ClientLoan;
 import com.untucapital.usuite.utg.repository.ClientRepository;
 import com.untucapital.usuite.utg.service.ClientLoanApplication;
-import com.untucapital.usuite.utg.service.CreditCheckService;
 import com.untucapital.usuite.utg.service.UserService;
-import com.untucapital.usuite.utg.utils.EmailSender;
 import com.untucapital.usuite.utg.utils.FormatterUtil;
 import com.untucapital.usuite.utg.utils.MusoniUtils;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +105,17 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return clientRepository.findById(id).orElseThrow(() ->
                 new ResourceNotFoundException("ClientLoan", "Id", id));
     }
+
+    @Override
+    public ClientLoan getClientLoanApplicationByMobile(String phoneNumber) {
+        List<ClientLoan> clientLoans = clientRepository.findByPhoneNumberOrderByCreatedAtDesc(phoneNumber);
+
+        log.info("Client loans: {}", clientLoans);
+
+        // Return the first loan in the list if it exists
+        return clientLoans.isEmpty() ? null : clientLoans.get(0);
+    }
+
 
 
     @Override

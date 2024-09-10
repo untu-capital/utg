@@ -800,6 +800,71 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
 
     }
 
+    public String getLoansByFilter(int loanStatus, double loanAmount, int dayInArrears){
+        loanStatus = 300;
+        loanAmount = 10000;
+        dayInArrears = 2000;
+        final String s = """
+            {
+              "filterRulesExpression": {
+                "condition": "AND",
+                "rules": [
+                  {
+                    "id": "status",
+                    "field": "status",
+                    "type": "integer",
+                    "input": "select",
+                    "operator": "equal",
+                    "value": %s
+                  },
+                  {
+                    "id": "principal",
+                    "field": "principal",
+                    "type": "double",
+                    "input": "select",
+                    "operator": "greater",
+                    "value": %s
+                  },
+                  {
+                    "id": "summary",
+                    "field": "daysInArrears",
+                    "type": "double",
+                    "input": "select",
+                    "operator": "less",
+                    "value": %s
+                  }
+                ]
+              },
+              "responseParameters": [
+                {
+                  "name": "accountNo",
+                  "ordinal": 0
+                }
+                ],
+              "sortByParameters": [
+                {
+                  "ordinal": 0,
+                  "name": "accountNo",
+                  "direction": "ASC"
+                }
+              ]
+            }
+            """.formatted(loanStatus, loanAmount, dayInArrears);
+
+        String loansFilteredResponse;
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<String>(s, httpHeaders());
+            loansFilteredResponse = restTemplate.exchange(baseUrl + "datafilters/loans/queries/run-filter", HttpMethod.POST, entity, String.class).getBody();
+        }
+        catch (JSONException e) {
+            return "{ \"errorMessage\": \"Loan with selected fields not found\"}";
+        }
+        log.info("loansFilteredResponse: {}",loansFilteredResponse);
+            return loansFilteredResponse;
+
+    }
+
     public PageItems getSavingsLoanAccountById(@PathVariable String savingsId) {
         PageItems settlementAccount = new PageItems();
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());

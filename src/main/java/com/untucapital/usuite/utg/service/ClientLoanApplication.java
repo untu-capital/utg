@@ -21,6 +21,8 @@ public interface ClientLoanApplication {
 
     ClientLoan getClientLoanApplicationById(String id);
 
+    ClientLoan getClientLoanApplicationByMobile(String phoneNumber);
+
     List<ClientLoan> getClientLoanApplicationsByUserId(String userId);
 
     ClientLoan updateClientLoan(ClientLoan clientLoan, String id);
