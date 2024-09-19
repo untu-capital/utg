@@ -24,6 +24,9 @@ public class MusoniClient extends AbstractEntity{
 
     private String status;
 
+    @Column(name = "mobile_no", nullable = false)
+    private String mobileNo;
+
     @Column(name = "activation_date", nullable = false)
     private String activationDate;
 

@@ -43,6 +43,13 @@ public class IndustryService extends AbstractService<Industry> {
         return industryRepository.findIndustriesById(id);
     }
 
+    public int getIndustryIdByName(String name){
+        Industry industry = industryRepository.findByName(name);
+
+        log.info("industryCode: {}", industry.getCode());
+        return industry.getCode();
+    }
+
     @Transactional(value = "transactionManager")
     public String addIndustry(MultipartFile file, String name, int code) {
         Industry industry = new Industry();

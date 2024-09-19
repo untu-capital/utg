@@ -9,5 +9,9 @@ import org.springframework.stereotype.Repository;
 
 public interface IndustryRepository extends JpaRepository<Industry, String> {
     Industry findIndustriesById(String id);
+
+    Industry findByName(String name);
+
+
 }
 

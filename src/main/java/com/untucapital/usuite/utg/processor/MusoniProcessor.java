@@ -278,7 +278,7 @@ public class MusoniProcessor {
 
             PastelTransReq pastelTransReq = new PastelTransReq();
 
-                if (AppConstants.LOAN_DISBURSEMENT.equalsIgnoreCase(typeValue)) {
+            if (AppConstants.LOAN_DISBURSEMENT.equalsIgnoreCase(typeValue) && transaction.getPaymentDetailData() != null) {
 
                     fromAccount =getAccount(submittedUsername);
                     if (submittedUsername.equalsIgnoreCase("masimbam")){
@@ -286,12 +286,53 @@ public class MusoniProcessor {
                     }
                     toAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_DIS;
                     transactionType= AppConstants.DISBURSEMENT;
-                    reference = "DIS-" + transaction.getId();
+                    double disbursementFeesPercentage = 0.0; // Initialize with a default value
+
+//                    reference = "DIS-" + transaction.getId();
+                if (!transaction.getPaymentDetailData().getReceiptNumber().isEmpty()) {
+                    reference = transaction.getPaymentDetailData().getReceiptNumber();
+
+                    // Split by "-" to separate the receipt number and the disbursement fee part
+                    String[] parts = reference.split("-");
+
+                    // Update reference to the left side of the "-" (the main receipt number)
+                    reference = parts[0].trim();  // Trim any extra spaces around the main receipt number
+
+                    if (parts.length > 1) {
+                        // Trim any extra spaces around the second part (disbursement fee part)
+                        String potentialPercentage = parts[1].trim();
+
+                        // Check if the second part contains a "%" symbol
+                        if (potentialPercentage.contains("%")) {
+                            // Remove the "%" and parse the remaining numeric value
+                            potentialPercentage = potentialPercentage.replace("%", "").trim();
+                        }
+
+                        try {
+                            // Parse the numerical value from the second part
+                            disbursementFeesPercentage = Double.parseDouble(potentialPercentage);
+                        } catch (NumberFormatException e) {
+                            // Handle cases where the value cannot be parsed
+                            System.out.println("Unable to parse disbursement fee percentage: " + potentialPercentage);
+                        }
+                    }
+
+                    // Output the updated reference and disbursement fee percentage
+                    System.out.println("Updated Reference: " + reference);
+                    System.out.println("Disbursement Fees Percentage: " + disbursementFeesPercentage);
+                }
 
 //                    smsService.sendSingle("0775797299", "This is a disbursement");
 
+                // Assuming disbursementFeesPercentage is a percentage, convert it to a decimal value
+//                double percentageDecimal = disbursementFeesPercentage / 100.0;
 
-                    pastelTransReq.setAmount(transaction.getAmount());
+                // Apply the formula: (1 / (1 + disbursementFeesPercentage)) * transaction.getAmount()
+                double adjustedAmount = (1 / (1 + disbursementFeesPercentage)) * transaction.getAmount();
+
+                log.info("Adjusted Amount: " + adjustedAmount);
+                    pastelTransReq.setAmount(adjustedAmount);
+
                     //FIXME set the correct currency
                     pastelTransReq.setCurrency("001");
                     pastelTransReq.setDescription(typeValue);
@@ -306,14 +347,47 @@ public class MusoniProcessor {
                     pastelTransReq.setTransactionType(transactionType);
 
                 }
-                if (AppConstants.LOAN_REPAYMENT.equalsIgnoreCase(typeValue)) {
+                if (AppConstants.LOAN_REPAYMENT.equalsIgnoreCase(typeValue) && transaction.getPaymentDetailData() != null) {
                     toAccount =getAccount(submittedUsername );
                     if (submittedUsername.equalsIgnoreCase("masimbam")){
                         toAccount = "8422/000/HRE/FCA";
                     }
                     fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                     transactionType = AppConstants.REPAYMENT;
-                    reference = "REP-" + transaction.getId();
+//                    reference = "REP-" + transaction.getId();
+                    if (!transaction.getPaymentDetailData().getReceiptNumber().isEmpty()) {
+                        reference = transaction.getPaymentDetailData().getReceiptNumber();
+                        double disbursementFeesPercentage = 0.0; // Initialize with a default value
+
+                        // Split by "-" to separate the receipt number and the disbursement fee part
+                        String[] parts = reference.split("-");
+
+                        // Update reference to the left side of the "-" (the main receipt number)
+                        reference = parts[0].trim();  // Trim any extra spaces around the main receipt number
+
+                        if (parts.length > 1) {
+                            // Trim any extra spaces around the second part (disbursement fee part)
+                            String potentialPercentage = parts[1].trim();
+
+                            // Check if the second part contains a "%" symbol
+                            if (potentialPercentage.contains("%")) {
+                                // Remove the "%" and parse the remaining numeric value
+                                potentialPercentage = potentialPercentage.replace("%", "").trim();
+                            }
+
+                            try {
+                                // Parse the numerical value from the second part
+                                disbursementFeesPercentage = Double.parseDouble(potentialPercentage);
+                            } catch (NumberFormatException e) {
+                                // Handle cases where the value cannot be parsed
+                                System.out.println("Unable to parse disbursement fee percentage: " + potentialPercentage);
+                            }
+                        }
+
+                        // Output the updated reference and disbursement fee percentage
+                        System.out.println("Updated Reference: " + reference);
+                        System.out.println("Disbursement Fees Percentage: " + disbursementFeesPercentage);
+                    }
 
 //                    smsService.sendSingle("0775797299", "This is a repayment");
 
@@ -402,12 +476,46 @@ public class MusoniProcessor {
 
             PastelTransReq pastelTransReq = new PastelTransReq();
 
-            if (AppConstants.LOAN_DEPOSIT.equalsIgnoreCase(typeValue)) {
+            if (AppConstants.LOAN_DEPOSIT.equalsIgnoreCase(typeValue) && transaction.getPaymentDetailData() != null) {
 
                 toAccount =getAccountByOfficeName(officeName );
                 fromAccount= AppConstants.LOAN_BOOK_ACCOUNT_NAME_REP;
                 transactionType = AppConstants.REPAYMENT;
-                reference = "SREP-" + transaction.getId();
+//                reference = "SREP-" + transaction.getId();
+
+                if (!transaction.getPaymentDetailData().getReceiptNumber().isEmpty()) {
+                    reference = transaction.getPaymentDetailData().getReceiptNumber();
+                    double disbursementFeesPercentage = 0.0; // Initialize with a default value
+
+                    // Split by "-" to separate the receipt number and the disbursement fee part
+                    String[] parts = reference.split("-");
+
+                    // Update reference to the left side of the "-" (the main receipt number)
+                    reference = parts[0].trim();  // Trim any extra spaces around the main receipt number
+
+                    if (parts.length > 1) {
+                        // Trim any extra spaces around the second part (disbursement fee part)
+                        String potentialPercentage = parts[1].trim();
+
+                        // Check if the second part contains a "%" symbol
+                        if (potentialPercentage.contains("%")) {
+                            // Remove the "%" and parse the remaining numeric value
+                            potentialPercentage = potentialPercentage.replace("%", "").trim();
+                        }
+
+                        try {
+                            // Parse the numerical value from the second part
+                            disbursementFeesPercentage = Double.parseDouble(potentialPercentage);
+                        } catch (NumberFormatException e) {
+                            // Handle cases where the value cannot be parsed
+                            System.out.println("Unable to parse disbursement fee percentage: " + potentialPercentage);
+                        }
+                    }
+
+                    // Output the updated reference and disbursement fee percentage
+                    System.out.println("Updated Reference: " + reference);
+                    System.out.println("Disbursement Fees Percentage: " + disbursementFeesPercentage);
+                }
 
 //                    smsService.sendSingle("0775797299", "This is a repayment");
 

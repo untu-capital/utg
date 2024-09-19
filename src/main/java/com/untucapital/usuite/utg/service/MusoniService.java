@@ -54,6 +54,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -177,7 +178,7 @@ public class MusoniService {
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
             pastelTransReqList = musoniProcessor.setSavingsAccountsPastelFields(transactions);
-            if(pastelTransReqList.size() ==0){
+            if(pastelTransReqList.isEmpty()){
                 continue;
             }
             log.info("Pastel Trans Request: {}",pastelTransReqList);
@@ -356,7 +357,9 @@ public class MusoniService {
 
 //            @Scheduled(cron = "0 0 * * * ?")
 //@Scheduled(cron = "0 0 0 * * ?")
-    public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
+//@Scheduled(cron = "0 */30 * * * ?") // Every 30 minutes
+
+public void getLoansByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
 
 //        Long timestamp = MusoniUtils.getUnixTimeMinus1Hour();
         Long timestamp = MusoniUtils.getUnixTimeMinusDays();
@@ -383,7 +386,10 @@ public class MusoniService {
                 phone_number = client.getMobileNo();
                 phone_number = "0775797299";
             }
-//            String officeName = pageItem.getOfficeName();
+
+            String reminderSms = repaymentSchedule(phone_number, String.valueOf(loanId));//            Reminder SMS
+
+            String parSms = repaymentSchedule(phone_number, String.valueOf(loanId));//            PAR SMS notification
 
             //Get all transactions for the pageItem
             transactions = restClient.getTransactions(loanId,timestamp);
@@ -395,9 +401,10 @@ public class MusoniService {
             log.info("Transactions with Repayment or Disbursement: {}", transactions.toString());
 
             pastelTransReqList = musoniProcessor.setPastelFields(transactions);
-            if(pastelTransReqList.size() ==0){
+            if(pastelTransReqList.isEmpty()){
                 continue;
             }
+
             log.info("Pastel Trans Request: {}",pastelTransReqList);
             for(PastelTransReq pastelTransReq: pastelTransReqList){
 
@@ -433,6 +440,8 @@ public class MusoniService {
             }
         }
     }
+
+
 
     //    ToDo: Get Required information from the loan returned
     public String repaymentSchedule(String phone_number, String loanAccount) throws ParseException {
@@ -1108,8 +1117,9 @@ public class MusoniService {
     }
 
 
-    public String getClientByDateOfBirth(String dob) {
-        String response = restClient.getClientByDateOfBirth(dob);
+    @Scheduled(cron = "0 0 10 * * ?")
+    public String getClientByDateOfBirth() {
+        String response = restClient.getClientByDateOfBirth();
 
         // Parse the response to extract the client ID
         ObjectMapper mapper = new ObjectMapper();
@@ -1129,73 +1139,143 @@ public class MusoniService {
                 // Send birthday message
                 smsService.sendSingle(mobileNo, "Happy Birthday " + firstName + "! Wishing you a fantastic day filled with joy and success. Thank you for being a valued part of Untu Capital.");
 
-                return "Birthday message sent to " + firstName + " " + lastName + " (" + mobileNo + ")";
             } else {
-                return "No clients found with the given date of birth.";
             }
         } catch (Exception e) {
             log.error("Error parsing client data or sending SMS: ", e);
-            return "Failed to process client data.";
         }
+        return response;
     }
 
-    public List<String> getEligibleLoans(int loanStatus, double loanAmount, int dayInArrears) {
+
+    public List<FilteredLoans> getEligibleLoans(int loanStatus, double loanAmount, int dayInArrears) {
         // Get all loans based on filter
         String response = restClient.getLoansByFilter(loanStatus, loanAmount, dayInArrears);
         JSONObject jsonResponse = new JSONObject(response);
         JSONArray loans = jsonResponse.getJSONArray("pageItems");
+        log.info("loan size: {}", loans.length());
 
-        List<String> eligibleLoans = new ArrayList<>();
+        List<FilteredLoans> eligibleLoans = new ArrayList<>();
 
         // Loop through each loan account
-        for (int i = 0; i < loans.length(); i++) {
+        late: for (int i = 0; i < loans.length(); i++) {
             String accountNo = loans.getJSONObject(i).getString("accountNo");
 
+            String clientName = "";
+            String clientMobile = "";
+            String officeName = "";
+            String loanOfficerName = "";
+            Double principal = 0.0;
+            int totalRepayments = 0;
+
             // Get repayment schedule for the account
-            String repaymentScheduleResponse = String.valueOf(restClient.getRepaymentSchedule(accountNo));
+            var repaymentScheduleResponse = restClient.getRepaymentSchedule(accountNo);
+            log.info("repaymentScheduleResponse: {}", repaymentScheduleResponse);
+
             JSONObject repaymentSchedule = new JSONObject(repaymentScheduleResponse);
-            JSONArray periods = repaymentSchedule.getJSONObject("repaymentSchedule").getJSONArray("periods");
+            log.info("repaymentSchedule: {}", repaymentSchedule);
 
-            int totalRepayments = repaymentSchedule.getInt("numberOfRepayments");
-            int periodsWithRepayment = 0;
-            boolean lateRepaymentFound = false;
+            Integer daysInArrears = -1; // Default to -1 if not present
 
-            // Loop through each period in the repayment schedule
-            for (int j = 0; j < periods.length(); j++) {
-                JSONObject period = periods.getJSONObject(j);
-                String obligationsMetOnDate = period.optString("obligationsMetOnDate", null);
-                String dueDate = period.getJSONArray("dueDate").toString(); // Convert dueDate to a date format as needed
+//            if (accountNo.equalsIgnoreCase("000031181")){
+//                log.info("daysInArrears: {}",daysInArrears);
+//            }
 
-                // Check if obligationsMetOnDate exists and is within dueDate
-                if (obligationsMetOnDate != null) {
-                    periodsWithRepayment++;
+            if (repaymentSchedule.has("summary")) {
+                JSONObject summary = repaymentSchedule.getJSONObject("summary");
+                if (summary.has("daysInArrears")) {
+                    daysInArrears = summary.getInt("daysInArrears");
+                    log.info("days: {}", daysInArrears);
+                } else {
+                    log.info("No 'daysInArrears' field in the summary.");
+                }
+            } else {
+                log.info("No 'summary' field in repaymentSchedule.");
+            }
 
-                    // Check if obligationsMetOnDate is more than 30 days after dueDate
-                    if (isMoreThan30DaysLate(dueDate, obligationsMetOnDate)) {
-                        lateRepaymentFound = true;
-                        break;
+
+            if (daysInArrears == -1 || daysInArrears < 10) {
+                JSONArray periods = repaymentSchedule.getJSONObject("repaymentSchedule").getJSONArray("periods");
+                log.info("periods: {}", periods);
+
+                clientName = repaymentSchedule.getString("clientName");
+
+                String clientId = String.valueOf(repaymentSchedule.getInt("clientId"));
+                Client musoniClient = restClient.getClientById(clientId);
+                if (musoniClient != null) {
+                    clientMobile = musoniClient.getMobileNo();
+                }
+                officeName = repaymentSchedule.getString("officeName");
+                loanOfficerName = repaymentSchedule.getString("loanOfficerName");
+                principal = repaymentSchedule.getDouble("principal");
+
+                var loanCounter = repaymentSchedule.getInt("loanCounter");
+                totalRepayments = repaymentSchedule.getInt("numberOfRepayments");
+                int periodsWithRepayment = 0;
+                log.info("Period size: {}", periods.length());
+
+                if (loanCounter <= 1) {
+                    // Loop through each period in the repayment schedule
+                    for (int j = 0; j < periods.length(); j++) {
+                        boolean lateRepaymentFound = true;
+                        JSONObject period = periods.getJSONObject(j);
+                        String obligationsMetOnDateStr = period.optString("obligationsMetOnDate", null);
+                        JSONArray dueDateArray = period.getJSONArray("dueDate");
+
+                        // Convert dueDateArray to LocalDate
+                        LocalDate dueDate = LocalDate.of(dueDateArray.getInt(0), dueDateArray.getInt(1), dueDateArray.getInt(2));
+
+                        // Check if obligationsMetOnDate exists and parse it
+                        if (obligationsMetOnDateStr != null) {
+                            periodsWithRepayment++;
+
+                            log.info("periodsWithRepayment: {}", periodsWithRepayment);
+
+                            // Check if the date is in array format [2024,4,26]
+                            if (obligationsMetOnDateStr.startsWith("[") && obligationsMetOnDateStr.endsWith("]")) {
+                                // Remove square brackets and split the string into year, month, and day
+                                String[] dateParts = obligationsMetOnDateStr.substring(1, obligationsMetOnDateStr.length() - 1).split(",");
+                                int year = Integer.parseInt(dateParts[0].trim());
+                                int month = Integer.parseInt(dateParts[1].trim());
+                                int day = Integer.parseInt(dateParts[2].trim());
+
+                                // Convert to LocalDate
+                                LocalDate obligationsMetOnDate = LocalDate.of(year, month, day);
+
+                                // Use helper function to check if repayment is more than 30 days late
+                                if (isMoreThan30DaysLate(dueDate, obligationsMetOnDate) || (periods.length()-1 <= totalRepayments/2) ) {
+                                    log.info("skip account: {}", accountNo);
+                                    continue late; // No need to check further periods for this loan
+                                }
+                            }
+                        }
                     }
                 }
-            }
 
-            // Calculate percentage of repayment periods met
-            double repaymentPercentage = ((double) periodsWithRepayment / totalRepayments) * 100;
-
-            // Add to eligible loans if 50% or more repayments made and no late repayments found
-            if (repaymentPercentage >= 50 && !lateRepaymentFound) {
-                eligibleLoans.add(accountNo);
+            } else {
+                continue;
             }
+            // If there are repayments and no late repayment was found, add the loan to the eligible list
+            FilteredLoans loan = new FilteredLoans();
+            loan.setAccountNo(accountNo);  // Assuming FilteredLoans has a field for accountNo
+            loan.setClientName(clientName);  // Assuming FilteredLoans has a field for clientName
+            loan.setClientMobile(clientMobile);  // Assuming FilteredLoans has a field for clientMobile
+            loan.setOfficerName(officeName);  // Assuming FilteredLoans has a field for officeName
+            loan.setLoanOfficerName(loanOfficerName);  // Assuming FilteredLoans has a field for loanOfficerName
+            loan.setPrincipal(String.valueOf(principal));  // Assuming FilteredLoans has a field for principal
+            loan.setNumberOfRepayments(String.valueOf(totalRepayments));  // Assuming FilteredLoans has a field for numberOfRepayments
+            loan.setDaysInArrears(String.valueOf(daysInArrears));  // Assuming FilteredLoans has a field for daysInArrears
+            eligibleLoans.add(loan); // Add the loan to eligible loans
         }
 
         return eligibleLoans;
     }
 
     // Helper function to check if obligationsMetOnDate is more than 30 days after dueDate
-    private boolean isMoreThan30DaysLate(String dueDate, String obligationsMetOnDate) {
-        LocalDate due = LocalDate.parse(dueDate); // Assuming dueDate is parsed to LocalDate
-        LocalDate metOn = LocalDate.parse(obligationsMetOnDate); // Assuming obligationsMetOnDate is parsed to LocalDate
-        return ChronoUnit.DAYS.between(due, metOn) >= 30;
+    private boolean isMoreThan30DaysLate(LocalDate dueDate, LocalDate obligationsMetOnDate) {
+        return ChronoUnit.DAYS.between(dueDate, obligationsMetOnDate) > 30;
     }
+
 
 
 }

@@ -740,12 +740,12 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         return savingsAccountId;
     }
 
-    public String getClientByDateOfBirth(String dob){
-        LocalDate localDate = LocalDate.parse(dob);
+    public String getClientByDateOfBirth(){
+        LocalDate localDate = LocalDate.now();
         final String s = """
                 {
                     "filterRulesExpression": {
-                        "condition": "OR",
+                        "condition": "AND",
                         "rules": [
                             {
                                 "id": "dateOfBirth",
@@ -754,7 +754,15 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
                                 "input": "date",
                                 "operator": "equal",
                                 "value": %s
-                            }
+                            },
+                             {
+                                "id": "status",
+                                "field": "status",
+                                "type": "integer",
+                                "input": "select",
+                                "operator": "equal",
+                                "value": 300
+                             }
                         ],
                         "valid": true
                     },
@@ -793,7 +801,7 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
             clientsFilteredResponse = restTemplate.exchange(baseUrl + "datafilters/clients/queries/run-filter", HttpMethod.POST, entity, String.class).getBody();
         }
         catch (JSONException e) {
-            return "{ \"errorMessage\": \"Client with Date of Birth %s not found\"}".formatted(dob);
+            return "{ \"errorMessage\": \"Client with Date of Birth %s not found\"}".formatted(localDate);
         }
         log.info("clientsFilteredResponse: {}",clientsFilteredResponse);
             return clientsFilteredResponse;
@@ -803,7 +811,7 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
     public String getLoansByFilter(int loanStatus, double loanAmount, int dayInArrears){
         loanStatus = 300;
         loanAmount = 10000;
-        dayInArrears = 2000;
+        dayInArrears = 10;
         final String s = """
             {
               "filterRulesExpression": {
@@ -823,14 +831,6 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
                     "type": "double",
                     "input": "select",
                     "operator": "greater",
-                    "value": %s
-                  },
-                  {
-                    "id": "summary",
-                    "field": "daysInArrears",
-                    "type": "double",
-                    "input": "select",
-                    "operator": "less",
                     "value": %s
                   }
                 ]

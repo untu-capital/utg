@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
+import com.untucapital.usuite.utg.dto.FilteredLoans;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
@@ -141,6 +142,13 @@ public class MusoniController {
     @GetMapping("loans/transactions")
     public ResponseEntity <Void> getTransactionsByTimestamp() throws ParseException, JsonProcessingException, AccountNotFoundException {
         musoniService.getLoansByTimestamp();
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("sendAutomatedSms")
+    public ResponseEntity <Void> sendAutomatedSMS() throws ParseException, JsonProcessingException, AccountNotFoundException {
+//        musoniService.sendAutomatedSMS();
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -637,13 +645,23 @@ public class MusoniController {
     @GetMapping("/getClientsByDob/{dob}")
     @Operation(summary = "Get a client by dob (Date Format: YYYY-MM-DD)")
     public String getClientByDateOfBirth(@PathVariable String dob) {
-        return musoniService.getClientByDateOfBirth(dob);
+        return musoniService.getClientByDateOfBirth();
     }
 
     @GetMapping("/getLoansByFilter/{loanStatus}/{loanAmount}/{dayInArrears}")
     @Operation(summary = "Get Filtered loans")
-    public String getLoansByFilter(@PathVariable String loanStatus, @PathVariable String loanAmount, @PathVariable String dayInArrears) {
-        return musoniService.getEligibleLoans(Integer.parseInt(loanStatus), Double.parseDouble(loanAmount), Integer.parseInt(dayInArrears)).toString();
+    public List<FilteredLoans> getLoansByFilter(@PathVariable String loanStatus, @PathVariable String loanAmount, @PathVariable String dayInArrears) {
+
+        // Parse the input parameters
+        int status = Integer.parseInt(loanStatus);
+        double amount = Double.parseDouble(loanAmount);
+        int days = Integer.parseInt(dayInArrears);
+
+        // Call the service to get eligible loans
+        List<FilteredLoans> filteredLoans = musoniService.getEligibleLoans(status, amount, days);
+
+        return filteredLoans;
     }
+
 
 }
