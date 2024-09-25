@@ -23,7 +23,10 @@ import com.itextpdf.layout.property.VerticalAlignment;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.commons.AppConstants;
+import com.untucapital.usuite.utg.dto.MaturedInterestReportDTO;
+import com.untucapital.usuite.utg.dto.client.Client;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.ClientStatementResponse;
+import com.untucapital.usuite.utg.dto.loans.SingleLoan;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionTypeDTO;
@@ -188,9 +191,21 @@ public class LoanStatementPdfGeneratorService {
         List<TransactionDTO> filteredPenaltyTransactions = penaltyTransactions.stream()
                 .filter(penaltyTransaction -> {
                     LocalDate transactionDate = penaltyTransaction.getDate();
+                    String transactionTypeValue = penaltyTransaction.getType().getValue();
+
+                    // Check if it's a penalty transaction
+                    boolean isPenaltyTransaction = transactionTypeValue != null && transactionTypeValue.contains("Penalty fee applied for late repayment");
+
+                    // If it's a penalty transaction, don't filter it by date
+                    if (isPenaltyTransaction) {
+                        return true;
+                    }
+
+                    // Otherwise, filter based on disbursementDate and maturityDate
                     return !transactionDate.isBefore(disbursementDate) && !transactionDate.isAfter(maturityDate);
                 })
                 .collect(Collectors.toList());
+
 
         // Add the filtered penalty transactions to the combined list
         combinedTransactions.addAll(filteredPenaltyTransactions);
@@ -306,6 +321,11 @@ public class LoanStatementPdfGeneratorService {
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
 
+            SingleLoan loan = restClient.getLoanId(String.valueOf(loanId));
+            String clientName = loan.getClientName();
+            String officeName = loan.getOfficeName();
+            Double interestRate = loan.getInterestRatePerPeriod();
+
 
             File imageFile = new ClassPathResource("static/untu-logo.png").getFile();
             ImageData imageData = ImageDataFactory.create(imageFile.getAbsolutePath());
@@ -324,39 +344,54 @@ public class LoanStatementPdfGeneratorService {
             headerTable.addCell(new Cell().add(logo).setBorder(Border.NO_BORDER).setTextAlignment(TextAlignment.RIGHT).setHorizontalAlignment(HorizontalAlignment.CENTER).setVerticalAlignment(VerticalAlignment.MIDDLE));
             headerTable.addCell(new Cell().setBorder(Border.NO_BORDER));
 
+            headerTable.addCell(new Cell(1, 3)
+                    .add(new Paragraph("Untu Capital Limited")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                    .setFontSize(12)).setBorder(Border.NO_BORDER)
+            .add(new Paragraph(officeName + " Branch")
+                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                    .setFontSize(10)));
+
             // Second row for print date and account details
-            headerTable.addCell(new Cell().setBorder(Border.NO_BORDER));
-            Cell accountDetails = new Cell().add(new Paragraph("Print Date")
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                            .setFontSize(10))
-                    .add(new Paragraph(new SimpleDateFormat("dd.MM.yyyy").format(new Date()))
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
-                            .setFontSize(10))
-                    .add(new Paragraph("Account No.")
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                            .setFontSize(10))
-                    .add(new Paragraph(String.format("%08d", loanId)) // Formatting loanId as Account No.
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
-                            .setFontSize(10))
-                    .add(new Paragraph("Interest Rate")
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                            .setFontSize(10))
-                    .add(new Paragraph("9.0%")
-                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
-                            .setFontSize(10))
-                    .setBorder(Border.NO_BORDER)
+            headerTable.addCell(new Cell(1, 3).setBorder(Border.NO_BORDER));
+            Cell accountDetails = new Cell().setBorder(Border.NO_BORDER)
+                    .add(new Table(new float[]{3, 7}) // Table with two columns: 3 for the label, 7 for the value
+                            .addCell(new Cell().add(new Paragraph("Print Date: ")
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER))
+                            .addCell(new Cell().add(new Paragraph(new SimpleDateFormat("dd.MM.yyyy").format(new Date()))
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER)))
+
+                    .add(new Table(new float[]{3, 7}) // Table for Account Name and its value
+                            .addCell(new Cell().add(new Paragraph("Account Name: ")
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER))
+                            .addCell(new Cell().add(new Paragraph(clientName) // Displaying clientName as the value
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER)))
+
+                    .add(new Table(new float[]{3, 7}) // Table for Interest Rate and its value
+                            .addCell(new Cell().add(new Paragraph("Interest Rate: ")
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER))
+                            .addCell(new Cell().add(new Paragraph(String.valueOf(interestRate+"%"))
+                                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
+                                    .setFontSize(10)).setBorder(Border.NO_BORDER)))
                     .setTextAlignment(TextAlignment.LEFT);
+
             headerTable.addCell(accountDetails);
 
+
             // Third row for the account holder name
-//            headerTable.addCell(new Cell(1, 3).add(new Paragraph("TGO Motors (Enard Masikati) Tinango")
+//            headerTable.addCell(new Cell(1, 3).add(new Paragraph(clientName)
 //                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))
 //                    .setFontSize(12)).setBorder(Border.NO_BORDER));
 
             document.add(headerTable);
 
             // Add some space after the header
-            document.add(new Paragraph("\n"));
+//            document.add(new Paragraph("\n"));
 
             // Add Table with width adjustments
             float[] columnWidths = {3, 5, 3, 3, 3}; // Adjust the number of columns and their relative widths
@@ -401,11 +436,34 @@ public class LoanStatementPdfGeneratorService {
             }
 
             // Add Contact Information and Address (Footer)
-            document.add(new Paragraph("\n")); // Add some space before footer
-            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
-                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-                    .setFontSize(10)
-                    .setTextAlignment(TextAlignment.LEFT));
+//            document.add(new Paragraph("\n")); // Add some space before footer
+//            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
+//                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
+//                    .setFontSize(10)
+//                    .setTextAlignment(TextAlignment.LEFT));
+
+
+            // Add the closing balance row
+            String currentDate = new SimpleDateFormat("dd.MM.yyyy").format(new Date());
+
+            table.addCell(new Cell().add(new Paragraph(currentDate)
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+
+            table.addCell(new Cell() // Span across 3 columns for "Closing Balance"
+                    .add(new Paragraph("Closing Balance:")
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+
+            table.addCell(new Cell() // The last balance value in bold
+                    .add(new Paragraph(String.format(" "))
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+
+            table.addCell(new Cell() // The last balance value in bold
+                    .add(new Paragraph(String.format(" "))
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
+
+            table.addCell(new Cell() // The last balance value in bold
+                    .add(new Paragraph(String.format("%.2f", balance))
+                            .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
 
             document.add(new Paragraph("Email: info@untucapital.co.zw | Support: +263 784 558 769")
                     .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
@@ -422,4 +480,75 @@ public class LoanStatementPdfGeneratorService {
             return null;
         }
     }
+
+    public List<MaturedInterestReportDTO> generateMaturedInterestReport(int loanId, int savingsId, int postMaturityFeeId) throws ParseException, JsonProcessingException {
+        List<TransactionDTO> transactions = getCombinedTransactions(loanId, savingsId, postMaturityFeeId);
+        List<MaturedInterestReportDTO> maturedInterestReports = new ArrayList<>();
+
+        try {
+            // Retrieve the loan details
+            SingleLoan loan = restClient.getLoanId(String.valueOf(loanId));
+            String clientName = loan.getClientName();
+            String officeName = loan.getOfficeName();
+            Double interestRate = loan.getInterestRatePerPeriod();
+
+            // Initialize balance
+            double balance = 0.0;
+
+            // Iterate through transactions to calculate matured interest and build the report
+            for (TransactionDTO transaction : transactions) {
+                String transactionType = transaction.getType().getValue();
+                double transactionAmount = transaction.getAmount();
+                LocalDate transactionDate = transaction.getDate(); // Assuming date is in LocalDate format
+
+                if ("5% Penalty fee applied for late repayment".equals(transactionType)) {
+                    // Create a new report entry for each penalty transaction
+                    MaturedInterestReportDTO reportDTO = new MaturedInterestReportDTO();
+                    reportDTO.setTransactionDate(transactionDate);
+                    reportDTO.setTransactionDescription(transactionType);
+                    reportDTO.setDebit(transactionAmount); // Set the debit amount for the report
+
+                    maturedInterestReports.add(reportDTO);
+                }
+            }
+
+            // Aggregate the debit amounts by month and year
+            Map<String, Double> aggregatedDebits = new HashMap<>();
+            for (MaturedInterestReportDTO report : maturedInterestReports) {
+                String monthYearKey = report.getTransactionDate().getYear() + "-" + report.getTransactionDate().getMonthValue(); // Format: YYYY-MM
+                aggregatedDebits.put(monthYearKey, aggregatedDebits.getOrDefault(monthYearKey, 0.0) + report.getDebit());
+            }
+
+            // Create final result list
+            List<MaturedInterestReportDTO> finalReports = new ArrayList<>();
+            for (Map.Entry<String, Double> entry : aggregatedDebits.entrySet()) {
+                String[] keyParts = entry.getKey().split("-");
+                MaturedInterestReportDTO finalReport = new MaturedInterestReportDTO();
+                finalReport.setTransactionDate(LocalDate.of(Integer.parseInt(keyParts[0]), Integer.parseInt(keyParts[1]), 1)); // Set the date to the first of the month
+                finalReport.setTransactionDescription("Total Interest for the month");
+                finalReport.setDebit(entry.getValue()); // Set total interest as the debit
+                finalReport.setCredit(0.00); // Set credit to 0 since we're aggregating debits
+                finalReports.add(finalReport);
+            }
+
+            // Add closing balance report
+            MaturedInterestReportDTO closingBalanceReport = new MaturedInterestReportDTO();
+            closingBalanceReport.setTransactionDate(LocalDate.now());  // Set the current date
+            closingBalanceReport.setTransactionDescription("Closing Balance");
+            closingBalanceReport.setDebit(0.00);
+            closingBalanceReport.setCredit(0.00);
+            closingBalanceReport.setBalance(balance);  // The final balance after all transactions
+            finalReports.add(closingBalanceReport);
+
+            // Return the aggregated list of matured interest reports as JSON
+            return finalReports;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;  // Handle the exception (you can return an error response if necessary)
+        }
+    }
+
+
+
 }
