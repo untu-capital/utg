@@ -24,6 +24,7 @@ import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
 import com.untucapital.usuite.utg.model.transactions.TransactionInfo;
 import com.untucapital.usuite.utg.model.transactions.Transactions;
+import com.untucapital.usuite.utg.model.transactions.interim.dto.PmfSummaryDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionTypeDTO;
@@ -198,7 +199,27 @@ public class RestClient {
         }
     }
 
-//    private List<TransactionDTO> transactions;
+    public LocalDate getExpectedFirstRepaymentDate(int loanId) {
+        SingleLoan loan = getLoanId(String.valueOf(loanId));
+
+        log.info("expectedFirstRepaymentDate: {}", loan);
+
+        // Extract the expected first repayment date from the timeline
+        int[] firstRepaymentDateArray = loan.getExpectedFirstRepaymentOnDate();
+
+        if (firstRepaymentDateArray != null && firstRepaymentDateArray.length == 3) {
+            // Convert the array of integers to LocalDate
+            LocalDate firstRepaymentDate = LocalDate.of(firstRepaymentDateArray[0], firstRepaymentDateArray[1], firstRepaymentDateArray[2]);
+            return firstRepaymentDate;
+        } else {
+            // Handle the case where the first repayment date is not available or in an unexpected format
+            log.warn("Expected first repayment date is not available or is in an unexpected format.");
+            return null;
+        }
+    }
+
+
+    //    private List<TransactionDTO> transactions;
 public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate, List<SavingsTransactionDTO> transactions) {
     Optional<TransactionDTO> transactionOpt = transactions.stream()
             // Convert SavingsTransactionDTO to TransactionDTO before filtering
@@ -310,37 +331,91 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         List<TransactionDTO> transactions = new ArrayList<>();
 
         try {
-            String transactionsString = restTemplate.exchange(baseUrl + "loans/" + loanId + "?associations=transactions", HttpMethod.GET, entity, String.class).getBody();
+            String transactionsString = restTemplate.exchange(baseUrl + "loans/" + loanId + "?associations=charges", HttpMethod.GET, entity, String.class).getBody();
             log.info("Transactions for loan ID {}: {}", loanId, transactionsString);
 
-            // Map the "transactions" array from the JSON response to a list of TransactionDTO objects
+            // Parse the JSON response
             JsonNode rootNode = objectMapper.readTree(transactionsString);
-            JsonNode transactionsNode = rootNode.path("transactions");
+            JsonNode chargesNode = rootNode.path("charges");
+            JsonNode disbursedNode = rootNode.path("summary");
+            JsonNode timelineNode = rootNode.path("timeline");
 
-            if (transactionsNode.isArray()) {
-                transactions = objectMapper.readValue(transactionsNode.toString(), new TypeReference<List<TransactionDTO>>() {});
+            log.info("chargesNode: {}", chargesNode);
+
+            // Handle charges
+            if (chargesNode.isArray()) {
+                transactions = objectMapper.readValue(chargesNode.toString(), new TypeReference<List<TransactionDTO>>() {});
             }
 
-            // Filter out transactions where type.value is "Disbursement"
+            // Modify the transactions for charges
             transactions = transactions.stream()
-                    .filter(transaction -> !AppConstants.LOAN_DISBURSEMENT.equals(transaction.getType().getValue()))
                     .peek(transaction -> {
-                        // Rename 'Accrual' to 'Fee Applied'
-                        if (AppConstants.LOAN_ACCRUAL.equals(transaction.getType().getValue())) {
-                            transaction.getType().setValue(AppConstants.FEE_APPLIED);
+                        if (transaction.getLoanSummary() == null) { // This is a charge, not a summary
+                            // Set date from charge's dueDate
+                            chargesNode.forEach(charge -> {
+                                if (charge.has("dueDate") && charge.has("id") && transaction.getId() == charge.get("id").asInt()) {
+                                    // Set the date from dueDate
+                                    JsonNode dueDateNode = charge.get("dueDate");
+                                    if (dueDateNode.isArray() && dueDateNode.size() == 3) {
+                                        LocalDate dueDate = LocalDate.of(
+                                                dueDateNode.get(0).asInt(),
+                                                dueDateNode.get(1).asInt(),
+                                                dueDateNode.get(2).asInt()
+                                        );
+                                        transaction.setDate(dueDate);
+                                    }
+
+                                    // Set the transactionType to "PMF " + name
+                                    if (charge.has("name")) {
+                                        String chargeName = charge.get("name").asText();
+                                        TransactionTypeDTO transactionType = new TransactionTypeDTO();
+                                        transactionType.setValue("Charges " + chargeName);
+                                        transaction.setType(transactionType);
+                                    }
+                                }
+                            });
                         }
                     })
                     .collect(Collectors.toList());
 
-            log.info("Filtered and modified transactions list: {}", transactions);
+            // Handle the loan summary (disbursement details)
+            if (!disbursedNode.isMissingNode() && !timelineNode.isMissingNode()) {
+                PmfSummaryDTO loanSummary = objectMapper.readValue(disbursedNode.toString(), PmfSummaryDTO.class);
+
+                // Create a special TransactionDTO to hold the loan summary
+                TransactionDTO summaryTransaction = new TransactionDTO();
+                summaryTransaction.setLoanSummary(loanSummary);
+
+                // Set the date from actualDisbursementDate in the timeline
+                if (timelineNode.has("actualDisbursementDate")) {
+                    JsonNode actualDisbursementDateNode = timelineNode.get("actualDisbursementDate");
+                    if (actualDisbursementDateNode.isArray() && actualDisbursementDateNode.size() == 3) {
+                        LocalDate actualDisbursementDate = LocalDate.of(
+                                actualDisbursementDateNode.get(0).asInt(),
+                                actualDisbursementDateNode.get(1).asInt(),
+                                actualDisbursementDateNode.get(2).asInt()
+                        );
+                        summaryTransaction.setDate(actualDisbursementDate);
+                    }
+                }
+
+                // Set the transaction type to "PMF Disbursement" or any other relevant value
+                TransactionTypeDTO transactionType = new TransactionTypeDTO();
+                transactionType.setValue("Charges");
+                summaryTransaction.setType(transactionType);
+
+                // Add the summary transaction to the list of transactions
+                transactions.add(summaryTransaction);
+            }
+
+            log.info("Modified transactions list: {}", transactions);
+
         } catch (Exception e) {
             log.error("Exception: {}", e.getMessage());
         }
 
         return transactions;
     }
-
-
 
 
     public List<SavingsAccountsTransactions> getSavingsAccountsTransactions(int loanId, Long timestamp) throws ParseException, ParseException {

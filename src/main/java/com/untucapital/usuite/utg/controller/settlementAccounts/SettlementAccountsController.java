@@ -2,6 +2,9 @@ package com.untucapital.usuite.utg.controller.settlementAccounts;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.itextpdf.io.IOException;
+import com.untucapital.usuite.utg.dto.LoanIdsRequest;
+import com.untucapital.usuite.utg.dto.MaturedInterestReportDTO;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
@@ -15,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -100,6 +105,38 @@ public class SettlementAccountsController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(bis.readAllBytes());
     }
+
+    @PostMapping("/generateMaturedInterestsReport")
+    public ResponseEntity<List<MaturedInterestReportDTO>> generateMaturedInterestsReport(
+            @RequestBody LoanIdsRequest request) throws ParseException, JsonProcessingException, IOException {
+
+        // Extract loanIds from the request object
+        List<String> loanIds = request.getLoanIds();
+
+        // Initialize a list to store matured interest reports for all loan IDs
+        List<MaturedInterestReportDTO> allReports = new ArrayList<>();
+
+        // Loop through each loanId and generate the matured interest report
+        for (String loanId : loanIds) {
+            ClientAccounts clientAccounts = musoniService.getClientAccountsByLoanAcc(loanId);
+            int savingsId = Integer.parseInt(clientAccounts.getSettlementAccount());
+            int postMaturityFeeId = Integer.parseInt(clientAccounts.getPostMaturityFee());
+
+            // Generate the matured interest report and add it to the list
+            List<MaturedInterestReportDTO> loanReport = loanStatementPdfGeneratorService.generateMaturedInterestReport(
+                    Integer.parseInt(clientAccounts.getLoanId()), savingsId, postMaturityFeeId);
+
+            // Add each report to the master list
+            allReports.addAll(loanReport);
+        }
+
+        // Return the final result as a JSON response
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(allReports);
+    }
+
 
 
 

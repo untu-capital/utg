@@ -254,47 +254,102 @@ public class MusoniService {
 
     public List<TransactionDTO> processLoanRepaymentSchedule(List<Map<String, Object>> repaymentSchedule) {
         List<TransactionDTO> filteredResults = new ArrayList<>();
-        double cumulativeOutstanding = 0.0;
+        double cumulativeOutstanding = 0.0;  // Track the outstanding balance across periods
+        LocalDate lastPenaltyDate = null;    // Track the last date a penalty was applied
+        LocalDate now = LocalDate.now();     // Current date for calculations
+        LocalDate lastProcessedDate = null;  // Track the date of the last processed entry
 
+        // First, process all the existing transactions in the repayment schedule
         for (Map<String, Object> entry : repaymentSchedule) {
+            // Get total outstanding for each entry
             String totalOutstandingStr = entry.get("totalOutstanding") != null ? entry.get("totalOutstanding").toString() : "0.0";
             double totalOutstanding = totalOutstandingStr.isEmpty() ? 0.0 : Double.parseDouble(totalOutstandingStr);
 
+            // Accumulate the outstanding amount over time
             cumulativeOutstanding += totalOutstanding;
 
-            log.info("date: {}", entry.get("date").toString());
-
+            // Parse the date of the transaction
             LocalDate date = entry.get("date") != null ? LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER) : null;
 
+            // Determine the paidBy date or set it to now if unpaid
             LocalDate paidBy = (entry.get("paidBy") != null && !entry.get("paidBy").toString().isEmpty())
                     ? LocalDate.parse(entry.get("paidBy").toString(), DATE_FORMATTER)
-                    : (LocalDate.parse(entry.get("date").toString(), DATE_FORMATTER).isBefore(LocalDate.now()) ? LocalDate.now() : null);
+                    : (date != null && date.isBefore(now) ? LocalDate.now() : null);
 
-            if (cumulativeOutstanding > 0.0 && paidBy != null && (ChronoUnit.DAYS.between(date, paidBy) > 21 || ChronoUnit.DAYS.between(date, LocalDate.now()) > 21)) {
-                // Calculate new date (date + 21 days)
-                LocalDate newDate = date.plusDays(21);
-                newDate = newDate.with(TemporalAdjusters.lastDayOfMonth());
+            // Skip invalid entries
+            if (date == null || date.isAfter(now)) {
+                continue;
+            }
 
-                // Calculate the penalty fee (5% of cumulativeOutstanding)
-                double penaltyFee = cumulativeOutstanding * 0.05; // 5% monthly rate
+            lastProcessedDate = date;  // Track the last date processed in the schedule
 
-                // Create a new TransactionDTO object
-                TransactionDTO transactionDTO = new TransactionDTO();
-                transactionDTO.setDate(newDate);
-                transactionDTO.setAmount(penaltyFee);
+            // Calculate penalties only for overdue periods
+            long overdueDays = paidBy != null ? ChronoUnit.DAYS.between(date, paidBy) : ChronoUnit.DAYS.between(date, now);
 
-                // Create and set the TransactionTypeDTO object
-                TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
-                transactionTypeDTO.setValue(AppConstants.PENATLY_FEE);
-                transactionDTO.setType(transactionTypeDTO);
+            if (overdueDays > 21) {
+                LocalDate endOfMonth = date.with(TemporalAdjusters.lastDayOfMonth());
 
-                // Add the transactionDTO to the filtered results
-                filteredResults.add(transactionDTO);
+                // Check if a penalty was already applied for this month
+                if (lastPenaltyDate == null || !endOfMonth.equals(lastPenaltyDate)) {
+                    lastPenaltyDate = endOfMonth;
+
+                    // Calculate penalty based on the cumulative outstanding balance for this period
+                    double penaltyFee = cumulativeOutstanding * 0.05; // 5% of cumulative outstanding
+
+                    if (penaltyFee > 0) {
+                        // Create a new TransactionDTO for the penalty
+                        TransactionDTO transactionDTO = new TransactionDTO();
+                        transactionDTO.setDate(endOfMonth);
+                        transactionDTO.setAmount(penaltyFee);
+
+                        // Set the penalty type
+                        TransactionTypeDTO transactionTypeDTO = new TransactionTypeDTO();
+                        transactionTypeDTO.setValue(AppConstants.PENATLY_FEE);
+                        transactionDTO.setType(transactionTypeDTO);
+
+                        // Add the penalty to the filtered results
+                        filteredResults.add(transactionDTO);
+                    }
+                }
+            }
+        }
+
+        // Now we handle the calculation of interest and penalties for the months after the last processed date
+        if (lastProcessedDate != null && lastProcessedDate.isBefore(now)) {
+            LocalDate nextMonth = lastProcessedDate.with(TemporalAdjusters.firstDayOfNextMonth()); // Move to the first day of next month
+
+            // Keep processing each month until the current month
+            while (nextMonth.isBefore(now.with(TemporalAdjusters.firstDayOfNextMonth()))) {
+                LocalDate endOfMonth = nextMonth.with(TemporalAdjusters.lastDayOfMonth());
+
+                // Calculate penalty fee for the end of the month
+                double penaltyFee = cumulativeOutstanding * 0.05; // 5% of cumulative outstanding
+                if (penaltyFee > 0) {
+                    // Create a new TransactionDTO for the penalty
+                    TransactionDTO penaltyDTO = new TransactionDTO();
+                    penaltyDTO.setDate(endOfMonth);
+                    penaltyDTO.setAmount(penaltyFee);
+
+                    // Set the penalty type
+                    TransactionTypeDTO penaltyTypeDTO = new TransactionTypeDTO();
+                    penaltyTypeDTO.setValue(AppConstants.PENATLY_FEE);
+                    penaltyDTO.setType(penaltyTypeDTO);
+
+                    // Add the penalty to the filtered results
+                    filteredResults.add(penaltyDTO);
+                    log.info("penaltyDto: {}", penaltyDTO);
+                }
+
+                // Move to the next month
+                nextMonth = nextMonth.plusMonths(1);
             }
         }
 
         return filteredResults;
     }
+
+
+
 
     public Object getLoanRepaymentSchedule(String loanAccount) throws JsonProcessingException {
 //        String repaymentScheduleLoan = String.valueOf(restClient.getRepaymentSchedule(loanAccount));

@@ -84,6 +84,7 @@ public class ClientLoanService {
             case "gokwe":
             case "lupane":
             case "binga":
+            case "chegutu":
             case "kadoma":
                 return "Gokwe";
 
