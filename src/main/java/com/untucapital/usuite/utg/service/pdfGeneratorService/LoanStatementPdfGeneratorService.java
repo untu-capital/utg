@@ -232,6 +232,7 @@ public class LoanStatementPdfGeneratorService {
                 })
                 .collect(Collectors.toList());
 
+
         // Add the filtered penalty transactions to the combined list
         combinedTransactions.addAll(filteredPenaltyTransactions);
 
