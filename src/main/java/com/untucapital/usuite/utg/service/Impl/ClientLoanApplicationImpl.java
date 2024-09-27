@@ -238,4 +238,11 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
         return clientLoanList;
     }
 
+    @Override
+    public List<ClientLoan> getLoansByUsername() {
+        List<ClientLoan> clientLoans = clientRepository.findClientLoansByUsername();
+
+        return clientLoans;
+    }
+
 }

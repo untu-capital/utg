@@ -38,4 +38,7 @@ public interface ClientLoanApplication {
     List<ClientLoan> getRecentClientLoans();
 
     List<ClientLoan> getActiveLoans(String userId);
+
+    List<ClientLoan> getLoansByUsername();
+
 }

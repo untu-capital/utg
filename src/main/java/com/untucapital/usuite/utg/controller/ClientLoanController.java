@@ -92,6 +92,13 @@ public class ClientLoanController {
 
     }
 
+    @GetMapping("getLoansWhereUserExistsInMusoni")
+    @Operation(summary = "Get loans by username where username is an Integer")
+    public List<ClientLoan> getLoansWhereUserExistsInMusoni() {
+        return clientLoanApplication.getLoansByUsername();
+    }
+
+
 
     @GetMapping("userByPhone/{phone}")
     @Operation(summary = "get a new client loan application")

@@ -4,6 +4,8 @@ import com.untucapital.usuite.utg.model.ClientLoan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -89,4 +91,9 @@ public interface ClientRepository extends JpaRepository<ClientLoan, String> {
 
 
     Page<ClientLoan> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    @Query(value = "SELECT cl.* FROM client_loans cl JOIN users u ON cl.user_id = u.id WHERE u.username REGEXP '^[0-9]+$'", nativeQuery = true)
+    List<ClientLoan> findClientLoansByUsername();
+
+
 }

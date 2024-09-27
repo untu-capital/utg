@@ -145,6 +145,25 @@ public class LoanStatementPdfGeneratorService {
         // Get transactions by loan ID
         List<TransactionDTO> loanTransactions = musoniService.getTransactionsByLoanId(loanId);
         log.info("loanTransactions: {}", loanTransactions);
+
+//
+//        double principalDisbursed = 0.0;
+//        for (var loanTransaction : loanTransactions){
+//            if (loanTransaction.getType().getDisbursement()){
+//                principalDisbursed = loanTransaction.getAmount();
+//            }
+//        }
+//        log.info("principalDisbursed: {}", principalDisbursed);
+//
+//        double totalInterest = 0.0;
+//        for (var loanTransaction: loanTransactions) {
+//            if (Objects.equals(loanTransaction.getType().getValue(), "Accrual")){
+//                totalInterest += loanTransaction.getAmount();
+//            }
+//        }
+//        log.info("totalInterest: {}", totalInterest);
+//
+
         combinedTransactions.addAll(loanTransactions);
 
         // Get the disbursement date
@@ -183,7 +202,28 @@ public class LoanStatementPdfGeneratorService {
         List<TransactionDTO> postMaturityFeeTransactions = musoniService.getTransactionsByPostMaturityFeeId(postMaturityFeeId);
         log.info("postMaturityFeeTransactions: {}", postMaturityFeeTransactions);
 
-        // Set default values for transactions where amount is 0.0
+        double principalDisbursed = 0.0;
+        for (var loanTransaction : loanTransactions){
+            if (loanTransaction.getType().getDisbursement()){
+                principalDisbursed = loanTransaction.getAmount();
+            }
+        }
+        log.info("principalDisbursed: {}", principalDisbursed);
+
+        final double[] totalInterest = {0.0};
+        for (var loanTransaction: loanTransactions) {
+            if (Objects.equals(loanTransaction.getType().getValue(), "Accrual")){
+                totalInterest[0] += loanTransaction.getAmount();
+            }
+        }
+        log.info("totalInterest: {}", totalInterest[0]);
+
+        // Track the principal disbursed from the loan summary (assuming it's the same for all transactions)
+        if (!postMaturityFeeTransactions.isEmpty() && postMaturityFeeTransactions.get(0).getLoanSummary() != null) {
+            principalDisbursed = postMaturityFeeTransactions.get(0).getLoanSummary().getPrincipalDisbursed();
+        }
+
+        // Set default values for transactions where amount is 0.0 and apply the duplum rule
         for (TransactionDTO transaction : postMaturityFeeTransactions) {
             if (transaction.getAmount() == 0.0) {
                 // Set amount to principalDisbursed
@@ -213,17 +253,48 @@ public class LoanStatementPdfGeneratorService {
         List<TransactionDTO> penaltyTransactions = musoniService.getAndProcessLoanRepayment(String.valueOf(loanId));
         log.info("penaltyTransactions: {}", penaltyTransactions);
 
-        // Filter the penalty transactions by date
+        // Assuming penalty transactions have access to loan summary to get principalDisbursed
+        if (!penaltyTransactions.isEmpty() && penaltyTransactions.get(0).getLoanSummary() != null) {
+            principalDisbursed = penaltyTransactions.get(0).getLoanSummary().getPrincipalDisbursed();
+        }
+
+        // Filter the penalty transactions by date and apply the duplum rule
+        double finalPrincipalDisbursed = principalDisbursed;
         List<TransactionDTO> filteredPenaltyTransactions = penaltyTransactions.stream()
                 .filter(penaltyTransaction -> {
                     LocalDate transactionDate = penaltyTransaction.getDate();
                     String transactionTypeValue = penaltyTransaction.getType().getValue();
 
+//                    double principalDisbursed = 0.0;
+//                    for (var loanTransaction : loanTransactions){
+//                        if (loanTransaction.getType().getDisbursement()){
+//                            principalDisbursed = loanTransaction.getAmount();
+//                        }
+//                    }
+//                    log.info("principalDisbursed: {}", principalDisbursed);
+//
+//                    double totalInterest = 0.0;
+//                    for (var loanTransaction: loanTransactions) {
+//                        if (Objects.equals(loanTransaction.getType().getValue(), "Accrual")){
+//                            totalInterest += loanTransaction.getAmount();
+//                        }
+//                    }
+//                    log.info("totalInterest: {}", totalInterest);
+
+
+
                     // Check if it's a penalty transaction
                     boolean isPenaltyTransaction = transactionTypeValue != null && transactionTypeValue.contains("Penalty fee applied for late repayment");
 
-                    // If it's a penalty transaction, don't filter it by date
+                    // If it's a penalty transaction, apply the duplum rule
                     if (isPenaltyTransaction) {
+                        // Apply the duplum rule: stop interest accrual once total interest equals the principal
+                        if (totalInterest[0] >= finalPrincipalDisbursed) {
+                            log.info("In duplum rule reached: Total interest {} is greater than or equal to principal {}", totalInterest[0], finalPrincipalDisbursed);
+                            return false; // Stop adding further penalty transactions when the duplum rule is triggered
+                        }
+
+                        totalInterest[0] += penaltyTransaction.getAmount(); // Add the penalty amount to the total interest
                         return true;
                     }
 
@@ -234,6 +305,9 @@ public class LoanStatementPdfGeneratorService {
 
         // Add the filtered penalty transactions to the combined list
         combinedTransactions.addAll(filteredPenaltyTransactions);
+
+        log.info("combinedTransactions after penalty transactions: {}", combinedTransactions);
+
 
         // Optionally, sort the combined transactions by date or another criterion
         combinedTransactions.sort(Comparator.comparing(TransactionDTO::getDate));
@@ -434,6 +508,7 @@ public class LoanStatementPdfGeneratorService {
 
             // Iterate through transactions and populate the table
             for (TransactionDTO transaction : transactions) {
+
                 table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
 
                 String transactionType = transaction.getType().getValue();
@@ -573,7 +648,5 @@ public class LoanStatementPdfGeneratorService {
             return null;  // Handle the exception (you can return an error response if necessary)
         }
     }
-
-
 
 }
