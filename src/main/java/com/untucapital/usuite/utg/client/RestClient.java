@@ -19,6 +19,7 @@ import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.PageIt
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
+import com.untucapital.usuite.utg.model.metabase.MusoniLoans;
 import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
@@ -979,6 +980,22 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         return settlementAccount;
     }
 
+    public MusoniLoans saveMusoniLoansToUtg() {
+//        baseUrl + "loans?disbursementFromDate=" + fromDate + "&disbursementToDate=" + toDate,
+        MusoniLoans musoniLoans = restTemplate.exchange(baseUrl + "loans&limit=100",
+                HttpMethod.GET,
+                setHttpEntity(),
+                new ParameterizedTypeReference<MusoniLoans>() {
+                }).getBody();
+
+        log.info("musoniLoans: {}", musoniLoans);
+
+        if (musoniLoans != null) {
+            return musoniLoans;
+        }
+
+        throw new LoanListCannotBeNullExceptionHandler("Loan list cannot be null");
+    }
 
     public List<LoanAccount> getClientLoansById(@PathVariable Long clientId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());

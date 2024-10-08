@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClientLoanApplicationImpl implements ClientLoanApplication {
@@ -64,13 +65,30 @@ public class ClientLoanApplicationImpl implements ClientLoanApplication {
                 clientLoan.setBranchName(musoniClient.getOfficeName());
             }
 
+        } else {
+            log.info("Loans list: {}", loans);
+            boolean loanDuplicate = false;
+
+            for (var loan : loans) {
+                if (Objects.equals(loan.getLoanStatus(), "PENDING") &&
+                        Objects.equals(loan.getPipelineStatus(), "client_application") &&
+                        Objects.equals(loan.getLoanAmount(), clientLoan.getLoanAmount()) &&
+                        Objects.equals(loan.getTenure(),clientLoan.getTenure())) {
+                    loanDuplicate = true;
+                    break;
+                }
+            }
+
+            if (loanDuplicate) {
+                log.error("This is a duplicate application: {}", clientLoan);
+                throw new RuntimeException("Failed to save: This is a duplicate application");
+            } else {
+                log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
+                return clientRepository.save(clientLoan);
+            }
         }
 
-
-//        ClientLoan creditCheckedLoan = creditCheckService.fetchFCBCreditStatus(clientLoan);
-
-        log.info("Updated Loan Application - {}", FormatterUtil.toJson(clientLoan));
-        return clientRepository.save(clientLoan);
+        return null;
     }
 
     @Override

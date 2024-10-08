@@ -10,6 +10,7 @@ import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.FilteredLoans;
+import com.untucapital.usuite.utg.dto.LoansIds;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
@@ -18,11 +19,13 @@ import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
+import com.untucapital.usuite.utg.model.metabase.MusoniLoans;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
 import com.untucapital.usuite.utg.service.PostGlService;
 import com.untucapital.usuite.utg.service.SmsService;
+import com.untucapital.usuite.utg.service.metabse.MusoniLoansService;
 import com.untucapital.usuite.utg.service.pdfGeneratorService.LoanStatementPdfGeneratorService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -92,6 +95,7 @@ public class MusoniController {
     }
 
     private final MusoniService musoniService;
+    private final MusoniLoansService musoniLoansService;
     private final SmsService smsService;
     private final RestClient restClient;
 
@@ -202,6 +206,11 @@ public class MusoniController {
     @GetMapping("getClientFeesByLoanId/{loanAcc}")
     public PageItems getClientFeesByLoanId(@PathVariable String loanAcc) throws AccountNotFoundException {
         return restClient.getClientFeesByLoanId(loanAcc);
+    }
+
+    @GetMapping("saveMusoniLoansToUtg")
+    public MusoniLoans saveMusoniLoansToUtg() throws AccountNotFoundException {
+        return musoniLoansService.saveMusoniLoansToUtg();
     }
 
     public static String[] getDate() {
@@ -621,6 +630,16 @@ public class MusoniController {
     @GetMapping("getLoansByDisbursementDate/{fromDate}/{toDate}")
     public Result getLoansByDisbursementDate(@PathVariable String fromDate, @PathVariable String toDate) {
         return  musoniService.disbursedLoans(fromDate,toDate);
+    }
+
+    @GetMapping("getLoanIdsByDisbursementDate/{fromDate}/{toDate}")
+    public LoansIds getLoanIdsByDisbursementDate(@PathVariable String fromDate, @PathVariable String toDate) {
+        return  musoniService.getLoanIdsByDisbursementDate(fromDate,toDate);
+    }
+
+    @GetMapping("getLoansMaturityInterestReport/{fromDate}/{toDate}")
+    public LoansIds getLoansMaturityInterestReport(@PathVariable String fromDate, @PathVariable String toDate) {
+        return  musoniService.getLoansMaturityInterestReport(fromDate,toDate);
     }
 
     @GetMapping("loans/disbursed-by-range/{fromDate}/{toDate}")
