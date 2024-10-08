@@ -146,23 +146,6 @@ public class LoanStatementPdfGeneratorService {
         List<TransactionDTO> loanTransactions = musoniService.getTransactionsByLoanId(loanId);
         log.info("loanTransactions: {}", loanTransactions);
 
-//
-//        double principalDisbursed = 0.0;
-//        for (var loanTransaction : loanTransactions){
-//            if (loanTransaction.getType().getDisbursement()){
-//                principalDisbursed = loanTransaction.getAmount();
-//            }
-//        }
-//        log.info("principalDisbursed: {}", principalDisbursed);
-//
-//        double totalInterest = 0.0;
-//        for (var loanTransaction: loanTransactions) {
-//            if (Objects.equals(loanTransaction.getType().getValue(), "Accrual")){
-//                totalInterest += loanTransaction.getAmount();
-//            }
-//        }
-//        log.info("totalInterest: {}", totalInterest);
-//
 
         combinedTransactions.addAll(loanTransactions);
 
@@ -264,24 +247,6 @@ public class LoanStatementPdfGeneratorService {
                 .filter(penaltyTransaction -> {
                     LocalDate transactionDate = penaltyTransaction.getDate();
                     String transactionTypeValue = penaltyTransaction.getType().getValue();
-
-//                    double principalDisbursed = 0.0;
-//                    for (var loanTransaction : loanTransactions){
-//                        if (loanTransaction.getType().getDisbursement()){
-//                            principalDisbursed = loanTransaction.getAmount();
-//                        }
-//                    }
-//                    log.info("principalDisbursed: {}", principalDisbursed);
-//
-//                    double totalInterest = 0.0;
-//                    for (var loanTransaction: loanTransactions) {
-//                        if (Objects.equals(loanTransaction.getType().getValue(), "Accrual")){
-//                            totalInterest += loanTransaction.getAmount();
-//                        }
-//                    }
-//                    log.info("totalInterest: {}", totalInterest);
-
-
 
                     // Check if it's a penalty transaction
                     boolean isPenaltyTransaction = transactionTypeValue != null && transactionTypeValue.contains("Penalty fee applied for late repayment");
@@ -505,42 +470,71 @@ public class LoanStatementPdfGeneratorService {
             table.addHeaderCell(new Cell().add(new Paragraph("Balance").setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD))));
 
             double balance = 0.0;
+            // Get and process loan repayment (penalty transactions)
+            log.info("penaltyTransactions: {}", transactions);
+
+            double principalDisbursed = 0.0;
+
+
+            // Assuming penalty transactions have access to loan summary to get principalDisbursed
+            for (var transDisbursment : transactions) {
+                if(transDisbursment.getType().getDisbursement() != null && transDisbursment.getType().getDisbursement()) {
+                    principalDisbursed = transDisbursment.getAmount();
+                    break;
+                }
+            }
 
             // Iterate through transactions and populate the table
             for (TransactionDTO transaction : transactions) {
 
-                table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
+                // Only process transactions if the balance is below twice the principal disbursed
+                if (balance < (principalDisbursed * 2)) {
 
-                String transactionType = transaction.getType().getValue();
-                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_ACCRUAL)) {
-                    transactionType = AppConstants.INTEREST_APPLIED;
-                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DEPOSIT)) {
-                    transactionType = AppConstants.LOAN_REPAYMENT;
+                    table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
+
+                    String transactionType = transaction.getType().getValue();
+                    if (transactionType.equalsIgnoreCase(AppConstants.LOAN_ACCRUAL)) {
+                        transactionType = AppConstants.INTEREST_APPLIED;
+                    } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DEPOSIT)) {
+                        transactionType = AppConstants.LOAN_REPAYMENT;
+                    }
+                    table.addCell(new Cell().add(new Paragraph(transactionType)));
+
+                    double transactionAmount = transaction.getAmount();
+
+                    if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DISBURSEMENT)
+                            || transactionType.equalsIgnoreCase(AppConstants.INTEREST_APPLIED)
+                            || transactionType.equalsIgnoreCase(AppConstants.FEE_APPLIED)
+                            || transactionType.equalsIgnoreCase(AppConstants.PENATLY_FEE)
+                            || transactionType.contains("Charges")) {
+
+                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transactionAmount))));
+                        table.addCell(new Cell().add(new Paragraph("0.00")));
+                        balance += transactionAmount;
+
+                    } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_REPAYMENT)
+                            || transactionType.equalsIgnoreCase(AppConstants.BALANCE_BD)) {
+
+                        table.addCell(new Cell().add(new Paragraph("0.00")));
+                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transactionAmount))));
+                        balance -= transactionAmount;
+
+                    } else {
+                        table.addCell(new Cell().add(new Paragraph("0.00")));
+                        table.addCell(new Cell().add(new Paragraph("0.00")));
+                    }
+
+                    // After updating the balance, check if it exceeds twice the principal disbursed
+                    if (balance >= (principalDisbursed * 2)) {
+//                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
+                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", principalDisbursed * 2))));
+                        balance = principalDisbursed * 2;
+                        break;  // Stop processing further transactions
+                    }
+
+                    table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
                 }
-                table.addCell(new Cell().add(new Paragraph(transactionType)));
-
-                if (transactionType.equalsIgnoreCase(AppConstants.LOAN_DISBURSEMENT) || transactionType.equalsIgnoreCase(AppConstants.INTEREST_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.FEE_APPLIED) || transactionType.equalsIgnoreCase(AppConstants.PENATLY_FEE) || transactionType.contains("Charges")) {
-                    table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
-                    table.addCell(new Cell().add(new Paragraph("0.00")));
-                    balance += transaction.getAmount();
-                } else if (transactionType.equalsIgnoreCase(AppConstants.LOAN_REPAYMENT) || transactionType.equalsIgnoreCase(AppConstants.BALANCE_BD)) {
-                    table.addCell(new Cell().add(new Paragraph("0.00")));
-                    table.addCell(new Cell().add(new Paragraph(String.format("%.2f", transaction.getAmount()))));
-                    balance -= transaction.getAmount();
-                } else {
-                    table.addCell(new Cell().add(new Paragraph("0.00")));
-                    table.addCell(new Cell().add(new Paragraph("0.00")));
-                }
-
-                table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
             }
-
-            // Add Contact Information and Address (Footer)
-//            document.add(new Paragraph("\n")); // Add some space before footer
-//            document.add(new Paragraph("Untu Capital (Pvt) Ltd\n79 ParkLane Building, \nJulius Nyerere Way, \nHarare")
-//                    .setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA))
-//                    .setFontSize(10)
-//                    .setTextAlignment(TextAlignment.LEFT));
 
 
             // Add the closing balance row
@@ -625,7 +619,7 @@ public class LoanStatementPdfGeneratorService {
                 String[] keyParts = entry.getKey().split("-");
                 MaturedInterestReportDTO finalReport = new MaturedInterestReportDTO();
                 finalReport.setTransactionDate(LocalDate.of(Integer.parseInt(keyParts[0]), Integer.parseInt(keyParts[1]), 1)); // Set the date to the first of the month
-                finalReport.setTransactionDescription("Total Interest for the month");
+                finalReport.setTransactionDescription("Total Interest due for the month");
                 finalReport.setDebit(entry.getValue()); // Set total interest as the debit
                 finalReport.setCredit(0.00); // Set credit to 0 since we're aggregating debits
                 finalReports.add(finalReport);

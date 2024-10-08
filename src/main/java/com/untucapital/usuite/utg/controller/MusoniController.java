@@ -10,6 +10,8 @@ import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.client.RestClient;
 import com.untucapital.usuite.utg.dto.DisbursedLoans;
 import com.untucapital.usuite.utg.dto.FilteredLoans;
+import com.untucapital.usuite.utg.dto.LoanIdsRequest;
+import com.untucapital.usuite.utg.dto.LoansIds;
 import com.untucapital.usuite.utg.dto.client.ClientsMobile;
 import com.untucapital.usuite.utg.dto.client.ViewClientLoansResponse;
 import com.untucapital.usuite.utg.dto.client.repaymentSchedule.NextInstalmentResponse;
@@ -621,6 +623,16 @@ public class MusoniController {
     @GetMapping("getLoansByDisbursementDate/{fromDate}/{toDate}")
     public Result getLoansByDisbursementDate(@PathVariable String fromDate, @PathVariable String toDate) {
         return  musoniService.disbursedLoans(fromDate,toDate);
+    }
+
+    @GetMapping("getLoanIdsByDisbursementDate/{fromDate}/{toDate}")
+    public LoansIds getLoanIdsByDisbursementDate(@PathVariable String fromDate, @PathVariable String toDate) {
+        return  musoniService.getLoanIdsByDisbursementDate(fromDate,toDate);
+    }
+
+    @GetMapping("getLoansMaturityInterestReport/{fromDate}/{toDate}")
+    public LoansIds getLoansMaturityInterestReport(@PathVariable String fromDate, @PathVariable String toDate) {
+        return  musoniService.getLoansMaturityInterestReport(fromDate,toDate);
     }
 
     @GetMapping("loans/disbursed-by-range/{fromDate}/{toDate}")

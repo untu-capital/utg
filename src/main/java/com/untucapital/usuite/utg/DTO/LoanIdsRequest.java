@@ -1,17 +1,15 @@
 package com.untucapital.usuite.utg.dto;
 
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Data
 public class LoanIdsRequest {
+    // Getters and Setters
     private List<String> loanIds;
 
-    // Getters and Setters
-    public List<String> getLoanIds() {
-        return loanIds;
-    }
-
-    public void setLoanIds(List<String> loanIds) {
-        this.loanIds = loanIds;
-    }
 }
 

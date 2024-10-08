@@ -1,2 +1,4 @@
-package com.untucapital.usuite.utg.dto;public class LoansIdsRequest {
+package com.untucapital.usuite.utg.dto;
+
+public class LoansIdsRequest {
 }

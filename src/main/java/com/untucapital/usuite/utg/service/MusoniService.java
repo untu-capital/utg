@@ -876,6 +876,41 @@ public void getLoansByTimestamp() throws ParseException, JsonProcessingException
         return result;
     }
 
+    public LoansIds getLoanIdsByDisbursementDate(String fromDate, String toDate) {
+        Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);
+        List<PageItem> pageItems = loans.getPageItems();
+
+        // Create a new LoansIds object
+        LoansIds loanIds = new LoansIds();
+
+        // Collect the loan IDs as strings and set it to loanIds
+        List<Integer> ids = pageItems.stream()
+                .map(pageItem -> pageItem.getId()) // assuming getId() returns an Integer
+                .collect(Collectors.toList());
+
+        loanIds.setLoanIds(ids); // Set the list of IDs
+
+        return loanIds; // Return LoansIds object with the list of loan IDs
+    }
+
+    public LoansIds getLoansMaturityInterestReport(String fromDate, String toDate) {
+        Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);
+        List<PageItem> pageItems = loans.getPageItems();
+
+        // Create a new LoansIds object
+        LoansIds loanIds = new LoansIds();
+
+        // Collect the loan IDs as strings and set it to loanIds
+        List<Integer> ids = pageItems.stream()
+                .map(pageItem -> pageItem.getId()) // assuming getId() returns an Integer
+                .collect(Collectors.toList());
+
+        loanIds.setLoanIds(ids); // Set the list of IDs
+
+
+        return loanIds; // Return LoansIds object with the list of loan IDs
+    }
+
     public List<Integer> disbursedLoansByDate(String fromDate, String toDate) {
         Loans loans = restClient.getLoansByDisbursementDate(fromDate, toDate);
         log.info("Loans:{}", loans);

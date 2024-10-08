@@ -4,6 +4,7 @@ package com.untucapital.usuite.utg.controller.settlementAccounts;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.itextpdf.io.IOException;
 import com.untucapital.usuite.utg.dto.LoanIdsRequest;
+import com.untucapital.usuite.utg.dto.LoansIds;
 import com.untucapital.usuite.utg.dto.MaturedInterestReportDTO;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
@@ -12,6 +13,7 @@ import com.untucapital.usuite.utg.service.aws.S3Service;
 import com.untucapital.usuite.utg.service.pdfGeneratorService.LoanStatementPdfGeneratorService;
 import com.untucapital.usuite.utg.service.settlementAccounts.SettlementAccountsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +24,10 @@ import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("settlements/")
@@ -106,28 +110,38 @@ public class SettlementAccountsController {
                 .body(bis.readAllBytes());
     }
 
-    @PostMapping("/generateMaturedInterestsReport")
-    public ResponseEntity<List<MaturedInterestReportDTO>> generateMaturedInterestsReport(
-            @RequestBody LoanIdsRequest request) throws ParseException, JsonProcessingException, IOException {
+    @PostMapping("/generateMaturedInterestsReport/{fromDate}/{toDate}")
+    public ResponseEntity<List<MaturedInterestReportDTO>> generateMaturedInterestsReport(@PathVariable String fromDate, @PathVariable String toDate) throws IOException {
+
+        //TODO: get loan by disbursement period
+        LoansIds loansIds = musoniService.getLoansMaturityInterestReport(fromDate,toDate);
+        log.info("List of selected loans: {}", loansIds);
 
         // Extract loanIds from the request object
-        List<String> loanIds = request.getLoanIds();
+        List<Integer> loanIds = loansIds.getLoanIds();
 
         // Initialize a list to store matured interest reports for all loan IDs
         List<MaturedInterestReportDTO> allReports = new ArrayList<>();
 
         // Loop through each loanId and generate the matured interest report
-        for (String loanId : loanIds) {
-            ClientAccounts clientAccounts = musoniService.getClientAccountsByLoanAcc(loanId);
-            int savingsId = Integer.parseInt(clientAccounts.getSettlementAccount());
-            int postMaturityFeeId = Integer.parseInt(clientAccounts.getPostMaturityFee());
+        for (Integer loanId : loanIds) {
+            try {
+                if (Objects.equals(loanId, "32048")){
+                    log.info("================ Trace here ===========");
+                }
+                ClientAccounts clientAccounts = musoniService.getClientAccountsByLoanAcc(String.valueOf(loanId));
+                int savingsId = Integer.parseInt(clientAccounts.getSettlementAccount());
+                int postMaturityFeeId = Integer.parseInt(clientAccounts.getPostMaturityFee());
 
-            // Generate the matured interest report and add it to the list
-            List<MaturedInterestReportDTO> loanReport = loanStatementPdfGeneratorService.generateMaturedInterestReport(
-                    Integer.parseInt(clientAccounts.getLoanId()), savingsId, postMaturityFeeId);
+                // Generate the matured interest report and add it to the list
+                List<MaturedInterestReportDTO> loanReport = loanStatementPdfGeneratorService.generateMaturedInterestReport(
+                        Integer.parseInt(clientAccounts.getLoanId()), savingsId, postMaturityFeeId);
 
-            // Add each report to the master list
-            allReports.addAll(loanReport);
+                // Add each report to the master list
+                allReports.addAll(loanReport);
+            } catch (Exception e){
+                log.info("Settlement account does not exist: {}", e.getMessage());
+            }
         }
 
         // Return the final result as a JSON response
