@@ -1,6 +1,12 @@
 package com.untucapital.usuite.utg.dto;
 
+<<<<<<< HEAD
 import lombok.*;
+=======
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+>>>>>>> c3f5c93fa4cbfa09dbf6c7128a44118c29771bc2
 
 import java.time.LocalDate;
 
