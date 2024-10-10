@@ -490,7 +490,7 @@ public class LoanStatementPdfGeneratorService {
             for (TransactionDTO transaction : transactions) {
 
                 // Only process transactions if the balance is below twice the principal disbursed
-//                if (balance < (principalDisbursed * 2)) {
+                if (balance < (principalDisbursed * 2)) {
 
                     table.addCell(new Cell().add(new Paragraph(String.valueOf(transaction.getDate()))));
 
@@ -527,16 +527,16 @@ public class LoanStatementPdfGeneratorService {
                     }
 
                     // After updating the balance, check if it exceeds twice the principal disbursed
-//                    if (balance >= (principalDisbursed * 2)) {
+                    if (balance >= (principalDisbursed * 2)) {
 //                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
-//                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", principalDisbursed * 2))));
-//                        balance = principalDisbursed * 2;
-//                        break;  // Stop processing further transactions
-//                    }
+                        table.addCell(new Cell().add(new Paragraph(String.format("%.2f", principalDisbursed * 2))));
+                        balance = principalDisbursed * 2;
+                        break;  // Stop processing further transactions
+                    }
 
                     table.addCell(new Cell().add(new Paragraph(String.format("%.2f", balance))));
                 closingDate = String.valueOf(transaction.getDate());
-//                }
+                }
             }
 
 
