@@ -180,7 +180,7 @@ public class UserService extends AbstractService<User> {
         log.debug("User Registration Request - {}", FormatterUtil.toJson(signUpRequest));
 
         if (userRepository.existsUserByUsername(signUpRequest.getUsername())) {
-            throw new ValidationException("The account number you\'ve entered is already associated with another number.");
+            throw new ValidationException("The Account No. or username you\'ve entered is already associated with another user.");
         }
 
         String normalizedMobile = PhoneNumberUtils.normalizePhoneNumber(String.valueOf(signUpRequest.getMobileNumber()), "ZW");

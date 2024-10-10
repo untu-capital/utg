@@ -19,7 +19,8 @@ import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.PageIt
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.transactions.SavingsAccountsTransactions;
 import com.untucapital.usuite.utg.dto.pastel.PastelTransReq;
 import com.untucapital.usuite.utg.exception.LoanListCannotBeNullExceptionHandler;
-import com.untucapital.usuite.utg.model.metabase.MusoniLoans;
+import com.untucapital.usuite.utg.model.metabase.LoanApiResponse;
+import com.untucapital.usuite.utg.model.metabase.LoanData;
 import com.untucapital.usuite.utg.model.Employee;
 import com.untucapital.usuite.utg.model.transactions.Loans;
 import com.untucapital.usuite.utg.model.transactions.PageItem;
@@ -37,10 +38,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -938,7 +936,6 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         }
         log.info("loansFilteredResponse: {}",loansFilteredResponse);
             return loansFilteredResponse;
-
     }
 
     public PageItems getSavingsLoanAccountById(@PathVariable String savingsId) {
@@ -980,22 +977,25 @@ public TransactionDTO getSavingsBalanceBD(String savingsId, LocalDate localDate,
         return settlementAccount;
     }
 
-    public MusoniLoans saveMusoniLoansToUtg() {
-//        baseUrl + "loans?disbursementFromDate=" + fromDate + "&disbursementToDate=" + toDate,
-        MusoniLoans musoniLoans = restTemplate.exchange(baseUrl + "loans&limit=100",
+    public List<LoanData> saveMusoniLoansToUtg() {
+        // Make the API call and get the response mapped to LoanApiResponse
+        LoanApiResponse response = restTemplate.exchange(baseUrl + "loans?limit=5&offset=0",
                 HttpMethod.GET,
                 setHttpEntity(),
-                new ParameterizedTypeReference<MusoniLoans>() {
-                }).getBody();
+                new ParameterizedTypeReference<LoanApiResponse>() {}).getBody();
 
-        log.info("musoniLoans: {}", musoniLoans);
+        log.info("API response: {}", response);
 
-        if (musoniLoans != null) {
+        // Check if the response and pageItems are not null
+        if (response != null && response.getPageItems() != null) {
+            List<LoanData> musoniLoans = response.getPageItems();
+            log.info("musoniLoans: {}", musoniLoans);
             return musoniLoans;
         }
 
         throw new LoanListCannotBeNullExceptionHandler("Loan list cannot be null");
     }
+
 
     public List<LoanAccount> getClientLoansById(@PathVariable Long clientId) {
         HttpEntity<String> entity = new HttpEntity<String>(httpHeaders());
