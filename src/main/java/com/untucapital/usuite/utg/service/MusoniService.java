@@ -28,7 +28,6 @@ import com.untucapital.usuite.utg.entity.res.PostGlResponseDTO;
 import com.untucapital.usuite.utg.exception.EmptyException;
 import com.untucapital.usuite.utg.exception.SettlementAccountNotFoundException;
 import com.untucapital.usuite.utg.exception.SmsException;
-import com.untucapital.usuite.utg.model.metabase.MusoniLoans;
 import com.untucapital.usuite.utg.model.MusoniClient;
 import com.untucapital.usuite.utg.model.settlements.SettlementAccountsTokens;
 import com.untucapital.usuite.utg.model.transactions.Loans;
@@ -1056,7 +1055,7 @@ public void getLoansByTimestamp() throws ParseException, JsonProcessingException
         if (clientId != 0) {
             Client musoniClient = restClient.getClientById(String.valueOf(clientId));
 
-            if (musoniClient.getMobileNo() != null) {
+            if (musoniClient.getId() != 0) {
                 clientAccounts.setClientId(String.valueOf(clientId));
                 clientAccounts.setPhoneNumber(musoniClient.getMobileNo());
                 clientAccounts.setLoanId(loanId);

@@ -19,7 +19,6 @@ import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.ClientAccounts;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.PageItems;
 import com.untucapital.usuite.utg.dto.musoni.savingsaccounts.SettlementAccountResponse;
 import com.untucapital.usuite.utg.dto.response.PostGLResponseDTO;
-import com.untucapital.usuite.utg.model.metabase.MusoniLoans;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.SavingsTransactionDTO;
 import com.untucapital.usuite.utg.model.transactions.interim.dto.TransactionDTO;
 import com.untucapital.usuite.utg.service.MusoniService;
@@ -206,11 +205,6 @@ public class MusoniController {
     @GetMapping("getClientFeesByLoanId/{loanAcc}")
     public PageItems getClientFeesByLoanId(@PathVariable String loanAcc) throws AccountNotFoundException {
         return restClient.getClientFeesByLoanId(loanAcc);
-    }
-
-    @GetMapping("saveMusoniLoansToUtg")
-    public MusoniLoans saveMusoniLoansToUtg() throws AccountNotFoundException {
-        return musoniLoansService.saveMusoniLoansToUtg();
     }
 
     public static String[] getDate() {

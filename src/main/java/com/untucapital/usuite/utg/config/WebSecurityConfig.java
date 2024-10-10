@@ -326,6 +326,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/musoni/**")
                 .permitAll()
+                .antMatchers("/metabase/**")
+                .permitAll()
                 .antMatchers("/musoni_pastel/**")
                 .permitAll()
                 .antMatchers("/credit_application_enquiry/**")
